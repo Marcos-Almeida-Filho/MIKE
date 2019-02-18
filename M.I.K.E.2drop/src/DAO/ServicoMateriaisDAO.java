@@ -1,0 +1,142 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package DAO;
+
+import Bean.ServicoMateriaisBean;
+import Connection.ConnectionFactory;
+import java.awt.HeadlessException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author Marcos Filho
+ */
+public class ServicoMateriaisDAO {
+
+    public void create(ServicoMateriaisBean smb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("INSERT INTO servicos_materiais (codigo, descricao, estoque, grupo_de_processos) VALUES (?,?,?,?)");
+            stmt.setString(1, smb.getCodigo());
+            stmt.setString(2, smb.getDescricao());
+            stmt.setInt(3, smb.getEstoque());
+            stmt.setString(4, smb.getGrupo_de_processos());
+
+            stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public List<ServicoMateriaisBean> read() {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoMateriaisBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * from servicos_materiais");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoMateriaisBean sob = new ServicoMateriaisBean();
+
+                sob.setId(rs.getInt("id"));
+                sob.setCodigo(rs.getString("codigo"));
+                sob.setDescricao(rs.getString("descricao"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
+
+    public List<ServicoMateriaisBean> click(int id) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoMateriaisBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * from servicos_materiais WHERE id = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoMateriaisBean sob = new ServicoMateriaisBean();
+
+                sob.setId(rs.getInt("id"));
+                sob.setCodigo(rs.getString("ccodigo"));
+                sob.setDescricao(rs.getString("descricao"));
+                sob.setEstoque(rs.getInt("estoque"));
+                sob.setGrupo_de_processos(rs.getString("grupo_de_processos"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
+
+    public void update(ServicoMateriaisBean sob) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE servicos_materiais SET codigo = ?, descricao = ?, estoque = ?, grupo_de_processos = ? WHERE id = ?");
+            stmt.setString(1, sob.getCodigo());
+            stmt.setString(2, sob.getDescricao());
+            stmt.setInt(3, sob.getEstoque());
+            stmt.setString(4, sob.getGrupo_de_processos());
+            stmt.setInt(5, sob.getId());
+
+            stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+}
