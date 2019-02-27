@@ -5,7 +5,6 @@
  */
 package View.vendas;
 
-import java.net.URL;
 import javax.swing.JOptionPane;
 
 /**
@@ -519,19 +518,19 @@ public class OPs extends javax.swing.JInternalFrame {
 
     private void TabelaOPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelaOPMouseClicked
         // TODO add your handling code here:
-        if (evt.getClickCount()==2) {
+        if (evt.getClickCount() == 2) {
             jTabbedPane1.setSelectedIndex(1);
-            TxtNumOP.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()),0).toString());
-            TxtCliente.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()),1).toString());
+            TxtNumOP.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()), 0).toString());
+            TxtCliente.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()), 1).toString());
             TxtCliente.setEditable(false);
             TxtCliente.setFocusable(false);
-            TxtCodigo.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()),2).toString());
+            TxtCodigo.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()), 2).toString());
             TxtCodigo.setEditable(false);
             TxtCodigo.setFocusable(false);
-            TxtDataEntrega.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()),3).toString());
+            TxtDataEntrega.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()), 3).toString());
             TxtDataEntrega.setEditable(false);
             TxtDataEntrega.setFocusable(false);
-            TxtStatus.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()),4).toString());
+            TxtStatus.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()), 4).toString());
             //TxtDescricao.setText(TabelaOP.getValueAt(TabelaOP.rowAtPoint(evt.getPoint()),3).toString());
             TxtDescricao.setEditable(false);
             TxtDescricao.setFocusable(false);

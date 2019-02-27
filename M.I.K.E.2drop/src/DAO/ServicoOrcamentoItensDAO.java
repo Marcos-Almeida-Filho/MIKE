@@ -43,7 +43,6 @@ public class ServicoOrcamentoItensDAO {
             stmt.setString(9, iosb.getDas());
 
             stmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
         } finally {
@@ -98,20 +97,18 @@ public class ServicoOrcamentoItensDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE servicos_orcamento_itens SET idorcamento = ?, codigo = ?, descricao = ?, qtd = ?, valor = ?, total = ?, prazo = ?, pedido = ?, das = ? WHERE idorcamento = ?");
-            stmt.setString(1, iosb.getIdorcamento());
-            stmt.setString(2, iosb.getCodigo());
-            stmt.setString(3, iosb.getDesc());
-            stmt.setString(4, iosb.getQtd());
-            stmt.setString(5, iosb.getValor());
-            stmt.setString(6, iosb.getTotal());
-            stmt.setString(7, iosb.getPrazo());
-            stmt.setString(8, iosb.getPedido());
-            stmt.setString(9, iosb.getDas());
-            stmt.setString(10, iosb.getIdorcamento());
+            stmt = con.prepareStatement("UPDATE servicos_orcamento_itens SET codigo = ?, descricao = ?, qtd = ?, valor = ?, total = ?, prazo = ?, pedido = ?, das = ? WHERE id = ?");
+            stmt.setString(1, iosb.getCodigo());
+            stmt.setString(2, iosb.getDesc());
+            stmt.setString(3, iosb.getQtd());
+            stmt.setString(4, iosb.getValor());
+            stmt.setString(5, iosb.getTotal());
+            stmt.setString(6, iosb.getPrazo());
+            stmt.setString(7, iosb.getPedido());
+            stmt.setString(8, iosb.getDas());
+            stmt.setInt(9, iosb.getId());
 
             stmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
         } finally {

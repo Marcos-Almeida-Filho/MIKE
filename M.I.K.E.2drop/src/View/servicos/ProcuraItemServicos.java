@@ -22,12 +22,12 @@ public class ProcuraItemServicos extends javax.swing.JInternalFrame {
         initComponents();
         readtable();
     }
-    
+
     public static void readtable() {
         DefaultTableModel model = (DefaultTableModel) tableitemservico.getModel();
         model.setNumRows(0);
         ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
-        
+
         for (ServicoMateriaisBean smb : smd.read()) {
             model.addRow(new Object[]{
                 smb.getId(),

@@ -23,14 +23,14 @@ public class ProcessosServico extends javax.swing.JInternalFrame {
         initComponents();
         readtable();
     }
-    
-    public static void readtable(){
+
+    public static void readtable() {
         DefaultTableModel model = (DefaultTableModel) tableprocessosservico.getModel();
         model.setNumRows(0);
-        
+
         ProcessosServicoDAO psd = new ProcessosServicoDAO();
-        
-        for (ServicoGrupoDeProcessosBean psb: psd.read()){
+
+        for (ServicoGrupoDeProcessosBean psb : psd.read()) {
             model.addRow(new Object[]{
                 false,
                 psb.getNome()
@@ -176,7 +176,7 @@ public class ProcessosServico extends javax.swing.JInternalFrame {
         String n = JOptionPane.showInputDialog(rootPane, "Qual o nome do novo processo?", "Adicionar novo processo", JOptionPane.OK_OPTION);
         ProcessosServicoDAO psd = new ProcessosServicoDAO();
         ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
-        
+
         psb.setNome(n);
         psd.create(psb);
         readtable();

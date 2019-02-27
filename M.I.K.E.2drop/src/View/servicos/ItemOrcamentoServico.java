@@ -55,6 +55,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
         txtid = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtcodigo = new javax.swing.JTextField();
+        txtrow = new javax.swing.JLabel();
 
         jLabel1.setText("jLabel1");
 
@@ -122,6 +123,8 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
         txtcodigo.setEditable(false);
         txtcodigo.setBackground(new java.awt.Color(255, 255, 255));
 
+        txtrow.setText("jLabel9");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -130,35 +133,6 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtdesc)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnprocurar))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jRadioButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jRadioButton2))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtqtd, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtvalor, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 290, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtpedido, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,17 +140,53 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtprazo, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtdesc))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jRadioButton1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jRadioButton2))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtqtd, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtvalor, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtrow)
+                            .addComponent(btnprocurar))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jRadioButton1)
+                            .addComponent(jRadioButton2)))
+                    .addComponent(txtrow))
                 .addGap(7, 7, 7)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -251,43 +261,64 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
         deskn.add(pis);
         Dimension d = deskn.getSize();
         Dimension p = pis.getSize();
-        pis.setLocation((d.width-p.width)/2, (d.height-p.height)/2);
+        pis.setLocation((d.width - p.width) / 2, (d.height - p.height) / 2);
         pis.setVisible(true);
     }//GEN-LAST:event_btnprocurarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtdesc.getText().equals("")) {
-            JOptionPane.showMessageDialog(rootPane, "Escolha um item primeiro!");
-            txtdesc.requestFocus();
-        } else if (txtqtd.getText().equals("")) {
-            JOptionPane.showMessageDialog(rootPane, "Coloque uma quantidade primeiro!");
-            txtqtd.requestFocus();
-        } else if (txtvalor.getText().equals("")) {
-            JOptionPane.showMessageDialog(rootPane, "Coloque um valor unitário primeiro!");
-            txtvalor.requestFocus();
+        if (txtid.getText().equals("")) {
+            if (txtdesc.getText().equals("")) {
+                JOptionPane.showMessageDialog(rootPane, "Escolha um item primeiro!");
+                txtdesc.requestFocus();
+            } else if (txtqtd.getText().equals("")) {
+                JOptionPane.showMessageDialog(rootPane, "Coloque uma quantidade primeiro!");
+                txtqtd.requestFocus();
+            } else if (txtvalor.getText().equals("")) {
+                JOptionPane.showMessageDialog(rootPane, "Coloque um valor unitário primeiro!");
+                txtvalor.requestFocus();
+            } else {
+                DecimalFormat formatter = new DecimalFormat("#,###.00");
+                DecimalFormat formatterq = new DecimalFormat("#,###");
+                DefaultTableModel model = (DefaultTableModel) OrcamentoServico.tableitens.getModel();
+                int qtd = Integer.parseInt(txtqtd.getText());
+                String v = txtvalor.getText().replace(".", "");
+                float valor = Float.parseFloat(v.replace(",", "."));
+                float tot = qtd * valor;
+                String totf = formatter.format(tot);
+                String qtdf = formatterq.format(qtd);
+
+                model.addRow(new Object[]{
+                    false,
+                    "",
+                    txtcodigo.getText(),
+                    txtdesc.getText(),
+                    qtdf,
+                    txtvalor.getText(),
+                    totf,
+                    txtprazo.getText() + " dias",
+                    txtpedido.getText(),
+                    ""
+                });
+                OrcamentoServico.txtvalor();
+                dispose();
+            }
         } else {
             DecimalFormat formatter = new DecimalFormat("#,###.00");
-            DecimalFormat formatterq = new DecimalFormat("#,###");
             DefaultTableModel model = (DefaultTableModel) OrcamentoServico.tableitens.getModel();
             int qtd = Integer.parseInt(txtqtd.getText());
             String v = txtvalor.getText().replace(".", "");
             float valor = Float.parseFloat(v.replace(",", "."));
-            float tot = qtd*valor;
+            float tot = qtd * valor;
             String totf = formatter.format(tot);
-            String qtdf = formatterq.format(qtd);
 
-            model.addRow(new Object[]{
-                false,
-                "",
-                txtcodigo.getText(),
-                txtdesc.getText(),
-                qtdf,
-                txtvalor.getText(),
-                totf,
-                txtprazo.getText()+" dias",
-                txtpedido.getText(),
-                ""
-            });
+            model.setValueAt(txtid.getText(), Integer.parseInt(txtrow.getText()), 1);
+            model.setValueAt(txtcodigo.getText(), Integer.parseInt(txtrow.getText()), 2);
+            model.setValueAt(txtdesc.getText(), Integer.parseInt(txtrow.getText()), 3);
+            model.setValueAt(txtqtd.getText(), Integer.parseInt(txtrow.getText()), 4);
+            model.setValueAt(txtvalor.getText(), Integer.parseInt(txtrow.getText()), 5);
+            model.setValueAt(totf, Integer.parseInt(txtrow.getText()), 6);
+            model.setValueAt(txtprazo.getText() + " dias", Integer.parseInt(txtrow.getText()), 7);
+            model.setValueAt(txtpedido.getText(), Integer.parseInt(txtrow.getText()), 8);
             OrcamentoServico.txtvalor();
             dispose();
         }
@@ -295,7 +326,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton btnprocurar;
+    public static javax.swing.JButton btnprocurar;
     public javax.swing.ButtonGroup buttonGroup1;
     public javax.swing.JButton jButton1;
     public javax.swing.JLabel jLabel1;
@@ -308,14 +339,15 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel8;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
-    public javax.swing.JRadioButton jRadioButton1;
-    public javax.swing.JRadioButton jRadioButton2;
+    public static javax.swing.JRadioButton jRadioButton1;
+    public static javax.swing.JRadioButton jRadioButton2;
     public static javax.swing.JTextField txtcodigo;
     public static javax.swing.JTextField txtdesc;
     public static javax.swing.JTextField txtid;
     public static javax.swing.JTextField txtpedido;
     public static javax.swing.JTextField txtprazo;
     public static javax.swing.JTextField txtqtd;
+    public static javax.swing.JLabel txtrow;
     public static javax.swing.JFormattedTextField txtvalor;
     // End of variables declaration//GEN-END:variables
 }

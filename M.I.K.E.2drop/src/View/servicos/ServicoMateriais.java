@@ -36,7 +36,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             });
         }
     }
-    
+
     public static void zeracampos() {
         txtid.setText("");
         txtcodigo.setText("");

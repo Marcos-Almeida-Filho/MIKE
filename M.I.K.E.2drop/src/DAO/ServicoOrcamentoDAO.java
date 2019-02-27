@@ -38,8 +38,6 @@ public class ServicoOrcamentoDAO {
             stmt.setString(7, sob.getClientecadastro());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + e);
         } finally {
@@ -142,8 +140,6 @@ public class ServicoOrcamentoDAO {
             stmt.setInt(8, sob.getId());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
         } finally {

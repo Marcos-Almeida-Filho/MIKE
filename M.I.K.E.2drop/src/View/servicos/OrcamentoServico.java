@@ -8,9 +8,13 @@ package View.servicos;
 import Bean.ServicoOrcamentoItensBean;
 import Bean.ServicoOrcamentoBean;
 import Bean.ServicoOrcamentoDocumentosBean;
+import Bean.ServicoPedidoBean;
+import Bean.ServicoPedidoItensBean;
 import DAO.ServicoOrcamentoItensDAO;
 import DAO.ServicoOrcamentoDAO;
 import DAO.ServicoOrcamentoDocumentosDAO;
+import DAO.ServicoPedidoDAO;
+import DAO.ServicoPedidoItensOrcamentoDAO;
 import View.ProcurarCliente;
 import View.comercial.ProcurarCondicaoDePagamento;
 import View.comercial.ProcurarRepresentante;
@@ -23,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -149,6 +154,7 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
         jButton8 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
 
         jButton7.setText("jButton7");
 
@@ -321,7 +327,7 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radioc)
                     .addComponent(radionc))
@@ -515,9 +521,9 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
             tableitens.getColumnModel().getColumn(0).setMinWidth(30);
             tableitens.getColumnModel().getColumn(0).setPreferredWidth(30);
             tableitens.getColumnModel().getColumn(0).setMaxWidth(30);
-            tableitens.getColumnModel().getColumn(1).setMinWidth(1);
-            tableitens.getColumnModel().getColumn(1).setPreferredWidth(1);
-            tableitens.getColumnModel().getColumn(1).setMaxWidth(1);
+            tableitens.getColumnModel().getColumn(1).setMinWidth(0);
+            tableitens.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tableitens.getColumnModel().getColumn(1).setMaxWidth(0);
         }
 
         jButton2.setText("Incluir");
@@ -677,6 +683,11 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
         jTabbedPane2.addTab("Documentos", jPanel10);
 
         jButton3.setText("Criar Pedido");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton9.setText("Cancelar");
         jButton9.addActionListener(new java.awt.event.ActionListener() {
@@ -684,6 +695,8 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                 jButton9ActionPerformed(evt);
             }
         });
+
+        jButton10.setText("Cancelar Orçamento");
 
         javax.swing.GroupLayout PanelOrcamentoServicoLayout = new javax.swing.GroupLayout(PanelOrcamentoServico);
         PanelOrcamentoServico.setLayout(PanelOrcamentoServicoLayout);
@@ -704,6 +717,8 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelOrcamentoServicoLayout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton1)
@@ -717,8 +732,8 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(PanelOrcamentoServicoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -727,7 +742,8 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                 .addGroup(PanelOrcamentoServicoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton3)
-                    .addComponent(jButton9))
+                    .addComponent(jButton9)
+                    .addComponent(jButton10))
                 .addContainerGap())
         );
 
@@ -813,14 +829,12 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
         if (txtnumeroorcamento.getText().equals("")) {
             ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
             ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
-
             String c;
             if (radioc.isSelected()) {
                 c = "true";
             } else {
                 c = "false";
             }
-
             sob.setCliente(txtnomecliente.getText());
             sob.setCondicao(txtcondicao.getText());
             sob.setRepresentante(txtrepresentante.getText());
@@ -829,46 +843,43 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
             sob.setStatus("Ativo");
             sob.setClientecadastro(c);
             //cliente, condicao, representante, vendedor, notes, status, clientecadastro
-
             sod.create(sob);
-
             for (ServicoOrcamentoBean sob2 : sod.read()) {
                 txtnumeroorcamento.setText(String.valueOf(sob2.getId()));
             }
-
             int nr = tableitens.getRowCount();
-
             for (int i = 0; i < nr; i++) {
-                ServicoOrcamentoItensBean iosb = new ServicoOrcamentoItensBean();
-                ServicoOrcamentoItensDAO iosd = new ServicoOrcamentoItensDAO();
-
-                iosb.setIdorcamento(txtnumeroorcamento.getText());
-                iosb.setCodigo(tableitens.getValueAt(i, 2).toString());
-                iosb.setDesc(tableitens.getValueAt(i, 3).toString());
-                iosb.setQtd(tableitens.getValueAt(i, 4).toString());
-                iosb.setValor(tableitens.getValueAt(i, 5).toString());
-                iosb.setTotal(tableitens.getValueAt(i, 6).toString());
-                iosb.setPrazo(tableitens.getValueAt(i, 7).toString());
-                iosb.setPedido(tableitens.getValueAt(i, 8).toString());
-                iosb.setDas(tableitens.getValueAt(i, 9).toString());
+                ServicoOrcamentoItensBean soib = new ServicoOrcamentoItensBean();
+                ServicoOrcamentoItensDAO soid = new ServicoOrcamentoItensDAO();
+                
+                soib.setIdorcamento(txtnumeroorcamento.getText());
+                soib.setCodigo(tableitens.getValueAt(i, 2).toString());
+                soib.setDesc(tableitens.getValueAt(i, 3).toString());
+                soib.setQtd(tableitens.getValueAt(i, 4).toString());
+                soib.setValor(tableitens.getValueAt(i, 5).toString());
+                soib.setTotal(tableitens.getValueAt(i, 6).toString());
+                soib.setPrazo(tableitens.getValueAt(i, 7).toString());
+                soib.setPedido(tableitens.getValueAt(i, 8).toString());
+                soib.setDas(tableitens.getValueAt(i, 9).toString());
                 //idorcamento, codigo, desc, qtd, valor, total, prazo, pedido, das
-
-                iosd.create(iosb);
+                
+                soid.create(soib);
             }
             if (tabledocumentos.getRowCount() != 0) {
                 int rc = tabledocumentos.getRowCount();
                 for (int i = 0; i < rc; i++) {
                     ServicoOrcamentoDocumentosBean sodb = new ServicoOrcamentoDocumentosBean();
                     ServicoOrcamentoDocumentosDAO sodd = new ServicoOrcamentoDocumentosDAO();
-
+                    
                     sodb.setIdorcamento(Integer.parseInt(txtnumeroorcamento.getText()));
                     sodb.setDescricao(tableitens.getValueAt(i, 2).toString());
                     sodb.setLocal(tableitens.getValueAt(i, 3).toString());
                     //idorcamento, descricao, local
-
+                    
                     sodd.create(sodb);
                 }
             }
+            JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
         } else {
             ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
             ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
@@ -895,24 +906,37 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
             sod.update(sob);
 
             int nr = tableitens.getRowCount();
-            JOptionPane.showMessageDialog(rootPane, nr);
             for (int i = 0; i < nr; i++) {
-                ServicoOrcamentoItensBean iosb = new ServicoOrcamentoItensBean();
-                ServicoOrcamentoItensDAO iosd = new ServicoOrcamentoItensDAO();
+                ServicoOrcamentoItensBean soib = new ServicoOrcamentoItensBean();
+                ServicoOrcamentoItensDAO soid = new ServicoOrcamentoItensDAO();
 
-                iosb.setIdorcamento(txtnumeroorcamento.getText());
-                iosb.setCodigo(tableitens.getValueAt(i, 2).toString());
-                iosb.setDesc(tableitens.getValueAt(i, 3).toString());
-                iosb.setQtd(tableitens.getValueAt(i, 4).toString());
-                iosb.setValor(tableitens.getValueAt(i, 5).toString());
-                iosb.setTotal(tableitens.getValueAt(i, 6).toString());
-                iosb.setPrazo(tableitens.getValueAt(i, 7).toString());
-                iosb.setPedido(tableitens.getValueAt(i, 8).toString());
-                iosb.setDas(tableitens.getValueAt(i, 9).toString());
-                iosb.setId(Integer.parseInt(txtnumeroorcamento.getText()));
-                //idorcamento, codigo, desc, qtd, valor, total, prazo, pedido, das
+                if (tableitens.getValueAt(i, 1).equals("")) {
+                    soib.setIdorcamento(txtnumeroorcamento.getText());
+                    soib.setCodigo(tableitens.getValueAt(i, 2).toString());
+                    soib.setDesc(tableitens.getValueAt(i, 3).toString());
+                    soib.setQtd(tableitens.getValueAt(i, 4).toString());
+                    soib.setValor(tableitens.getValueAt(i, 5).toString());
+                    soib.setTotal(tableitens.getValueAt(i, 6).toString());
+                    soib.setPrazo(tableitens.getValueAt(i, 7).toString());
+                    soib.setPedido(tableitens.getValueAt(i, 8).toString());
+                    soib.setDas(tableitens.getValueAt(i, 9).toString());
+                    //idorcamento, codigo, desc, qtd, valor, total, prazo, pedido, das
 
-                iosd.update(iosb);
+                    soid.create(soib);
+                } else {
+                    soib.setCodigo(tableitens.getValueAt(i, 2).toString());
+                    soib.setDesc(tableitens.getValueAt(i, 3).toString());
+                    soib.setQtd(tableitens.getValueAt(i, 4).toString());
+                    soib.setValor(tableitens.getValueAt(i, 5).toString());
+                    soib.setTotal(tableitens.getValueAt(i, 6).toString());
+                    soib.setPrazo(tableitens.getValueAt(i, 7).toString());
+                    soib.setPedido(tableitens.getValueAt(i, 8).toString());
+                    soib.setDas(tableitens.getValueAt(i, 9).toString());
+                    soib.setId(Integer.parseInt(tableitens.getValueAt(i, 1).toString()));
+                    //codigo, descricao , qtd , valor , total , prazo , pedido , das, id
+
+                    soid.update(soib);
+                }
             }
             int rctd = tabledocumentos.getRowCount();
             if (rctd != 0) {
@@ -941,6 +965,7 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                     }
                 }
             }
+            JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -984,7 +1009,19 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                 Dimension d = desk.getSize();
                 ios.setLocation((d.width - i.width) / 2, (d.height - i.height) / 2);
                 ios.setVisible(true);
-                ItemOrcamentoServico.txtdesc.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 2).toString());
+                if (tableitens.getValueAt(tableitens.getSelectedRow(), 2).equals("")) {
+                    ItemOrcamentoServico.jRadioButton2.setSelected(true);
+                    ItemOrcamentoServico.btnprocurar.setEnabled(false);
+                    ItemOrcamentoServico.txtdesc.setEditable(true);
+                }
+                ItemOrcamentoServico.txtrow.setText(String.valueOf(tableitens.getSelectedRow()));
+                ItemOrcamentoServico.txtid.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 1).toString());
+                ItemOrcamentoServico.txtcodigo.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 2).toString());
+                ItemOrcamentoServico.txtdesc.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 3).toString());
+                ItemOrcamentoServico.txtqtd.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 4).toString());
+                ItemOrcamentoServico.txtvalor.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 5).toString());
+                ItemOrcamentoServico.txtprazo.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 7).toString());
+                ItemOrcamentoServico.txtpedido.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 8).toString());
             }
         }
         if (evt.getButton() == 3) {
@@ -1036,7 +1073,7 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
             for (ServicoOrcamentoItensBean iosb : iosd.readitens(txtnumeroorcamento.getText())) {
                 model.addRow(new Object[]{
                     false,
-                    iosb.getIdorcamento(),
+                    iosb.getId(),
                     iosb.getCodigo(),
                     iosb.getDesc(),
                     iosb.getQtd(),
@@ -1047,6 +1084,8 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                     iosb.getDas()
                 });
             }
+            
+            txtvalor();
 
             DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
             modeldoc.setNumRows(0);
@@ -1131,6 +1170,63 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (txtnumeroorcamento.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Escolha um orçamento ou salve este primeiro!");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja gerar um pedido com os dados deste orçamento?", "Gerar pedido", JOptionPane.OK_CANCEL_OPTION);
+            if (resp == 0) {
+                ServicoPedidoBean spb = new ServicoPedidoBean();
+                ServicoPedidoDAO spd = new ServicoPedidoDAO();
+
+                spb.setIdorcamento(Integer.parseInt(txtnumeroorcamento.getText()));
+                spb.setCliente(txtnomecliente.getText());
+                spb.setCondicao(txtcondicao.getText());
+                spb.setRepresentante(txtrepresentante.getText());
+                spb.setVendedor(txtvendedor.getText());
+                spb.setNotes(txtnotes.getText());
+                spb.setStatus("Aberto");
+                spb.setNfcliente("");
+//              idorcamento, cliente, condicao, representante, vendedor, notes, status, nfcliente
+
+                spd.create(spb);
+
+                int numpedido = 0;
+                ServicoPedidoDAO spdd = new ServicoPedidoDAO();
+                for (ServicoPedidoBean spbb : spdd.readcreated(txtnomecliente.getText(), txtnumeroorcamento.getText())) {
+                    numpedido = spbb.getId();
+                }
+
+                int rc = tableitens.getRowCount();
+                for (int i = 0; i < rc; i++) {
+                    if (tableitens.getValueAt(rc, 0) == "true") {
+                        ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+                        ServicoPedidoItensOrcamentoDAO spid = new ServicoPedidoItensOrcamentoDAO();
+
+                        spib.setIdpedido(numpedido);
+                        spib.setCodigo(tableitens.getValueAt(rc, 2).toString());
+                        spib.setDescricao(tableitens.getValueAt(rc, 3).toString());
+                        spib.setQtde(tableitens.getValueAt(rc, 4).toString());
+                        spib.setValor(tableitens.getValueAt(rc, 5).toString());
+                        spib.setTotal(tableitens.getValueAt(rc, 6).toString());
+                        spib.setPrazo(tableitens.getValueAt(rc, 7).toString());
+                        spib.setPedidocliente(tableitens.getValueAt(rc, 8).toString());
+                        spib.setNf("");
+//                      idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
+
+                        spid.create(spib);
+                    }
+                }
+                if (tabledocumentos.getRowCount() > 0) {
+                    int respdoc = JOptionPane.showConfirmDialog(rootPane, "Deseja enviar os documentos deste orçamento para o pedido?", "Gerar pedido com documentos", JOptionPane.OK_CANCEL_OPTION);
+                    if (respdoc == 0) {
+                        JOptionPane.showMessageDialog(rootPane, "Em breve!");
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnCondicao;
@@ -1141,6 +1237,7 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;

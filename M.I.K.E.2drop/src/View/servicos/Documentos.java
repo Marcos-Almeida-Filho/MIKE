@@ -106,8 +106,8 @@ public class Documentos extends javax.swing.JInternalFrame {
             txtdescarquivo.requestFocus();
         } else {
             File fileoriginal = chooser.getSelectedFile();
-            File folder = new File("Q:/MIKE_ERP/orc_ser_arq/"+OrcamentoServico.txtnumeroorcamento.getText());
-            File filecopy = new File(folder+"/"+fileoriginal.getName());
+            File folder = new File("Q:/MIKE_ERP/orc_ser_arq/" + OrcamentoServico.txtnumeroorcamento.getText());
+            File filecopy = new File(folder + "/" + fileoriginal.getName());
             if (evt.getActionCommand().equals("ApproveSelection")) {
                 folder.mkdirs();
 //                try {
@@ -130,23 +130,23 @@ public class Documentos extends javax.swing.JInternalFrame {
                     dispose();
                 } catch (IOException ex) {
                     Logger.getLogger(Documentos.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n"+ex+"\nEnviando e-mail para suporte.");
+                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                     try {
                         SendEmail.EnviarErro(ex.toString());
                         JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
                     } catch (HeadlessException hex) {
-                            JOptionPane.showMessageDialog(rootPane, "Erro!\n"+hex);
+                        JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
                     } catch (AWTException | IOException ex1) {
                         Logger.getLogger(Documentos.class.getName()).log(Level.SEVERE, null, ex1);
                     }
                 }
-                
+
             }
             if (evt.getActionCommand().equals("CancelSelection")) {
                 dispose();
             }
         }
-        
+
     }//GEN-LAST:event_chooserActionPerformed
 
 
