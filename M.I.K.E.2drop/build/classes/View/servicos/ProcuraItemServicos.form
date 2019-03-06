@@ -107,7 +107,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txtprocura" pref="437" max="32767" attributes="0"/>
+                      <Component id="txtpesquisa" pref="437" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -116,7 +116,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtprocura" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtpesquisa" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="30" max="32767" attributes="0"/>
@@ -130,7 +130,10 @@
                 <Property name="text" type="java.lang.String" value="Pesquisa"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txtprocura">
+            <Component class="javax.swing.JTextField" name="txtpesquisa">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtpesquisaKeyReleased"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

@@ -248,6 +248,36 @@ public class UsuariosDAO {
         return listu;
 
     }
+    
+    public List<UsuariosBean> pesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<UsuariosBean> listub = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM usuarios WHERE id LIKE '%" + pesquisa + "%' OR nome LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                UsuariosBean ub = new UsuariosBean();
+
+                ub.setId(rs.getInt("id"));
+                ub.setNome(rs.getString("nome"));
+
+                listub.add(ub);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listub;
+    }
 
     public boolean checklogin(String login, String senha) {
 

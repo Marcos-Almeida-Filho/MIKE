@@ -12,6 +12,7 @@ package Bean;
 public class ServicoOrcamentoBean {
 
     private int id;
+    private String idtela;
     private String cliente;
     private String clientecadastro;
     private String condicao;
@@ -19,6 +20,7 @@ public class ServicoOrcamentoBean {
     private String vendedor;
     private String notes;
     private String status;
+    private String data;
 
     public int getId() {
         return id;
@@ -26,6 +28,14 @@ public class ServicoOrcamentoBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIdtela() {
+        return idtela;
+    }
+
+    public void setIdtela(String idtela) {
+        this.idtela = idtela;
     }
 
     public String getCliente() {
@@ -82,6 +92,14 @@ public class ServicoOrcamentoBean {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
 }

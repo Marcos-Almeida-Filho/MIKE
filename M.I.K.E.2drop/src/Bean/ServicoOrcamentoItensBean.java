@@ -12,6 +12,7 @@ package Bean;
 public class ServicoOrcamentoItensBean {
 
     private int id;
+    private String idtela;
     private String idorcamento;
     private String codigo;
     private String desc;
@@ -28,6 +29,14 @@ public class ServicoOrcamentoItensBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getIdtela() {
+        return idtela;
+    }
+
+    public void setIdtela(String idtela) {
+        this.idtela = idtela;
     }
 
     public String getIdorcamento() {

@@ -53,7 +53,7 @@ public class ProcuraItemServicos extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtprocura = new javax.swing.JTextField();
+        txtpesquisa = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableitemservico = new javax.swing.JTable();
 
@@ -73,6 +73,12 @@ public class ProcuraItemServicos extends javax.swing.JInternalFrame {
 
         jLabel1.setText("Pesquisa");
 
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -81,14 +87,14 @@ public class ProcuraItemServicos extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtprocura, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                .addComponent(txtpesquisa, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtprocura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
@@ -160,13 +166,26 @@ public class ProcuraItemServicos extends javax.swing.JInternalFrame {
 
     private void tableitemservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableitemservicoMouseClicked
         if (evt.getClickCount() == 2) {
-            ItemOrcamentoServico.txtid.setText(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 0).toString());
             ItemOrcamentoServico.txtcodigo.setText(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 1).toString());
             ItemOrcamentoServico.txtdesc.setText(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 2).toString());
             ItemOrcamentoServico.txtqtd.requestFocus();
             dispose();
         }
     }//GEN-LAST:event_tableitemservicoMouseClicked
+
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        DefaultTableModel model = (DefaultTableModel) tableitemservico.getModel();
+        model.setNumRows(0);
+        ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+
+        for (ServicoMateriaisBean smb : smd.pesquisa(txtpesquisa.getText())) {
+            model.addRow(new Object[]{
+                smb.getId(),
+                smb.getCodigo(),
+                smb.getDescricao()
+            });
+        }
+    }//GEN-LAST:event_txtpesquisaKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -179,6 +198,6 @@ public class ProcuraItemServicos extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tableitemservico;
-    private javax.swing.JTextField txtprocura;
+    private javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables
 }

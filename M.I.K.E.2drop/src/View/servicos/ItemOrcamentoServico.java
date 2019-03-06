@@ -22,6 +22,11 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
      */
     public ItemOrcamentoServico() {
         initComponents();
+        txtrowinvisible();
+    }
+
+    public static void txtrowinvisible() {
+        txtrow.setVisible(false);
     }
 
     /**
@@ -310,6 +315,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
             float valor = Float.parseFloat(v.replace(",", "."));
             float tot = qtd * valor;
             String totf = formatter.format(tot);
+            String nprazo = txtprazo.getText().replace(" dias", "");
 
             model.setValueAt(txtid.getText(), Integer.parseInt(txtrow.getText()), 1);
             model.setValueAt(txtcodigo.getText(), Integer.parseInt(txtrow.getText()), 2);
@@ -317,7 +323,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
             model.setValueAt(txtqtd.getText(), Integer.parseInt(txtrow.getText()), 4);
             model.setValueAt(txtvalor.getText(), Integer.parseInt(txtrow.getText()), 5);
             model.setValueAt(totf, Integer.parseInt(txtrow.getText()), 6);
-            model.setValueAt(txtprazo.getText() + " dias", Integer.parseInt(txtrow.getText()), 7);
+            model.setValueAt(nprazo + " dias", Integer.parseInt(txtrow.getText()), 7);
             model.setValueAt(txtpedido.getText(), Integer.parseInt(txtrow.getText()), 8);
             OrcamentoServico.txtvalor();
             dispose();

@@ -302,4 +302,35 @@ public class ClientesDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+
+    public List<ClientesBean> pesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ClientesBean> listcb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM clientes WHERE id LIKE '%" + pesquisa + "%' OR nome LIKE '%" + pesquisa + "%' OR razaosocial LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ClientesBean mb = new ClientesBean();
+
+                mb.setId(rs.getInt("id"));
+                mb.setNome(rs.getString("nome"));
+                mb.setRazaosocial(rs.getString("razaosocial"));
+
+                listcb.add(mb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listcb;
+    }
 }

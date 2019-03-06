@@ -12,7 +12,8 @@ package Bean;
 public class ServicoOrcamentoDocumentosBean {
 
     private int id;
-    private int idorcamento;
+    private String idtela;
+    private String idorcamento;
     private String descricao;
     private String local;
 
@@ -24,11 +25,19 @@ public class ServicoOrcamentoDocumentosBean {
         this.id = id;
     }
 
-    public int getIdorcamento() {
+    public String getIdtela() {
+        return idtela;
+    }
+
+    public void setIdtela(String idtela) {
+        this.idtela = idtela;
+    }
+
+    public String getIdorcamento() {
         return idorcamento;
     }
 
-    public void setIdorcamento(int idorcamento) {
+    public void setIdorcamento(String idorcamento) {
         this.idorcamento = idorcamento;
     }
 

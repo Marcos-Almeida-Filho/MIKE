@@ -6,6 +6,7 @@
 package View.comercial;
 
 import Bean.ClientesBean;
+import CEP.WebServiceCep;
 import DAO.ClientesDAO;
 import java.awt.Dimension;
 import javax.swing.JDesktopPane;
@@ -110,6 +111,7 @@ public class Clientes extends javax.swing.JInternalFrame {
         txtcidade = new javax.swing.JTextField();
         txtcep = new javax.swing.JFormattedTextField();
         cbuf = new javax.swing.JComboBox<>();
+        jButton8 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
@@ -302,6 +304,13 @@ public class Clientes extends javax.swing.JInternalFrame {
 
         cbuf.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO" }));
 
+        jButton8.setText("Procurar CEP");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -338,8 +347,10 @@ public class Clientes extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcep, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(289, Short.MAX_VALUE))
+                        .addComponent(txtcep, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton8)))
+                .addContainerGap(282, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,7 +367,8 @@ public class Clientes extends javax.swing.JInternalFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel13)
-                        .addComponent(txtcep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtcep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton8))
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel10)
                         .addComponent(txtbairro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -501,7 +513,7 @@ public class Clientes extends javax.swing.JInternalFrame {
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
@@ -635,7 +647,7 @@ public class Clientes extends javax.swing.JInternalFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         JDesktopPane d = this.getDesktopPane();
-        ProcurarVendedor pv = new ProcurarVendedor();
+        ProcurarVendedorClientes pv = new ProcurarVendedorClientes();
 
         d.add(pv);
         Dimension desk = d.getSize();
@@ -646,7 +658,7 @@ public class Clientes extends javax.swing.JInternalFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         JDesktopPane d = this.getDesktopPane();
-        ProcurarRepresentante pr = new ProcurarRepresentante();
+        ProcurarRepresentanteClientes pr = new ProcurarRepresentanteClientes();
 
         d.add(pr);
         Dimension desk = d.getSize();
@@ -657,7 +669,7 @@ public class Clientes extends javax.swing.JInternalFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         JDesktopPane d = this.getDesktopPane();
-        ProcurarCondicaoDePagamento pc = new ProcurarCondicaoDePagamento();
+        ProcurarCondicaoDePagamentoClientes pc = new ProcurarCondicaoDePagamentoClientes();
 
         d.add(pc);
         Dimension desk = d.getSize();
@@ -665,6 +677,23 @@ public class Clientes extends javax.swing.JInternalFrame {
         pc.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
         pc.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        if (txtcep.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Coloque um CEP!");
+        } else {
+            WebServiceCep w = WebServiceCep.searchCep(txtcep.getText());
+            if (w.wasSuccessful()) {
+                txtlogradouro.setText(w.getLogradouroFull());
+                txtbairro.setText(w.getBairro());
+                txtcidade.setText(w.getCidade());
+                cbuf.setSelectedItem(w.getUf());
+                txtnumero.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "CEP incorreto!");
+            }
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -677,6 +706,8 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

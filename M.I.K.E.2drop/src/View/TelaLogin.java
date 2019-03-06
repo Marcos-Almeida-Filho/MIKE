@@ -199,9 +199,12 @@ public class TelaLogin extends javax.swing.JFrame {
 //        String y = JOptionPane.showInputDialog("Que ano é hoje?");
 //        c.set(Integer.parseInt(y), Integer.parseInt(m), Integer.parseInt(d));
 //        JOptionPane.showMessageDialog(rootPane, c.getTime());
-        String pattern = "dd/MM/yyyy";
+        String pattern = "dd/MM/yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         JOptionPane.showMessageDialog(rootPane, simpleDateFormat.format(c.getTime()));
+        String patterny = "yy";
+        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+        JOptionPane.showMessageDialog(rootPane, simpleDateFormaty.format(c.getTime()));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

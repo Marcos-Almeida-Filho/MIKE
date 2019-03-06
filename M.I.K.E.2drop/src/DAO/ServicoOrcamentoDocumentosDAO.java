@@ -32,7 +32,7 @@ public class ServicoOrcamentoDocumentosDAO {
 
         try {
             stmt = con.prepareStatement("INSERT INTO servicos_orcamento_documentos (idorcamento, descricao, local) VALUES (?,?,?)");
-            stmt.setInt(1, sodb.getIdorcamento());
+            stmt.setString(1, sodb.getIdorcamento());
             stmt.setString(2, sodb.getDescricao());
             stmt.setString(3, sodb.getLocal());
 
@@ -64,7 +64,7 @@ public class ServicoOrcamentoDocumentosDAO {
                 ServicoOrcamentoDocumentosBean iosb = new ServicoOrcamentoDocumentosBean();
 
                 iosb.setId(rs.getInt("id"));
-                iosb.setIdorcamento(rs.getInt("idorcamento"));
+                iosb.setIdorcamento(rs.getString("idorcamento"));
                 iosb.setDescricao(rs.getString("descricao"));
                 iosb.setLocal(rs.getString("local"));
 
@@ -87,10 +87,10 @@ public class ServicoOrcamentoDocumentosDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE servicos_orcamento_documentos SET idorcamento = ?, descricao = ?, local = ? WHERE id = ?");
-            stmt.setInt(1, sodb.getIdorcamento());
+            stmt.setString(1, sodb.getIdorcamento());
             stmt.setString(2, sodb.getDescricao());
             stmt.setString(3, sodb.getLocal());
-            stmt.setInt(4, sodb.getIdorcamento());
+            stmt.setString(4, sodb.getIdorcamento());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {

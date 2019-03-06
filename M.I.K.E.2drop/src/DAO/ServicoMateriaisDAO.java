@@ -99,7 +99,7 @@ public class ServicoMateriaisDAO {
                 ServicoMateriaisBean sob = new ServicoMateriaisBean();
 
                 sob.setId(rs.getInt("id"));
-                sob.setCodigo(rs.getString("ccodigo"));
+                sob.setCodigo(rs.getString("codigo"));
                 sob.setDescricao(rs.getString("descricao"));
                 sob.setEstoque(rs.getInt("estoque"));
                 sob.setGrupo_de_processos(rs.getString("grupo_de_processos"));
@@ -114,6 +114,37 @@ public class ServicoMateriaisDAO {
 
         return listso;
 
+    }
+    
+    public List<ServicoMateriaisBean> pesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoMateriaisBean> listub = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_materiais WHERE id LIKE '%" + pesquisa + "%' OR codigo LIKE '%" + pesquisa + "%' OR descricao LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoMateriaisBean ub = new ServicoMateriaisBean();
+
+                ub.setId(rs.getInt("id"));
+                ub.setCodigo(rs.getString("codigo"));
+                ub.setDescricao(rs.getString("descricao"));
+
+                listub.add(ub);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listub;
     }
 
     public void update(ServicoMateriaisBean sob) {

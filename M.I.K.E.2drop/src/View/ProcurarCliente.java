@@ -53,7 +53,7 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
         tableclientes = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        TxtPesquisa = new javax.swing.JTextField();
+        txtpesquisa = new javax.swing.JTextField();
 
         setClosable(true);
         setTitle("Procurar Cliente");
@@ -83,9 +83,9 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tableclientes);
         if (tableclientes.getColumnModel().getColumnCount() > 0) {
-            tableclientes.getColumnModel().getColumn(0).setMinWidth(30);
-            tableclientes.getColumnModel().getColumn(0).setPreferredWidth(30);
-            tableclientes.getColumnModel().getColumn(0).setMaxWidth(30);
+            tableclientes.getColumnModel().getColumn(0).setMinWidth(40);
+            tableclientes.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tableclientes.getColumnModel().getColumn(0).setMaxWidth(40);
             tableclientes.getColumnModel().getColumn(1).setResizable(false);
             tableclientes.getColumnModel().getColumn(2).setResizable(false);
         }
@@ -93,6 +93,12 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Cliente"));
 
         jLabel1.setText("Pesquisa");
+
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -102,7 +108,7 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TxtPesquisa)
+                .addComponent(txtpesquisa)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -111,7 +117,7 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(TxtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -167,14 +173,28 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableclientesMouseClicked
 
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        DefaultTableModel model = (DefaultTableModel) tableclientes.getModel();
+        model.setNumRows(0);
+        ClientesDAO cd = new ClientesDAO();
+
+        for (ClientesBean cb : cd.pesquisa(txtpesquisa.getText())) {
+            model.addRow(new Object[]{
+                cb.getId(),
+                cb.getNome(),
+                cb.getRazaosocial()
+            });
+        }
+    }//GEN-LAST:event_txtpesquisaKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public static javax.swing.JTextField TxtPesquisa;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tableclientes;
+    public static javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables
 }

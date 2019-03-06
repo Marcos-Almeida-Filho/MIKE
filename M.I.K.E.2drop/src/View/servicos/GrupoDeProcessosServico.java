@@ -5,6 +5,13 @@
  */
 package View.servicos;
 
+import Bean.ServicoGrupoDeProcessosBean;
+import DAO.ServicoGrupoDeProcessosDAO;
+import static View.TelaPrincipal.jDesktopPane1;
+import java.awt.Dimension;
+import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Marcos Filho
@@ -40,9 +47,9 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableprocessos = new javax.swing.JTable();
         txtid = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        txtnome = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -142,7 +149,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Nome");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tableprocessos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -165,18 +172,31 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setMinWidth(40);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(40);
-            jTable1.getColumnModel().getColumn(0).setMaxWidth(40);
+        jScrollPane2.setViewportView(tableprocessos);
+        if (tableprocessos.getColumnModel().getColumnCount() > 0) {
+            tableprocessos.getColumnModel().getColumn(0).setMinWidth(40);
+            tableprocessos.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tableprocessos.getColumnModel().getColumn(0).setMaxWidth(40);
         }
 
+        txtid.setEditable(false);
+        txtid.setBackground(new java.awt.Color(255, 255, 255));
+
         jButton1.setText("Salvar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Adicionar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Exclur");
+        jButton3.setText("Excluir");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -193,7 +213,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtnome, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 161, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -211,7 +231,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtnome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
                         .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -241,6 +261,27 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        ProcessosServicoEscolha pse = new ProcessosServicoEscolha();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(pse);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = pse.getSize();
+        pse.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        pse.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (txtnome.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Coloque um nome primeiro!");
+        } else if (tableprocessos.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Coloque algum processo primeiro!");
+        } else {
+            ServicoGrupoDeProcessosDAO gpsd = new ServicoGrupoDeProcessosDAO();
+            ServicoGrupoDeProcessosBean gpsb = new ServicoGrupoDeProcessosBean();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
@@ -257,10 +298,10 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JTabbedPane jTabbedPane1;
-    public javax.swing.JTable jTable1;
-    public javax.swing.JTextField jTextField2;
     public javax.swing.JTable tablegrupo;
+    public static javax.swing.JTable tableprocessos;
     public javax.swing.JTextField txtid;
+    public javax.swing.JTextField txtnome;
     public javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables
 }

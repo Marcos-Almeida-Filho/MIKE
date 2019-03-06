@@ -12,7 +12,8 @@ package Bean;
 public class ServicoPedidoBean {
 
     private int id;
-    private int idorcamento;
+    private String idtela;
+    private String idorcamento;
     private String cliente;
     private String condicao;
     private String representante;
@@ -20,6 +21,7 @@ public class ServicoPedidoBean {
     private String notes;
     private String status;
     private String nfcliente;
+    private String data;
 
     public int getId() {
         return id;
@@ -29,11 +31,19 @@ public class ServicoPedidoBean {
         this.id = id;
     }
 
-    public int getIdorcamento() {
+    public String getIdtela() {
+        return idtela;
+    }
+
+    public void setIdtela(String idtela) {
+        this.idtela = idtela;
+    }
+
+    public String getIdorcamento() {
         return idorcamento;
     }
 
-    public void setIdorcamento(int idorcamento) {
+    public void setIdorcamento(String idorcamento) {
         this.idorcamento = idorcamento;
     }
 
@@ -91,6 +101,14 @@ public class ServicoPedidoBean {
 
     public void setNfcliente(String nfcliente) {
         this.nfcliente = nfcliente;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
 }

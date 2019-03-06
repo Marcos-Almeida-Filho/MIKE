@@ -5,13 +5,27 @@
  */
 package View.servicos;
 
+import Bean.ServicoPedidoBean;
+import Bean.ServicoPedidoDocumentosBean;
+import Bean.ServicoPedidoItensBean;
+import DAO.ServicoPedidoDAO;
+import DAO.ServicoPedidoDocumentosDAO;
+import DAO.ServicoPedidoItensDAO;
 import View.ProcurarCliente;
-import View.comercial.ProcurarCondicaoDePagamento;
-import View.comercial.ProcurarRepresentante;
-import View.comercial.ProcurarVendedor;
 import static View.TelaPrincipal.jDesktopPane1;
+import View.comercial.ProcurarRepresentanteClientes;
+import View.comercial.ProcurarVendedorClientes;
+import java.awt.Desktop;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -24,6 +38,39 @@ public class PedidoServico extends javax.swing.JInternalFrame {
      */
     public PedidoServico() {
         initComponents();
+        filltablepedidoorcamento();
+    }
+
+    public static void filltablepedidoorcamento() {
+        DefaultTableModel model = (DefaultTableModel) tablepedidoservico.getModel();
+        model.setNumRows(0);
+        ServicoPedidoDAO spd = new ServicoPedidoDAO();
+
+        for (ServicoPedidoBean spb : spd.read()) {
+            model.addRow(new Object[]{
+                spb.getIdtela(),
+                spb.getCliente(),
+                spb.getStatus()
+            });
+        }
+    }
+    
+    public static void txtvalor() {
+        if (tableitensorcamento.getRowCount() < 1) {
+            txttotal.setText("");
+        } else {
+            float vt = 0;
+
+            for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+                String v = tableitensorcamento.getValueAt(i, 6).toString().replace(".", "");
+                String valor = v.replace(",", ".");
+                float vp = Float.parseFloat(valor);
+                vt = vt + vp;
+            }
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+            String valorf = formatter.format(vt);
+            txttotal.setText(String.valueOf(valorf));
+        }
     }
 
     /**
@@ -35,22 +82,22 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabpedidos = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablepedidoservico = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        TxtNomeCliente = new javax.swing.JTextField();
+        txtnomecliente = new javax.swing.JTextField();
         BtnProcurar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        TxtVendedor = new javax.swing.JTextField();
-        TxtRepresentante = new javax.swing.JTextField();
-        TxtCondicao = new javax.swing.JTextField();
+        txtvendedor = new javax.swing.JTextField();
+        txtrepresentante = new javax.swing.JTextField();
+        txtcondicao = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -59,8 +106,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         BtnVendedor = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        txtnumeropedido = new javax.swing.JTextField();
+        txtstatus = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
@@ -71,21 +118,28 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel9 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        txtnotes = new javax.swing.JTextArea();
         jPanel10 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        tabledocumentos = new javax.swing.JTable();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jTabbedPane3 = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tableitens = new javax.swing.JTable();
+        tableitensorcamento = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        txttotal = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tableitensnota = new javax.swing.JTable();
+        txttotalnota = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
@@ -118,7 +172,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablepedidoservico.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -134,11 +188,16 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setMinWidth(40);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(40);
-            jTable1.getColumnModel().getColumn(0).setMaxWidth(40);
+        tablepedidoservico.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablepedidoservicoMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tablepedidoservico);
+        if (tablepedidoservico.getColumnModel().getColumnCount() > 0) {
+            tablepedidoservico.getColumnModel().getColumn(0).setMinWidth(60);
+            tablepedidoservico.getColumnModel().getColumn(0).setPreferredWidth(60);
+            tablepedidoservico.getColumnModel().getColumn(0).setMaxWidth(60);
         }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -164,7 +223,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Lista de Pedidos", jPanel1);
+        tabpedidos.addTab("Lista de Pedidos", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -172,8 +231,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Cliente");
 
-        TxtNomeCliente.setEditable(false);
-        TxtNomeCliente.setBackground(new java.awt.Color(255, 255, 255));
+        txtnomecliente.setEditable(false);
+        txtnomecliente.setBackground(new java.awt.Color(255, 255, 255));
 
         BtnProcurar.setText("Procurar");
         BtnProcurar.addActionListener(new java.awt.event.ActionListener() {
@@ -190,7 +249,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TxtNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtnomecliente, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(BtnProcurar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -201,21 +260,21 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(TxtNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtnomecliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(BtnProcurar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Comercial"));
 
-        TxtVendedor.setEditable(false);
-        TxtVendedor.setBackground(new java.awt.Color(255, 255, 255));
+        txtvendedor.setEditable(false);
+        txtvendedor.setBackground(new java.awt.Color(255, 255, 255));
 
-        TxtRepresentante.setEditable(false);
-        TxtRepresentante.setBackground(new java.awt.Color(255, 255, 255));
+        txtrepresentante.setEditable(false);
+        txtrepresentante.setBackground(new java.awt.Color(255, 255, 255));
 
-        TxtCondicao.setEditable(false);
-        TxtCondicao.setBackground(new java.awt.Color(255, 255, 255));
+        txtcondicao.setEditable(false);
+        txtcondicao.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel5.setText("Vendedor");
 
@@ -256,9 +315,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(TxtVendedor)
-                    .addComponent(TxtRepresentante)
-                    .addComponent(TxtCondicao, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtvendedor, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                    .addComponent(txtrepresentante)
+                    .addComponent(txtcondicao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BtnCondicao)
@@ -271,17 +330,17 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(TxtCondicao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtcondicao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
                     .addComponent(BtnCondicao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(TxtRepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtrepresentante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(BtnRepresentante))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(TxtVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtvendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(BtnVendedor))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -292,12 +351,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("Nº");
 
-        jTextField1.setEditable(false);
-        jTextField1.setBackground(new java.awt.Color(255, 255, 255));
-        jTextField1.setSelectionColor(new java.awt.Color(255, 255, 255));
+        txtnumeropedido.setEditable(false);
+        txtnumeropedido.setBackground(new java.awt.Color(255, 255, 255));
+        txtnumeropedido.setSelectionColor(new java.awt.Color(255, 255, 255));
 
-        jTextField2.setEditable(false);
-        jTextField2.setBackground(new java.awt.Color(255, 255, 255));
+        txtstatus.setEditable(false);
+        txtstatus.setBackground(new java.awt.Color(255, 255, 255));
+        txtstatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel2.setText("Status");
 
@@ -307,6 +367,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         txtorcamento.setEditable(false);
         txtorcamento.setBackground(new java.awt.Color(255, 255, 255));
+        txtorcamento.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel9.setText("NF Cliente");
 
@@ -326,17 +387,16 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtorcamento)
+                        .addComponent(txtorcamento, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
                         .addGap(86, 86, 86))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtnumeropedido, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtstatus)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -344,10 +404,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtnumeropedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -367,10 +427,15 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         );
 
         jButton1.setText("Salvar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane5.setViewportView(jTextArea2);
+        txtnotes.setColumns(20);
+        txtnotes.setRows(5);
+        jScrollPane5.setViewportView(txtnotes);
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -395,7 +460,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jScrollPane4.setPreferredSize(new java.awt.Dimension(166, 96));
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        tabledocumentos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -418,22 +483,37 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(jTable3);
-        if (jTable3.getColumnModel().getColumnCount() > 0) {
-            jTable3.getColumnModel().getColumn(0).setMinWidth(40);
-            jTable3.getColumnModel().getColumn(0).setPreferredWidth(40);
-            jTable3.getColumnModel().getColumn(0).setMaxWidth(40);
-            jTable3.getColumnModel().getColumn(1).setMinWidth(0);
-            jTable3.getColumnModel().getColumn(1).setPreferredWidth(0);
-            jTable3.getColumnModel().getColumn(1).setMaxWidth(0);
-            jTable3.getColumnModel().getColumn(2).setMinWidth(500);
-            jTable3.getColumnModel().getColumn(2).setPreferredWidth(500);
-            jTable3.getColumnModel().getColumn(2).setMaxWidth(500);
+        tabledocumentos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabledocumentosMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(tabledocumentos);
+        if (tabledocumentos.getColumnModel().getColumnCount() > 0) {
+            tabledocumentos.getColumnModel().getColumn(0).setMinWidth(40);
+            tabledocumentos.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tabledocumentos.getColumnModel().getColumn(0).setMaxWidth(40);
+            tabledocumentos.getColumnModel().getColumn(1).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(1).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(2).setMinWidth(500);
+            tabledocumentos.getColumnModel().getColumn(2).setPreferredWidth(500);
+            tabledocumentos.getColumnModel().getColumn(2).setMaxWidth(500);
         }
 
         jButton7.setText("Incluir");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton8.setText("Excluir");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -464,14 +544,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jTabbedPane2.addTab("Documentos", jPanel10);
 
-        jButton3.setText("Editar");
-
-        tableitens.setModel(new javax.swing.table.DefaultTableModel(
+        tableitensorcamento.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "", "ID", "Código", "Descrição", "Qtde", "Valor Unitário", "Total", "Prazo de Entrega", "Pedido do Cliente", "OS", "Nota Fiscal"
+                "", "ID", "Código", "Descrição", "Qtde", "Valor Unitário", "Total", "Prazo de Entrega", "Pedido do Cliente", "OS", "NF Cobrança"
             }
         ) {
             Class[] types = new Class [] {
@@ -489,38 +567,38 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(tableitens);
-        if (tableitens.getColumnModel().getColumnCount() > 0) {
-            tableitens.getColumnModel().getColumn(0).setMinWidth(40);
-            tableitens.getColumnModel().getColumn(0).setPreferredWidth(40);
-            tableitens.getColumnModel().getColumn(0).setMaxWidth(40);
-            tableitens.getColumnModel().getColumn(1).setMinWidth(0);
-            tableitens.getColumnModel().getColumn(1).setPreferredWidth(0);
-            tableitens.getColumnModel().getColumn(1).setMaxWidth(0);
-            tableitens.getColumnModel().getColumn(2).setMinWidth(150);
-            tableitens.getColumnModel().getColumn(2).setPreferredWidth(150);
-            tableitens.getColumnModel().getColumn(2).setMaxWidth(150);
-            tableitens.getColumnModel().getColumn(4).setMinWidth(60);
-            tableitens.getColumnModel().getColumn(4).setPreferredWidth(60);
-            tableitens.getColumnModel().getColumn(4).setMaxWidth(60);
-            tableitens.getColumnModel().getColumn(5).setMinWidth(80);
-            tableitens.getColumnModel().getColumn(5).setPreferredWidth(80);
-            tableitens.getColumnModel().getColumn(5).setMaxWidth(80);
-            tableitens.getColumnModel().getColumn(6).setMinWidth(90);
-            tableitens.getColumnModel().getColumn(6).setPreferredWidth(90);
-            tableitens.getColumnModel().getColumn(6).setMaxWidth(90);
-            tableitens.getColumnModel().getColumn(7).setMinWidth(100);
-            tableitens.getColumnModel().getColumn(7).setPreferredWidth(100);
-            tableitens.getColumnModel().getColumn(7).setMaxWidth(100);
-            tableitens.getColumnModel().getColumn(8).setMinWidth(100);
-            tableitens.getColumnModel().getColumn(8).setPreferredWidth(100);
-            tableitens.getColumnModel().getColumn(8).setMaxWidth(100);
-            tableitens.getColumnModel().getColumn(9).setMinWidth(70);
-            tableitens.getColumnModel().getColumn(9).setPreferredWidth(70);
-            tableitens.getColumnModel().getColumn(9).setMaxWidth(70);
-            tableitens.getColumnModel().getColumn(10).setMinWidth(70);
-            tableitens.getColumnModel().getColumn(10).setPreferredWidth(70);
-            tableitens.getColumnModel().getColumn(10).setMaxWidth(70);
+        jScrollPane3.setViewportView(tableitensorcamento);
+        if (tableitensorcamento.getColumnModel().getColumnCount() > 0) {
+            tableitensorcamento.getColumnModel().getColumn(0).setMinWidth(40);
+            tableitensorcamento.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tableitensorcamento.getColumnModel().getColumn(0).setMaxWidth(40);
+            tableitensorcamento.getColumnModel().getColumn(1).setMinWidth(0);
+            tableitensorcamento.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tableitensorcamento.getColumnModel().getColumn(1).setMaxWidth(0);
+            tableitensorcamento.getColumnModel().getColumn(2).setMinWidth(150);
+            tableitensorcamento.getColumnModel().getColumn(2).setPreferredWidth(150);
+            tableitensorcamento.getColumnModel().getColumn(2).setMaxWidth(150);
+            tableitensorcamento.getColumnModel().getColumn(4).setMinWidth(60);
+            tableitensorcamento.getColumnModel().getColumn(4).setPreferredWidth(60);
+            tableitensorcamento.getColumnModel().getColumn(4).setMaxWidth(60);
+            tableitensorcamento.getColumnModel().getColumn(5).setMinWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(5).setPreferredWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(5).setMaxWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(6).setMinWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(6).setPreferredWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(6).setMaxWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(7).setMinWidth(100);
+            tableitensorcamento.getColumnModel().getColumn(7).setPreferredWidth(100);
+            tableitensorcamento.getColumnModel().getColumn(7).setMaxWidth(100);
+            tableitensorcamento.getColumnModel().getColumn(8).setMinWidth(100);
+            tableitensorcamento.getColumnModel().getColumn(8).setPreferredWidth(100);
+            tableitensorcamento.getColumnModel().getColumn(8).setMaxWidth(100);
+            tableitensorcamento.getColumnModel().getColumn(9).setMinWidth(70);
+            tableitensorcamento.getColumnModel().getColumn(9).setPreferredWidth(70);
+            tableitensorcamento.getColumnModel().getColumn(9).setMaxWidth(70);
+            tableitensorcamento.getColumnModel().getColumn(10).setMinWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(10).setPreferredWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(10).setMaxWidth(80);
         }
 
         jButton2.setText("Incluir");
@@ -534,6 +612,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jButton6.setText("Abrir OS's");
 
+        jLabel10.setText("Total: R$");
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -542,38 +622,121 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1036, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                    .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)))
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton5)
-                    .addComponent(jButton6)))
+                    .addComponent(jButton6)
+                    .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10))
+                .addContainerGap())
         );
 
         jTabbedPane3.addTab("Itens do Orçamento", jPanel7);
+
+        tableitensnota.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "", "ID", "Código", "Descrição", "Qtde", "Valor Unitário", "Total", "NF Retorno"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tableitensnota);
+        if (tableitensnota.getColumnModel().getColumnCount() > 0) {
+            tableitensnota.getColumnModel().getColumn(0).setMinWidth(40);
+            tableitensnota.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tableitensnota.getColumnModel().getColumn(0).setMaxWidth(40);
+            tableitensnota.getColumnModel().getColumn(1).setMinWidth(0);
+            tableitensnota.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tableitensnota.getColumnModel().getColumn(1).setMaxWidth(0);
+            tableitensnota.getColumnModel().getColumn(2).setMinWidth(150);
+            tableitensnota.getColumnModel().getColumn(2).setPreferredWidth(150);
+            tableitensnota.getColumnModel().getColumn(2).setMaxWidth(150);
+            tableitensnota.getColumnModel().getColumn(4).setMinWidth(60);
+            tableitensnota.getColumnModel().getColumn(4).setPreferredWidth(60);
+            tableitensnota.getColumnModel().getColumn(4).setMaxWidth(60);
+            tableitensnota.getColumnModel().getColumn(5).setMinWidth(80);
+            tableitensnota.getColumnModel().getColumn(5).setPreferredWidth(80);
+            tableitensnota.getColumnModel().getColumn(5).setMaxWidth(80);
+            tableitensnota.getColumnModel().getColumn(6).setMinWidth(90);
+            tableitensnota.getColumnModel().getColumn(6).setPreferredWidth(90);
+            tableitensnota.getColumnModel().getColumn(6).setMaxWidth(90);
+            tableitensnota.getColumnModel().getColumn(7).setMinWidth(90);
+            tableitensnota.getColumnModel().getColumn(7).setPreferredWidth(90);
+            tableitensnota.getColumnModel().getColumn(7).setMaxWidth(90);
+        }
+
+        jLabel11.setText("Total: R$");
+
+        jButton9.setText("Incluir");
+
+        jButton10.setText("Excluir");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1056, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1036, Short.MAX_VALUE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txttotalnota, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 217, Short.MAX_VALUE)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txttotalnota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11)
+                    .addComponent(jButton9)
+                    .addComponent(jButton10))
+                .addContainerGap())
         );
 
         jTabbedPane3.addTab("Itens da Nota Fiscal", jPanel6);
@@ -591,13 +754,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
-                    .addComponent(jTabbedPane3))
+                    .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -613,23 +774,21 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton3))
+                .addComponent(jButton1)
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Detalhes do Pedido", jPanel2);
+        tabpedidos.addTab("Detalhes do Pedido", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabpedidos)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabpedidos)
         );
 
         pack();
@@ -646,7 +805,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BtnProcurarActionPerformed
 
     private void BtnCondicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCondicaoActionPerformed
-        ProcurarCondicaoDePagamento p = new ProcurarCondicaoDePagamento();
+        ProcurarCondicaoDePagamentoPedidoServico p = new ProcurarCondicaoDePagamentoPedidoServico();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -656,7 +815,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BtnCondicaoActionPerformed
 
     private void BtnRepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRepresentanteActionPerformed
-        ProcurarRepresentante p = new ProcurarRepresentante();
+        ProcurarRepresentanteClientes p = new ProcurarRepresentanteClientes();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -666,7 +825,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BtnRepresentanteActionPerformed
 
     private void BtnVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVendedorActionPerformed
-        ProcurarVendedor p = new ProcurarVendedor();
+        ProcurarVendedorClientes p = new ProcurarVendedorClientes();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -685,25 +844,138 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         p.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
+        if (evt.getClickCount() == 2) {
+            Desktop desk = Desktop.getDesktop();
+            try {
+                desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
+            } catch (IOException ex) {
+                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_tabledocumentosMouseClicked
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        if (txtnumeropedido.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione um orçamento antes!");
+        } else {
+            DocumentosPedidoServico d = new DocumentosPedidoServico();
+            JDesktopPane desk = this.getDesktopPane();
+            desk.add(d);
+            Dimension desktopsize = jDesktopPane1.getSize();
+            Dimension jinternalframesize = d.getSize();
+            d.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+            d.setVisible(true);
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
+        if (tabledocumentos.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Não existem itens para excluir");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(rootPane, "Excluir documentos selecionados?", "Excluir documentos", JOptionPane.OK_CANCEL_OPTION);
+            if (resp == 0) {
+                int nr = tabledocumentos.getRowCount();
+                for (int i = 0; i < nr; i++) {
+                    if (tabledocumentos.getValueAt(i, 0).equals(true)) {
+                        File file = new File((String) tabledocumentos.getValueAt(i, 3));
+                        try {
+                            Files.delete(file.toPath());
+                        } catch (IOException ex) {
+                            Logger.getLogger(OrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + ex);
+                        }
+
+                        ServicoPedidoDocumentosBean spdb = new ServicoPedidoDocumentosBean();
+                        ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+
+                        spdb.setId(Integer.parseInt(tabledocumentos.getValueAt(i, 1).toString()));
+                        //id
+
+                        spdd.delete(spdb);
+
+                        model.removeRow(i);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JOptionPane.showMessageDialog(rootPane, "Em breve!");
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tablepedidoservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablepedidoservicoMouseClicked
+        if (evt.getClickCount() == 2) {
+            tabpedidos.setSelectedIndex(1);
+            txtnumeropedido.setText(tablepedidoservico.getValueAt(tablepedidoservico.getSelectedRow(), 0).toString());
+
+            ServicoPedidoDAO spd = new ServicoPedidoDAO();
+
+            for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
+                txtnomecliente.setText(spb.getCliente());
+                txtcondicao.setText(spb.getCondicao());
+                txtrepresentante.setText(spb.getRepresentante());
+                txtvendedor.setText(spb.getVendedor());
+                txtstatus.setText(spb.getStatus());
+                txtnotes.setText(spb.getNotes());
+                txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
+            }
+
+            DefaultTableModel model = (DefaultTableModel) tableitensorcamento.getModel();
+            model.setNumRows(0);
+            ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+
+            for (ServicoPedidoItensBean spib : spid.readitens(txtnumeropedido.getText())) {
+                model.addRow(new Object[]{
+                    false,
+                    spib.getId(),
+                    spib.getCodigo(),
+                    spib.getDescricao(),
+                    spib.getQtde(),
+                    spib.getValor(),
+                    spib.getTotal(),
+                    spib.getPrazo(),
+                    spib.getPedidocliente(),
+                    spib.getNf()
+                });
+            }
+
+            txtvalor();
+
+            DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
+            modeldoc.setNumRows(0);
+            ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+
+            for (ServicoPedidoDocumentosBean spdb : spdd.readitens(txtnumeropedido.getText())) {
+                modeldoc.addRow(new Object[]{
+                    false,
+                    spdb.getId(),
+                    spdb.getDescricao(),
+                    spdb.getLocal(),});
+            }
+        }
+    }//GEN-LAST:event_tablepedidoservicoMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnCondicao;
     private javax.swing.JButton BtnProcurar;
     private javax.swing.JButton BtnRepresentante;
     private javax.swing.JButton BtnVendedor;
-    private javax.swing.JTextField TxtCondicao;
-    public static javax.swing.JTextField TxtNomeCliente;
-    private javax.swing.JTextField TxtRepresentante;
-    private javax.swing.JTextField TxtVendedor;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -723,20 +995,28 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField nfcliente;
-    private javax.swing.JTable tableitens;
-    private javax.swing.JTextField txtorcamento;
+    private javax.swing.JTable tabledocumentos;
+    private javax.swing.JTable tableitensnota;
+    public static javax.swing.JTable tableitensorcamento;
+    public static javax.swing.JTable tablepedidoservico;
+    public static javax.swing.JTabbedPane tabpedidos;
+    public static javax.swing.JTextField txtcondicao;
+    public static javax.swing.JTextField txtnomecliente;
+    public static javax.swing.JTextArea txtnotes;
+    public static javax.swing.JTextField txtnumeropedido;
+    public static javax.swing.JTextField txtorcamento;
+    public static javax.swing.JTextField txtrepresentante;
+    public static javax.swing.JTextField txtstatus;
+    public static javax.swing.JTextField txttotal;
+    private javax.swing.JTextField txttotalnota;
+    public static javax.swing.JTextField txtvendedor;
     // End of variables declaration//GEN-END:variables
 }

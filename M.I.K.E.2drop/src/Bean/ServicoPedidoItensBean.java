@@ -12,7 +12,7 @@ package Bean;
 public class ServicoPedidoItensBean {
 
     private int id;
-    private int idpedido;
+    private String idpedido;
     private String codigo;
     private String descricao;
     private String qtde;
@@ -30,11 +30,11 @@ public class ServicoPedidoItensBean {
         this.id = id;
     }
 
-    public int getIdpedido() {
+    public String getIdpedido() {
         return idpedido;
     }
 
-    public void setIdpedido(int idpedido) {
+    public void setIdpedido(String idpedido) {
         this.idpedido = idpedido;
     }
 

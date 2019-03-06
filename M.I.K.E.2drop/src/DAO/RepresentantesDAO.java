@@ -163,6 +163,36 @@ public class RepresentantesDAO {
         }
         return listrb;
     }
+    
+    public List<RepresentantesBean> pesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<RepresentantesBean> listub = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM representantes WHERE id LIKE '%" + pesquisa + "%' OR nome LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                RepresentantesBean ub = new RepresentantesBean();
+
+                ub.setId(rs.getInt("id"));
+                ub.setNome(rs.getString("nome"));
+
+                listub.add(ub);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listub;
+    }
 
     public void update(RepresentantesBean rb) {
 
