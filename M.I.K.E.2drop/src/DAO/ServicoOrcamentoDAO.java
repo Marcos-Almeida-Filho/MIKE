@@ -87,6 +87,87 @@ public class ServicoOrcamentoDAO {
         return listso;
 
     }
+    
+    public List<ServicoOrcamentoBean> reademaberto() {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoOrcamentoBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * from servicos_orcamento WHERE status = ? OR status = ?");
+            stmt.setString(1, "Ativo");
+            stmt.setString(2, "Pedido Parcial");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
+
+                sob.setIdtela(rs.getString("idtela"));
+                sob.setCliente(rs.getString("cliente"));
+                sob.setCondicao(rs.getString("condicao"));
+                sob.setRepresentante(rs.getString("representante"));
+                sob.setVendedor(rs.getString("vendedor"));
+                sob.setNotes(rs.getString("notes"));
+                sob.setStatus(rs.getString("status"));
+                sob.setClientecadastro(rs.getString("clientecadastro"));
+                sob.setData(rs.getString("data"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
+    
+    public List<ServicoOrcamentoBean> readstatus(String status) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoOrcamentoBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * from servicos_orcamento WHERE status = ?");
+            stmt.setString(1, status);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
+
+                sob.setIdtela(rs.getString("idtela"));
+                sob.setCliente(rs.getString("cliente"));
+                sob.setCondicao(rs.getString("condicao"));
+                sob.setRepresentante(rs.getString("representante"));
+                sob.setVendedor(rs.getString("vendedor"));
+                sob.setNotes(rs.getString("notes"));
+                sob.setStatus(rs.getString("status"));
+                sob.setClientecadastro(rs.getString("clientecadastro"));
+                sob.setData(rs.getString("data"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
 
     public Boolean readnome() throws SQLException {
 
