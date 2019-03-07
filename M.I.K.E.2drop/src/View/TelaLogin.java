@@ -177,7 +177,9 @@ public class TelaLogin extends javax.swing.JFrame {
             UsuariosDAO ud = new UsuariosDAO();
             String senha = new String(TxtSenha.getPassword());
             if (ud.checklogin(TxtLogin.getText(), senha)) {
-                new TelaPrincipal().setVisible(true);
+                TelaPrincipal tela = new TelaPrincipal();
+                tela.setTitle("M.I.K.E. version 0.1.1 - Usuário: "+TxtLogin.getText());
+                tela.setVisible(true);
                 session.login = TxtLogin.getText();
                 this.dispose();
             } else {
@@ -189,22 +191,13 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_TxtSenhaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Calendar c = Calendar.getInstance();
-//        JOptionPane.showMessageDialog(rootPane, c.getTime());
-//        String s = JOptionPane.showInputDialog(rootPane, "Quantos dias?");
-//        c.add(Calendar.DATE, Integer.parseInt(s));
-//        JOptionPane.showMessageDialog(rootPane, c.getTime());
-//        String d = JOptionPane.showInputDialog("Que dia é hoje?");
-//        String m = JOptionPane.showInputDialog("Que mês é hoje?");
-//        String y = JOptionPane.showInputDialog("Que ano é hoje?");
-//        c.set(Integer.parseInt(y), Integer.parseInt(m), Integer.parseInt(d));
-//        JOptionPane.showMessageDialog(rootPane, c.getTime());
-        String pattern = "dd/MM/yyyy HH:mm:ss";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        JOptionPane.showMessageDialog(rootPane, simpleDateFormat.format(c.getTime()));
-        String patterny = "yy";
-        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-        JOptionPane.showMessageDialog(rootPane, simpleDateFormaty.format(c.getTime()));
+//        Calendar c = Calendar.getInstance();
+//        String pattern = "dd/MM/yyyy HH:mm:ss";
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+//        JOptionPane.showMessageDialog(rootPane, simpleDateFormat.format(c.getTime()));
+//        String patterny = "yy";
+//        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+//        JOptionPane.showMessageDialog(rootPane, simpleDateFormaty.format(c.getTime()));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
