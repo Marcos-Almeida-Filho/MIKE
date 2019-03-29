@@ -6,6 +6,7 @@
 package DAO;
 
 import Bean.ServicoPedidoItensBean;
+import Bean.ServicoPedidoItensNFBean;
 import Connection.ConnectionFactory;
 import java.awt.HeadlessException;
 import java.sql.Connection;
@@ -31,7 +32,7 @@ public class ServicoPedidoItensDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servicos_pedido_itens_orcamento (idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf) VALUES (?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO servicos_pedido_itens_orcamento (idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, os, nf) VALUES (?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, spib.getIdpedido());
             stmt.setString(2, spib.getCodigo());
             stmt.setString(3, spib.getDescricao());
@@ -40,7 +41,8 @@ public class ServicoPedidoItensDAO {
             stmt.setString(6, spib.getTotal());
             stmt.setString(7, spib.getPrazo());
             stmt.setString(8, spib.getPedidocliente());
-            stmt.setString(9, spib.getNf());
+            stmt.setString(9, spib.getOs());
+            stmt.setString(10, spib.getNf());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
@@ -78,6 +80,7 @@ public class ServicoPedidoItensDAO {
                 spib.setTotal(rs.getString("total"));
                 spib.setPrazo(rs.getString("prazo"));
                 spib.setPedidocliente(rs.getString("pedidocliente"));
+                spib.setOs(rs.getString("os"));
                 spib.setNf(rs.getString("nf"));
 
                 listspib.add(spib);
@@ -98,7 +101,7 @@ public class ServicoPedidoItensDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, nf = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?");
             stmt.setString(1, spib.getIdpedido());
             stmt.setString(2, spib.getCodigo());
             stmt.setString(3, spib.getDescricao());
@@ -107,15 +110,35 @@ public class ServicoPedidoItensDAO {
             stmt.setString(6, spib.getTotal());
             stmt.setString(7, spib.getPrazo());
             stmt.setString(8, spib.getPedidocliente());
-            stmt.setString(9, spib.getNf());
-            stmt.setInt(10, spib.getId());
+            stmt.setString(9, spib.getOs());
+            stmt.setString(10, spib.getNf());
+            stmt.setInt(11, spib.getId());
 
             stmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+
+    public void updatenotacobranca(ServicoPedidoItensBean spib) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET nf = ? WHERE id = ?");
+            stmt.setString(1, spib.getNf());
+            stmt.setInt(2, spib.getId());
+
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
 }

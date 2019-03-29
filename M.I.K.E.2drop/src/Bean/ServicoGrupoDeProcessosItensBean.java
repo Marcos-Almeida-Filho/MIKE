@@ -9,7 +9,7 @@ package Bean;
  *
  * @author Marcos Filho
  */
-public class ServicoGrupoDeProcessosItens {
+public class ServicoGrupoDeProcessosItensBean {
 
     private int id;
     private int id_grupo;

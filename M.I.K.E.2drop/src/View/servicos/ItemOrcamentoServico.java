@@ -262,7 +262,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
 
     private void btnprocurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarActionPerformed
         JDesktopPane deskn = this.getDesktopPane();
-        ProcuraItemServicos pis = new ProcuraItemServicos();
+        ProcuraItemServicosOrcamento pis = new ProcuraItemServicosOrcamento();
         deskn.add(pis);
         Dimension d = deskn.getSize();
         Dimension p = pis.getSize();

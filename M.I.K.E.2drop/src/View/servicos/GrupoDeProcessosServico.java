@@ -6,11 +6,14 @@
 package View.servicos;
 
 import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ServicoGrupoDeProcessosItensBean;
 import DAO.ServicoGrupoDeProcessosDAO;
+import DAO.ServicoGrupoDeProcessosItensDAO;
 import static View.TelaPrincipal.jDesktopPane1;
 import java.awt.Dimension;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,6 +26,20 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
      */
     public GrupoDeProcessosServico() {
         initComponents();
+        filltablegrupodeprocessos();
+    }
+
+    public static void filltablegrupodeprocessos() {
+        DefaultTableModel model = (DefaultTableModel) tablegrupo.getModel();
+        model.setNumRows(0);
+        ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
+
+        for (ServicoGrupoDeProcessosBean sgpb : sgpd.read()) {
+            model.addRow(new Object[]{
+                sgpb.getId(),
+                sgpb.getNome()
+            });
+        }
     }
 
     /**
@@ -36,7 +53,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
 
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabgrupos = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -53,6 +70,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -102,22 +120,27 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "Nome"
+                "ID", "Nome"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class
+            boolean[] canEdit = new boolean [] {
+                false, false
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablegrupo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablegrupoMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tablegrupo);
         if (tablegrupo.getColumnModel().getColumnCount() > 0) {
-            tablegrupo.getColumnModel().getColumn(0).setMinWidth(30);
-            tablegrupo.getColumnModel().getColumn(0).setPreferredWidth(30);
-            tablegrupo.getColumnModel().getColumn(0).setMaxWidth(30);
+            tablegrupo.getColumnModel().getColumn(0).setMinWidth(50);
+            tablegrupo.getColumnModel().getColumn(0).setPreferredWidth(50);
+            tablegrupo.getColumnModel().getColumn(0).setMaxWidth(50);
         }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -141,7 +164,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Lista de Grupos", jPanel1);
+        tabgrupos.addTab("Lista de Grupos", jPanel1);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -154,14 +177,14 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "Nome Processo"
+                "", "ID", "Nome Processo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false
+                true, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -177,6 +200,9 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
             tableprocessos.getColumnModel().getColumn(0).setMinWidth(40);
             tableprocessos.getColumnModel().getColumn(0).setPreferredWidth(40);
             tableprocessos.getColumnModel().getColumn(0).setMaxWidth(40);
+            tableprocessos.getColumnModel().getColumn(1).setMinWidth(0);
+            tableprocessos.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tableprocessos.getColumnModel().getColumn(1).setMaxWidth(0);
         }
 
         txtid.setEditable(false);
@@ -197,6 +223,18 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
         });
 
         jButton3.setText("Excluir");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Novo");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -217,6 +255,8 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
                         .addGap(0, 161, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
@@ -241,21 +281,22 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Grupo de Processo", jPanel4);
+        tabgrupos.addTab("Grupo de Processo", jPanel4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabgrupos)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabgrupos)
         );
 
         pack();
@@ -276,17 +317,154 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(rootPane, "Coloque um nome primeiro!");
         } else if (tableprocessos.getRowCount() == 0) {
             JOptionPane.showMessageDialog(rootPane, "Coloque algum processo primeiro!");
-        } else {
+        } else if (txtid.getText().equals("")) {
+            //Criar o Grupo de processos
             ServicoGrupoDeProcessosDAO gpsd = new ServicoGrupoDeProcessosDAO();
             ServicoGrupoDeProcessosBean gpsb = new ServicoGrupoDeProcessosBean();
+
+            gpsb.setNome(txtnome.getText());
+            //nome
+            gpsd.create(gpsb);
+
+            //Pegar o número do ID do grupo criado e colocar no txtid
+            int idcriado = 0;
+            for (ServicoGrupoDeProcessosBean sgpb : gpsd.readcreated(txtnome.getText())) {
+                idcriado = sgpb.getId();
+            }
+
+            txtid.setText(String.valueOf(idcriado));
+
+            //Criar processos do grupo de Processos
+            ServicoGrupoDeProcessosItensBean sgpib = new ServicoGrupoDeProcessosItensBean();
+            ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
+
+            for (int i = 0; i < tableprocessos.getRowCount(); i++) {
+                sgpib.setId_grupo(idcriado);
+                sgpib.setProcesso(tableprocessos.getValueAt(i, 2).toString());
+
+                //id_grupo, processo
+                sgpid.create(sgpib);
+            }
+            filltablegrupodeprocessos();
+            JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
+        } else {
+            //Criar o Grupo de processos
+            ServicoGrupoDeProcessosDAO gpsd = new ServicoGrupoDeProcessosDAO();
+            ServicoGrupoDeProcessosBean gpsb = new ServicoGrupoDeProcessosBean();
+
+            gpsb.setNome(txtnome.getText());
+            gpsb.setId(Integer.parseInt(txtid.getText()));
+            //nome = ? WHERE id = ?
+            gpsd.update(gpsb);
+
+            //Criar processos do grupo de Processos
+            ServicoGrupoDeProcessosItensBean sgpib = new ServicoGrupoDeProcessosItensBean();
+            ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
+
+            for (int i = 0; i < tableprocessos.getRowCount(); i++) {
+                if (!tableprocessos.getValueAt(i, 1).equals("")) {
+                    sgpib.setId_grupo(Integer.parseInt(tableprocessos.getValueAt(i, 1).toString()));
+                    sgpib.setProcesso(tableprocessos.getValueAt(i, 2).toString());
+                    sgpib.setId(Integer.parseInt(txtid.getText()));
+
+                    //id_grupo = ?, processo = ? WHERE id = ?
+                    sgpid.update(sgpib);
+                } else {
+                    sgpib.setId_grupo(Integer.parseInt(txtid.getText()));
+                    sgpib.setProcesso(tableprocessos.getValueAt(i, 2).toString());
+
+                    //id_grupo, processo
+                    sgpid.create(sgpib);
+                }
+            }
+            filltablegrupodeprocessos();
+            JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tablegrupoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablegrupoMouseClicked
+        if (evt.getClickCount() == 2) {
+            tabgrupos.setSelectedIndex(1);
+
+            txtid.setText(tablegrupo.getValueAt(tablegrupo.getSelectedRow(), 0).toString());
+
+            ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
+            ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
+
+            for (ServicoGrupoDeProcessosBean sgpb : sgpd.click(Integer.parseInt(txtid.getText()))) {
+                txtnome.setText(sgpb.getNome());
+            }
+
+            DefaultTableModel model = (DefaultTableModel) tableprocessos.getModel();
+            model.setNumRows(0);
+
+            for (ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(Integer.parseInt(txtid.getText()))) {
+                model.addRow(new Object[]{
+                    false,
+                    sgpib.getId(),
+                    sgpib.getProcesso()
+                });
+            }
+        }
+    }//GEN-LAST:event_tablegrupoMouseClicked
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int numtrue = 0;
+
+        for (int i = 0; i < tableprocessos.getRowCount(); i++) {
+            if (tableprocessos.getValueAt(i, 0).equals(true)) {
+                numtrue++;
+            }
+        }
+
+        if (numtrue == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Nenhum processo selecionado para exclusão.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja excluir o(s) processo(s) selecionado(s)", "Excluir processos", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
+
+                for (int i = 0; i < tableprocessos.getRowCount(); i++) {
+                    if (tableprocessos.getValueAt(i, 0).equals(true)) {
+                        ServicoGrupoDeProcessosItensBean sgpib = new ServicoGrupoDeProcessosItensBean();
+
+                        sgpib.setId(Integer.parseInt(tableprocessos.getValueAt(i, 1).toString()));
+
+                        sgpid.delete(sgpib);
+                    }
+                }
+                DefaultTableModel model = (DefaultTableModel) tableprocessos.getModel();
+                model.setNumRows(0);
+
+                for (ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(Integer.parseInt(txtid.getText()))) {
+                    model.addRow(new Object[]{
+                        false,
+                        sgpib.getId(),
+                        sgpib.getProcesso()
+                    });
+                }
+                JOptionPane.showMessageDialog(rootPane, "Excluído com sucesso!");
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja lançar um novo Grupo de Processos?", "Lançar novo Grupo de Processos", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            txtid.setText("");
+            txtnome.setText("");
+            DefaultTableModel model = (DefaultTableModel) tableprocessos.getModel();
+            model.setNumRows(0);
+            txtnome.requestFocus();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
+    public javax.swing.JButton jButton4;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -297,8 +475,8 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel4;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
-    public javax.swing.JTabbedPane jTabbedPane1;
-    public javax.swing.JTable tablegrupo;
+    public javax.swing.JTabbedPane tabgrupos;
+    public static javax.swing.JTable tablegrupo;
     public static javax.swing.JTable tableprocessos;
     public javax.swing.JTextField txtid;
     public javax.swing.JTextField txtnome;

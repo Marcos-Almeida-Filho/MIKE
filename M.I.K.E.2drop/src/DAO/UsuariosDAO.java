@@ -31,7 +31,7 @@ public class UsuariosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO usuarios (nome, emailpessoal, dataadmissao, telefonefixo, telefonecelular, datanascimento, datademissao, emailfabrica, vendedor, status, login, senha, cargo, cpf, pis, rg, livrofolha, nivel) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO usuarios (nome, emailpessoal, dataadmissao, telefonefixo, telefonecelular, datanascimento, datademissao, emailfabrica, vendedor, status, login, senha, cargo, cpf, pis, rg, livrofolha, nivel, apelido) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, ub.getNome());
             stmt.setString(2, ub.getEmailpessoal());
             stmt.setString(3, ub.getDataadmissao());
@@ -50,6 +50,7 @@ public class UsuariosDAO {
             stmt.setString(16, ub.getRg());
             stmt.setString(17, ub.getLivrofolha());
             stmt.setString(18, ub.getNivel());
+            stmt.setString(19, ub.getApelido());
 
             stmt.executeUpdate();
 
@@ -60,7 +61,6 @@ public class UsuariosDAO {
             } else {
                 JOptionPane.showMessageDialog(null, "Erro ao Salvar!\nCódigo do erro: " + e.getErrorCode());
             }
-
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -102,6 +102,7 @@ public class UsuariosDAO {
                 ub.setSenha(rs.getString("senha"));
                 ub.setVendedor(rs.getString("vendedor"));
                 ub.setNivel(rs.getString("nivel"));
+                ub.setApelido(rs.getString("apelido"));
 
                 listu.add(ub);
             }
@@ -110,9 +111,37 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
         return listu;
+    }
+    
+    public List<UsuariosBean> readapelido(String login) {
 
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<UsuariosBean> listu = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM usuarios WHERE login = ?");
+            stmt.setString(1, login);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                UsuariosBean ub = new UsuariosBean();
+
+                ub.setNome(rs.getString("nome"));
+
+                listu.add(ub);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listu;
     }
 
     public List<UsuariosBean> vendedores() {
@@ -324,6 +353,7 @@ public class UsuariosDAO {
                 UsuariosBean ub = new UsuariosBean();
 
                 ub.setNivel(rs.getString("nivel"));
+                ub.setNome(rs.getString("nome"));
 
                 listub.add(ub);
             }
@@ -342,7 +372,7 @@ public class UsuariosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE usuarios SET nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ?, nivel = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE usuarios SET nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ?, nivel = ? , apelido = ? WHERE id = ?");
             stmt.setString(1, ub.getNome());
             stmt.setString(2, ub.getEmailpessoal());
             stmt.setString(3, ub.getDataadmissao());
@@ -361,7 +391,8 @@ public class UsuariosDAO {
             stmt.setString(16, ub.getRg());
             stmt.setString(17, ub.getLivrofolha());
             stmt.setString(18, ub.getNivel());
-            stmt.setInt(19, ub.getId());
+            stmt.setString(19, ub.getApelido());
+            stmt.setInt(20, ub.getId());
 
             stmt.executeUpdate();
 

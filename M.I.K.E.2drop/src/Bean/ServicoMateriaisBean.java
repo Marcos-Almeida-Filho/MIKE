@@ -16,6 +16,7 @@ public class ServicoMateriaisBean {
     private String descricao;
     private int estoque;
     private String grupo_de_processos;
+    private String data;
 
     public int getId() {
         return id;
@@ -55,6 +56,14 @@ public class ServicoMateriaisBean {
 
     public void setGrupo_de_processos(String grupo_de_processos) {
         this.grupo_de_processos = grupo_de_processos;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
 }

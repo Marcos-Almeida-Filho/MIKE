@@ -13,12 +13,12 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Marcos Filho
  */
-public class ProcuraItemServicos extends javax.swing.JInternalFrame {
+public class ProcuraItemServicosPedido extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form ProcuraItemServicos
      */
-    public ProcuraItemServicos() {
+    public ProcuraItemServicosPedido() {
         initComponents();
         readtable();
     }
@@ -166,9 +166,9 @@ public class ProcuraItemServicos extends javax.swing.JInternalFrame {
 
     private void tableitemservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableitemservicoMouseClicked
         if (evt.getClickCount() == 2) {
-            ItemOrcamentoServico.txtcodigo.setText(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 1).toString());
-            ItemOrcamentoServico.txtdesc.setText(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 2).toString());
-            ItemOrcamentoServico.txtqtd.requestFocus();
+            ItemPedidoServico.txtcodigo.setText(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 1).toString());
+            ItemPedidoServico.txtdesc.setText(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 2).toString());
+            ItemPedidoServico.txtqtd.requestFocus();
             dispose();
         }
     }//GEN-LAST:event_tableitemservicoMouseClicked

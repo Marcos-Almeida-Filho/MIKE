@@ -1320,11 +1320,11 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                         ServicoPedidoDAO spd = new ServicoPedidoDAO();
 
                         for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
-                            PedidoServico.txtnomecliente.setText(spb.getCliente());
+                            PedidoServico.txtcliente.setText(spb.getCliente());
                             PedidoServico.txtcondicao.setText(spb.getCondicao());
                             PedidoServico.txtrepresentante.setText(spb.getRepresentante());
                             PedidoServico.txtvendedor.setText(spb.getVendedor());
-                            PedidoServico.txtstatus.setText(spb.getStatus());
+                            PedidoServico.txtstatusretorno.setText(spb.getStatus_retorno());
                             PedidoServico.txtnotes.setText(spb.getNotes());
                             PedidoServico.txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
                         }
@@ -1560,7 +1560,8 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                 spb.setRepresentante(txtrepresentante.getText());
                 spb.setVendedor(txtvendedor.getText());
                 spb.setNotes(txtnotes.getText());
-                spb.setStatus("Aberto");
+                spb.setStatus_retorno("Ativo");
+                spb.setStatus_cobranca("Ativo");
                 spb.setNfcliente("");
 
                 Calendar date = Calendar.getInstance();
@@ -1569,7 +1570,7 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                 String data = simpleDateFormat.format(date.getTime());
 
                 spb.setData(data);
-//              idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status, nfcliente, data
+//              idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data
 
                 spd.create(spb);
 
@@ -1592,8 +1593,9 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                         spib.setTotal(tableitens.getValueAt(i, 6).toString());
                         spib.setPrazo(tableitens.getValueAt(i, 7).toString());
                         spib.setPedidocliente(tableitens.getValueAt(i, 8).toString());
+                        spib.setOs("");
                         spib.setNf("");
-//                      idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
+//                      idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, os, nf
 
                         spid.create(spib);
 

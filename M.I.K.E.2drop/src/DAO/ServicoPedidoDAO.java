@@ -33,7 +33,7 @@ public class ServicoPedidoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servicos_pedido (idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status, nfcliente, data) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO servicos_pedido (idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data) VALUES (?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, spb.getIdtela());
             stmt.setString(2, spb.getIdorcamento());
             stmt.setString(3, spb.getCliente());
@@ -41,9 +41,10 @@ public class ServicoPedidoDAO {
             stmt.setString(5, spb.getRepresentante());
             stmt.setString(6, spb.getVendedor());
             stmt.setString(7, spb.getNotes());
-            stmt.setString(8, spb.getStatus());
-            stmt.setString(9, spb.getNfcliente());
-            stmt.setString(10, spb.getData());
+            stmt.setString(8, spb.getStatus_retorno());
+            stmt.setString(9, spb.getStatus_cobranca());
+            stmt.setString(10, spb.getNfcliente());
+            stmt.setString(11, spb.getData());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
@@ -77,7 +78,8 @@ public class ServicoPedidoDAO {
                 spb.setRepresentante(rs.getString("representante"));
                 spb.setVendedor(rs.getString("vendedor"));
                 spb.setNotes(rs.getString("notes"));
-                spb.setStatus(rs.getString("status"));
+                spb.setStatus_retorno(rs.getString("status_retorno"));
+                spb.setStatus_cobranca(rs.getString("status_cobranca"));
                 spb.setNfcliente(rs.getString("nfcliente"));
 
                 listsp.add(spb);
@@ -182,7 +184,8 @@ public class ServicoPedidoDAO {
                 spb.setRepresentante(rs.getString("representante"));
                 spb.setVendedor(rs.getString("vendedor"));
                 spb.setNotes(rs.getString("notes"));
-                spb.setStatus(rs.getString("status"));
+                spb.setStatus_retorno(rs.getString("status_retorno"));
+                spb.setStatus_cobranca(rs.getString("status_cobranca"));
                 spb.setNfcliente(rs.getString("nfcliente"));
                 spb.setIdorcamento(rs.getString("idorcamento"));
 
@@ -205,19 +208,54 @@ public class ServicoPedidoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE servicos_pedido SET cliente = ?, condicao = ?, representante = ?, vendedor = ?, notes = ?, status = ?, nfcliente = ? WHERE idtela = ?");
+            stmt = con.prepareStatement("UPDATE servicos_pedido SET cliente = ?, condicao = ?, representante = ?, vendedor = ?, notes = ?, nfcliente = ? WHERE idtela = ?");
             stmt.setString(1, spb.getCliente());
             stmt.setString(2, spb.getCondicao());
             stmt.setString(3, spb.getRepresentante());
             stmt.setString(4, spb.getVendedor());
             stmt.setString(5, spb.getNotes());
-            stmt.setString(6, spb.getStatus());
-            stmt.setString(7, spb.getNfcliente());
-            stmt.setString(8, spb.getIdtela());
+            stmt.setString(6, spb.getNfcliente());
+            stmt.setString(7, spb.getIdtela());
 
             stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updatestatusretorno(ServicoPedidoBean spb) {
 
-            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE servicos_pedido SET status_retorno = ? WHERE idtela = ?");
+            stmt.setString(1, spb.getStatus_retorno());
+            stmt.setString(2, spb.getIdtela());
+
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updatestatuscobranca(ServicoPedidoBean spb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE servicos_pedido SET status_cobranca = ? WHERE idtela = ?");
+            stmt.setString(1, spb.getStatus_cobranca());
+            stmt.setString(2, spb.getIdtela());
+
+            stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
         } finally {

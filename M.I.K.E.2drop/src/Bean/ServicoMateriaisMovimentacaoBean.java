@@ -12,6 +12,7 @@ package Bean;
 public class ServicoMateriaisMovimentacaoBean {
 
     private int id;
+    private int idmaterial;
     private int inicial;
     private int movimentada;
     private String tipo;
@@ -25,6 +26,14 @@ public class ServicoMateriaisMovimentacaoBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdmaterial() {
+        return idmaterial;
+    }
+
+    public void setIdmaterial(int idmaterial) {
+        this.idmaterial = idmaterial;
     }
 
     public int getInicial() {

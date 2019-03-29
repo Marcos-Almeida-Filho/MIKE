@@ -24,6 +24,7 @@ import View.financeiro.Bancos;
 import View.financeiro.CondicoesDePagamento;
 import View.financeiro.ContasPagar;
 import View.servicos.GrupoDeProcessosServico;
+import View.servicos.OS;
 import View.servicos.ServicoMateriais;
 import View.servicos.PedidoServico;
 import View.servicos.ProcessosServico;
@@ -49,15 +50,19 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }
 
     public void menus() {
-        lblnome.setText("Bem vindo(a) " + TelaLogin.TxtLogin.getText() + "!");
-        String ni = lblnome.getText().substring(13, lblnome.getText().length() - 1);
+        lbllogin.setText(TelaLogin.TxtLogin.getText());
+//        String ni = lblnome.getText().substring(13, lblnome.getText().length() - 1);
         UsuariosDAO ud = new UsuariosDAO();
         String nivel = null;
-        for (UsuariosBean ub : ud.checknivel(ni)) {
+        for (UsuariosBean ub : ud.checknivel(lbllogin.getText())) {
             nivel = ub.getNivel();
+            lblnome.setText("Bem vindo(a) " + ub.getNome() + "!");
+            lblapelido.setText(ub.getNome());
         }
         lblgrupo.setText(nivel);
-//        lblgrupo.setVisible(false);
+        lblgrupo.setVisible(false);
+        lbllogin.setVisible(false);
+        lblapelido.setVisible(false);
         GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
         Boolean status = null;
         for (GrupoDeUsuariosBean gub : gud.getmenus(nivel)) {
@@ -215,7 +220,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jDesktopPane1 = new javax.swing.JDesktopPane();
         lblnome = new javax.swing.JLabel();
         lblgrupo = new javax.swing.JLabel();
-        lblnomelogin = new javax.swing.JLabel();
+        lbllogin = new javax.swing.JLabel();
+        lblapelido = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         MenuArquivo = new javax.swing.JMenu();
         jMenuItem12 = new javax.swing.JMenuItem();
@@ -281,14 +287,18 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lblnome.setText("jLabel1");
 
         lblgrupo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblgrupo.setText("jLabel1");
+        lblgrupo.setText("Grupo");
 
-        lblnomelogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblnomelogin.setText("jLabel1");
+        lbllogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbllogin.setText("Login");
+
+        lblapelido.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblapelido.setText("Apelido");
 
         jDesktopPane1.setLayer(lblnome, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(lblgrupo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(lblnomelogin, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(lbllogin, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(lblapelido, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -298,7 +308,9 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             .addComponent(lblgrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblnomelogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbllogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblapelido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jDesktopPane1Layout.setVerticalGroup(
@@ -309,8 +321,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblgrupo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lblnomelogin)
-                .addContainerGap(202, Short.MAX_VALUE))
+                .addComponent(lbllogin)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblapelido)
+                .addContainerGap(182, Short.MAX_VALUE))
         );
 
         MenuArquivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
@@ -708,8 +722,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_menuitemservicospedidosActionPerformed
 
     private void menuitemservicosossActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosossActionPerformed
-        // TODO add your handling code here:
-        EmBreve.EmBreve();
+        OS os = new OS();
+        jDesktopPane1.add(os);
+        os.setVisible(true);
+        try {
+            os.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_menuitemservicosossActionPerformed
 
     private void menuitemclientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemclientesActionPerformed
@@ -890,9 +910,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
+    public static javax.swing.JLabel lblapelido;
     public static javax.swing.JLabel lblgrupo;
+    public static javax.swing.JLabel lbllogin;
     public static javax.swing.JLabel lblnome;
-    private javax.swing.JLabel lblnomelogin;
     public static javax.swing.JMenu menuadministracao;
     private javax.swing.JMenu menuajuda;
     public static javax.swing.JMenu menucomercial;

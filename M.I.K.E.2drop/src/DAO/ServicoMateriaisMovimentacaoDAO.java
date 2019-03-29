@@ -32,17 +32,16 @@ public class ServicoMateriaisMovimentacaoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servicos_materiais_movimentacao (inicial, movimentada, tipo, saldo, data, usuario) VALUES (?,?,?,?,?,?)");
-            stmt.setInt(1, smb.getInicial());
-            stmt.setInt(2, smb.getMovimentada());
-            stmt.setString(3, smb.getTipo());
-            stmt.setInt(4, smb.getSaldo());
-            stmt.setString(5, smb.getData());
-            stmt.setString(6, smb.getUsuario());
+            stmt = con.prepareStatement("INSERT INTO servicos_materiais_movimentacao (idmaterial, inicial, movimentada, tipo, saldo, data, usuario) VALUES (?,?,?,?,?,?,?)");
+            stmt.setInt(1, smb.getIdmaterial());
+            stmt.setInt(2, smb.getInicial());
+            stmt.setInt(3, smb.getMovimentada());
+            stmt.setString(4, smb.getTipo());
+            stmt.setInt(5, smb.getSaldo());
+            stmt.setString(6, smb.getData());
+            stmt.setString(7, smb.getUsuario());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + e);
         } finally {
@@ -50,7 +49,7 @@ public class ServicoMateriaisMovimentacaoDAO {
         }
     }
 
-    public List<ServicoMateriaisMovimentacaoBean> read() {
+    public List<ServicoMateriaisMovimentacaoBean> read(int idmaterial) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -61,13 +60,14 @@ public class ServicoMateriaisMovimentacaoDAO {
         List<ServicoMateriaisMovimentacaoBean> listso = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * from servicos_materiais_movimentacao WHERE id = ?");
-            stmt.setInt(1, Integer.parseInt(ServicoMateriais.txtid.getText()));
+            stmt = con.prepareStatement("SELECT * from servicos_materiais_movimentacao WHERE idmaterial = ?");
+            stmt.setInt(1, idmaterial);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
                 ServicoMateriaisMovimentacaoBean sob = new ServicoMateriaisMovimentacaoBean();
 
+                sob.setId(rs.getInt("id"));
                 sob.setInicial(rs.getInt("inicial"));
                 sob.setMovimentada(rs.getInt("movimentada"));
                 sob.setTipo(rs.getString("tipo"));
@@ -104,8 +104,6 @@ public class ServicoMateriaisMovimentacaoDAO {
             stmt.setInt(7, sob.getId());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
         } finally {

@@ -20,6 +20,7 @@ public class ServicoPedidoItensBean {
     private String total;
     private String prazo;
     private String pedidocliente;
+    private String os;
     private String nf;
 
     public int getId() {
@@ -92,6 +93,14 @@ public class ServicoPedidoItensBean {
 
     public void setPedidocliente(String pedidocliente) {
         this.pedidocliente = pedidocliente;
+    }
+
+    public String getOs() {
+        return os;
+    }
+
+    public void setOs(String os) {
+        this.os = os;
     }
 
     public String getNf() {

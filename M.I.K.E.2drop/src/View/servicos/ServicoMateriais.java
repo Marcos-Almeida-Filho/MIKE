@@ -6,7 +6,27 @@
 package View.servicos;
 
 import Bean.ServicoMateriaisBean;
+import Bean.ServicoMateriaisDocumentosBean;
+import Bean.ServicoMateriaisMovimentacaoBean;
 import DAO.ServicoMateriaisDAO;
+import DAO.ServicoMateriaisDocumentosDAO;
+import DAO.ServicoMateriaisMovimentacaoDAO;
+import Methods.SendEmail;
+import View.TelaPrincipal;
+import static View.TelaPrincipal.jDesktopPane1;
+import java.awt.AWTException;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.HeadlessException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -44,6 +64,9 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         txtestoque.setText("");
         txtdesc.setText("");
         txtgrupo.setText("");
+        DefaultTableModel modelmov = (DefaultTableModel) tableestoque.getModel();
+        modelmov.setNumRows(0);
+        txtcodigo.requestFocus();
     }
 
     /**
@@ -93,6 +116,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         tabledocumentos = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         jLabel7.setText("jLabel7");
 
@@ -276,11 +300,11 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Qtde Inicial", "Qtde Movimentada", "Tipo de Movimentação", "Saldo", "Data", "Usuário"
+                "ID", "Qtde Inicial", "Qtde Movimentada", "Tipo de Movimentação", "Saldo", "Data", "Usuário"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -288,6 +312,11 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane3.setViewportView(tableestoque);
+        if (tableestoque.getColumnModel().getColumnCount() > 0) {
+            tableestoque.getColumnModel().getColumn(0).setMinWidth(0);
+            tableestoque.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableestoque.getColumnModel().getColumn(0).setMaxWidth(0);
+        }
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -353,14 +382,14 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "Descrição", "Local"
+                "", "ID", "IDmaterial", "Descrição", "Local", "Local Original"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false
+                true, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -371,14 +400,33 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tabledocumentos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabledocumentosMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(tabledocumentos);
         if (tabledocumentos.getColumnModel().getColumnCount() > 0) {
             tabledocumentos.getColumnModel().getColumn(0).setMinWidth(40);
             tabledocumentos.getColumnModel().getColumn(0).setPreferredWidth(40);
             tabledocumentos.getColumnModel().getColumn(0).setMaxWidth(40);
+            tabledocumentos.getColumnModel().getColumn(1).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(1).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(2).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(2).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(2).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(5).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(5).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(5).setMaxWidth(0);
         }
 
         jButton3.setText("Incluir");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Excluir");
 
@@ -411,6 +459,13 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
         tabopcoes.addTab("Documentos", jPanel2);
 
+        jButton5.setText("Novo");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -422,6 +477,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -433,7 +490,9 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tabopcoes)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton5))
                 .addContainerGap())
         );
 
@@ -454,11 +513,22 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Em breve!");
+        ProcurarGrupoDeProcessosServico p = new ProcurarGrupoDeProcessosServico();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Calendar c = Calendar.getInstance();
+        String pattern = "dd/MM/yyyy HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String data = simpleDateFormat.format(c.getTime());
         if (txtid.getText().equals("")) {
+            //Criar material
             ServicoMateriaisBean smb = new ServicoMateriaisBean();
             ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
 
@@ -466,11 +536,69 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             smb.setDescricao(txtdesc.getText());
             smb.setEstoque(0);
             smb.setGrupo_de_processos(txtgrupo.getText());
+            smb.setData(data);
             //codigo, descricao, estoque, grupo_de_processos
             smd.create(smb);
+
+            //Ler id do material criado
+            int idcriado = 0;
+
+            for (ServicoMateriaisBean smb2 : smd.readcreated(txtcodigo.getText(), data)) {
+                idcriado = smb2.getId();
+            }
+
+            //Criar movimentação inicial
+            ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+            ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+
+            smmb.setIdmaterial(idcriado);
+            smmb.setInicial(0);
+            smmb.setMovimentada(0);
+            smmb.setTipo("Criação");
+            smmb.setSaldo(0);
+            smmb.setData(data);
+            smmb.setUsuario(TelaPrincipal.lblapelido.getText());
+
+            //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
+            smmd.create(smmb);
+
+            //Criar documentos do material
+            ServicoMateriaisDocumentosBean smdb = new ServicoMateriaisDocumentosBean();
+            ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
+
+            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                File fileoriginal = new File(tabledocumentos.getValueAt(i, 5).toString());
+                File folder = new File("Q:/MIKE_ERP/mat_ser_arq/" + idcriado);
+                File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                folder.mkdirs();
+                try {
+                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                } catch (IOException ex) {
+                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                    try {
+                        SendEmail.EnviarErro(ex.toString());
+                        JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                    } catch (HeadlessException hex) {
+                        JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                    } catch (AWTException | IOException ex1) {
+                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+                }
+                smdb.setIdmaterial(idcriado);
+                smdb.setDescricao(tabledocumentos.getValueAt(i, 3).toString());
+                smdb.setLocal(filecopy.toString());
+
+                //idmaterial, descricao, local
+                smdd.create(smdb);
+            }
+
+            //Ações extras para deixar tela limpa e organizada
             zeracampos();
             tabmateriaisservico.setSelectedIndex(0);
             readtablemateriais();
+            JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
         } else {
             ServicoMateriaisBean smb = new ServicoMateriaisBean();
             ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
@@ -482,25 +610,119 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             smb.setId(Integer.parseInt(txtid.getText()));
             //codigo, descricao, estoque, grupo_de_processos
             smd.update(smb);
+
+            //Criar documentos do material que não estavam antes no cadastro
+            ServicoMateriaisDocumentosBean smdb = new ServicoMateriaisDocumentosBean();
+            ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
+
+            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                if (tabledocumentos.getValueAt(i, 1).equals("")) {
+                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 5).toString());
+                    File folder = new File("Q:/MIKE_ERP/mat_ser_arq/" + txtid.getText());
+                    File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                    folder.mkdirs();
+                    try {
+                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                        try {
+                            SendEmail.EnviarErro(ex.toString());
+                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                        } catch (HeadlessException hex) {
+                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                        } catch (AWTException | IOException ex1) {
+                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
+                    }
+                    smdb.setIdmaterial(Integer.parseInt(txtid.getText()));
+                    smdb.setDescricao(tabledocumentos.getValueAt(i, 3).toString());
+                    smdb.setLocal(filecopy.toString());
+
+                    //idmaterial, descricao, local
+                    smdd.create(smdb);
+                }
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void tablelistamaterialservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablelistamaterialservicoMouseClicked
-        if (evt.getClickCount()==2) {
+        if (evt.getClickCount() == 2) {
             tabmateriaisservico.setSelectedIndex(1);
-            
+
             txtid.setText(tablelistamaterialservico.getValueAt(tablelistamaterialservico.getSelectedRow(), 0).toString());
-            
+
             ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
-            
-            for(ServicoMateriaisBean smb: smd.click(Integer.parseInt(txtid.getText()))){
+
+            for (ServicoMateriaisBean smb : smd.click(Integer.parseInt(txtid.getText()))) {
                 txtcodigo.setText(smb.getCodigo());
                 txtdesc.setText(smb.getDescricao());
                 txtestoque.setText(String.valueOf(smb.getEstoque()));
                 txtgrupo.setText(smb.getGrupo_de_processos());
             }
+
+            DefaultTableModel modelmov = (DefaultTableModel) tableestoque.getModel();
+            modelmov.setNumRows(0);
+            ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+
+            for (ServicoMateriaisMovimentacaoBean smmb : smmd.read(Integer.parseInt(txtid.getText()))) {
+                modelmov.addRow(new Object[]{
+                    smmb.getId(),
+                    smmb.getInicial(),
+                    smmb.getMovimentada(),
+                    smmb.getTipo(),
+                    smmb.getSaldo(),
+                    smmb.getData(),
+                    smmb.getUsuario()
+                });
+            }
+
+            DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
+            modeldoc.setNumRows(0);
+
+            ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
+
+            for (ServicoMateriaisDocumentosBean smdb : smdd.read(Integer.parseInt(txtid.getText()))) {
+                modeldoc.addRow(new Object[]{
+                    false,
+                    smdb.getId(),
+                    smdb.getIdmaterial(),
+                    smdb.getDescricao(),
+                    smdb.getLocal(),
+                    ""
+                });
+            }
         }
     }//GEN-LAST:event_tablelistamaterialservicoMouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja cadastrar um novo material de serviço?", "Novo Material de Serviço", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            zeracampos();
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        DocumentosMateriaisServico dms = new DocumentosMateriaisServico();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(dms);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = dms.getSize();
+        dms.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        dms.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
+        if (evt.getClickCount() == 2) {
+            Desktop desk = Desktop.getDesktop();
+            try {
+                desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4)));
+            } catch (IOException ex) {
+                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_tabledocumentosMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -509,6 +731,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -532,8 +755,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
-    private javax.swing.JTable tabledocumentos;
-    private javax.swing.JTable tableestoque;
+    public static javax.swing.JTable tabledocumentos;
+    public static javax.swing.JTable tableestoque;
     public static javax.swing.JTable tablelistamaterialservico;
     public static javax.swing.JTabbedPane tabmateriaisservico;
     private javax.swing.JTabbedPane tabopcoes;

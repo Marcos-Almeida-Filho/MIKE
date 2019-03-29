@@ -5,6 +5,7 @@
  */
 package View;
 
+import Bean.UsuariosBean;
 import Connection.Session;
 import DAO.UsuariosDAO;
 import java.awt.event.KeyEvent;
@@ -172,13 +173,20 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_btncancelarActionPerformed
 
     private void TxtSenhaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtSenhaKeyReleased
+        String apelido = "";
+        
+        UsuariosDAO ud2 = new UsuariosDAO();
+        
+        for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
+            apelido = ub.getNome();
+        }
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             Session session = new Session();
             UsuariosDAO ud = new UsuariosDAO();
             String senha = new String(TxtSenha.getPassword());
             if (ud.checklogin(TxtLogin.getText(), senha)) {
                 TelaPrincipal tela = new TelaPrincipal();
-                tela.setTitle("M.I.K.E. version 0.1.1 - Usuário: "+TxtLogin.getText());
+                tela.setTitle("M.I.K.E. version 0.1.1 - Usuário: " + apelido);
                 tela.setVisible(true);
                 session.login = TxtLogin.getText();
                 this.dispose();
@@ -191,10 +199,13 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_TxtSenhaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-//        Calendar c = Calendar.getInstance();
-//        String pattern = "dd/MM/yyyy HH:mm:ss";
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-//        JOptionPane.showMessageDialog(rootPane, simpleDateFormat.format(c.getTime()));
+        Calendar c = Calendar.getInstance();
+        String pattern = "dd/MM/yyyy HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        JOptionPane.showMessageDialog(rootPane, simpleDateFormat.format(c.getTime()));
+        int days = Integer.parseInt(JOptionPane.showInputDialog(rootPane, "Quantos dias deseja adicionar?", "Adicionar data", JOptionPane.OK_CANCEL_OPTION));
+        c.add(Calendar.DAY_OF_MONTH, days);
+        JOptionPane.showMessageDialog(rootPane, simpleDateFormat.format(c.getTime()));
 //        String patterny = "yy";
 //        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
 //        JOptionPane.showMessageDialog(rootPane, simpleDateFormaty.format(c.getTime()));

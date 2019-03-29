@@ -19,7 +19,8 @@ public class ServicoPedidoBean {
     private String representante;
     private String vendedor;
     private String notes;
-    private String status;
+    private String status_retorno;
+    private String status_cobranca;
     private String nfcliente;
     private String data;
 
@@ -87,12 +88,20 @@ public class ServicoPedidoBean {
         this.notes = notes;
     }
 
-    public String getStatus() {
-        return status;
+    public String getStatus_retorno() {
+        return status_retorno;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus_retorno(String status_retorno) {
+        this.status_retorno = status_retorno;
+    }
+
+    public String getStatus_cobranca() {
+        return status_cobranca;
+    }
+
+    public void setStatus_cobranca(String status_cobranca) {
+        this.status_cobranca = status_cobranca;
     }
 
     public String getNfcliente() {

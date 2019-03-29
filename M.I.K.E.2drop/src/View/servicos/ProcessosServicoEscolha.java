@@ -180,6 +180,7 @@ public class ProcessosServicoEscolha extends javax.swing.JInternalFrame {
                 if (tableprocessosservico.getValueAt(i, 0).equals(true)) {
                     model.addRow(new Object[]{
                         false,
+                        "",
                         tableprocessosservico.getValueAt(i, 1)
                     });
                 }

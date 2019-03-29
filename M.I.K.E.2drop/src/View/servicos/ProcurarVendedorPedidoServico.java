@@ -26,10 +26,9 @@ public class ProcurarVendedorPedidoServico extends javax.swing.JInternalFrame {
     public void readtablevendedores() {
         UsuariosDAO ud = new UsuariosDAO();
 
+        DefaultTableModel model = (DefaultTableModel) tablevendedores.getModel();
+        model.setNumRows(0);
         for (UsuariosBean ub : ud.vendedores()) {
-            DefaultTableModel model = (DefaultTableModel) tablevendedores.getModel();
-            model.setNumRows(0);
-
             model.addRow(new Object[]{
                 ub.getId(),
                 ub.getNome()

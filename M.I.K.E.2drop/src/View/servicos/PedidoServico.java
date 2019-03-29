@@ -8,19 +8,25 @@ package View.servicos;
 import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
+import Bean.ServicoPedidoItensNFBean;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
-import View.ProcurarCliente;
+import DAO.ServicoPedidoItensNFDAO;
+import Methods.SendEmail;
 import static View.TelaPrincipal.jDesktopPane1;
-import View.comercial.ProcurarRepresentanteClientes;
-import View.comercial.ProcurarVendedorClientes;
+import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
@@ -50,12 +56,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             model.addRow(new Object[]{
                 spb.getIdtela(),
                 spb.getCliente(),
-                spb.getStatus()
+                spb.getStatus_retorno(),
+                spb.getStatus_cobranca()
             });
         }
     }
-    
-    public static void txtvalor() {
+
+    public static void txtvalorcobranca() {
         if (tableitensorcamento.getRowCount() < 1) {
             txttotal.setText("");
         } else {
@@ -70,6 +77,75 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             DecimalFormat formatter = new DecimalFormat("#,###.00");
             String valorf = formatter.format(vt);
             txttotal.setText(String.valueOf(valorf));
+        }
+    }
+    
+    public static void txtvalorretorno() {
+        if (tableitensnota.getRowCount() < 1) {
+            txttotalretorno.setText("");
+        } else {
+            float vt = 0;
+
+            for (int i = 0; i < tableitensnota.getRowCount(); i++) {
+                String v = tableitensnota.getValueAt(i, 6).toString().replace(".", "");
+                String valor = v.replace(",", ".");
+                float vp = Float.parseFloat(valor);
+                vt = vt + vp;
+            }
+            DecimalFormat formatter = new DecimalFormat("#,###.00");
+            String valorf = formatter.format(vt);
+            txttotalretorno.setText(String.valueOf(valorf));
+        }
+    }
+
+    public static void camposeditaveis() {
+        if (!txtorcamento.getText().equals("")) {
+            txtorcamento.setEditable(false);
+        }
+
+        if (!txtnfcliente.getText().equals("")) {
+            txtnfcliente.setEditable(false);
+        }
+    }
+
+    public static void readitenscobranca() {
+        DefaultTableModel model = (DefaultTableModel) tableitensorcamento.getModel();
+        model.setNumRows(0);
+        ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+
+        for (ServicoPedidoItensBean spib : spid.readitens(txtnumeropedido.getText())) {
+            model.addRow(new Object[]{
+                false,
+                spib.getId(),
+                spib.getCodigo(),
+                spib.getDescricao(),
+                spib.getQtde(),
+                spib.getValor(),
+                spib.getTotal(),
+                spib.getPrazo(),
+                spib.getPedidocliente(),
+                spib.getOs(),
+                spib.getNf()
+            });
+        }
+    }
+    
+    public static void readitensretorno() {
+        DefaultTableModel model = (DefaultTableModel) tableitensnota.getModel();
+        model.setNumRows(0);
+        ServicoPedidoItensNFDAO spid = new ServicoPedidoItensNFDAO();
+
+        for (ServicoPedidoItensNFBean spib : spid.readitens(txtnumeropedido.getText())) {
+            model.addRow(new Object[]{
+                false,
+                spib.getId(),
+                spib.getCodigo(),
+                spib.getDescricao(),
+                spib.getQtde(),
+                spib.getValor(),
+                spib.getTotal(),
+                spib.getNfretorno()
+            });
         }
     }
 
@@ -89,10 +165,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jTextField3 = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablepedidoservico = new javax.swing.JTable();
+        jPanel11 = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        txtnomecliente = new javax.swing.JTextField();
+        txtcliente = new javax.swing.JTextField();
         BtnProcurar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         txtvendedor = new javax.swing.JTextField();
@@ -107,13 +185,15 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         txtnumeropedido = new javax.swing.JTextField();
-        txtstatus = new javax.swing.JTextField();
+        txtstatusretorno = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         txtorcamento = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        nfcliente = new javax.swing.JTextField();
+        txtnfcliente = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        txtstatuscobranca = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel9 = new javax.swing.JPanel();
@@ -133,13 +213,16 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jButton6 = new javax.swing.JButton();
         txttotal = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
+        jButton11 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableitensnota = new javax.swing.JTable();
-        txttotalnota = new javax.swing.JTextField();
+        txttotalretorno = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
@@ -177,11 +260,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Cliente", "Status"
+                "ID", "Cliente", "Status Retorno", "Status Cobrança"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -200,6 +283,27 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             tablepedidoservico.getColumnModel().getColumn(0).setMaxWidth(60);
         }
 
+        jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Ativo", "Parcialmente Faturado", "Faturado", "Cancelado", "Todos" }));
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox1, 0, 169, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -209,7 +313,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 581, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 562, Short.MAX_VALUE)
+                        .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -217,9 +322,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -231,8 +338,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Cliente");
 
-        txtnomecliente.setEditable(false);
-        txtnomecliente.setBackground(new java.awt.Color(255, 255, 255));
+        txtcliente.setEditable(false);
+        txtcliente.setBackground(new java.awt.Color(255, 255, 255));
 
         BtnProcurar.setText("Procurar");
         BtnProcurar.addActionListener(new java.awt.event.ActionListener() {
@@ -249,7 +356,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtnomecliente, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtcliente, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(BtnProcurar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -260,7 +367,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtnomecliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtcliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(BtnProcurar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -314,8 +421,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(jLabel6)
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtvendedor, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtvendedor, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
                     .addComponent(txtrepresentante)
                     .addComponent(txtcondicao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -323,7 +430,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(BtnCondicao)
                     .addComponent(BtnRepresentante)
                     .addComponent(BtnVendedor))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -353,15 +460,21 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         txtnumeropedido.setEditable(false);
         txtnumeropedido.setBackground(new java.awt.Color(255, 255, 255));
+        txtnumeropedido.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtnumeropedido.setSelectionColor(new java.awt.Color(255, 255, 255));
 
-        txtstatus.setEditable(false);
-        txtstatus.setBackground(new java.awt.Color(255, 255, 255));
-        txtstatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtstatusretorno.setEditable(false);
+        txtstatusretorno.setBackground(new java.awt.Color(255, 255, 255));
+        txtstatusretorno.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jLabel2.setText("Status");
+        jLabel2.setText("Retorno");
 
         jButton4.setText("Imprimir");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jLabel8.setText("Orçamento");
 
@@ -370,6 +483,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         txtorcamento.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel9.setText("NF Cliente");
+
+        txtnfcliente.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        jLabel12.setText("Cobrança");
+
+        txtstatuscobranca.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -381,22 +500,27 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nfcliente)
-                        .addGap(18, 18, 18)
+                        .addComponent(txtnfcliente, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
                         .addComponent(jButton4))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtnumeropedido)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel8))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtstatusretorno)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel12)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtorcamento, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
-                        .addGap(86, 86, 86))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtnumeropedido, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtstatus)))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtstatuscobranca, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
+                            .addComponent(txtorcamento))))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -404,15 +528,18 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel8)
+                        .addComponent(txtorcamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
-                        .addComponent(txtnumeropedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2)))
+                        .addComponent(txtnumeropedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(txtorcamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtstatusretorno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel12)
+                    .addComponent(txtstatuscobranca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -422,7 +549,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel9)
-                            .addComponent(nfcliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtnfcliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
@@ -443,7 +570,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1036, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -465,14 +592,14 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "Id", "Descrição", "Local"
+                "", "Id", "Descrição", "Local", "Local Original"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false
+                true, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -522,7 +649,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1036, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton8)
@@ -556,7 +683,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                true, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -565,6 +692,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tableitensorcamento.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableitensorcamentoMouseClicked(evt);
             }
         });
         jScrollPane3.setViewportView(tableitensorcamento);
@@ -581,24 +713,24 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             tableitensorcamento.getColumnModel().getColumn(4).setMinWidth(60);
             tableitensorcamento.getColumnModel().getColumn(4).setPreferredWidth(60);
             tableitensorcamento.getColumnModel().getColumn(4).setMaxWidth(60);
-            tableitensorcamento.getColumnModel().getColumn(5).setMinWidth(80);
-            tableitensorcamento.getColumnModel().getColumn(5).setPreferredWidth(80);
-            tableitensorcamento.getColumnModel().getColumn(5).setMaxWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(5).setMinWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(5).setPreferredWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(5).setMaxWidth(90);
             tableitensorcamento.getColumnModel().getColumn(6).setMinWidth(90);
             tableitensorcamento.getColumnModel().getColumn(6).setPreferredWidth(90);
             tableitensorcamento.getColumnModel().getColumn(6).setMaxWidth(90);
-            tableitensorcamento.getColumnModel().getColumn(7).setMinWidth(100);
-            tableitensorcamento.getColumnModel().getColumn(7).setPreferredWidth(100);
-            tableitensorcamento.getColumnModel().getColumn(7).setMaxWidth(100);
-            tableitensorcamento.getColumnModel().getColumn(8).setMinWidth(100);
-            tableitensorcamento.getColumnModel().getColumn(8).setPreferredWidth(100);
-            tableitensorcamento.getColumnModel().getColumn(8).setMaxWidth(100);
+            tableitensorcamento.getColumnModel().getColumn(7).setMinWidth(110);
+            tableitensorcamento.getColumnModel().getColumn(7).setPreferredWidth(110);
+            tableitensorcamento.getColumnModel().getColumn(7).setMaxWidth(110);
+            tableitensorcamento.getColumnModel().getColumn(8).setMinWidth(110);
+            tableitensorcamento.getColumnModel().getColumn(8).setPreferredWidth(110);
+            tableitensorcamento.getColumnModel().getColumn(8).setMaxWidth(110);
             tableitensorcamento.getColumnModel().getColumn(9).setMinWidth(70);
             tableitensorcamento.getColumnModel().getColumn(9).setPreferredWidth(70);
             tableitensorcamento.getColumnModel().getColumn(9).setMaxWidth(70);
-            tableitensorcamento.getColumnModel().getColumn(10).setMinWidth(80);
-            tableitensorcamento.getColumnModel().getColumn(10).setPreferredWidth(80);
-            tableitensorcamento.getColumnModel().getColumn(10).setMaxWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(10).setMinWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(10).setPreferredWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(10).setMaxWidth(90);
         }
 
         jButton2.setText("Incluir");
@@ -614,6 +746,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel10.setText("Total: R$");
 
+        jButton11.setText("Lançar Nota de Cobrança");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -621,9 +760,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1036, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5)
@@ -639,18 +780,19 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton5)
                     .addComponent(jButton6)
                     .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
+                    .addComponent(jLabel10)
+                    .addComponent(jButton11))
                 .addContainerGap())
         );
 
-        jTabbedPane3.addTab("Itens do Orçamento", jPanel7);
+        jTabbedPane3.addTab("Itens de Cobrança", jPanel7);
 
         tableitensnota.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -703,8 +845,20 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jLabel11.setText("Total: R$");
 
         jButton9.setText("Incluir");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         jButton10.setText("Excluir");
+
+        jButton12.setText("Lançar Nota Fiscal de Retorno");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -713,33 +867,43 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1036, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txttotalnota, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txttotalretorno, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txttotalnota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txttotalretorno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
                     .addComponent(jButton9)
-                    .addComponent(jButton10))
+                    .addComponent(jButton10)
+                    .addComponent(jButton12))
                 .addContainerGap())
         );
 
-        jTabbedPane3.addTab("Itens da Nota Fiscal", jPanel6);
+        jTabbedPane3.addTab("Itens de Retorno", jPanel6);
+
+        jButton3.setText("Novo");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -757,6 +921,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
                     .addComponent(jTabbedPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
@@ -774,7 +940,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton3))
                 .addContainerGap())
         );
 
@@ -795,7 +963,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnProcurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnProcurarActionPerformed
-        ProcurarCliente p = new ProcurarCliente();
+        ProcurarClientePedidoServico p = new ProcurarClientePedidoServico();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -815,7 +983,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BtnCondicaoActionPerformed
 
     private void BtnRepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRepresentanteActionPerformed
-        ProcurarRepresentanteClientes p = new ProcurarRepresentanteClientes();
+        ProcurarRepresentantePedidoServico p = new ProcurarRepresentantePedidoServico();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -825,7 +993,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BtnRepresentanteActionPerformed
 
     private void BtnVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVendedorActionPerformed
-        ProcurarVendedorClientes p = new ProcurarVendedorClientes();
+        ProcurarVendedorPedidoServico p = new ProcurarVendedorPedidoServico();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -835,7 +1003,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BtnVendedorActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        ProcuraItemServicos p = new ProcuraItemServicos();
+        ItemPedidoServico p = new ItemPedidoServico();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -856,23 +1024,27 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tabledocumentosMouseClicked
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        if (txtnumeropedido.getText().equals("")) {
-            JOptionPane.showMessageDialog(rootPane, "Selecione um orçamento antes!");
-        } else {
-            DocumentosPedidoServico d = new DocumentosPedidoServico();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(d);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = d.getSize();
-            d.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            d.setVisible(true);
-        }
+        DocumentosPedidoServico d = new DocumentosPedidoServico();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(d);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = d.getSize();
+        d.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        d.setVisible(true);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        int numerotrue = 0;
+        for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+            if (tabledocumentos.getValueAt(i, 0).equals(true)) {
+                numerotrue++;
+            }
+        }
         DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
         if (tabledocumentos.getRowCount() == 0) {
             JOptionPane.showMessageDialog(rootPane, "Não existem itens para excluir");
+        } else if (numerotrue == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione um item para excluir!");
         } else {
             int resp = JOptionPane.showConfirmDialog(rootPane, "Excluir documentos selecionados?", "Excluir documentos", JOptionPane.OK_CANCEL_OPTION);
             if (resp == 0) {
@@ -903,7 +1075,272 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Em breve!");
+        if (txtcliente.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione um cliente primeiro!");
+        } else if (txtcondicao.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione uma condição de pagamento primeiro!");
+        } else if (txtrepresentante.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione um representante primeiro!");
+        } else if (txtvendedor.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione um vendedor primeiro!");
+        } else if (tableitensorcamento.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Coloque pelo menos um item no pedido!");
+        } else if (txtnumeropedido.getText().equals("")) {
+            //Criar pedido novo
+            ServicoPedidoDAO spd = new ServicoPedidoDAO();
+            ServicoPedidoBean spb = new ServicoPedidoBean();
+
+            try {
+                if (spd.readnome() == false) {
+                    Calendar ca = Calendar.getInstance();
+                    String patterny = "yy";
+                    SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+                    String year = simpleDateFormaty.format(ca.getTime());
+                    String idtela = year + "-0001";
+                    spb.setIdtela(idtela);
+                    txtnumeropedido.setText(idtela);
+                } else {
+                    Calendar ca = Calendar.getInstance();
+                    String patterny = "yy";
+                    SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+                    String year = simpleDateFormaty.format(ca.getTime());
+                    String hua = "";
+                    for (ServicoPedidoBean spb2 : spd.read()) {
+                        hua = String.valueOf(spb2.getIdtela());
+                    }
+                    int yearint = Integer.parseInt(hua.replace(year + "-", ""));
+                    int yearnovo = yearint + 1;
+                    String idtela = year + "-" + String.format("%04d", yearnovo);
+                    spb.setIdtela(idtela);
+                    txtnumeropedido.setText(idtela);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(OrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            spb.setIdorcamento(txtorcamento.getText());
+            spb.setCliente(txtcliente.getText());
+            spb.setCondicao(txtcondicao.getText());
+            spb.setRepresentante(txtrepresentante.getText());
+            spb.setVendedor(txtvendedor.getText());
+            spb.setNotes(txtnotes.getText());
+            spb.setStatus_retorno("Ativo");
+            spb.setStatus_cobranca("Ativo");
+            txtstatusretorno.setText("Ativo");
+            spb.setNfcliente(txtnfcliente.getText());
+            Calendar date = Calendar.getInstance();
+            String pattern = "dd/MM/yyyy HH:mm:ss";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            spb.setData(simpleDateFormat.format(date.getTime()));
+
+            //idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data
+            spd.create(spb);
+
+            //Criar itens do pedido (Orçamento)
+            ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+            ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+
+            for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+                spib.setIdpedido(txtnumeropedido.getText());
+                spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
+                spib.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
+                spib.setQtde(tableitensorcamento.getValueAt(i, 4).toString());
+                spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
+                spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
+                spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
+                spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
+                spib.setOs(tableitensorcamento.getValueAt(i, 9).toString());
+                spib.setNf(tableitensorcamento.getValueAt(i, 10).toString());
+
+                //idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
+                spid.create(spib);
+            }
+
+            //Criar itens do pedido (Nota Fiscal)
+            ServicoPedidoItensNFDAO spinfd = new ServicoPedidoItensNFDAO();
+            ServicoPedidoItensNFBean spinfb = new ServicoPedidoItensNFBean();
+
+            if (tableitensnota.getRowCount() > 0) {
+                for (int i = 0; i < tableitensnota.getRowCount(); i++) {
+                    spinfb.setIdpedido(txtnumeropedido.getText());
+                    spinfb.setCodigo(tableitensnota.getValueAt(i, 2).toString());
+                    spinfb.setDescricao(tableitensnota.getValueAt(i, 3).toString());
+                    spinfb.setQtde(tableitensnota.getValueAt(i, 4).toString());
+                    spinfb.setValor(tableitensnota.getValueAt(i, 5).toString());
+                    spinfb.setTotal(tableitensnota.getValueAt(i, 6).toString());
+                    spinfb.setNfretorno(tableitensnota.getValueAt(i, 7).toString());
+
+                    //idpedido, codigo, descricao, qtde, valor, total, nfretorno
+                    spinfd.create(spinfb);
+                }
+            }
+
+            //Criar documentos do pedido
+            ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+            ServicoPedidoDocumentosBean spdb = new ServicoPedidoDocumentosBean();
+
+            if (tabledocumentos.getRowCount() > 0) {
+                for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                    File folder = new File("Q:/MIKE_ERP/ped_ser_arq/" + txtnumeropedido.getText());
+                    File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                    folder.mkdirs();
+                    try {
+                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                        try {
+                            SendEmail.EnviarErro(ex.toString());
+                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                        } catch (HeadlessException hex) {
+                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                        } catch (AWTException | IOException ex1) {
+                            Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
+                    }
+
+                    //Salvar arquivos no DB
+                    spdb.setIdpedido(txtnumeropedido.getText());
+                    spdb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
+                    spdb.setLocal(filecopy.toString());
+                    //idorcamento, descricao, local
+
+                    spdd.create(spdb);
+                }
+            }
+            JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
+            filltablepedidoorcamento();
+            camposeditaveis();
+        } else {
+            //Atualizar pedido
+            ServicoPedidoDAO spd = new ServicoPedidoDAO();
+            ServicoPedidoBean spb = new ServicoPedidoBean();
+
+            spb.setCliente(txtcliente.getText());
+            spb.setCondicao(txtcondicao.getText());
+            spb.setRepresentante(txtrepresentante.getText());
+            spb.setVendedor(txtvendedor.getText());
+            spb.setNotes(txtnotes.getText());
+            spb.setStatus_retorno(txtstatusretorno.getText());
+            spb.setNfcliente(txtnfcliente.getText());
+            spb.setIdtela(txtnumeropedido.getText());
+
+            //cliente = ?, condicao = ?, representante = ?, vendedor = ?, notes = ?, nfcliente = ? WHERE idtela = ?
+            spd.update(spb);
+
+            //Criar itens do pedido (Orçamento)
+            ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+            ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+
+            for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+                if (tableitensorcamento.getValueAt(i, 1).equals("")) {
+                    spib.setIdpedido(txtnumeropedido.getText());
+                    spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
+                    spib.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
+                    spib.setQtde(tableitensorcamento.getValueAt(i, 4).toString());
+                    spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
+                    spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
+                    spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
+                    spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
+                    spib.setOs(tableitensorcamento.getValueAt(i, 9).toString());
+                    spib.setNf(tableitensorcamento.getValueAt(i, 10).toString());
+
+                    //idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
+                    spid.create(spib);
+                } else {
+                    spib.setIdpedido(txtnumeropedido.getText());
+                    spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
+                    spib.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
+                    spib.setQtde(tableitensorcamento.getValueAt(i, 4).toString());
+                    spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
+                    spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
+                    spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
+                    spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
+                    spib.setOs(tableitensorcamento.getValueAt(i, 9).toString());
+                    spib.setNf(tableitensorcamento.getValueAt(i, 10).toString());
+                    spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
+
+                    //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?
+                    spid.update(spib);
+                }
+
+            }
+
+            //Criar itens do pedido (Nota Fiscal)
+            ServicoPedidoItensNFDAO spinfd = new ServicoPedidoItensNFDAO();
+            ServicoPedidoItensNFBean spinfb = new ServicoPedidoItensNFBean();
+
+            if (tableitensnota.getRowCount() > 0) {
+                for (int i = 0; i < tableitensnota.getRowCount(); i++) {
+                    if (tableitensnota.getValueAt(i, 1).equals("")) {
+                        spinfb.setIdpedido(txtnumeropedido.getText());
+                        spinfb.setCodigo(tableitensnota.getValueAt(i, 2).toString());
+                        spinfb.setDescricao(tableitensnota.getValueAt(i, 3).toString());
+                        spinfb.setQtde(tableitensnota.getValueAt(i, 4).toString());
+                        spinfb.setValor(tableitensnota.getValueAt(i, 5).toString());
+                        spinfb.setTotal(tableitensnota.getValueAt(i, 6).toString());
+                        spinfb.setNfretorno(tableitensnota.getValueAt(i, 7).toString());
+
+                        //idpedido, codigo, descricao, qtde, valor, total, nfretorno
+                        spinfd.create(spinfb);
+                    } else {
+                        spinfb.setIdpedido(txtnumeropedido.getText());
+                        spinfb.setCodigo(tableitensnota.getValueAt(i, 2).toString());
+                        spinfb.setDescricao(tableitensnota.getValueAt(i, 3).toString());
+                        spinfb.setQtde(tableitensnota.getValueAt(i, 4).toString());
+                        spinfb.setValor(tableitensnota.getValueAt(i, 5).toString());
+                        spinfb.setTotal(tableitensnota.getValueAt(i, 6).toString());
+                        spinfb.setNfretorno(tableitensnota.getValueAt(i, 7).toString());
+                        spinfb.setId(Integer.parseInt(tableitensnota.getValueAt(i, 1).toString()));
+
+                        //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?,  nfretorno = ? WHERE id = ?
+                        spinfd.update(spinfb);
+                    }
+                }
+            }
+
+            //Criar documentos do pedido
+            ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+            ServicoPedidoDocumentosBean spdb = new ServicoPedidoDocumentosBean();
+
+            if (tabledocumentos.getRowCount() > 0) {
+                for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                    if (tabledocumentos.getValueAt(i, 1).equals("")) {
+                        File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                        File folder = new File("Q:/MIKE_ERP/ped_ser_arq/" + txtnumeropedido.getText());
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                        folder.mkdirs();
+                        try {
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                        } catch (IOException ex) {
+                            Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                            try {
+                                SendEmail.EnviarErro(ex.toString());
+                                JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                            } catch (HeadlessException hex) {
+                                JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                            } catch (AWTException | IOException ex1) {
+                                Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            }
+                        }
+
+                        //Salvar arquivos no DB
+                        spdb.setIdpedido(txtnumeropedido.getText());
+                        spdb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
+                        spdb.setLocal(filecopy.toString());
+                        //idorcamento, descricao, local
+
+                        spdd.create(spdb);
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+            filltablepedidoorcamento();
+            camposeditaveis();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void tablepedidoservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablepedidoservicoMouseClicked
@@ -914,35 +1351,26 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             ServicoPedidoDAO spd = new ServicoPedidoDAO();
 
             for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
-                txtnomecliente.setText(spb.getCliente());
+                txtcliente.setText(spb.getCliente());
                 txtcondicao.setText(spb.getCondicao());
                 txtrepresentante.setText(spb.getRepresentante());
                 txtvendedor.setText(spb.getVendedor());
-                txtstatus.setText(spb.getStatus());
+                txtstatusretorno.setText(spb.getStatus_retorno());
+                txtstatuscobranca.setText(spb.getStatus_cobranca());
                 txtnotes.setText(spb.getNotes());
                 txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
+                txtnfcliente.setText(spb.getNfcliente());
             }
 
-            DefaultTableModel model = (DefaultTableModel) tableitensorcamento.getModel();
-            model.setNumRows(0);
-            ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+            camposeditaveis();
 
-            for (ServicoPedidoItensBean spib : spid.readitens(txtnumeropedido.getText())) {
-                model.addRow(new Object[]{
-                    false,
-                    spib.getId(),
-                    spib.getCodigo(),
-                    spib.getDescricao(),
-                    spib.getQtde(),
-                    spib.getValor(),
-                    spib.getTotal(),
-                    spib.getPrazo(),
-                    spib.getPedidocliente(),
-                    spib.getNf()
-                });
-            }
+            readitenscobranca();
 
-            txtvalor();
+            txtvalorcobranca();
+            
+            readitensretorno();
+            
+            txtvalorretorno();
 
             DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
             modeldoc.setNumRows(0);
@@ -958,6 +1386,179 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tablepedidoservicoMouseClicked
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        JOptionPane.showMessageDialog(rootPane, "Em breve!");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja criar um novo pedido?", "Novo pedido", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            txtcliente.setText("");
+            txtcondicao.setText("");
+            txtrepresentante.setText("");
+            txtvendedor.setText("");
+            txtnumeropedido.setText("");
+            txtstatusretorno.setText("");
+            txtorcamento.setText("");
+            txtnfcliente.setText("");
+            txttotal.setText("");
+            txtnotes.setText("");
+            DefaultTableModel modelo = (DefaultTableModel) tableitensorcamento.getModel();
+            DefaultTableModel modeln = (DefaultTableModel) tableitensnota.getModel();
+            DefaultTableModel modeld = (DefaultTableModel) tabledocumentos.getModel();
+            modelo.setNumRows(0);
+            modeln.setNumRows(0);
+            modeld.setNumRows(0);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        ItemRetornoServico p = new ItemRetornoServico();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        int rc = tableitensorcamento.getRowCount();
+        int numerotrue = 0;
+        int numeronota = 0;
+        int numeronota2 = 0;
+        for (int i = 0; i < rc; i++) {
+            if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
+                numerotrue++;
+            }
+            if (tableitensorcamento.getValueAt(i, 0).equals(true) && !tableitensorcamento.getValueAt(i, 10).equals("")) {
+                numeronota++;
+            }
+        }
+        if (numerotrue == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Escolha um item primeiro!");
+        } else if (numeronota > 0) {
+            JOptionPane.showMessageDialog(rootPane, "Item selecionado já com nota fiscal.");
+        } else {
+            ServicoPedidoDAO spd = new ServicoPedidoDAO();
+            ServicoPedidoBean spb = new ServicoPedidoBean();
+
+            String nota = JOptionPane.showInputDialog(rootPane, "Qual o número da nota de cobrança?", "Nota de Cobrança", JOptionPane.YES_NO_OPTION);
+            for (int i = 0; i < rc; i++) {
+                if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
+                    ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+                    ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+
+                    spib.setNf(nota);
+                    spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
+
+                    //nf = ? WHERE id = ?
+                    spid.updatenotacobranca(spib);
+                }
+            }
+            readitenscobranca();
+            for (int i = 0; i < rc; i++) {
+                if (!tableitensorcamento.getValueAt(i, 10).equals("")) {
+                    numeronota2++;
+                }
+            }
+            if (numeronota2 < rc) {
+                spb.setStatus_cobranca("Parcial");
+                spb.setIdtela(txtnumeropedido.getText());
+
+                //status_cobranca = ? WHERE idtela = ?
+                spd.updatestatuscobranca(spb);
+            } else {
+                spb.setStatus_cobranca("Faturado");
+                spb.setIdtela(txtnumeropedido.getText());
+
+                //status_cobranca = ? WHERE idtela = ?
+                spd.updatestatuscobranca(spb);
+            }
+            filltablepedidoorcamento();
+        }
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void tableitensorcamentoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableitensorcamentoMouseClicked
+        if (evt.getClickCount() == 2) {
+            ItemPedidoServico p = new ItemPedidoServico();
+            JDesktopPane desk = this.getDesktopPane();
+
+            desk.add(p);
+            Dimension desktopsize = jDesktopPane1.getSize();
+            Dimension jinternalframesize = p.getSize();
+            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+            p.setVisible(true);
+
+            int row = tableitensorcamento.getSelectedRow();
+            ItemPedidoServico.txtrow.setText(String.valueOf(row));
+            ItemPedidoServico.txtid.setText(tableitensorcamento.getValueAt(row, 1).toString());
+            ItemPedidoServico.txtcodigo.setText(tableitensorcamento.getValueAt(row, 2).toString());
+            ItemPedidoServico.txtdesc.setText(tableitensorcamento.getValueAt(row, 3).toString());
+            ItemPedidoServico.txtqtd.setText(tableitensorcamento.getValueAt(row, 4).toString());
+            ItemPedidoServico.txtvalor.setText(tableitensorcamento.getValueAt(row, 5).toString());
+            ItemPedidoServico.txtprazo.setText(tableitensorcamento.getValueAt(row, 7).toString());
+            ItemPedidoServico.txtpedido.setText(tableitensorcamento.getValueAt(row, 8).toString());
+        }
+    }//GEN-LAST:event_tableitensorcamentoMouseClicked
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        int rc = tableitensnota.getRowCount();
+        int numerotrue = 0;
+        int numeronota = 0;
+        int numeronota2 = 0;
+        for (int i = 0; i < rc; i++) {
+            if (tableitensnota.getValueAt(i, 0).equals(true)) {
+                numerotrue++;
+            }
+            if (tableitensnota.getValueAt(i, 0).equals(true) && !tableitensnota.getValueAt(i, 7).equals("")) {
+                numeronota++;
+            }
+        }
+        if (numerotrue == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Escolha um item primeiro!");
+        } else if (numeronota > 0) {
+            JOptionPane.showMessageDialog(rootPane, "Item selecionado já com nota fiscal.");
+        } else {
+            ServicoPedidoDAO spd = new ServicoPedidoDAO();
+            ServicoPedidoBean spb = new ServicoPedidoBean();
+
+            String nota = JOptionPane.showInputDialog(rootPane, "Qual o número da nota de retorno?", "Nota de Retorno", JOptionPane.YES_NO_OPTION);
+            for (int i = 0; i < rc; i++) {
+                if (tableitensnota.getValueAt(i, 0).equals(true)) {
+                    ServicoPedidoItensNFDAO spid = new ServicoPedidoItensNFDAO();
+                    ServicoPedidoItensNFBean spib = new ServicoPedidoItensNFBean();
+
+                    spib.setNfretorno(nota);
+                    spib.setId(Integer.parseInt(tableitensnota.getValueAt(i, 1).toString()));
+
+                    //nf = ? WHERE id = ?
+                    spid.updatenotaretorno(spib);
+                }
+            }
+            readitensretorno();
+            for (int i = 0; i < rc; i++) {
+                if (!tableitensnota.getValueAt(i, 7).equals("")) {
+                    numeronota2++;
+                }
+            }
+            if (numeronota2 < rc) {
+                spb.setStatus_retorno("Parcial");
+                spb.setIdtela(txtnumeropedido.getText());
+
+                //status_retorno = ? WHERE idtela = ?
+                spd.updatestatusretorno(spb);
+            } else {
+                spb.setStatus_retorno("Faturado");
+                spb.setIdtela(txtnumeropedido.getText());
+
+                //status_retorno = ? WHERE idtela = ?
+                spd.updatestatusretorno(spb);
+            }
+            filltablepedidoorcamento();
+        }
+    }//GEN-LAST:event_jButton12ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnCondicao;
@@ -966,16 +1567,21 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private javax.swing.JButton BtnVendedor;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -986,6 +1592,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1002,21 +1609,22 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField nfcliente;
-    private javax.swing.JTable tabledocumentos;
-    private javax.swing.JTable tableitensnota;
+    public static javax.swing.JTable tabledocumentos;
+    public static javax.swing.JTable tableitensnota;
     public static javax.swing.JTable tableitensorcamento;
     public static javax.swing.JTable tablepedidoservico;
     public static javax.swing.JTabbedPane tabpedidos;
+    public static javax.swing.JTextField txtcliente;
     public static javax.swing.JTextField txtcondicao;
-    public static javax.swing.JTextField txtnomecliente;
+    public static javax.swing.JTextField txtnfcliente;
     public static javax.swing.JTextArea txtnotes;
     public static javax.swing.JTextField txtnumeropedido;
     public static javax.swing.JTextField txtorcamento;
     public static javax.swing.JTextField txtrepresentante;
-    public static javax.swing.JTextField txtstatus;
+    private javax.swing.JTextField txtstatuscobranca;
+    public static javax.swing.JTextField txtstatusretorno;
     public static javax.swing.JTextField txttotal;
-    private javax.swing.JTextField txttotalnota;
+    public static javax.swing.JTextField txttotalretorno;
     public static javax.swing.JTextField txtvendedor;
     // End of variables declaration//GEN-END:variables
 }

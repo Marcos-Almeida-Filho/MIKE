@@ -31,15 +31,14 @@ public class ServicoMateriaisDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servicos_materiais (codigo, descricao, estoque, grupo_de_processos) VALUES (?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO servicos_materiais (codigo, descricao, estoque, grupo_de_processos, data) VALUES (?,?,?,?,?)");
             stmt.setString(1, smb.getCodigo());
             stmt.setString(2, smb.getDescricao());
             stmt.setInt(3, smb.getEstoque());
             stmt.setString(4, smb.getGrupo_de_processos());
+            stmt.setString(5, smb.getData());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + e);
         } finally {
@@ -67,6 +66,39 @@ public class ServicoMateriaisDAO {
                 sob.setId(rs.getInt("id"));
                 sob.setCodigo(rs.getString("codigo"));
                 sob.setDescricao(rs.getString("descricao"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
+    
+    public List<ServicoMateriaisBean> readcreated(String nome, String data) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoMateriaisBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * from servicos_materiais WHERE codigo = ? AND data = ?");
+            stmt.setString(1, nome);
+            stmt.setString(2, data);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoMateriaisBean sob = new ServicoMateriaisBean();
+
+                sob.setId(rs.getInt("id"));
 
                 listso.add(sob);
             }

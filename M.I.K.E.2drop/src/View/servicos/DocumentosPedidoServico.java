@@ -106,47 +106,22 @@ public class DocumentosPedidoServico extends javax.swing.JInternalFrame {
             txtdescarquivo.requestFocus();
         } else {
             File fileoriginal = chooser.getSelectedFile();
-            File folder = new File("Q:/MIKE_ERP/ped_ser_arq/" + OrcamentoServico.txtnumeroorcamento.getText());
-            File filecopy = new File(folder + "/" + fileoriginal.getName());
             if (evt.getActionCommand().equals("ApproveSelection")) {
-                folder.mkdirs();
-//                try {
-//                    FileWriter writer = new FileWriter(folder);
-//                    dispose();
-//                } catch (IOException ex) {
-//                    Logger.getLogger(DocumentosOrcamento.class.getName()).log(Level.SEVERE, null, ex);
-//                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n"+ex);
-//                }
-                try {
-                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                    DefaultTableModel model = (DefaultTableModel) OrcamentoServico.tabledocumentos.getModel();
-                    model.addRow(new Object[]{
-                        false,
-                        "",
-                        txtdescarquivo.getText(),
-                        filecopy.toString()
-                    });
-                    JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
-                    dispose();
-                } catch (IOException ex) {
-                    Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-                    try {
-                        SendEmail.EnviarErro(ex.toString());
-                        JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                    } catch (HeadlessException hex) {
-                        JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
-                    } catch (AWTException | IOException ex1) {
-                        Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
-                    }
-                }
-
+                DefaultTableModel model = (DefaultTableModel) PedidoServico.tabledocumentos.getModel();
+                model.addRow(new Object[]{
+                    false,
+                    "",
+                    txtdescarquivo.getText(),
+                    "",
+                    fileoriginal.toString()
+                });
+                dispose();
+                JOptionPane.showMessageDialog(null, "Incluído com sucesso!");
             }
             if (evt.getActionCommand().equals("CancelSelection")) {
                 dispose();
             }
         }
-
     }//GEN-LAST:event_chooserActionPerformed
 
 

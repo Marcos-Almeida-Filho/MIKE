@@ -71,6 +71,7 @@ public class Usuarios extends javax.swing.JInternalFrame {
         txtid.setText("");
         txtnome.setText("");
         txtnome.requestFocus();
+        txtapelido.setText("");
         txtcpf.setText("");
         txtrg.setText("");
         txtnascimento.setText("");
@@ -128,6 +129,8 @@ public class Usuarios extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         txtrg = new javax.swing.JFormattedTextField();
         txtnascimento = new javax.swing.JFormattedTextField();
+        jLabel21 = new javax.swing.JLabel();
+        txtapelido = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
@@ -345,6 +348,8 @@ public class Usuarios extends javax.swing.JInternalFrame {
             ex.printStackTrace();
         }
 
+        jLabel21.setText("Como chamar:");
+
         javax.swing.GroupLayout paneldadospessoaisLayout = new javax.swing.GroupLayout(paneldadospessoais);
         paneldadospessoais.setLayout(paneldadospessoaisLayout);
         paneldadospessoaisLayout.setHorizontalGroup(
@@ -364,7 +369,11 @@ public class Usuarios extends javax.swing.JInternalFrame {
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtrg, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel21)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtapelido)
+                        .addContainerGap())
                     .addGroup(paneldadospessoaisLayout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -393,7 +402,9 @@ public class Usuarios extends javax.swing.JInternalFrame {
                     .addComponent(jLabel9)
                     .addComponent(txtcpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
-                    .addComponent(txtrg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtrg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21)
+                    .addComponent(txtapelido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(paneldadospessoaisLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -691,6 +702,7 @@ public class Usuarios extends javax.swing.JInternalFrame {
             ub.setNome(txtnome.getText());
             ub.setCpf(txtcpf.getText());
             ub.setRg(txtrg.getText());
+            ub.setApelido(txtapelido.getText());
             ub.setDatanascimento(txtnascimento.getText());
             ub.setEmailpessoal(txtemail.getText());
             ub.setTelefonefixo(txtfixo.getText());
@@ -722,6 +734,7 @@ public class Usuarios extends javax.swing.JInternalFrame {
             String vend;
 
             cbean.setNome(txtnome.getText());
+            cbean.setApelido(txtapelido.getText());
             cbean.setEmailpessoal(txtemail.getText());
             cbean.setDataadmissao(txtadmissao.getText());
             cbean.setTelefonefixo(txtfixo.getText());
@@ -755,7 +768,6 @@ public class Usuarios extends javax.swing.JInternalFrame {
 
             String vend;
 
-            //nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ? WHERE id = ?
             cbean.setNome(txtnome.getText());
             cbean.setEmailpessoal(txtemail.getText());
             cbean.setDataadmissao(txtadmissao.getText());
@@ -779,7 +791,10 @@ public class Usuarios extends javax.swing.JInternalFrame {
             cbean.setRg(txtrg.getText());
             cbean.setLivrofolha(txtlivro.getText());
             cbean.setNivel(cbnivel.getSelectedItem().toString());
+            cbean.setApelido(txtapelido.getText());
             cbean.setId(Integer.parseInt(txtid.getText()));
+            
+            //nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ?, nivel = ? , apelido = ? WHERE id = ?
             cdao.update(cbean);
             zeracampos();
             tabusuarios.setSelectedIndex(0);
@@ -798,6 +813,7 @@ public class Usuarios extends javax.swing.JInternalFrame {
                 txtnome.setText(ub.getNome());
                 txtcpf.setText(ub.getCpf());
                 txtrg.setText(ub.getRg());
+                txtapelido.setText(ub.getApelido());
                 txtnascimento.setText(ub.getDatanascimento());
                 txtemail.setText(ub.getEmailpessoal());
                 txtfixo.setText(ub.getTelefonefixo());
@@ -842,6 +858,7 @@ public class Usuarios extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -864,6 +881,7 @@ public class Usuarios extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tableusuarios;
     private javax.swing.JTabbedPane tabusuarios;
     public static javax.swing.JFormattedTextField txtadmissao;
+    public static javax.swing.JTextField txtapelido;
     public static javax.swing.JTextField txtcargo;
     public static javax.swing.JFormattedTextField txtcelular;
     public static javax.swing.JFormattedTextField txtcpf;

@@ -30,6 +30,7 @@ public class UsuariosBean {
     private String rg;
     private String livrofolha;
     private String nivel;
+    private String apelido;
 
     public int getId() {
         return id;
@@ -181,6 +182,14 @@ public class UsuariosBean {
 
     public void setNivel(String nivel) {
         this.nivel = nivel;
+    }
+
+    public String getApelido() {
+        return apelido;
+    }
+
+    public void setApelido(String apelido) {
+        this.apelido = apelido;
     }
 
 }
