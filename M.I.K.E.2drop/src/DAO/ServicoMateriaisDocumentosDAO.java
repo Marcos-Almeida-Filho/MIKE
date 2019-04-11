@@ -7,7 +7,6 @@ package DAO;
 
 import Bean.ServicoMateriaisDocumentosBean;
 import Connection.ConnectionFactory;
-import View.servicos.ServicoMateriais;
 import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

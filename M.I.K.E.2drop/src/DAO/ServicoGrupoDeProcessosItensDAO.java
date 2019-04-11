@@ -73,6 +73,37 @@ public class ServicoGrupoDeProcessosItensDAO {
         }
         return listpsb;
     }
+    
+    public List<ServicoGrupoDeProcessosItensBean> reados(String nome) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoGrupoDeProcessosItensBean> listpsb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_grupo_processos_itens WHERE id_grupo = ?");
+            stmt.setString(1, nome);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoGrupoDeProcessosItensBean psb = new ServicoGrupoDeProcessosItensBean();
+
+                psb.setId(rs.getInt("id"));
+                psb.setProcesso(rs.getString("processo"));
+
+                listpsb.add(psb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listpsb;
+    }
 
     public void update(ServicoGrupoDeProcessosItensBean psb) {
 

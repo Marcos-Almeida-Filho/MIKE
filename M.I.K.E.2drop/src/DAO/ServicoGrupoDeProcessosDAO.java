@@ -35,7 +35,6 @@ public class ServicoGrupoDeProcessosDAO {
             stmt.setString(1, psb.getNome());
 
             stmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
         } finally {
@@ -62,6 +61,36 @@ public class ServicoGrupoDeProcessosDAO {
 
                 psb.setId(rs.getInt("id"));
                 psb.setNome(rs.getString("nome"));
+
+                listpsb.add(psb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listpsb;
+    }
+    
+    public List<ServicoGrupoDeProcessosBean> readidgrupo(String nome) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoGrupoDeProcessosBean> listpsb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT id FROM servicos_grupo_processos WHERE nome = ?");
+            stmt.setString(1, nome);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
+
+                psb.setId(rs.getInt("id"));
 
                 listpsb.add(psb);
             }

@@ -25,7 +25,7 @@ public class ProcurarGrupoDeProcessosServico extends javax.swing.JInternalFrame 
         readtablegrupo();
     }
 
-    public void readtablegrupo() {
+    public static void readtablegrupo() {
         DefaultTableModel model = (DefaultTableModel) tablegrupo.getModel();
         model.setNumRows(0);
         ServicoGrupoDeProcessosDAO sgdpd = new ServicoGrupoDeProcessosDAO();

@@ -13,7 +13,7 @@ package Bean;
 public class OSDocumentosBean {
     
     private int id;
-    private String idtela;
+    private String idos;
     private String desc;
     private String local;
 
@@ -25,12 +25,12 @@ public class OSDocumentosBean {
         this.id = id;
     }
 
-    public String getIdtela() {
-        return idtela;
+    public String getIdos() {
+        return idos;
     }
 
-    public void setIdtela(String idtela) {
-        this.idtela = idtela;
+    public void setIdos(String idos) {
+        this.idos = idos;
     }
 
     public String getDesc() {

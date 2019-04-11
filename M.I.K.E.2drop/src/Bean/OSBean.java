@@ -20,8 +20,10 @@ public class OSBean {
     private String cliente;
     private String das;
     private String codigo;
-    private String desc;
-    private String qtd;
+    private String descricao;
+    private int qtdinicial;
+    private int qtdok;
+    private int qtdnaook;
     private String notes;
     private String topo;
     private String reconstrucao;
@@ -92,20 +94,36 @@ public class OSBean {
         this.codigo = codigo;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
-    public String getQtd() {
-        return qtd;
+    public int getQtdinicial() {
+        return qtdinicial;
     }
 
-    public void setQtd(String qtd) {
-        this.qtd = qtd;
+    public void setQtdinicial(int qtdinicial) {
+        this.qtdinicial = qtdinicial;
+    }
+
+    public int getQtdok() {
+        return qtdok;
+    }
+
+    public void setQtdok(int qtdok) {
+        this.qtdok = qtdok;
+    }
+
+    public int getQtdnaook() {
+        return qtdnaook;
+    }
+
+    public void setQtdnaook(int qtdnaook) {
+        this.qtdnaook = qtdnaook;
     }
 
     public String getNotes() {

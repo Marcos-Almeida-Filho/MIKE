@@ -5,20 +5,40 @@
  */
 package View.servicos;
 
+import Bean.OSBean;
 import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
 import Bean.ServicoPedidoItensNFBean;
+import DAO.OSDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import DAO.ServicoPedidoItensNFDAO;
 import Methods.SendEmail;
+import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
+import static View.servicos.OS.radioreconstrucao;
+import static View.servicos.OS.radiotopo;
+import static View.servicos.OS.readdocs;
+import static View.servicos.OS.readprocessos;
+import static View.servicos.OS.travarcampos;
+import static View.servicos.OS.txtcodigo;
+import static View.servicos.OS.txtdesc;
+import static View.servicos.OS.txtfinal;
+import static View.servicos.OS.txtfrontal;
+import static View.servicos.OS.txtinicial;
+import static View.servicos.OS.txtmortas;
+import static View.servicos.OS.txtnumeroos;
+import static View.servicos.OS.txtraio;
+import static View.servicos.OS.txtstatus;
 import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,7 +50,9 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -79,7 +101,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             txttotal.setText(String.valueOf(valorf));
         }
     }
-    
+
     public static void txtvalorretorno() {
         if (tableitensnota.getRowCount() < 1) {
             txttotalretorno.setText("");
@@ -129,7 +151,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             });
         }
     }
-    
+
     public static void readitensretorno() {
         DefaultTableModel model = (DefaultTableModel) tableitensnota.getModel();
         model.setNumRows(0);
@@ -698,6 +720,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableitensorcamentoMouseClicked(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tableitensorcamentoMouseReleased(evt);
+            }
         });
         jScrollPane3.setViewportView(tableitensorcamento);
         if (tableitensorcamento.getColumnModel().getColumnCount() > 0) {
@@ -743,6 +768,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jButton5.setText("Excluir");
 
         jButton6.setText("Abrir OS's");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jLabel10.setText("Total: R$");
 
@@ -1367,9 +1397,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             readitenscobranca();
 
             txtvalorcobranca();
-            
+
             readitensretorno();
-            
+
             txtvalorretorno();
 
             DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
@@ -1480,25 +1510,87 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void tableitensorcamentoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableitensorcamentoMouseClicked
-        if (evt.getClickCount() == 2) {
-            ItemPedidoServico p = new ItemPedidoServico();
-            JDesktopPane desk = this.getDesktopPane();
+        if (evt.getButton() == 1) {
+            if (evt.getClickCount() == 2) {
+                ItemPedidoServico p = new ItemPedidoServico();
+                JDesktopPane desk = this.getDesktopPane();
 
-            desk.add(p);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = p.getSize();
-            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            p.setVisible(true);
+                desk.add(p);
+                Dimension desktopsize = jDesktopPane1.getSize();
+                Dimension jinternalframesize = p.getSize();
+                p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+                p.setVisible(true);
 
-            int row = tableitensorcamento.getSelectedRow();
-            ItemPedidoServico.txtrow.setText(String.valueOf(row));
-            ItemPedidoServico.txtid.setText(tableitensorcamento.getValueAt(row, 1).toString());
-            ItemPedidoServico.txtcodigo.setText(tableitensorcamento.getValueAt(row, 2).toString());
-            ItemPedidoServico.txtdesc.setText(tableitensorcamento.getValueAt(row, 3).toString());
-            ItemPedidoServico.txtqtd.setText(tableitensorcamento.getValueAt(row, 4).toString());
-            ItemPedidoServico.txtvalor.setText(tableitensorcamento.getValueAt(row, 5).toString());
-            ItemPedidoServico.txtprazo.setText(tableitensorcamento.getValueAt(row, 7).toString());
-            ItemPedidoServico.txtpedido.setText(tableitensorcamento.getValueAt(row, 8).toString());
+                int row = tableitensorcamento.getSelectedRow();
+                ItemPedidoServico.txtrow.setText(String.valueOf(row));
+                ItemPedidoServico.txtid.setText(tableitensorcamento.getValueAt(row, 1).toString());
+                ItemPedidoServico.txtcodigo.setText(tableitensorcamento.getValueAt(row, 2).toString());
+                ItemPedidoServico.txtdesc.setText(tableitensorcamento.getValueAt(row, 3).toString());
+                ItemPedidoServico.txtqtd.setText(tableitensorcamento.getValueAt(row, 4).toString());
+                ItemPedidoServico.txtvalor.setText(tableitensorcamento.getValueAt(row, 5).toString());
+                ItemPedidoServico.txtprazo.setText(tableitensorcamento.getValueAt(row, 7).toString());
+                ItemPedidoServico.txtpedido.setText(tableitensorcamento.getValueAt(row, 8).toString());
+            }
+        }
+        if (evt.getButton() == 3) {
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem das = new JMenuItem("Abrir OS");
+
+            das.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    String OS = tableitensorcamento.getValueAt(tableitensorcamento.getSelectedRow(), 9).toString();
+                    if (OS.equals("")) {
+                        JOptionPane.showMessageDialog(rootPane, "Produto sem OS");
+                    } else {
+                        OS p = new OS();
+                        jDesktopPane1.add(p);
+                        p.setVisible(true);
+                        try {
+                            p.setMaximum(true);
+                        } catch (PropertyVetoException ex) {
+                            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        p.txtnumeroos.setText(OS);
+                        p.tabos.setSelectedIndex(1);
+
+                        OSDAO od = new OSDAO();
+
+                        for (OSBean ob : od.click(txtnumeroos.getText())) {
+                            p.txtabertura.setText(ob.getDataabertura());
+                            p.txtprevisao.setText(ob.getDataprevisao());
+                            txtstatus.setText(ob.getStatus());
+                            txtcliente.setText(ob.getCliente());
+                            txtcodigo.setText(ob.getCodigo());
+                            txtdesc.setText(ob.getDescricao());
+                            txtinicial.setText(String.valueOf(ob.getQtdinicial()));
+                            txtfinal.setText(String.valueOf(ob.getQtdok()));
+                            txtmortas.setText(String.valueOf(ob.getQtdnaook()));
+                            txtnotes.setText(ob.getNotes());
+                            if (ob.getTopo().equals("true")) {
+                                radiotopo.setSelected(true);
+                            } else {
+                                radioreconstrucao.setSelected(true);
+                            }
+                            txtraio.setText(ob.getRaio());
+                            txtfrontal.setText(ob.getFrontal());
+
+                        }
+
+                        //Pegar documentos
+                        p.readdocs();
+
+                        //Pegar processos
+                        p.readprocessos();
+
+                        //Travar campos de acordo com status da op
+                        p.travarcampos();
+                    }
+                }
+            });
+
+            menu.add(das);
+
+            menu.show(evt.getComponent(), evt.getPoint().x, evt.getPoint().y);
         }
     }//GEN-LAST:event_tableitensorcamentoMouseClicked
 
@@ -1558,6 +1650,114 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             filltablepedidoorcamento();
         }
     }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        int numerotrue = 0;
+        int numerooss = 0;
+        for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+            if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
+                numerotrue++;
+            }
+            if (tableitensorcamento.getValueAt(i, 0).equals(true) && !tableitensorcamento.getValueAt(i, 9).equals("")) {
+                numerooss++;
+            }
+        }
+        if (numerotrue == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Não foram selecionados itens para abrir OS.");
+        } else if (numerooss > 0) {
+            JOptionPane.showMessageDialog(rootPane, "Item(ns) com OS selecionado(s).");
+        } else {
+            OSDAO od = new OSDAO();
+            OSBean ob = new OSBean();
+
+            ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+            ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+            for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+                if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
+                    try {
+                        if (od.readnome() == false) {
+                            Calendar ca = Calendar.getInstance();
+                            String patterny = "yy";
+                            SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+                            String year = simpleDateFormaty.format(ca.getTime());
+                            String idtela = year + "-0001";
+                            ob.setIdtela(idtela);
+                        } else {
+                            Calendar ca = Calendar.getInstance();
+                            String patterny = "yy";
+                            SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+                            String year = simpleDateFormaty.format(ca.getTime());
+                            String hua = "";
+                            for (OSBean sob2 : od.read()) {
+                                hua = String.valueOf(sob2.getIdtela());
+                            }
+                            int yearint = Integer.parseInt(hua.replace(year + "-", ""));
+                            int yearnovo = yearint + 1;
+                            String idtela = year + "-" + String.format("%04d", yearnovo);
+                            ob.setIdtela(idtela);
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(OrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    Calendar c = Calendar.getInstance();
+                    String pattern = "dd/MM/yyyy HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    String data = simpleDateFormat.format(c.getTime());
+                    ob.setDataabertura(data);
+                    int days = Integer.parseInt(tableitensorcamento.getValueAt(i, 7).toString().replace(" dias", ""));
+                    c.add(Calendar.DAY_OF_MONTH, days);
+                    ob.setDataprevisao(simpleDateFormat.format(c.getTime()));
+                    ob.setStatus("Rascunho");
+                    ob.setCliente(txtcliente.getText());
+                    ob.setDas("");
+                    ob.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
+                    ob.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
+                    ob.setQtdinicial(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
+                    ob.setQtdok(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
+                    ob.setQtdnaook(0);
+                    ob.setNotes(txtnotes.getText());
+                    ob.setTopo("false");
+                    ob.setReconstrucao("false");
+                    ob.setRaio("");
+                    ob.setFrontal("");
+
+                    //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, desc, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
+                    od.create(ob);
+
+                    String oscriada = "";
+
+                    for (OSBean osb : od.readcreated(tableitensorcamento.getValueAt(i, 2).toString(), data)) {
+                        oscriada = osb.getIdtela();
+                    }
+
+                    spib.setIdpedido(txtnumeropedido.getText());
+                    spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
+                    spib.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
+                    spib.setQtde(tableitensorcamento.getValueAt(i, 4).toString());
+                    spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
+                    spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
+                    spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
+                    spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
+                    spib.setOs(oscriada);
+                    spib.setNf(tableitensorcamento.getValueAt(i, 10).toString());
+                    spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
+
+                    //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?
+                    spid.update(spib);
+                }
+            }
+            readitenscobranca();
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void tableitensorcamentoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableitensorcamentoMouseReleased
+        int r = tableitensorcamento.rowAtPoint(evt.getPoint());
+        if (r >= 0 && r < tableitensorcamento.getRowCount()) {
+            tableitensorcamento.setRowSelectionInterval(r, r);
+        } else {
+            tableitensorcamento.clearSelection();
+        }
+    }//GEN-LAST:event_tableitensorcamentoMouseReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

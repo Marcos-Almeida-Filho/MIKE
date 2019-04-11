@@ -57,7 +57,7 @@ public class ServicoMateriaisDAO {
         List<ServicoMateriaisBean> listso = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * from servicos_materiais");
+            stmt = con.prepareStatement("SELECT * FROM servicos_materiais");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -66,6 +66,38 @@ public class ServicoMateriaisDAO {
                 sob.setId(rs.getInt("id"));
                 sob.setCodigo(rs.getString("codigo"));
                 sob.setDescricao(rs.getString("descricao"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
+    
+    public List<ServicoMateriaisBean> readgrupo(String codigo) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoMateriaisBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT grupo_de_processos FROM servicos_materiais WHERE codigo = ?");
+            stmt.setString(1, codigo);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoMateriaisBean sob = new ServicoMateriaisBean();
+
+                sob.setGrupo_de_processos(rs.getString("grupo_de_processos"));
 
                 listso.add(sob);
             }

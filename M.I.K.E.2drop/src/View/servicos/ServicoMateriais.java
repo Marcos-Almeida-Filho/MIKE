@@ -645,6 +645,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                 }
             }
         }
+        readtablemateriais();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void tablelistamaterialservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablelistamaterialservicoMouseClicked
@@ -700,6 +701,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja cadastrar um novo material de serviço?", "Novo Material de Serviço", JOptionPane.YES_NO_OPTION);
         if (resp == 0) {
             zeracampos();
+            DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
+            model.setNumRows(0);
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
