@@ -79,6 +79,38 @@ public class ServicoMateriaisDAO {
 
     }
     
+    public List<ServicoMateriaisBean> readid(String codigo) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoMateriaisBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT id FROM servicos_materiais WHERE codigo = ?");
+            stmt.setString(1, codigo);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoMateriaisBean sob = new ServicoMateriaisBean();
+
+                sob.setId(rs.getInt("id"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
+    
     public List<ServicoMateriaisBean> readgrupo(String codigo) {
 
         Connection con = ConnectionFactory.getConnection();

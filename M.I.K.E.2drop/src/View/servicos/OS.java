@@ -7,12 +7,14 @@ package View.servicos;
 
 import Bean.OSBean;
 import Bean.OSDocumentosBean;
+import Bean.OSInspecaoBean;
 import Bean.OSProcessosBean;
 import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
 import DAO.OSDAO;
 import DAO.OSDocumentosDAO;
+import DAO.OSInspecaoDAO;
 import DAO.OSProcessosDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
@@ -26,6 +28,7 @@ import static View.servicos.OrcamentoServico.txtnumeroorcamento;
 import static View.servicos.OrcamentoServico.txtvalor;
 import static View.servicos.PedidoServico.txtnumeropedido;
 import java.awt.AWTException;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -237,6 +240,24 @@ public class OS extends javax.swing.JInternalFrame {
         }
     }
 
+    public static void readinspecoes() {
+        DefaultTableModel model = (DefaultTableModel) tableinspecoes.getModel();
+        model.setNumRows(0);
+        
+        OSInspecaoDAO oid = new OSInspecaoDAO();
+        for(OSInspecaoBean oib : oid.reados(txtnumeroos.getText())) {
+            model.addRow(new Object[]{
+                oib.getId(),
+                oib.getProcesso(),
+                oib.getMedida(),
+                oib.getMedidamaior(),
+                oib.getMedidamenor(),
+                oib.getFuncionario(),
+                oib.getInstrumento()
+            });
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -314,7 +335,7 @@ public class OS extends javax.swing.JInternalFrame {
         btnmudarprocesso = new javax.swing.JButton();
         jPanel14 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        tableinspecoes = new javax.swing.JTable();
         jPanel13 = new javax.swing.JPanel();
         txtfinal = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
@@ -795,6 +816,11 @@ public class OS extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tabledoc.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabledocMouseClicked(evt);
+            }
+        });
         jScrollPane5.setViewportView(tabledoc);
         if (tabledoc.getColumnModel().getColumnCount() > 0) {
             tabledoc.getColumnModel().getColumn(0).setMinWidth(40);
@@ -954,27 +980,27 @@ public class OS extends javax.swing.JInternalFrame {
 
         tabadp.addTab("Processos", jPanel10);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tableinspecoes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Medida", "Maior Valor do Lote", "Menor Valor do Lote", "Funcionário", "Instrumento de Medição"
+                "ID", "Processo", "Medida", "Maior Valor do Lote", "Menor Valor do Lote", "Funcionário", "Instrumento de Medição"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane6.setViewportView(jTable2);
-        if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(0).setMinWidth(0);
-            jTable2.getColumnModel().getColumn(0).setPreferredWidth(0);
-            jTable2.getColumnModel().getColumn(0).setMaxWidth(0);
+        jScrollPane6.setViewportView(tableinspecoes);
+        if (tableinspecoes.getColumnModel().getColumnCount() > 0) {
+            tableinspecoes.getColumnModel().getColumn(0).setMinWidth(0);
+            tableinspecoes.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableinspecoes.getColumnModel().getColumn(0).setMaxWidth(0);
         }
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
@@ -1436,6 +1462,7 @@ public class OS extends javax.swing.JInternalFrame {
                     p.setVisible(true);
                     ProcessoOS.txtid.setText(tableprocessos.getValueAt(tableprocessos.getSelectedRow(), 1).toString());
                     ProcessoOS.txtinicial.setText(txtinicial.getText());
+                    ProcessoOS.txtrow.setText(String.valueOf(tableprocessos.getSelectedRow()));
                     ProcessoOS.readprocesso();
                     ProcessoOS.readinspecao();
                 }
@@ -1521,6 +1548,9 @@ public class OS extends javax.swing.JInternalFrame {
 
             //Travar campos de acordo com status da op
             travarcampos();
+
+            //Pegar inspeções
+            readinspecoes();
         }
     }//GEN-LAST:event_tableosMouseClicked
 
@@ -1605,6 +1635,17 @@ public class OS extends javax.swing.JInternalFrame {
         p.setVisible(true);
     }//GEN-LAST:event_btnalterarstatusActionPerformed
 
+    private void tabledocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocMouseClicked
+        if (evt.getClickCount() == 2) {
+            Desktop desk = Desktop.getDesktop();
+            try {
+                desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
+            } catch (IOException ex) {
+                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_tabledocMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnalterarstatus;
@@ -1660,12 +1701,12 @@ public class OS extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane6;
     public javax.swing.JScrollPane jScrollPane7;
     public javax.swing.JTable jTable1;
-    public javax.swing.JTable jTable2;
     public static javax.swing.JRadioButton radioreconstrucao;
     public static javax.swing.JRadioButton radiotopo;
     public javax.swing.JRadioButton radiovazio;
     public static javax.swing.JTabbedPane tabadp;
     public static javax.swing.JTable tabledoc;
+    public static javax.swing.JTable tableinspecoes;
     public static javax.swing.JTable tableos;
     public static javax.swing.JTable tableprocessos;
     public javax.swing.JTabbedPane tabos;

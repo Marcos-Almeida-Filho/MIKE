@@ -5,14 +5,19 @@
  */
 package View.servicos;
 
+import Bean.OSBean;
 import Bean.OSInspecaoBean;
 import Bean.OSProcessosBean;
+import DAO.OSDAO;
 import DAO.OSInspecaoDAO;
 import DAO.OSProcessosDAO;
 import Methods.SoNumeros;
 import View.TelaPrincipal;
+import static View.TelaPrincipal.jDesktopPane1;
+import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -29,6 +34,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         initComponents();
         camposnumeros();
         txtinicial.setVisible(false);
+        txtrow.setVisible(false);
     }
 
     public static void readprocesso() {
@@ -45,14 +51,14 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
             txtmotivo.setText(opb.getMotivo());
         }
     }
-    
+
     public static void readinspecao() {
         DefaultTableModel model = (DefaultTableModel) tableinspecao.getModel();
         model.setNumRows(0);
-        
+
         OSInspecaoDAO oid = new OSInspecaoDAO();
-        
-        for(OSInspecaoBean oib : oid.read(txtid.getText())) {
+
+        for (OSInspecaoBean oib : oid.read(txtid.getText())) {
             model.addRow(new Object[]{
                 oib.getMedida(),
                 oib.getMedidamaior(),
@@ -93,6 +99,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         txtnaook = new javax.swing.JTextField();
         txtusuario = new javax.swing.JTextField();
         txtinicial = new javax.swing.JTextField();
+        txtrow = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableinspecao = new javax.swing.JTable();
@@ -163,6 +170,8 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
         txtinicial.setEditable(false);
 
+        txtrow.setEditable(false);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -174,14 +183,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtprocesso, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtinicio, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txttermino, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -195,12 +196,29 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtusuario, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtinicial, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtinicio, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addGap(69, 69, 69)
+                                .addComponent(txtinicial, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txttermino, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                        .addComponent(txtrow, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(85, 85, 85))))))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -211,7 +229,9 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(txtinicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtinicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtrow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -264,6 +284,11 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         }
 
         jButton2.setText("Adicionar Medição");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -387,9 +412,94 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int inicial = Integer.parseInt(txtinicial.getText());
+        int ok = Integer.parseInt(txtok.getText());
+        int naook = Integer.parseInt(txtnaook.getText());
+        int row = Integer.parseInt(txtrow.getText()) + 1;
+        int resto = ok + naook - inicial;
         if (tableinspecao.getRowCount() == 0) {
             int resp = JOptionPane.showConfirmDialog(rootPane, "Não existem medições! Está correto?", "Sem medições", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
+                if (ok + naook < inicial) {
+                    OSProcessosDAO opd = new OSProcessosDAO();
+                    OSProcessosBean opb = new OSProcessosBean();
+
+                    Calendar c = Calendar.getInstance();
+                    String pattern = "dd/MM/yyyy HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    opb.setTermino(simpleDateFormat.format(c.getTime()));
+                    opb.setQtdok(Integer.parseInt(txtok.getText()));
+                    opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
+                    opb.setObservacao(txtobservacao.getText());
+                    opb.setMotivo(txtmotivo.getText());
+                    opb.setId(Integer.parseInt(txtid.getText()));
+
+                    //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
+                    opd.update(opb);
+
+                    DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
+                    model.insertRow(row, new Object[]{
+                        false,
+                        "",
+                        txtprocesso.getText(),
+                        "",
+                        "",
+                        resto,
+                        0,
+                        "",
+                        row
+                    });
+
+                    OSProcessosDAO od = new OSProcessosDAO();
+                    OSProcessosBean ob = new OSProcessosBean();
+
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        OS.tableprocessos.setValueAt(i, i, 8);
+                        if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
+                            ob.setIdos(OS.txtnumeroos.getText());
+                            ob.setProcesso(txtprocesso.getText());
+                            ob.setInicio("");
+                            ob.setTermino("");
+                            ob.setQtdok(resto);
+                            ob.setQtdnaook(0);
+                            ob.setUsuario("");
+                            ob.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                            
+                            //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem
+                            od.create(ob);
+                        } else {
+                            ob.setIdos(title);
+                            
+                            
+                            //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ? WHERE id = ?
+                            od.updatetotal(ob);
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+                } else {
+                    OSProcessosDAO opd = new OSProcessosDAO();
+                    OSProcessosBean opb = new OSProcessosBean();
+
+                    Calendar c = Calendar.getInstance();
+                    String pattern = "dd/MM/yyyy HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    opb.setTermino(simpleDateFormat.format(c.getTime()));
+                    opb.setQtdok(Integer.parseInt(txtok.getText()));
+                    opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
+                    opb.setObservacao(txtobservacao.getText());
+                    opb.setMotivo(txtmotivo.getText());
+                    opb.setId(Integer.parseInt(txtid.getText()));
+
+                    //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
+                    opd.update(opb);
+                    JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+                }
+            }
+        } else {
+            if (ok + naook < inicial) {
+
+            } else {
                 OSProcessosDAO opd = new OSProcessosDAO();
                 OSProcessosBean opb = new OSProcessosBean();
 
@@ -405,38 +515,25 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
                 //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
                 opd.update(opb);
-            }
-        } else {
-            OSProcessosDAO opd = new OSProcessosDAO();
-            OSProcessosBean opb = new OSProcessosBean();
 
-            Calendar c = Calendar.getInstance();
-            String pattern = "dd/MM/yyyy HH:mm:ss";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            opb.setTermino(simpleDateFormat.format(c.getTime()));
-            opb.setQtdok(Integer.parseInt(txtok.getText()));
-            opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
-            opb.setObservacao(txtobservacao.getText());
-            opb.setMotivo(txtmotivo.getText());
-            opb.setId(Integer.parseInt(txtid.getText()));
+                OSInspecaoDAO oid = new OSInspecaoDAO();
+                OSInspecaoBean oib = new OSInspecaoBean();
 
-            //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
-            opd.update(opb);
+                for (int i = 0; i < tableinspecao.getRowCount(); i++) {
+                    oib.setIdos(OS.txtnumeroos.getText());
+                    oib.setIdprocesso(txtid.getText());
+                    oib.setProcesso(txtprocesso.getText());
+                    oib.setMedida(tableinspecao.getValueAt(i, 0).toString());
+                    oib.setMedidamaior(tableinspecao.getValueAt(i, 1).toString());
+                    oib.setMedidamenor(tableinspecao.getValueAt(i, 2).toString());
+                    oib.setFuncionario(TelaPrincipal.lblapelido.getText());
+                    oib.setInstrumento(tableinspecao.getValueAt(i, 3).toString());
 
-            OSInspecaoDAO oid = new OSInspecaoDAO();
-            OSInspecaoBean oib = new OSInspecaoBean();
-
-            for (int i = 0; i < tableinspecao.getRowCount(); i++) {
-                oib.setIdos(OS.txtnumeroos.getText());
-                oib.setIdprocesso(txtid.getText());
-                oib.setMedida(tableinspecao.getValueAt(i, 0).toString());
-                oib.setMedidamaior(tableinspecao.getValueAt(i, 1).toString());
-                oib.setMedidamenor(tableinspecao.getValueAt(i, 2).toString());
-                oib.setFuncionario(TelaPrincipal.lblapelido.getText());
-                oib.setInstrumento(tableinspecao.getValueAt(i, 3).toString());
-
-                //idos, idprocesso, medida, medidamaior, medidamenor, funcionario, instrumento
-                oid.create(oib);
+                    //idos, idprocesso, processo, medida, medidamaior, medidamenor, funcionario, instrumento
+                    oid.create(oib);
+                }
+                JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+                OS.readprocessos();
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -484,6 +581,16 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         txtnaook.selectAll();
     }//GEN-LAST:event_txtnaookFocusGained
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        MedicaoOS p = new MedicaoOS();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
@@ -512,6 +619,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
     public static javax.swing.JTextArea txtobservacao;
     public static javax.swing.JTextField txtok;
     public static javax.swing.JTextField txtprocesso;
+    public static javax.swing.JTextField txtrow;
     public static javax.swing.JTextField txttermino;
     public static javax.swing.JTextField txtusuario;
     // End of variables declaration//GEN-END:variables

@@ -38,7 +38,7 @@ public class ServicoPedidoDocumentosDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao salvar os documentos do pedido!\n" + e);
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

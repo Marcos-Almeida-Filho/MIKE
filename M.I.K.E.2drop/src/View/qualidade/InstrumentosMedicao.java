@@ -9,7 +9,22 @@ import Bean.InstrumentosMedicaoBean;
 import Bean.InstrumentosMedicaoCalibracaoBean;
 import DAO.InstrumentosMedicaoCalibracaoDAO;
 import DAO.InstrumentosMedicaoDAO;
+import Methods.SendEmail;
+import static View.TelaPrincipal.jDesktopPane1;
+import View.servicos.DocumentosOrcamentoServico;
+import java.awt.AWTException;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.HeadlessException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,6 +38,22 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
     public InstrumentosMedicao() {
         initComponents();
         txtid.setVisible(false);
+        readinstrumentos();
+    }
+
+    public static void readinstrumentos() {
+        InstrumentosMedicaoDAO imd = new InstrumentosMedicaoDAO();
+        DefaultTableModel model = (DefaultTableModel) tableinstrumentos.getModel();
+
+        for (InstrumentosMedicaoBean imb : imd.read()) {
+            model.addRow(new Object[]{
+                imb.getId(),
+                imb.getCodigo(),
+                imb.getTipo(),
+                imb.getValidade(),
+                imb.getStatus()
+            });
+        }
     }
 
     public static void checknrc() {
@@ -349,18 +380,28 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Certificado", "Data Calibração", "Validade", "Local", "Local Original"
+                "ID", "Certificado", "Data Calibração", "Validade", "Local", "Local Original"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tablecertificados.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablecertificadosMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tablecertificados);
+        if (tablecertificados.getColumnModel().getColumnCount() > 0) {
+            tablecertificados.getColumnModel().getColumn(0).setMinWidth(0);
+            tablecertificados.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tablecertificados.getColumnModel().getColumn(0).setMaxWidth(0);
+        }
 
         btnadicionarcalibracao.setText("Adicionar");
         btnadicionarcalibracao.addActionListener(new java.awt.event.ActionListener() {
@@ -453,7 +494,13 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(rootPane, "Coloque uma periodicidade antes.");
             txtperiodicidade.requestFocus();
         } else {
-
+            DocumentosInstrumentos p = new DocumentosInstrumentos();
+            JDesktopPane desk = this.getDesktopPane();
+            desk.add(p);
+            Dimension desktopsize = jDesktopPane1.getSize();
+            Dimension jinternalframesize = p.getSize();
+            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+            p.setVisible(true);
         }
     }//GEN-LAST:event_btnadicionarcalibracaoActionPerformed
 
@@ -470,22 +517,35 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
 
             for (InstrumentosMedicaoBean imb : imd.click(Integer.parseInt(tableinstrumentos.getValueAt(tableinstrumentos.getSelectedRow(), 0).toString()))) {
                 txtcodigo.setText(imb.getCodigo());
-                cbstatus.setSelectedItem(imb.getStatus());
+                cbstatusinstrumento.setSelectedItem(imb.getStatus());
                 cbtipo.setSelectedItem(imb.getTipo());
                 txtmodelo.setText(imb.getModelo());
                 txtserie.setText(imb.getSerie());
                 txtcapacidade.setText(imb.getCapacidade());
                 txtresolucao.setText(imb.getResolucao());
                 txttolerancia.setText(imb.getTolerancia());
-                txtperiodicidade.setText(imb.getPeriodicidade());
+                txtperiodicidade.setText(String.valueOf(imb.getPeriodicidade()));
                 txtlocal.setText(imb.getLocal());
                 if (imb.getNrc().equals("false")) {
                     checknrc.setSelected(false);
                 } else {
                     checknrc.setSelected(true);
+                    txtperiodicidade.setEnabled(false);
                 }
             }
 
+            InstrumentosMedicaoCalibracaoDAO imcd = new InstrumentosMedicaoCalibracaoDAO();
+            DefaultTableModel model = (DefaultTableModel) tablecertificados.getModel();
+
+            for (InstrumentosMedicaoCalibracaoBean imdb : imcd.read(txtcodigo.getText())) {
+                model.addRow(new Object[]{
+                    imdb.getId(),
+                    imdb.getCertificado(),
+                    imdb.getDatacalibracao(),
+                    imdb.getValidade(),
+                    imdb.getLocal()
+                });
+            }
         }
     }//GEN-LAST:event_tableinstrumentosMouseClicked
 
@@ -494,9 +554,9 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
             if (txtcodigo.getText().equals("")) {
                 JOptionPane.showMessageDialog(rootPane, "Coloque um código.");
                 txtcodigo.requestFocus();
-            } else if (cbstatus.getSelectedIndex() == 0) {
+            } else if (cbstatus.getSelectedItem().equals("Selecione")) {
                 JOptionPane.showMessageDialog(rootPane, "Selecione um status.");
-            } else if (cbtipo.getSelectedIndex() == 0) {
+            } else if (cbtipo.getSelectedItem().equals("Selecione")) {
                 JOptionPane.showMessageDialog(rootPane, "Selecione um tipo.");
             } else if (txtcapacidade.getText().equals("")) {
                 JOptionPane.showMessageDialog(rootPane, "Coloque uma capacidade.");
@@ -522,38 +582,155 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
                 imb.setCapacidade(txtcapacidade.getText());
                 imb.setResolucao(txtresolucao.getText());
                 imb.setTolerancia(txttolerancia.getText());
-                imb.setPeriodicidade(txtperiodicidade.getText());
+                if (txtperiodicidade.getText().equals("")) {
+                    imb.setPeriodicidade(0);
+                } else {
+                    imb.setPeriodicidade(Integer.parseInt(txtperiodicidade.getText()));
+                }
                 imb.setLocal(txtlocal.getText());
                 if (checknrc.isSelected()) {
                     imb.setNrc("true");
+                    imb.setValidade("N/A");
                 } else {
                     imb.setNrc("false");
+                    for (int i = 0; i < tablecertificados.getRowCount(); i++) {
+                        imb.setValidade(tablecertificados.getValueAt(tablecertificados.getRowCount(), 3).toString());
+                    }
                 }
 
-                //codigo, status, tipo, modelo, serie, capacidade, resolucao, tolerancia, periodicidade, local, nrc
+                //codigo, status, tipo, modelo, serie, capacidade, resolucao, tolerancia, periodicidade, local, nrc, validade
                 imd.create(imb);
 
                 int rc = tablecertificados.getRowCount();
                 if (rc > 0) {
                     for (int i = 0; i < rc; i++) {
+                        String id = "";
+                        for (InstrumentosMedicaoBean imb2 : imd.readid(txtcodigo.getText())) {
+                            id = String.valueOf(imb2.getId());
+                        }
+                        File fileoriginal = new File(tablecertificados.getValueAt(i, 5).toString());
+                        File folder = new File("Q:/MIKE_ERP/int_med_arq/" + id);
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                        folder.mkdirs();
+                        try {
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                        } catch (IOException ex) {
+                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                            try {
+                                SendEmail.EnviarErro(ex.toString());
+                                JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                            } catch (HeadlessException hex) {
+                                JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                            } catch (AWTException | IOException ex1) {
+                                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            }
+                        }
                         InstrumentosMedicaoCalibracaoDAO imcd = new InstrumentosMedicaoCalibracaoDAO();
                         InstrumentosMedicaoCalibracaoBean imcb = new InstrumentosMedicaoCalibracaoBean();
 
                         imcb.setCodigoinstrumento(txtcodigo.getText());
-                        imcb.setCertificado(tablecertificados.getValueAt(i, 0).toString());
-                        imcb.setDatacalibracao(tablecertificados.getValueAt(i, 1).toString());
-                        imcb.setValidade(tablecertificados.getValueAt(i, 2).toString());
-                        imcb.setLocal(tablecertificados.getValueAt(i, 3).toString());
+                        imcb.setCertificado(tablecertificados.getValueAt(i, 1).toString());
+                        imcb.setDatacalibracao(tablecertificados.getValueAt(i, 2).toString());
+                        imcb.setValidade(tablecertificados.getValueAt(i, 3).toString());
+                        imcb.setLocal(tablecertificados.getValueAt(i, 4).toString());
 
                         //codigoinstrumento, certificado, datacalibracao, validade, local
                         imcd.create(imcb);
                     }
                 }
             }
+            JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
+            readinstrumentos();
         } else {
+            InstrumentosMedicaoDAO imd = new InstrumentosMedicaoDAO();
+            InstrumentosMedicaoBean imb = new InstrumentosMedicaoBean();
 
+            imb.setCodigo(txtcodigo.getText());
+            imb.setStatus(cbstatusinstrumento.getSelectedItem().toString());
+            imb.setTipo(cbtipo.getSelectedItem().toString());
+            imb.setModelo(txtmodelo.getText());
+            imb.setSerie(txtserie.getText());
+            imb.setCapacidade(txtcapacidade.getText());
+            imb.setResolucao(txtresolucao.getText());
+            imb.setTolerancia(txttolerancia.getText());
+            if (txtperiodicidade.getText().equals("")) {
+                imb.setPeriodicidade(0);
+            } else {
+                imb.setPeriodicidade(Integer.parseInt(txtperiodicidade.getText()));
+            }
+            imb.setLocal(txtlocal.getText());
+            if (checknrc.isSelected()) {
+                imb.setNrc("true");
+                imb.setValidade("N/A");
+            } else {
+                imb.setNrc("false");
+                for (int i = 0; i < tablecertificados.getRowCount(); i++) {
+                    imb.setValidade(tablecertificados.getValueAt(tablecertificados.getRowCount(), 3).toString());
+                }
+            }
+            imb.setId(Integer.parseInt(txtid.getText()));
+
+            //codigo = ?, status = ?, tipo = ?, modelo = ?, serie = ?, capacidade = ?, resolucao = ?, tolerancia = ?, periodicidade = ?, local = ?, nrc = ?, validade = ? WHERE id = ?
+            imd.update(imb);
+
+            int rc = tablecertificados.getRowCount();
+            if (rc > 0) {
+                for (int i = 0; i < rc; i++) {
+                    if (tablecertificados.getValueAt(i, 0).equals("")) {
+                        String id = "";
+                        for (InstrumentosMedicaoBean imb2 : imd.readid(txtcodigo.getText())) {
+                            id = String.valueOf(imb2.getId());
+                        }
+                        File fileoriginal = new File(tablecertificados.getValueAt(i, 5).toString());
+                        File folder = new File("Q:/MIKE_ERP/int_med_arq/" + id);
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                        folder.mkdirs();
+                        try {
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                        } catch (IOException ex) {
+                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                            try {
+                                SendEmail.EnviarErro(ex.toString());
+                                JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                            } catch (HeadlessException hex) {
+                                JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                            } catch (AWTException | IOException ex1) {
+                                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            }
+                        }
+                        InstrumentosMedicaoCalibracaoDAO imcd = new InstrumentosMedicaoCalibracaoDAO();
+                        InstrumentosMedicaoCalibracaoBean imcb = new InstrumentosMedicaoCalibracaoBean();
+
+                        imcb.setCodigoinstrumento(txtcodigo.getText());
+                        imcb.setCertificado(tablecertificados.getValueAt(i, 1).toString());
+                        imcb.setDatacalibracao(tablecertificados.getValueAt(i, 2).toString());
+                        imcb.setValidade(tablecertificados.getValueAt(i, 3).toString());
+                        imcb.setLocal(tablecertificados.getValueAt(i, 4).toString());
+
+                        //codigoinstrumento, certificado, datacalibracao, validade, local
+                        imcd.create(imcb);
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+            readinstrumentos();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tablecertificadosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablecertificadosMouseClicked
+        if (evt.getClickCount() == 2) {
+            Desktop desk = Desktop.getDesktop();
+            try {
+                desk.open(new File((String) tablecertificados.getValueAt(tablecertificados.getSelectedRow(), 4)));
+            } catch (IOException ex) {
+                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_tablecertificadosMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -586,8 +763,8 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JTabbedPane tabinstrumentos;
-    public javax.swing.JTable tablecertificados;
-    public javax.swing.JTable tableinstrumentos;
+    public static javax.swing.JTable tablecertificados;
+    public static javax.swing.JTable tableinstrumentos;
     public static javax.swing.JTextField txtcapacidade;
     public static javax.swing.JTextField txtcodigo;
     public javax.swing.JTextField txtid;

@@ -31,7 +31,7 @@ public class ServicoOrcamentoDocumentosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servico_orcamento_documentos (idorcamento, descricao, local) VALUES (?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO servicos_orcamento_documentos (idorcamento, descricao, local) VALUES (?,?,?)");
             stmt.setString(1, sodb.getIdorcamento());
             stmt.setString(2, sodb.getDescricao());
             stmt.setString(3, sodb.getLocal());
@@ -55,7 +55,7 @@ public class ServicoOrcamentoDocumentosDAO {
         List<ServicoOrcamentoDocumentosBean> listios = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM servico_orcamento_documentos WHERE idorcamento = ?");
+            stmt = con.prepareStatement("SELECT * FROM servicos_orcamento_documentos WHERE idorcamento = ?");
             stmt.setString(1, idorcamento);
 
             rs = stmt.executeQuery();
@@ -86,7 +86,7 @@ public class ServicoOrcamentoDocumentosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE servico_orcamento_documentos SET idorcamento = ?, descricao = ?, local = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE servicos_orcamento_documentos SET idorcamento = ?, descricao = ?, local = ? WHERE id = ?");
             stmt.setString(1, sodb.getIdorcamento());
             stmt.setString(2, sodb.getDescricao());
             stmt.setString(3, sodb.getLocal());
@@ -107,7 +107,7 @@ public class ServicoOrcamentoDocumentosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("DELETE FROM servico_orcamento_documentos WHERE id = ?");
+            stmt = con.prepareStatement("DELETE FROM servicos_orcamento_documentos WHERE id = ?");
             stmt.setInt(1, sodb.getId());
 
             stmt.executeUpdate();

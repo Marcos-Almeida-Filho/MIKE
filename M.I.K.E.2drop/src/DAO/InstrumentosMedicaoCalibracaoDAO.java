@@ -46,7 +46,7 @@ public class InstrumentosMedicaoCalibracaoDAO {
         }
     }
 
-    public List<InstrumentosMedicaoCalibracaoBean> read() {
+    public List<InstrumentosMedicaoCalibracaoBean> read(String codigo) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -57,7 +57,8 @@ public class InstrumentosMedicaoCalibracaoDAO {
         List<InstrumentosMedicaoCalibracaoBean> listbb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM instrumento_medicao_calibracao");
+            stmt = con.prepareStatement("SELECT * FROM instrumento_medicao_calibracao WHERE codigoinstrumento = ?");
+            stmt.setString(1, codigo);
             rs = stmt.executeQuery();
 
             while (rs.next()) {

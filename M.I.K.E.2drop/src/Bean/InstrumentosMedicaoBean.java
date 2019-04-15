@@ -20,9 +20,10 @@ public class InstrumentosMedicaoBean {
     private String capacidade;
     private String resolucao;
     private String tolerancia;
-    private String periodicidade;
+    private int periodicidade;
     private String local;
     private String nrc;
+    private String validade;
 
     public int getId() {
         return id;
@@ -96,11 +97,11 @@ public class InstrumentosMedicaoBean {
         this.tolerancia = tolerancia;
     }
 
-    public String getPeriodicidade() {
+    public int getPeriodicidade() {
         return periodicidade;
     }
 
-    public void setPeriodicidade(String periodicidade) {
+    public void setPeriodicidade(int periodicidade) {
         this.periodicidade = periodicidade;
     }
 
@@ -118,6 +119,14 @@ public class InstrumentosMedicaoBean {
 
     public void setNrc(String nrc) {
         this.nrc = nrc;
+    }
+
+    public String getValidade() {
+        return validade;
+    }
+
+    public void setValidade(String validade) {
+        this.validade = validade;
     }
 
     

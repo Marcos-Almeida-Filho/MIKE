@@ -148,6 +148,29 @@ public class OSProcessosDAO {
         }
     }
     
+    public void updatetotal(OSProcessosBean mb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE os_processos SET idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ? WHERE id = ?");
+            stmt.setString(1, mb.getTermino());
+            stmt.setInt(2, mb.getQtdok());
+            stmt.setInt(3, mb.getQtdnaook());
+            stmt.setString(4, mb.getObservacao());
+            stmt.setString(5, mb.getMotivo());
+            stmt.setInt(6, mb.getId());
+
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
     public void updateinicio(OSProcessosBean mb) {
 
         Connection con = ConnectionFactory.getConnection();

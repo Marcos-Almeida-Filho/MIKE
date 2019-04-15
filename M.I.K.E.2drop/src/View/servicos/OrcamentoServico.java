@@ -1351,11 +1351,11 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
 
                         txtvalor();
 
-                        DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
+                        DefaultTableModel modeldoc = (DefaultTableModel) PedidoServico.tabledocumentos.getModel();
                         modeldoc.setNumRows(0);
                         ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
 
-                        for (ServicoPedidoDocumentosBean spdb : spdd.readitens(txtnumeroorcamento.getText())) {
+                        for (ServicoPedidoDocumentosBean spdb : spdd.readitens(txtnumeropedido.getText())) {
                             modeldoc.addRow(new Object[]{
                                 false,
                                 spdb.getId(),
@@ -1581,10 +1581,14 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                     numpedido = spbb.getIdtela();
                 }
 
+                ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+                ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+
+                ServicoOrcamentoItensBean soib = new ServicoOrcamentoItensBean();
+                ServicoOrcamentoItensDAO soid = new ServicoOrcamentoItensDAO();
+
                 for (int i = 0; i < tableitens.getRowCount(); i++) {
-                    if ((Boolean) tableitens.getValueAt(i, 0) == true) {
-                        ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
-                        ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+                    if (tableitens.getValueAt(i, 0).equals(true)) {
 
                         spib.setIdpedido(numpedido);
                         spib.setCodigo(tableitens.getValueAt(i, 2).toString());
@@ -1600,9 +1604,6 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
 
                         spid.create(spib);
 
-                        ServicoOrcamentoItensBean soib = new ServicoOrcamentoItensBean();
-                        ServicoOrcamentoItensDAO soid = new ServicoOrcamentoItensDAO();
-
                         soib.setCodigo(tableitens.getValueAt(i, 2).toString());
                         soib.setDesc(tableitens.getValueAt(i, 3).toString());
                         soib.setQtd(tableitens.getValueAt(i, 4).toString());
@@ -1615,10 +1616,9 @@ public class OrcamentoServico extends javax.swing.JInternalFrame {
                         //codigo, descricao , qtd , valor , total , prazo , pedido , das, id
 
                         soid.update(soib);
-
-                        tableitensatualizar();
                     }
                 }
+                tableitensatualizar();
                 if (tabledocumentos.getRowCount() > 0) {
                     int respdoc = JOptionPane.showConfirmDialog(rootPane, "Deseja enviar os documentos deste orçamento para o pedido?", "Gerar pedido com documentos", JOptionPane.OK_CANCEL_OPTION);
                     if (respdoc == 0) {

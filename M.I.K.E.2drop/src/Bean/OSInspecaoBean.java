@@ -15,6 +15,7 @@ public class OSInspecaoBean {
     private int id;
     private String idos;
     private String idprocesso;
+    private String processo;
     private String medida;
     private String medidamaior;
     private String medidamenor;
@@ -43,6 +44,14 @@ public class OSInspecaoBean {
 
     public void setIdprocesso(String idprocesso) {
         this.idprocesso = idprocesso;
+    }
+
+    public String getProcesso() {
+        return processo;
+    }
+
+    public void setProcesso(String processo) {
+        this.processo = processo;
     }
 
     public String getMedida() {

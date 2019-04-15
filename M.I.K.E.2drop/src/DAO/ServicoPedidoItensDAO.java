@@ -46,7 +46,7 @@ public class ServicoPedidoItensDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao salvar os itens do pedido!\n" + e);
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

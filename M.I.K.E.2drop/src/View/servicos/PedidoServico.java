@@ -6,11 +6,23 @@
 package View.servicos;
 
 import Bean.OSBean;
+import Bean.OSDocumentosBean;
+import Bean.OSProcessosBean;
+import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ServicoGrupoDeProcessosItensBean;
+import Bean.ServicoMateriaisBean;
+import Bean.ServicoMateriaisDocumentosBean;
 import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
 import Bean.ServicoPedidoItensNFBean;
 import DAO.OSDAO;
+import DAO.OSDocumentosDAO;
+import DAO.OSProcessosDAO;
+import DAO.ServicoGrupoDeProcessosDAO;
+import DAO.ServicoGrupoDeProcessosItensDAO;
+import DAO.ServicoMateriaisDAO;
+import DAO.ServicoMateriaisDocumentosDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
@@ -20,9 +32,6 @@ import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.OS.radioreconstrucao;
 import static View.servicos.OS.radiotopo;
-import static View.servicos.OS.readdocs;
-import static View.servicos.OS.readprocessos;
-import static View.servicos.OS.travarcampos;
 import static View.servicos.OS.txtcodigo;
 import static View.servicos.OS.txtdesc;
 import static View.servicos.OS.txtfinal;
@@ -767,7 +776,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jButton5.setText("Excluir");
 
-        jButton6.setText("Abrir OS's");
+        jButton6.setText("Criar OS's");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -1715,7 +1724,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     ob.setQtdinicial(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
                     ob.setQtdok(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
                     ob.setQtdnaook(0);
-                    ob.setNotes(txtnotes.getText());
+                    ob.setNotes("");
                     ob.setTopo("false");
                     ob.setReconstrucao("false");
                     ob.setRaio("");
@@ -1744,6 +1753,86 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
                     //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?
                     spid.update(spib);
+
+                    //Documentos do Produto na OS
+                    ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+                    
+                    int idmaterial = 0;
+                    
+                    for(ServicoMateriaisBean smbb : smd.readid(tableitensorcamento.getValueAt(i, 2).toString())) {
+                        idmaterial = smbb.getId();
+                    }
+
+                    OSDocumentosDAO odd = new OSDocumentosDAO();
+                    OSDocumentosBean odb = new OSDocumentosBean();
+
+                    ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
+
+                    for (ServicoMateriaisDocumentosBean smdb : smdd.read(idmaterial)) {
+                        File fileoriginal = new File(smdb.getLocal());
+                        File folder = new File("Q:/MIKE_ERP/os_arq/" + oscriada);
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                        folder.mkdirs();
+                        try {
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                        } catch (IOException ex) {
+                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                            try {
+                                SendEmail.EnviarErro(ex.toString());
+                                JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                            } catch (HeadlessException hex) {
+                                JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                            } catch (AWTException | IOException ex1) {
+                                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            }
+                        }
+
+                        odb.setIdos(oscriada);
+                        odb.setDesc(smdb.getDescricao());
+                        odb.setLocal(filecopy.toString());
+
+                        //idos, descricao, local
+                        odd.create(odb);
+                    }
+
+                    //Descobrir grupo e colocar processos do grupo na OS
+                    String grupo = "";
+                    for (ServicoMateriaisBean smb : smd.readgrupo(tableitensorcamento.getValueAt(i, 2).toString())) {
+                        grupo = smb.getGrupo_de_processos();
+                    }
+
+                    ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
+
+                    int idgrupo = 0;
+                    for (ServicoGrupoDeProcessosBean sgpb : sgpd.readidgrupo(grupo)) {
+                        idgrupo = sgpb.getId();
+                    }
+
+                    ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
+
+                    int ordem = 0;
+
+                    OSProcessosDAO opd = new OSProcessosDAO();
+                    OSProcessosBean opb = new OSProcessosBean();
+
+                    for (ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(idgrupo)) {
+
+                        opb.setIdos(oscriada);
+                        opb.setProcesso(sgpib.getProcesso());
+                        opb.setInicio("");
+                        opb.setTermino("");
+                        opb.setQtdok(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
+                        opb.setQtdnaook(0);
+                        opb.setUsuario("");
+                        opb.setOrdem(ordem);
+
+                        //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem
+                        opd.create(opb);
+
+                        ordem++;
+                    }
                 }
             }
             readitenscobranca();

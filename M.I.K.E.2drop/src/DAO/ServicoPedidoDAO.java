@@ -33,7 +33,7 @@ public class ServicoPedidoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servicos_pedido (idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO servicos_pedido (idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, spb.getIdtela());
             stmt.setString(2, spb.getIdorcamento());
             stmt.setString(3, spb.getCliente());
@@ -48,7 +48,7 @@ public class ServicoPedidoDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao criar o pedido!\n" + e);
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
