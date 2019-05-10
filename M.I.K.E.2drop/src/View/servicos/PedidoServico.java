@@ -245,6 +245,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         txttotal = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableitensnota = new javax.swing.JTable();
@@ -370,7 +371,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jLabel3.setText("Cliente");
 
         txtcliente.setEditable(false);
-        txtcliente.setBackground(new java.awt.Color(255, 255, 255));
 
         BtnProcurar.setText("Procurar");
         BtnProcurar.addActionListener(new java.awt.event.ActionListener() {
@@ -406,13 +406,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Comercial"));
 
         txtvendedor.setEditable(false);
-        txtvendedor.setBackground(new java.awt.Color(255, 255, 255));
 
         txtrepresentante.setEditable(false);
-        txtrepresentante.setBackground(new java.awt.Color(255, 255, 255));
 
         txtcondicao.setEditable(false);
-        txtcondicao.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel5.setText("Vendedor");
 
@@ -490,12 +487,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jLabel1.setText("Nº");
 
         txtnumeropedido.setEditable(false);
-        txtnumeropedido.setBackground(new java.awt.Color(255, 255, 255));
         txtnumeropedido.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtnumeropedido.setSelectionColor(new java.awt.Color(255, 255, 255));
 
         txtstatusretorno.setEditable(false);
-        txtstatusretorno.setBackground(new java.awt.Color(255, 255, 255));
         txtstatusretorno.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel2.setText("Retorno");
@@ -510,7 +505,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jLabel8.setText("Orçamento");
 
         txtorcamento.setEditable(false);
-        txtorcamento.setBackground(new java.awt.Color(255, 255, 255));
         txtorcamento.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel9.setText("NF Cliente");
@@ -783,12 +777,22 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             }
         });
 
+        txttotal.setEditable(false);
+        txttotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
         jLabel10.setText("Total: R$");
 
         jButton11.setText("Lançar Nota de Cobrança");
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton11ActionPerformed(evt);
+            }
+        });
+
+        jButton13.setText("Teste");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
             }
         });
 
@@ -802,6 +806,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
@@ -827,7 +833,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(jButton6)
                     .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
-                    .addComponent(jButton11))
+                    .addComponent(jButton11)
+                    .addComponent(jButton13))
                 .addContainerGap())
         );
 
@@ -1251,6 +1258,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
             filltablepedidoorcamento();
             camposeditaveis();
+            readitenscobranca();
+            readitensretorno();
         } else {
             //Atualizar pedido
             ServicoPedidoDAO spd = new ServicoPedidoDAO();
@@ -1379,6 +1388,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
             filltablepedidoorcamento();
             camposeditaveis();
+            readitenscobranca();
+            readitensretorno();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1679,6 +1690,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             OSDAO od = new OSDAO();
             OSBean ob = new OSBean();
 
+            //Crir OS
             ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
             ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
             for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
@@ -1718,7 +1730,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     ob.setDataprevisao(simpleDateFormat.format(c.getTime()));
                     ob.setStatus("Rascunho");
                     ob.setCliente(txtcliente.getText());
-                    ob.setDas("");
+                    ob.setDas(txtnumeropedido.getText());
                     ob.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
                     ob.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
                     ob.setQtdinicial(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
@@ -1734,6 +1746,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     od.create(ob);
 
                     String oscriada = "";
+                    String n = tableitensorcamento.getValueAt(0, 10).toString();
 
                     for (OSBean osb : od.readcreated(tableitensorcamento.getValueAt(i, 2).toString(), data)) {
                         oscriada = osb.getIdtela();
@@ -1748,7 +1761,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
                     spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
                     spib.setOs(oscriada);
-                    spib.setNf(tableitensorcamento.getValueAt(i, 10).toString());
+                    if (n.isEmpty()) {
+                        spib.setNf("");
+                    } else {
+                        spib.setNf(n);
+                    }
+                    
                     spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
 
                     //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?
@@ -1756,10 +1774,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
                     //Documentos do Produto na OS
                     ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
-                    
+
                     int idmaterial = 0;
-                    
-                    for(ServicoMateriaisBean smbb : smd.readid(tableitensorcamento.getValueAt(i, 2).toString())) {
+
+                    for (ServicoMateriaisBean smbb : smd.readid(tableitensorcamento.getValueAt(i, 2).toString())) {
                         idmaterial = smbb.getId();
                     }
 
@@ -1823,12 +1841,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         opb.setProcesso(sgpib.getProcesso());
                         opb.setInicio("");
                         opb.setTermino("");
-                        opb.setQtdok(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
+                        opb.setQtdok(0);
                         opb.setQtdnaook(0);
                         opb.setUsuario("");
                         opb.setOrdem(ordem);
+                        opb.setDisponivel(tableitensorcamento.getValueAt(i, 4).toString());
 
-                        //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem
+                        //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                         opd.create(opb);
 
                         ordem++;
@@ -1848,6 +1867,15 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableitensorcamentoMouseReleased
 
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        String n = tableitensorcamento.getValueAt(0, 10).toString();
+        if (n.isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "null");
+        } else {
+            JOptionPane.showMessageDialog(null, n);
+        }
+    }//GEN-LAST:event_jButton13ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnCondicao;
@@ -1858,6 +1886,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;

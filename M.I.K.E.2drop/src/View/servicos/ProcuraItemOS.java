@@ -220,10 +220,11 @@ public class ProcuraItemOS extends javax.swing.JInternalFrame {
                     sgpib.getProcesso(),
                     "",
                     "",
+                    0,
+                    0,
                     "",
-                    "",
-                    "",
-                    ordem
+                    ordem,
+                    0
                 });
                 ordem++;
             }

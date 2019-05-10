@@ -363,4 +363,26 @@ public class OSDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    public void updateqtd(OSBean bb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE os SET qtdok = ?, qtdnaook = ? WHERE idtela = ?");
+
+            stmt.setInt(1, bb.getQtdok());
+            stmt.setInt(2, bb.getQtdnaook());
+            stmt.setString(3, bb.getIdtela());
+            //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, desc, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 }

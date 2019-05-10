@@ -28,6 +28,7 @@ public class ProcurarVendedorPedidoServico extends javax.swing.JInternalFrame {
 
         DefaultTableModel model = (DefaultTableModel) tablevendedores.getModel();
         model.setNumRows(0);
+        
         for (UsuariosBean ub : ud.vendedores()) {
             model.addRow(new Object[]{
                 ub.getId(),

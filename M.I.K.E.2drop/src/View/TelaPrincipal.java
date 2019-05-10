@@ -490,6 +490,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/car.png"))); // NOI18N
         jMenuItem10.setText("Carros");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem10);
 
         jMenuBar1.add(jMenu1);
@@ -896,6 +901,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         p.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
         p.setVisible(true);
     }//GEN-LAST:event_menuiteminstrumentosmedicaoActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     /**
      * @param args the command line arguments

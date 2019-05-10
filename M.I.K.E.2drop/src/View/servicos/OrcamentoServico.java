@@ -14,7 +14,6 @@ import Bean.ServicoPedidoItensBean;
 import DAO.ServicoOrcamentoItensDAO;
 import DAO.ServicoOrcamentoDAO;
 import DAO.ServicoOrcamentoDocumentosDAO;
-import DAO.ServicoOrcamentoDocumentosDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
