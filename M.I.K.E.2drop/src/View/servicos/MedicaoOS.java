@@ -175,6 +175,7 @@ public class MedicaoOS extends javax.swing.JInternalFrame {
             DefaultTableModel model = (DefaultTableModel) ProcessoOS.tableinspecao.getModel();
             
             model.addRow(new Object[]{
+                "",
                 txtmedida.getText(),
                 txtmaior.getText(),
                 txtmenor.getText(),

@@ -61,14 +61,14 @@ public class OS extends javax.swing.JInternalFrame {
         radiovazio.setVisible(false);
         reados();
     }
-    
+
     public static void reados() {
         DefaultTableModel model = (DefaultTableModel) tableos.getModel();
         model.setNumRows(0);
         OSDAO od = new OSDAO();
-        
+
         int index = cbstatus.getSelectedIndex();
-        
+
         switch (index) {
             case 1:
                 for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
@@ -137,14 +137,14 @@ public class OS extends javax.swing.JInternalFrame {
                 }
                 break;
         }
-        
+
     }
-    
+
     public static void readdocs() {
         DefaultTableModel model = (DefaultTableModel) tabledoc.getModel();
         model.setNumRows(0);
         OSDocumentosDAO odd = new OSDocumentosDAO();
-        
+
         for (OSDocumentosBean odb : odd.readitens(txtnumeroos.getText())) {
             model.addRow(new Object[]{
                 false,
@@ -154,12 +154,12 @@ public class OS extends javax.swing.JInternalFrame {
             });
         }
     }
-    
+
     public static void readprocessos() {
         DefaultTableModel model = (DefaultTableModel) tableprocessos.getModel();
         model.setNumRows(0);
         OSProcessosDAO opd = new OSProcessosDAO();
-        
+
         for (OSProcessosBean opb : opd.read(txtnumeroos.getText())) {
             model.addRow(new Object[]{
                 false,
@@ -175,22 +175,19 @@ public class OS extends javax.swing.JInternalFrame {
             });
         }
     }
-    
+
     public static void camposnumeros() {
         txtinicial.setDocument(new SoNumeros());
         txtraio.setDocument(new SoNumeros());
         txtfrontal.setDocument(new SoNumeros());
     }
-    
+
     public static void travarcampos() {
         if (txtstatus.getText().equals("Ativo") || txtstatus.getText().equals("Cancelado") || txtstatus.getText().equals("Fechado")) {
             //Desabilitar botões
             btnprocurarcliente.setEnabled(false);
             btnprocurarmaterial.setEnabled(false);
-            btnincluirprocesso.setEnabled(false);
-            btnexcluirprocesso.setEnabled(false);
             btnmudarprocesso.setEnabled(false);
-            btnalterarstatus.setEnabled(false);
 
             //Desabilitar txts
             txtinicial.setEditable(false);
@@ -211,8 +208,6 @@ public class OS extends javax.swing.JInternalFrame {
             //Habilitar botões
             btnprocurarcliente.setEnabled(true);
             btnprocurarmaterial.setEnabled(true);
-            btnincluirprocesso.setEnabled(true);
-            btnexcluirprocesso.setEnabled(true);
             btnmudarprocesso.setEnabled(true);
             btnalterarstatus.setEnabled(true);
 
@@ -226,7 +221,7 @@ public class OS extends javax.swing.JInternalFrame {
             //Habilitar radios
             radioreconstrucao.setEnabled(true);
             radiotopo.setEnabled(true);
-            
+
             if (!txtraio.getText().equals("")) {
                 checkraio.setSelected(true);
                 txtraio.setEditable(true);
@@ -237,11 +232,11 @@ public class OS extends javax.swing.JInternalFrame {
             }
         }
     }
-    
+
     public static void readinspecoes() {
         DefaultTableModel model = (DefaultTableModel) tableinspecoes.getModel();
         model.setNumRows(0);
-        
+
         OSInspecaoDAO oid = new OSInspecaoDAO();
         for (OSInspecaoBean oib : oid.reados(txtnumeroos.getText())) {
             model.addRow(new Object[]{
@@ -255,19 +250,19 @@ public class OS extends javax.swing.JInternalFrame {
             });
         }
     }
-    
+
     public static void qtdok() {
         int qtdnaook = 0;
         int qtdinicial = Integer.parseInt(OS.txtinicial.getText());
         for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
             qtdnaook = qtdnaook + Integer.parseInt(tableprocessos.getValueAt(i, 6).toString());
         }
-        
+
         OS.txtmortas.setText(String.valueOf(qtdnaook));
         OS.txtfinal.setText(String.valueOf(qtdinicial - qtdnaook));
         OSDAO od = new OSDAO();
         OSBean ob = new OSBean();
-        
+
         ob.setQtdok(qtdinicial - qtdnaook);
         ob.setQtdnaook(qtdnaook);
         ob.setIdtela(OS.txtnumeroos.getText());
@@ -275,7 +270,7 @@ public class OS extends javax.swing.JInternalFrame {
         //qtdok = ?, qtdnaook = ? WHERE idtela = ?
         od.updateqtd(ob);
     }
-    
+
     public static void radios() {
         if (!txtstatus.getText().equals("Rascunho")) {
             if (radiotopo.isSelected()) {
@@ -285,7 +280,7 @@ public class OS extends javax.swing.JInternalFrame {
             }
         }
     }
-    
+
     public static void encerraop() {
         //DAO e Bean para alteração da OS
         OSDAO od = new OSDAO();
@@ -383,9 +378,6 @@ public class OS extends javax.swing.JInternalFrame {
         jPanel10 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tableprocessos = new javax.swing.JTable();
-        btnincluirprocesso = new javax.swing.JButton();
-        btnexcluirprocesso = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
         btnmudarprocesso = new javax.swing.JButton();
         jPanel14 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
@@ -974,23 +966,10 @@ public class OS extends javax.swing.JInternalFrame {
             tableprocessos.getColumnModel().getColumn(8).setMinWidth(0);
             tableprocessos.getColumnModel().getColumn(8).setPreferredWidth(0);
             tableprocessos.getColumnModel().getColumn(8).setMaxWidth(0);
+            tableprocessos.getColumnModel().getColumn(9).setMinWidth(0);
+            tableprocessos.getColumnModel().getColumn(9).setPreferredWidth(0);
+            tableprocessos.getColumnModel().getColumn(9).setMaxWidth(0);
         }
-
-        btnincluirprocesso.setText("Incluir");
-        btnincluirprocesso.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnincluirprocessoActionPerformed(evt);
-            }
-        });
-
-        btnexcluirprocesso.setText("Excluir");
-
-        jButton6.setText("Teste");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
 
         btnmudarprocesso.setText("Mudar Processos");
         btnmudarprocesso.addActionListener(new java.awt.event.ActionListener() {
@@ -1006,29 +985,19 @@ public class OS extends javax.swing.JInternalFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnmudarprocesso)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnexcluirprocesso)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnincluirprocesso))
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE))
+                        .addComponent(btnmudarprocesso)))
                 .addContainerGap())
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnincluirprocesso)
-                    .addComponent(btnexcluirprocesso)
-                    .addComponent(jButton6)
-                    .addComponent(btnmudarprocesso))
+                .addComponent(btnmudarprocesso)
                 .addContainerGap())
         );
 
@@ -1219,7 +1188,7 @@ public class OS extends javax.swing.JInternalFrame {
         if (evt.getButton() == 3) {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem das = new JMenuItem("Abrir DAS");
-            
+
             das.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
                     String DAS = txtdas.getText();
@@ -1236,9 +1205,9 @@ public class OS extends javax.swing.JInternalFrame {
                         }
                         PedidoServico.txtnumeropedido.setText(DAS);
                         PedidoServico.tabpedidos.setSelectedIndex(1);
-                        
+
                         ServicoPedidoDAO spd = new ServicoPedidoDAO();
-                        
+
                         for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
                             PedidoServico.txtcliente.setText(spb.getCliente());
                             PedidoServico.txtcondicao.setText(spb.getCondicao());
@@ -1248,11 +1217,11 @@ public class OS extends javax.swing.JInternalFrame {
                             PedidoServico.txtnotes.setText(spb.getNotes());
                             PedidoServico.txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
                         }
-                        
+
                         DefaultTableModel model = (DefaultTableModel) PedidoServico.tableitensorcamento.getModel();
                         model.setNumRows(0);
                         ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
-                        
+
                         for (ServicoPedidoItensBean spib : spid.readitens(txtnumeropedido.getText())) {
                             model.addRow(new Object[]{
                                 false,
@@ -1268,11 +1237,11 @@ public class OS extends javax.swing.JInternalFrame {
                                 spib.getNf()
                             });
                         }
-                        
+
                         DefaultTableModel modeldoc = (DefaultTableModel) PedidoServico.tabledocumentos.getModel();
                         modeldoc.setNumRows(0);
                         ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
-                        
+
                         for (ServicoPedidoDocumentosBean spdb : spdd.readitens(PedidoServico.txtnumeropedido.getText())) {
                             modeldoc.addRow(new Object[]{
                                 false,
@@ -1284,9 +1253,9 @@ public class OS extends javax.swing.JInternalFrame {
                     }
                 }
             });
-            
+
             menu.add(das);
-            
+
             menu.show(evt.getComponent(), evt.getPoint().x, evt.getPoint().y);
         }
     }//GEN-LAST:event_txtdasMouseClicked
@@ -1306,8 +1275,9 @@ public class OS extends javax.swing.JInternalFrame {
                 //Criar OS
                 OSDAO od = new OSDAO();
                 OSBean ob = new OSBean();
-                
-                try {
+
+                //Dados para método DAO
+                try { //Tentar achar primeira OP do ano para poder dar nome
                     if (od.readnome() == false) {
                         Calendar ca = Calendar.getInstance();
                         String patterny = "yy";
@@ -1334,15 +1304,20 @@ public class OS extends javax.swing.JInternalFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(OrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                //Criar data do dia para data de criação e prazo de entrega
                 Calendar c = Calendar.getInstance();
                 String pattern = "dd/MM/yyyy HH:mm:ss";
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                 txtabertura.setText(simpleDateFormat.format(c.getTime()));
                 ob.setDataabertura(simpleDateFormat.format(c.getTime()));
+
+                //Perguntar prazo para fazer a data de entrega
                 int days = Integer.parseInt(JOptionPane.showInputDialog(rootPane, "Quantos dias de prazo?", "Prazo", JOptionPane.YES_NO_OPTION));
                 c.add(Calendar.DAY_OF_MONTH, days);
                 txtprevisao.setText(simpleDateFormat.format(c.getTime()));
                 ob.setDataprevisao(simpleDateFormat.format(c.getTime()));
+
+                //Resto dos dados para o método DAO
                 txtstatus.setText("Rascunho");
                 ob.setStatus("Rascunho");
                 ob.setCliente(txtcliente.getText());
@@ -1374,59 +1349,55 @@ public class OS extends javax.swing.JInternalFrame {
                 //Criar Processos
                 OSProcessosDAO opd = new OSProcessosDAO();
                 OSProcessosBean opb = new OSProcessosBean();
-                
-                int rcproc = tableprocessos.getRowCount();
-                if (rcproc > 0) {
-                    for (int i = 0; i < rcproc; i++) {
-                        opb.setIdos(txtnumeroos.getText());
-                        opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
-                        opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
-                        opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
-                        opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
-                        opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
-                        opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
-                        opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                        opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
 
-                        //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
-                        opd.create(opb);
-                    }
+                int rcproc = tableprocessos.getRowCount();
+                for (int i = 0; i < rcproc; i++) {
+                    opb.setIdos(txtnumeroos.getText());
+                    opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
+                    opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
+                    opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
+                    opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
+                    opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
+                    opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
+                    opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
+                    opb.setDisponivel(txtinicial.getText());
+
+                    //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
+                    opd.create(opb);
                 }
 
                 //Criar Documentos da OS
                 OSDocumentosDAO odd = new OSDocumentosDAO();
                 OSDocumentosBean odb = new OSDocumentosBean();
-                
-                int rcdoc = tabledoc.getRowCount();
-                if (rcdoc > 0) {
-                    for (int i = 0; i < rcdoc; i++) {
-                        File fileoriginal = new File(tabledoc.getValueAt(i, 4).toString());
-                        File folder = new File("Q:/MIKE_ERP/os_arq/" + txtnumeroos.getText());
-                        File filecopy = new File(folder + "/" + fileoriginal.getName());
-                        
-                        folder.mkdirs();
-                        try {
-                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                        } catch (IOException ex) {
-                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-                            try {
-                                SendEmail.EnviarErro(ex.toString());
-                                JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                            } catch (HeadlessException hex) {
-                                JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
-                            } catch (AWTException | IOException ex1) {
-                                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
-                            }
-                        }
-                        
-                        odb.setIdos(txtnumeroos.getText());
-                        odb.setDesc(tabledoc.getValueAt(i, 2).toString());
-                        odb.setLocal(filecopy.toString());
 
-                        //idos, descricao, local
-                        odd.create(odb);
+                int rcdoc = tabledoc.getRowCount();
+                for (int i = 0; i < rcdoc; i++) {
+                    File fileoriginal = new File(tabledoc.getValueAt(i, 4).toString());
+                    File folder = new File("Q:/MIKE_ERP/os_arq/" + txtnumeroos.getText());
+                    File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                    folder.mkdirs();
+                    try {
+                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                        try {
+                            SendEmail.EnviarErro(ex.toString());
+                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                        } catch (HeadlessException hex) {
+                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                        } catch (AWTException | IOException ex1) {
+                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
                     }
+
+                    odb.setIdos(txtnumeroos.getText());
+                    odb.setDesc(tabledoc.getValueAt(i, 2).toString());
+                    odb.setLocal(filecopy.toString());
+
+                    //idos, descricao, local
+                    odd.create(odb);
                 }
             }
             reados();
@@ -1438,7 +1409,7 @@ public class OS extends javax.swing.JInternalFrame {
             //Atualizar OS
             OSDAO od = new OSDAO();
             OSBean ob = new OSBean();
-            
+
             ob.setDataabertura(txtabertura.getText());
             ob.setDataprevisao(txtprevisao.getText());
             ob.setStatus(txtstatus.getText());
@@ -1474,101 +1445,81 @@ public class OS extends javax.swing.JInternalFrame {
             //Atualizar Processos
             OSProcessosDAO opd = new OSProcessosDAO();
             OSProcessosBean opb = new OSProcessosBean();
-            
+
             int rcproc = tableprocessos.getRowCount();
-            if (rcproc > 0) {
-                for (int i = 0; i < rcproc; i++) {
-                    if (tableprocessos.getValueAt(i, 1).equals("")) {
-                        opb.setIdos(txtnumeroos.getText());
-                        opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
-                        opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
-                        opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
-                        opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
-                        opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
-                        opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
-                        opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                        opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
+            for (int i = 0; i < rcproc; i++) {
+                if (tableprocessos.getValueAt(i, 1).equals("")) {
+                    opb.setIdos(txtnumeroos.getText());
+                    opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
+                    opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
+                    opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
+                    opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
+                    opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
+                    opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
+                    opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
+                    opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
 
-                        //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
-                        opd.create(opb);
-                    } else {
-                        opb.setIdos(txtnumeroos.getText());
-                        opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
-                        opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
-                        opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
-                        opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
-                        opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
-                        opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
-                        opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                        opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
-                        opb.setId(Integer.parseInt(tableprocessos.getValueAt(i, 1).toString()));
+                    //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
+                    opd.create(opb);
+                } else {
+                    opb.setIdos(txtnumeroos.getText());
+                    opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
+                    opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
+                    opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
+                    opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
+                    opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
+                    opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
+                    opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
+                    opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
+                    opb.setId(Integer.parseInt(tableprocessos.getValueAt(i, 1).toString()));
 
-                        //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
-                        opd.updatetotal(opb);
-                    }
+                    //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
+                    opd.updatetotal(opb);
                 }
             }
 
             //Atualizar Documentos da OS
             OSDocumentosDAO odd = new OSDocumentosDAO();
             OSDocumentosBean odb = new OSDocumentosBean();
-            
-            int rcdoc = tabledoc.getRowCount();
-            if (rcdoc > 0) {
-                for (int i = 0; i < rcdoc; i++) {
-                    if (tabledoc.getValueAt(i, 1).equals("")) {
-                        File fileoriginal = new File(tabledoc.getValueAt(i, 4).toString());
-                        File folder = new File("Q:/MIKE_ERP/os_arq/" + txtnumeroos.getText());
-                        File filecopy = new File(folder + "/" + fileoriginal.getName());
-                        
-                        folder.mkdirs();
-                        try {
-                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                        } catch (IOException ex) {
-                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-                            try {
-                                SendEmail.EnviarErro(ex.toString());
-                                JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                            } catch (HeadlessException hex) {
-                                JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
-                            } catch (AWTException | IOException ex1) {
-                                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
-                            }
-                        }
-                        
-                        odb.setIdos(txtnumeroos.getText());
-                        odb.setDesc(tabledoc.getValueAt(i, 2).toString());
-                        odb.setLocal(filecopy.toString());
 
-                        //idos, descricao, local
-                        odd.create(odb);
+            int rcdoc = tabledoc.getRowCount();
+            for (int i = 0; i < rcdoc; i++) {
+                if (tabledoc.getValueAt(i, 1).equals("")) {
+                    File fileoriginal = new File(tabledoc.getValueAt(i, 4).toString());
+                    File folder = new File("Q:/MIKE_ERP/os_arq/" + txtnumeroos.getText());
+                    File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                    folder.mkdirs();
+                    try {
+                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                        try {
+                            SendEmail.EnviarErro(ex.toString());
+                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                        } catch (HeadlessException hex) {
+                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                        } catch (AWTException | IOException ex1) {
+                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
                     }
-                    
+
+                    odb.setIdos(txtnumeroos.getText());
+                    odb.setDesc(tabledoc.getValueAt(i, 2).toString());
+                    odb.setLocal(filecopy.toString());
+
+                    //idos, descricao, local
+                    odd.create(odb);
                 }
             }
+
             reados();
             readdocs();
             readprocessos();
             JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
         }
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        int row = Integer.parseInt(JOptionPane.showInputDialog(rootPane, "Qual número de row?", "Número de row", JOptionPane.YES_OPTION));
-        DefaultTableModel model = (DefaultTableModel) tableprocessos.getModel();
-        tableprocessos.setModel(model);
-        model.insertRow(row, new Object[]{
-            false,
-            "ID" + row,
-            "Processo" + row,
-            "Início" + row,
-            "Término" + row,
-            "Conforme" + row,
-            "Não conforme" + row,
-            "Usuário" + row
-        });
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void btnprocurarmaterialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarmaterialActionPerformed
         ProcuraItemOS p = new ProcuraItemOS();
@@ -1591,7 +1542,13 @@ public class OS extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnprocurarclienteActionPerformed
 
     private void btnmudarprocessoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmudarprocessoActionPerformed
-
+        ProcuraGrupoDeProcessosOS p = new ProcuraGrupoDeProcessosOS();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
     }//GEN-LAST:event_btnmudarprocessoActionPerformed
 
     private void tableprocessosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableprocessosMouseClicked
@@ -1604,7 +1561,7 @@ public class OS extends javax.swing.JInternalFrame {
                     if (resp == 0) {
                         OSProcessosDAO opd = new OSProcessosDAO();
                         OSProcessosBean opb = new OSProcessosBean();
-                        
+
                         Calendar c = Calendar.getInstance();
                         String pattern = "dd/MM/yyyy HH:mm:ss";
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -1614,7 +1571,7 @@ public class OS extends javax.swing.JInternalFrame {
 
                         //inicio = ?, usuario = ? WHERE id = ?
                         opd.updateinicio(opb);
-                        
+
                         readprocessos();
                     }
                 } else {
@@ -1638,7 +1595,7 @@ public class OS extends javax.swing.JInternalFrame {
                     Dimension jinternalframesize = p.getSize();
                     p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
                     p.setVisible(true);
-                    ProcessoOS.txtid.setText(tableprocessos.getValueAt(tableprocessos.getSelectedRow(), 1).toString());
+                    ProcessoOS.txtidprocesso.setText(tableprocessos.getValueAt(tableprocessos.getSelectedRow(), 1).toString());
                     ProcessoOS.txtdisponivel.setText(txtfinal.getText());
                     ProcessoOS.txtnaookprocesso.setText(String.valueOf(naookprocesso));
                     ProcessoOS.txtokprocesso.setText(String.valueOf(okprocesso));
@@ -1681,10 +1638,6 @@ public class OS extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void btnincluirprocessoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnincluirprocessoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnincluirprocessoActionPerformed
-
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton8ActionPerformed
@@ -1700,7 +1653,7 @@ public class OS extends javax.swing.JInternalFrame {
 
             //Pegar dados da OS
             OSDAO od = new OSDAO();
-            
+
             for (OSBean ob : od.click(txtnumeroos.getText())) {
                 txtabertura.setText(ob.getDataabertura());
                 txtprevisao.setText(ob.getDataprevisao());
@@ -1826,7 +1779,7 @@ public class OS extends javax.swing.JInternalFrame {
             Desktop desk = Desktop.getDesktop();
             try {
                 desk.open(new File((String) tabledoc.getValueAt(tabledoc.getSelectedRow(), 3)));
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(DocumentosOrcamentoServico.class
                         .getName()).log(Level.SEVERE, null, ex);
@@ -1837,8 +1790,6 @@ public class OS extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnalterarstatus;
-    public static javax.swing.JButton btnexcluirprocesso;
-    public static javax.swing.JButton btnincluirprocesso;
     public static javax.swing.JButton btnmudarprocesso;
     public static javax.swing.JButton btnprocurarcliente;
     public static javax.swing.JButton btnprocurarmaterial;
@@ -1851,7 +1802,6 @@ public class OS extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton12;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
-    public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton8;
     public javax.swing.JButton jButton9;
     public javax.swing.JLabel jLabel1;

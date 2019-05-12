@@ -42,7 +42,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
     public static void readprocesso() {
         OSProcessosDAO opd = new OSProcessosDAO();
 
-        for (OSProcessosBean opb : opd.readprocesso(Integer.parseInt(txtid.getText()))) {
+        for (OSProcessosBean opb : opd.readprocesso(Integer.parseInt(txtidprocesso.getText()))) {
             txtprocesso.setText(opb.getProcesso());
             txtinicio.setText(opb.getInicio());
             txttermino.setText(opb.getTermino());
@@ -60,8 +60,9 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
         OSInspecaoDAO oid = new OSInspecaoDAO();
 
-        for (OSInspecaoBean oib : oid.read(txtid.getText())) {
+        for (OSInspecaoBean oib : oid.read(txtidprocesso.getText())) {
             model.addRow(new Object[]{
+                oib.getId(),
                 oib.getMedida(),
                 oib.getMedidamaior(),
                 oib.getMedidamenor(),
@@ -93,7 +94,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        txtid = new javax.swing.JTextField();
+        txtidprocesso = new javax.swing.JTextField();
         txtprocesso = new javax.swing.JTextField();
         txtinicio = new javax.swing.JTextField();
         txttermino = new javax.swing.JTextField();
@@ -139,8 +140,8 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
         jLabel7.setText("Usuário");
 
-        txtid.setEditable(false);
-        txtid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtidprocesso.setEditable(false);
+        txtidprocesso.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         txtprocesso.setEditable(false);
         txtprocesso.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -236,7 +237,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel1)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtidprocesso, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtdispprocesso, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -266,7 +267,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
-                            .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtidprocesso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtdisponivel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtrow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -304,11 +305,11 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Medida Inspecionada", "Maior Valor do Lote", "Menor Valor do Lote", "Instrumento de Medição"
+                "ID", "Medida Inspecionada", "Maior Valor do Lote", "Menor Valor do Lote", "Instrumento de Medição"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -317,12 +318,15 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tableinspecao);
         if (tableinspecao.getColumnModel().getColumnCount() > 0) {
-            tableinspecao.getColumnModel().getColumn(1).setMinWidth(115);
-            tableinspecao.getColumnModel().getColumn(1).setPreferredWidth(115);
-            tableinspecao.getColumnModel().getColumn(1).setMaxWidth(115);
-            tableinspecao.getColumnModel().getColumn(2).setMinWidth(120);
-            tableinspecao.getColumnModel().getColumn(2).setPreferredWidth(120);
-            tableinspecao.getColumnModel().getColumn(2).setMaxWidth(120);
+            tableinspecao.getColumnModel().getColumn(0).setMinWidth(0);
+            tableinspecao.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableinspecao.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableinspecao.getColumnModel().getColumn(2).setMinWidth(115);
+            tableinspecao.getColumnModel().getColumn(2).setPreferredWidth(115);
+            tableinspecao.getColumnModel().getColumn(2).setMaxWidth(115);
+            tableinspecao.getColumnModel().getColumn(3).setMinWidth(120);
+            tableinspecao.getColumnModel().getColumn(3).setPreferredWidth(120);
+            tableinspecao.getColumnModel().getColumn(3).setMaxWidth(120);
         }
 
         jButton2.setText("Adicionar Medição");
@@ -463,7 +467,9 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         int row = Integer.parseInt(txtrow.getText());
         int newrow = row + 1;
         int resto = inicial - naook;
-        if (tableinspecao.getRowCount() == 0) {
+        if (!txttermino.getText().equals("")) {
+            dispose();
+        } else if (tableinspecao.getRowCount() == 0) {
             int resp = JOptionPane.showConfirmDialog(rootPane, "Não existem medições! Está correto?", "Sem medições", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
                 if (ok + naook < inicial) {
@@ -483,7 +489,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
                         opb.setObservacao(txtobservacao.getText());
                         opb.setMotivo(txtmotivo.getText());
-                        opb.setId(Integer.parseInt(txtid.getText()));
+                        opb.setId(Integer.parseInt(txtidprocesso.getText()));
 
                         //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
                         opd.update(opb);
@@ -564,7 +570,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
                         opb.setObservacao(txtobservacao.getText());
                         opb.setMotivo(txtmotivo.getText());
-                        opb.setId(Integer.parseInt(txtid.getText()));
+                        opb.setId(Integer.parseInt(txtidprocesso.getText()));
 
                         //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
                         opd.update(opb);
@@ -646,355 +652,421 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                     }
                 } else { //Se a quantidade de ok + naook == total
                     //Criar DAO e Bean para alterar registros no DB
-                        OSProcessosDAO opd = new OSProcessosDAO();
-                        OSProcessosBean opb = new OSProcessosBean();
+                    OSProcessosDAO opd = new OSProcessosDAO();
+                    OSProcessosBean opb = new OSProcessosBean();
 
-                        //Criar data para término do processo
-                        Calendar c = Calendar.getInstance();
-                        String pattern = "dd/MM/yyyy HH:mm:ss";
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    //Criar data para término do processo
+                    Calendar c = Calendar.getInstance();
+                    String pattern = "dd/MM/yyyy HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-                        //Dados para o método chamado no DAO
-                        opb.setTermino(simpleDateFormat.format(c.getTime()));
-                        opb.setQtdok(Integer.parseInt(txtok.getText()));
-                        opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
-                        opb.setObservacao(txtobservacao.getText());
-                        opb.setMotivo(txtmotivo.getText());
-                        opb.setId(Integer.parseInt(txtid.getText()));
+                    //Dados para o método chamado no DAO
+                    opb.setTermino(simpleDateFormat.format(c.getTime()));
+                    opb.setQtdok(Integer.parseInt(txtok.getText()));
+                    opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
+                    opb.setObservacao(txtobservacao.getText());
+                    opb.setMotivo(txtmotivo.getText());
+                    opb.setId(Integer.parseInt(txtidprocesso.getText()));
 
-                        //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
-                        opd.update(opb);
+                    //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
+                    opd.update(opb);
 
-                        //Alterar valores na tabela de processos na OS
-                        DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
-                        model.setValueAt(simpleDateFormat.format(c.getTime()), row, 4);
-                        model.setValueAt(txtok.getText(), row, 5);
-                        model.setValueAt(txtnaook.getText(), row, 6);
+                    //Alterar valores na tabela de processos na OS
+                    DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
+                    model.setValueAt(simpleDateFormat.format(c.getTime()), row, 4);
+                    model.setValueAt(txtok.getText(), row, 5);
+                    model.setValueAt(txtnaook.getText(), row, 6);
 
-                        //Atualizar quantidade disponível nos processos seguintes.
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            if (!OS.tableprocessos.getValueAt(i, 2).equals(txtprocesso.getText()) && OS.tableprocessos.getValueAt(i, 3).equals("")) {
-                                OS.tableprocessos.setValueAt(resto, i, 9);
-                            }
+                    //Atualizar quantidade disponível nos processos seguintes.
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        if (!OS.tableprocessos.getValueAt(i, 2).equals(txtprocesso.getText()) && OS.tableprocessos.getValueAt(i, 3).equals("")) {
+                            OS.tableprocessos.setValueAt(resto, i, 9);
                         }
+                    }
 
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            OS.tableprocessos.setValueAt(i, i, 8);
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        OS.tableprocessos.setValueAt(i, i, 8);
+                    }
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
+                            opb.setIdos(OS.txtnumeroos.getText());
+                            opb.setProcesso(txtprocesso.getText());
+                            opb.setInicio("");
+                            opb.setTermino("");
+                            opb.setQtdok(0);
+                            opb.setQtdnaook(0);
+                            opb.setUsuario("");
+                            opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+
+                            //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
+                            opd.create(opb);
+                        } else {
+                            opb.setIdos(OS.txtnumeroos.getText());
+                            opb.setProcesso(OS.tableprocessos.getValueAt(i, 2).toString());
+                            opb.setInicio(OS.tableprocessos.getValueAt(i, 3).toString());
+                            opb.setTermino(OS.tableprocessos.getValueAt(i, 4).toString());
+                            opb.setQtdok(Integer.parseInt(OS.tableprocessos.getValueAt(i, 5).toString()));
+                            opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
+                            opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
+                            opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
+
+                            //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
+                            opd.updatetotal(opb);
                         }
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
-                                opb.setIdos(OS.txtnumeroos.getText());
-                                opb.setProcesso(txtprocesso.getText());
-                                opb.setInicio("");
-                                opb.setTermino("");
-                                opb.setQtdok(0);
-                                opb.setQtdnaook(0);
-                                opb.setUsuario("");
-                                opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                    }
+                    JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
 
-                                //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
-                                opd.create(opb);
-                            } else {
-                                opb.setIdos(OS.txtnumeroos.getText());
-                                opb.setProcesso(OS.tableprocessos.getValueAt(i, 2).toString());
-                                opb.setInicio(OS.tableprocessos.getValueAt(i, 3).toString());
-                                opb.setTermino(OS.tableprocessos.getValueAt(i, 4).toString());
-                                opb.setQtdok(Integer.parseInt(OS.tableprocessos.getValueAt(i, 5).toString()));
-                                opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
-                                opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
-                                opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
-                                opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
+                    //Atualizar os processos na tela
+                    OS.readprocessos();
 
-                                //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
-                                opd.updatetotal(opb);
-                            }
-                        }
-                        JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+                    //Atualizar quantidades na OS
+                    OS.qtdok();
 
-                        //Atualizar os processos na tela
-                        OS.readprocessos();
+                    //Verificar se precisa encerrar a OP
+                    OS.encerraop();
 
-                        //Atualizar quantidades na OS
-                        OS.qtdok();
-
-                        //Verificar se precisa encerrar a OP
-                        OS.encerraop();
-
-                        //Fechar a tela
-                        dispose();
+                    //Fechar a tela
+                    dispose();
                 }
             }
         } else { //Se houver inspeção
             if (ok + naook < inicial) {
-                    if (okprocesso + naookprocesso + ok + naook == dispprocesso) { //Se as quantidades finalizam o processo
-                        //Criar DAO e Bean para alterar registros no DB
-                        OSProcessosDAO opd = new OSProcessosDAO();
-                        OSProcessosBean opb = new OSProcessosBean();
-
-                        //Criar data para término do processo
-                        Calendar c = Calendar.getInstance();
-                        String pattern = "dd/MM/yyyy HH:mm:ss";
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-                        //Dados para o método chamado no DAO
-                        opb.setTermino(simpleDateFormat.format(c.getTime()));
-                        opb.setQtdok(Integer.parseInt(txtok.getText()));
-                        opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
-                        opb.setObservacao(txtobservacao.getText());
-                        opb.setMotivo(txtmotivo.getText());
-                        opb.setId(Integer.parseInt(txtid.getText()));
-
-                        //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
-                        opd.update(opb);
-
-                        //Alterar valores na tabela de processos na OS
-                        DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
-                        model.setValueAt(simpleDateFormat.format(c.getTime()), row, 4);
-                        model.setValueAt(txtok.getText(), row, 5);
-                        model.setValueAt(txtnaook.getText(), row, 6);
-
-                        //Atualizar quantidade disponível nos processos seguintes.
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            if (!OS.tableprocessos.getValueAt(i, 2).equals(txtprocesso.getText()) && OS.tableprocessos.getValueAt(i, 3).equals("")) {
-                                OS.tableprocessos.setValueAt(resto, i, 9);
-                            }
-                        }
-
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            OS.tableprocessos.setValueAt(i, i, 8);
-                        }
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
-                                opb.setIdos(OS.txtnumeroos.getText());
-                                opb.setProcesso(txtprocesso.getText());
-                                opb.setInicio("");
-                                opb.setTermino("");
-                                opb.setQtdok(0);
-                                opb.setQtdnaook(0);
-                                opb.setUsuario("");
-                                opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
-
-                                //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
-                                opd.create(opb);
-                            } else {
-                                opb.setIdos(OS.txtnumeroos.getText());
-                                opb.setProcesso(OS.tableprocessos.getValueAt(i, 2).toString());
-                                opb.setInicio(OS.tableprocessos.getValueAt(i, 3).toString());
-                                opb.setTermino(OS.tableprocessos.getValueAt(i, 4).toString());
-                                opb.setQtdok(Integer.parseInt(OS.tableprocessos.getValueAt(i, 5).toString()));
-                                opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
-                                opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
-                                opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
-                                opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
-
-                                //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
-                                opd.updatetotal(opb);
-                            }
-                        }
-                        JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
-
-                        //Atualizar os processos na tela
-                        OS.readprocessos();
-
-                        //Atualizar quantidades na OS
-                        OS.qtdok();
-                        
-                        //Atualizar table de inspeções
-                        OS.readinspecoes();
-
-                        //Verificar se precisa encerrar a OP
-                        OS.encerraop();
-
-                        //Fechar a tela
-                        dispose();
-                    } else { //Se as quantidades não finalizam o processo
-
-                        //Criar DAO e Bean para alterar registros no DB
-                        OSProcessosDAO opd = new OSProcessosDAO();
-                        OSProcessosBean opb = new OSProcessosBean();
-
-                        //Criar data para término do processo
-                        Calendar c = Calendar.getInstance();
-                        String pattern = "dd/MM/yyyy HH:mm:ss";
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-                        //Dados para o método chamado no DAO
-                        opb.setTermino(simpleDateFormat.format(c.getTime()));
-                        opb.setQtdok(Integer.parseInt(txtok.getText()));
-                        opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
-                        opb.setObservacao(txtobservacao.getText());
-                        opb.setMotivo(txtmotivo.getText());
-                        opb.setId(Integer.parseInt(txtid.getText()));
-
-                        //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
-                        opd.update(opb);
-
-                        //Alterar valores na tabela de processos na OS
-                        DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
-                        model.setValueAt(simpleDateFormat.format(c.getTime()), row, 4);
-                        model.setValueAt(txtok.getText(), row, 5);
-                        model.setValueAt(txtnaook.getText(), row, 6);
-
-                        //Duplicar processo para que possa ser dada continuidade depois.
-                        model.insertRow(newrow, new Object[]{
-                            false,
-                            "",
-                            txtprocesso.getText(),
-                            "",
-                            "",
-                            0,
-                            0,
-                            "",
-                            newrow,
-                            txtdispprocesso.getText()
-                        });
-
-                        //Atualizar quantidade disponível nos processos seguintes.
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            if (!OS.tableprocessos.getValueAt(i, 2).equals(txtprocesso.getText()) && OS.tableprocessos.getValueAt(i, 3).equals("")) {
-                                model.setValueAt(resto, i, 9);
-                            }
-                        }
-
-                        //Colocar processos em ordem
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            OS.tableprocessos.setValueAt(i, i, 8);
-                        }
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
-                                opb.setIdos(OS.txtnumeroos.getText());
-                                opb.setProcesso(txtprocesso.getText());
-                                opb.setInicio("");
-                                opb.setTermino("");
-                                opb.setQtdok(0);
-                                opb.setQtdnaook(0);
-                                opb.setUsuario("");
-                                opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
-
-                                //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
-                                opd.create(opb);
-                            } else {
-                                opb.setIdos(OS.txtnumeroos.getText());
-                                opb.setProcesso(OS.tableprocessos.getValueAt(i, 2).toString());
-                                opb.setInicio(OS.tableprocessos.getValueAt(i, 3).toString());
-                                opb.setTermino(OS.tableprocessos.getValueAt(i, 4).toString());
-                                opb.setQtdok(Integer.parseInt(OS.tableprocessos.getValueAt(i, 5).toString()));
-                                opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
-                                opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
-                                opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
-                                opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
-
-                                //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
-                                opd.updatetotal(opb);
-                            }
-                        }
-                        JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
-
-                        //Atualizar os processos na tela
-                        OS.readprocessos();
-
-                        //Atualizar quantidades na OS
-                        OS.qtdok();
-                        
-                        //Atualizar table de inspeções
-                        OS.readinspecoes();
-
-                        //Verificar se precisa encerrar a OP
-                        OS.encerraop();
-
-                        //Fechar a tela
-                        dispose();
-                    }
-                } else { //Se a quantidade de ok + naook == total
+                if (okprocesso + naookprocesso + ok + naook == dispprocesso) { //Se as quantidades finalizam o processo
                     //Criar DAO e Bean para alterar registros no DB
-                        OSProcessosDAO opd = new OSProcessosDAO();
-                        OSProcessosBean opb = new OSProcessosBean();
+                    OSProcessosDAO opd = new OSProcessosDAO();
+                    OSProcessosBean opb = new OSProcessosBean();
 
-                        //Criar data para término do processo
-                        Calendar c = Calendar.getInstance();
-                        String pattern = "dd/MM/yyyy HH:mm:ss";
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                    //Criar data para término do processo
+                    Calendar c = Calendar.getInstance();
+                    String pattern = "dd/MM/yyyy HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-                        //Dados para o método chamado no DAO
-                        opb.setTermino(simpleDateFormat.format(c.getTime()));
-                        opb.setQtdok(Integer.parseInt(txtok.getText()));
-                        opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
-                        opb.setObservacao(txtobservacao.getText());
-                        opb.setMotivo(txtmotivo.getText());
-                        opb.setId(Integer.parseInt(txtid.getText()));
+                    //Dados para o método chamado no DAO
+                    opb.setTermino(simpleDateFormat.format(c.getTime()));
+                    opb.setQtdok(Integer.parseInt(txtok.getText()));
+                    opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
+                    opb.setObservacao(txtobservacao.getText());
+                    opb.setMotivo(txtmotivo.getText());
+                    opb.setId(Integer.parseInt(txtidprocesso.getText()));
 
-                        //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
-                        opd.update(opb);
+                    //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
+                    opd.update(opb);
 
-                        //Alterar valores na tabela de processos na OS
-                        DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
-                        model.setValueAt(simpleDateFormat.format(c.getTime()), row, 4);
-                        model.setValueAt(txtok.getText(), row, 5);
-                        model.setValueAt(txtnaook.getText(), row, 6);
+                    //Alterar valores na tabela de processos na OS
+                    DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
+                    model.setValueAt(simpleDateFormat.format(c.getTime()), row, 4);
+                    model.setValueAt(txtok.getText(), row, 5);
+                    model.setValueAt(txtnaook.getText(), row, 6);
 
-                        //Atualizar quantidade disponível nos processos seguintes.
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            if (!OS.tableprocessos.getValueAt(i, 2).equals(txtprocesso.getText()) && OS.tableprocessos.getValueAt(i, 3).equals("")) {
-                                OS.tableprocessos.setValueAt(resto, i, 9);
-                            }
+                    //Atualizar quantidade disponível nos processos seguintes.
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        if (!OS.tableprocessos.getValueAt(i, 2).equals(txtprocesso.getText()) && OS.tableprocessos.getValueAt(i, 3).equals("")) {
+                            OS.tableprocessos.setValueAt(resto, i, 9);
                         }
+                    }
 
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            OS.tableprocessos.setValueAt(i, i, 8);
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        OS.tableprocessos.setValueAt(i, i, 8);
+                    }
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
+                            opb.setIdos(OS.txtnumeroos.getText());
+                            opb.setProcesso(txtprocesso.getText());
+                            opb.setInicio("");
+                            opb.setTermino("");
+                            opb.setQtdok(0);
+                            opb.setQtdnaook(0);
+                            opb.setUsuario("");
+                            opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+
+                            //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
+                            opd.create(opb);
+                        } else {
+                            opb.setIdos(OS.txtnumeroos.getText());
+                            opb.setProcesso(OS.tableprocessos.getValueAt(i, 2).toString());
+                            opb.setInicio(OS.tableprocessos.getValueAt(i, 3).toString());
+                            opb.setTermino(OS.tableprocessos.getValueAt(i, 4).toString());
+                            opb.setQtdok(Integer.parseInt(OS.tableprocessos.getValueAt(i, 5).toString()));
+                            opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
+                            opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
+                            opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
+
+                            //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
+                            opd.updatetotal(opb);
                         }
-                        for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                            if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
-                                opb.setIdos(OS.txtnumeroos.getText());
-                                opb.setProcesso(txtprocesso.getText());
-                                opb.setInicio("");
-                                opb.setTermino("");
-                                opb.setQtdok(0);
-                                opb.setQtdnaook(0);
-                                opb.setUsuario("");
-                                opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                    }
 
-                                //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
-                                opd.create(opb);
-                            } else {
-                                opb.setIdos(OS.txtnumeroos.getText());
-                                opb.setProcesso(OS.tableprocessos.getValueAt(i, 2).toString());
-                                opb.setInicio(OS.tableprocessos.getValueAt(i, 3).toString());
-                                opb.setTermino(OS.tableprocessos.getValueAt(i, 4).toString());
-                                opb.setQtdok(Integer.parseInt(OS.tableprocessos.getValueAt(i, 5).toString()));
-                                opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
-                                opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
-                                opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
-                                opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
+                    //Criar DAO e Bean das inspeções
+                    OSInspecaoDAO oid = new OSInspecaoDAO();
+                    OSInspecaoBean oib = new OSInspecaoBean();
 
-                                //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
-                                opd.updatetotal(opb);
-                            }
+                    //Dados para método DAO
+                    for (int i = 0; i < tableinspecao.getRowCount(); i++) { //Fazer por todas as linhas da table
+                        if (tableinspecao.getValueAt(i, 0).equals("")) { //Se não tem ID, criar
+                            oib.setIdos(OS.txtnumeroos.getText());
+                            oib.setIdprocesso(txtidprocesso.getText());
+                            oib.setProcesso(txtprocesso.getText());
+                            oib.setMedida(tableinspecao.getValueAt(i, 1).toString());
+                            oib.setMedidamaior(tableinspecao.getValueAt(i, 2).toString());
+                            oib.setMedidamenor(tableinspecao.getValueAt(i, 3).toString());
+                            oib.setFuncionario(TelaPrincipal.lblapelido.getText());
+                            oib.setInstrumento(tableinspecao.getValueAt(i, 4).toString());
+
+                            //idos, idprocesso, processo, medida, medidamaior, medidamenor, funcionario, instrumento
+                            oid.create(oib);
                         }
-                        JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+                    }
 
-                        //Atualizar os processos na tela
-                        OS.readprocessos();
+                    JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
 
-                        //Atualizar quantidades na OS
-                        OS.qtdok();
-                        
-                        //Atualizar table de inspeções
-                        OS.readinspecoes();
+                    //Atualizar os processos na tela
+                    OS.readprocessos();
 
-                        //Verificar se precisa encerrar a OP
-                        OS.encerraop();
+                    //Atualizar quantidades na OS
+                    OS.qtdok();
 
-                        //Fechar a tela
-                        dispose();
+                    //Atualizar table de inspeções
+                    OS.readinspecoes();
+
+                    //Verificar se precisa encerrar a OP
+                    OS.encerraop();
+
+                    //Fechar a tela
+                    dispose();
+                } else { //Se as quantidades não finalizam o processo
+
+                    //Criar DAO e Bean para alterar registros no DB
+                    OSProcessosDAO opd = new OSProcessosDAO();
+                    OSProcessosBean opb = new OSProcessosBean();
+
+                    //Criar data para término do processo
+                    Calendar c = Calendar.getInstance();
+                    String pattern = "dd/MM/yyyy HH:mm:ss";
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                    //Dados para o método chamado no DAO
+                    opb.setTermino(simpleDateFormat.format(c.getTime()));
+                    opb.setQtdok(Integer.parseInt(txtok.getText()));
+                    opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
+                    opb.setObservacao(txtobservacao.getText());
+                    opb.setMotivo(txtmotivo.getText());
+                    opb.setId(Integer.parseInt(txtidprocesso.getText()));
+
+                    //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
+                    opd.update(opb);
+
+                    //Alterar valores na tabela de processos na OS
+                    DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
+                    model.setValueAt(simpleDateFormat.format(c.getTime()), row, 4);
+                    model.setValueAt(txtok.getText(), row, 5);
+                    model.setValueAt(txtnaook.getText(), row, 6);
+
+                    //Duplicar processo para que possa ser dada continuidade depois.
+                    model.insertRow(newrow, new Object[]{
+                        false,
+                        "",
+                        txtprocesso.getText(),
+                        "",
+                        "",
+                        0,
+                        0,
+                        "",
+                        newrow,
+                        txtdispprocesso.getText()
+                    });
+
+                    //Atualizar quantidade disponível nos processos seguintes.
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        if (!OS.tableprocessos.getValueAt(i, 2).equals(txtprocesso.getText()) && OS.tableprocessos.getValueAt(i, 3).equals("")) {
+                            model.setValueAt(resto, i, 9);
+                        }
+                    }
+
+                    //Colocar processos em ordem
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        OS.tableprocessos.setValueAt(i, i, 8);
+                    }
+                    for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                        if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
+                            opb.setIdos(OS.txtnumeroos.getText());
+                            opb.setProcesso(txtprocesso.getText());
+                            opb.setInicio("");
+                            opb.setTermino("");
+                            opb.setQtdok(0);
+                            opb.setQtdnaook(0);
+                            opb.setUsuario("");
+                            opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+
+                            //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
+                            opd.create(opb);
+                        } else {
+                            opb.setIdos(OS.txtnumeroos.getText());
+                            opb.setProcesso(OS.tableprocessos.getValueAt(i, 2).toString());
+                            opb.setInicio(OS.tableprocessos.getValueAt(i, 3).toString());
+                            opb.setTermino(OS.tableprocessos.getValueAt(i, 4).toString());
+                            opb.setQtdok(Integer.parseInt(OS.tableprocessos.getValueAt(i, 5).toString()));
+                            opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
+                            opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
+                            opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
+
+                            //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
+                            opd.updatetotal(opb);
+                        }
+                    }
+
+                    //Criar DAO e Bean das inspeções
+                    OSInspecaoDAO oid = new OSInspecaoDAO();
+                    OSInspecaoBean oib = new OSInspecaoBean();
+
+                    //Dados para método DAO
+                    for (int i = 0; i < tableinspecao.getRowCount(); i++) { //Fazer por todas as linhas da table
+                        if (tableinspecao.getValueAt(i, 0).equals("")) { //Se não tem ID, criar
+                            oib.setIdos(OS.txtnumeroos.getText());
+                            oib.setIdprocesso(txtidprocesso.getText());
+                            oib.setProcesso(txtprocesso.getText());
+                            oib.setMedida(tableinspecao.getValueAt(i, 1).toString());
+                            oib.setMedidamaior(tableinspecao.getValueAt(i, 2).toString());
+                            oib.setMedidamenor(tableinspecao.getValueAt(i, 3).toString());
+                            oib.setFuncionario(TelaPrincipal.lblapelido.getText());
+                            oib.setInstrumento(tableinspecao.getValueAt(i, 4).toString());
+
+                            //idos, idprocesso, processo, medida, medidamaior, medidamenor, funcionario, instrumento
+                            oid.create(oib);
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+
+                    //Atualizar os processos na tela
+                    OS.readprocessos();
+
+                    //Atualizar quantidades na OS
+                    OS.qtdok();
+
+                    //Atualizar table de inspeções
+                    OS.readinspecoes();
+
+                    //Verificar se precisa encerrar a OP
+                    OS.encerraop();
+
+                    //Fechar a tela
+                    dispose();
                 }
+            } else { //Se a quantidade de ok + naook == total
+                //Criar DAO e Bean para alterar registros no DB
+                OSProcessosDAO opd = new OSProcessosDAO();
+                OSProcessosBean opb = new OSProcessosBean();
+
+                //Criar data para término do processo
+                Calendar c = Calendar.getInstance();
+                String pattern = "dd/MM/yyyy HH:mm:ss";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                //Dados para o método chamado no DAO
+                opb.setTermino(simpleDateFormat.format(c.getTime()));
+                opb.setQtdok(Integer.parseInt(txtok.getText()));
+                opb.setQtdnaook(Integer.parseInt(txtnaook.getText()));
+                opb.setObservacao(txtobservacao.getText());
+                opb.setMotivo(txtmotivo.getText());
+                opb.setId(Integer.parseInt(txtidprocesso.getText()));
+
+                //termino = ?, qtdok = ?, qtdnaook = ?, observacao = ?, motivo = ? WHERE id = ?
+                opd.update(opb);
+
+                //Alterar valores na tabela de processos na OS
+                DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
+                model.setValueAt(simpleDateFormat.format(c.getTime()), row, 4);
+                model.setValueAt(txtok.getText(), row, 5);
+                model.setValueAt(txtnaook.getText(), row, 6);
+
+                //Atualizar quantidade disponível nos processos seguintes.
+                for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                    if (!OS.tableprocessos.getValueAt(i, 2).equals(txtprocesso.getText()) && OS.tableprocessos.getValueAt(i, 3).equals("")) {
+                        OS.tableprocessos.setValueAt(resto, i, 9);
+                    }
+                }
+
+                for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                    OS.tableprocessos.setValueAt(i, i, 8);
+                }
+                for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                    if (OS.tableprocessos.getValueAt(i, 1).equals("")) {
+                        opb.setIdos(OS.txtnumeroos.getText());
+                        opb.setProcesso(txtprocesso.getText());
+                        opb.setInicio("");
+                        opb.setTermino("");
+                        opb.setQtdok(0);
+                        opb.setQtdnaook(0);
+                        opb.setUsuario("");
+                        opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                        opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+
+                        //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
+                        opd.create(opb);
+                    } else {
+                        opb.setIdos(OS.txtnumeroos.getText());
+                        opb.setProcesso(OS.tableprocessos.getValueAt(i, 2).toString());
+                        opb.setInicio(OS.tableprocessos.getValueAt(i, 3).toString());
+                        opb.setTermino(OS.tableprocessos.getValueAt(i, 4).toString());
+                        opb.setQtdok(Integer.parseInt(OS.tableprocessos.getValueAt(i, 5).toString()));
+                        opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
+                        opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
+                        opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
+                        opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                        opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
+
+                        //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
+                        opd.updatetotal(opb);
+                    }
+                }
+
+                //Criar DAO e Bean das inspeções
+                OSInspecaoDAO oid = new OSInspecaoDAO();
+                OSInspecaoBean oib = new OSInspecaoBean();
+
+                //Dados para método DAO
+                for (int i = 0; i < tableinspecao.getRowCount(); i++) { //Fazer por todas as linhas da table
+                    if (tableinspecao.getValueAt(i, 0).equals("")) { //Se não tem ID, criar
+                        oib.setIdos(OS.txtnumeroos.getText());
+                        oib.setIdprocesso(txtidprocesso.getText());
+                        oib.setProcesso(txtprocesso.getText());
+                        oib.setMedida(tableinspecao.getValueAt(i, 1).toString());
+                        oib.setMedidamaior(tableinspecao.getValueAt(i, 2).toString());
+                        oib.setMedidamenor(tableinspecao.getValueAt(i, 3).toString());
+                        oib.setFuncionario(TelaPrincipal.lblapelido.getText());
+                        oib.setInstrumento(tableinspecao.getValueAt(i, 4).toString());
+
+                        //idos, idprocesso, processo, medida, medidamaior, medidamenor, funcionario, instrumento
+                        oid.create(oib);
+                    }
+                }
+
+                JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+
+                //Atualizar os processos na tela
+                OS.readprocessos();
+
+                //Atualizar quantidades na OS
+                OS.qtdok();
+
+                //Atualizar table de inspeções
+                OS.readinspecoes();
+
+                //Verificar se precisa encerrar a OP
+                OS.encerraop();
+
+                //Fechar a tela
+                dispose();
+            }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1127,7 +1199,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tableinspecao;
     public static javax.swing.JTextField txtdisponivel;
     public static javax.swing.JTextField txtdispprocesso;
-    public static javax.swing.JTextField txtid;
+    public static javax.swing.JTextField txtidprocesso;
     public static javax.swing.JTextField txtinicio;
     public static javax.swing.JTextArea txtmotivo;
     public static javax.swing.JTextField txtnaook;

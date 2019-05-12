@@ -1690,7 +1690,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             OSDAO od = new OSDAO();
             OSBean ob = new OSBean();
 
-            //Crir OS
+            //Criar OS
             ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
             ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
             for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
