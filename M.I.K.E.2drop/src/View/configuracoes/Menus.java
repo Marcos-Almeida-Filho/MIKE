@@ -91,9 +91,9 @@ public class Menus extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tablemenus);
         if (tablemenus.getColumnModel().getColumnCount() > 0) {
-            tablemenus.getColumnModel().getColumn(0).setMinWidth(35);
-            tablemenus.getColumnModel().getColumn(0).setPreferredWidth(35);
-            tablemenus.getColumnModel().getColumn(0).setMaxWidth(35);
+            tablemenus.getColumnModel().getColumn(0).setMinWidth(0);
+            tablemenus.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tablemenus.getColumnModel().getColumn(0).setMaxWidth(0);
             tablemenus.getColumnModel().getColumn(1).setResizable(false);
         }
 

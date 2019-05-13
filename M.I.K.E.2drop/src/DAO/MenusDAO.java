@@ -56,7 +56,7 @@ public class MenusDAO {
         List<MenusBean> listmb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM menus");
+            stmt = con.prepareStatement("SELECT * FROM menus ORDER BY ordem");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

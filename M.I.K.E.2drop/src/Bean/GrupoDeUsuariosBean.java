@@ -17,24 +17,39 @@ public class GrupoDeUsuariosBean {
     private String submenuusuarios;
     private String submenugrupodeusuarios;
     private String submenurepresentantes;
+    private String submenuregioesdeatuacao;
     private String menucomercial;
     private String submenuclientes;
     private String submenugrupodeclientes;
+    private String submenufornecedores;
+    private String menufinanceiro;
+    private String submenucontasareceber;
+    private String submenucontasapagar;
     private String submenucondicoesdepagamento;
+    private String submenubancos;
     private String menucompras;
     private String submenusolicitacaodecompras;
+    private String submenuorcamentodecompras;
     private String submenupedidodecompras;
     private String submenuinsumos;
+    private String menulogistica;
+    private String submenucarros;
+    private String menuqualidade;
+    private String submenuinstrumentosdemedicao;
     private String menuvendas;
     private String submenuorcamentosvenda;
     private String submenupedidosvenda;
     private String submenuops;
     private String submenuprodutosvenda;
+    private String submenuprocessosvenda;
+    private String submenugrupodeprocessosvenda;
     private String menuservicos;
     private String submenuorcamentosservico;
     private String submenupedidosservico;
     private String submenuoss;
     private String submenuprodutosservico;
+    private String submenuprocessosservico;
+    private String submenugrupodeprocessosservico;
     private String menuconfiguracoes;
     private String submenumenus;
 
@@ -86,6 +101,14 @@ public class GrupoDeUsuariosBean {
         this.submenurepresentantes = submenurepresentantes;
     }
 
+    public String getSubmenuregioesdeatuacao() {
+        return submenuregioesdeatuacao;
+    }
+
+    public void setSubmenuregioesdeatuacao(String submenuregioesdeatuacao) {
+        this.submenuregioesdeatuacao = submenuregioesdeatuacao;
+    }
+
     public String getMenucomercial() {
         return menucomercial;
     }
@@ -110,12 +133,52 @@ public class GrupoDeUsuariosBean {
         this.submenugrupodeclientes = submenugrupodeclientes;
     }
 
+    public String getSubmenufornecedores() {
+        return submenufornecedores;
+    }
+
+    public void setSubmenufornecedores(String submenufornecedores) {
+        this.submenufornecedores = submenufornecedores;
+    }
+
+    public String getMenufinanceiro() {
+        return menufinanceiro;
+    }
+
+    public void setMenufinanceiro(String menufinanceiro) {
+        this.menufinanceiro = menufinanceiro;
+    }
+
+    public String getSubmenucontasareceber() {
+        return submenucontasareceber;
+    }
+
+    public void setSubmenucontasareceber(String submenucontasareceber) {
+        this.submenucontasareceber = submenucontasareceber;
+    }
+
+    public String getSubmenucontasapagar() {
+        return submenucontasapagar;
+    }
+
+    public void setSubmenucontasapagar(String submenucontasapagar) {
+        this.submenucontasapagar = submenucontasapagar;
+    }
+
     public String getSubmenucondicoesdepagamento() {
         return submenucondicoesdepagamento;
     }
 
     public void setSubmenucondicoesdepagamento(String submenucondicoesdepagamento) {
         this.submenucondicoesdepagamento = submenucondicoesdepagamento;
+    }
+
+    public String getSubmenubancos() {
+        return submenubancos;
+    }
+
+    public void setSubmenubancos(String submenubancos) {
+        this.submenubancos = submenubancos;
     }
 
     public String getMenucompras() {
@@ -134,6 +197,14 @@ public class GrupoDeUsuariosBean {
         this.submenusolicitacaodecompras = submenusolicitacaodecompras;
     }
 
+    public String getSubmenuorcamentodecompras() {
+        return submenuorcamentodecompras;
+    }
+
+    public void setSubmenuorcamentodecompras(String submenuorcamentodecompras) {
+        this.submenuorcamentodecompras = submenuorcamentodecompras;
+    }
+
     public String getSubmenupedidodecompras() {
         return submenupedidodecompras;
     }
@@ -148,6 +219,38 @@ public class GrupoDeUsuariosBean {
 
     public void setSubmenuinsumos(String submenuinsumos) {
         this.submenuinsumos = submenuinsumos;
+    }
+
+    public String getMenulogistica() {
+        return menulogistica;
+    }
+
+    public void setMenulogistica(String menulogistica) {
+        this.menulogistica = menulogistica;
+    }
+
+    public String getSubmenucarros() {
+        return submenucarros;
+    }
+
+    public void setSubmenucarros(String submenucarros) {
+        this.submenucarros = submenucarros;
+    }
+
+    public String getMenuqualidade() {
+        return menuqualidade;
+    }
+
+    public void setMenuqualidade(String menuqualidade) {
+        this.menuqualidade = menuqualidade;
+    }
+
+    public String getSubmenuinstrumentosdemedicao() {
+        return submenuinstrumentosdemedicao;
+    }
+
+    public void setSubmenuinstrumentosdemedicao(String submenuinstrumentosdemedicao) {
+        this.submenuinstrumentosdemedicao = submenuinstrumentosdemedicao;
     }
 
     public String getMenuvendas() {
@@ -190,6 +293,22 @@ public class GrupoDeUsuariosBean {
         this.submenuprodutosvenda = submenuprodutosvenda;
     }
 
+    public String getSubmenuprocessosvenda() {
+        return submenuprocessosvenda;
+    }
+
+    public void setSubmenuprocessosvenda(String submenuprocessosvenda) {
+        this.submenuprocessosvenda = submenuprocessosvenda;
+    }
+
+    public String getSubmenugrupodeprocessosvenda() {
+        return submenugrupodeprocessosvenda;
+    }
+
+    public void setSubmenugrupodeprocessosvenda(String submenugrupodeprocessosvenda) {
+        this.submenugrupodeprocessosvenda = submenugrupodeprocessosvenda;
+    }
+
     public String getMenuservicos() {
         return menuservicos;
     }
@@ -226,8 +345,24 @@ public class GrupoDeUsuariosBean {
         return submenuprodutosservico;
     }
 
-    public void setSubmenuprodutosservico(String submenoprodutosservico) {
-        this.submenuprodutosservico = submenoprodutosservico;
+    public void setSubmenuprodutosservico(String submenuprodutosservico) {
+        this.submenuprodutosservico = submenuprodutosservico;
+    }
+
+    public String getSubmenuprocessosservico() {
+        return submenuprocessosservico;
+    }
+
+    public void setSubmenuprocessosservico(String submenuprocessosservico) {
+        this.submenuprocessosservico = submenuprocessosservico;
+    }
+
+    public String getSubmenugrupodeprocessosservico() {
+        return submenugrupodeprocessosservico;
+    }
+
+    public void setSubmenugrupodeprocessosservico(String submenugrupodeprocessosservico) {
+        this.submenugrupodeprocessosservico = submenugrupodeprocessosservico;
     }
 
     public String getMenuconfiguracoes() {
@@ -245,5 +380,7 @@ public class GrupoDeUsuariosBean {
     public void setSubmenumenus(String submenumenus) {
         this.submenumenus = submenumenus;
     }
+
+
 
 }

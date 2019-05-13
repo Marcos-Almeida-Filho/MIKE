@@ -52,9 +52,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
     public void menus() {
         lbllogin.setText(TelaLogin.TxtLogin.getText());
-//        String ni = lblnome.getText().substring(13, lblnome.getText().length() - 1);
         UsuariosDAO ud = new UsuariosDAO();
-        String nivel = null;
+        String nivel = "";
         for (UsuariosBean ub : ud.checknivel(lbllogin.getText())) {
             nivel = ub.getNivel();
             lblnome.setText("Bem vindo(a) " + ub.getNome() + "!");
@@ -65,144 +64,98 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lbllogin.setVisible(false);
         lblapelido.setVisible(false);
         GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
-        Boolean status = null;
+        Boolean status = true;
         for (GrupoDeUsuariosBean gub : gud.getmenus(nivel)) {
             if (gub.getMenuadministracao().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuadministracao.setVisible(status);
             if (gub.getSubmenuusuarios().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemusuarios.setVisible(status);
             if (gub.getSubmenugrupodeusuarios().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemgrupodeusuarios.setVisible(status);
             if (gub.getSubmenurepresentantes().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemrepresentantes.setVisible(status);
             if (gub.getMenucomercial().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menucomercial.setVisible(status);
             if (gub.getSubmenuclientes().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemclientes.setVisible(status);
             if (gub.getSubmenugrupodeclientes().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemgrupodeclientes.setVisible(status);
             if (gub.getMenuvendas().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuvendas.setVisible(status);
             if (gub.getSubmenuorcamentosvenda().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemvendasorcamentos.setVisible(status);
             if (gub.getSubmenupedidosvenda().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemvendaspedidos.setVisible(status);
             if (gub.getSubmenuops().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemvendasops.setVisible(status);
             if (gub.getSubmenuprodutosvenda().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemvendasprodutos.setVisible(status);
             if (gub.getMenuservicos().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuservicos.setVisible(status);
             if (gub.getSubmenuorcamentosservico().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemservicosorcamentos.setVisible(status);
             if (gub.getSubmenupedidosservico().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemservicospedidos.setVisible(status);
             if (gub.getSubmenuoss().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemservicososs.setVisible(status);
             if (gub.getSubmenuprodutosservico().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemservicosprodutos.setVisible(status);
             if (gub.getMenuconfiguracoes().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuconfiguracoes.setVisible(status);
             if (gub.getSubmenumenus().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemmenus.setVisible(status);
             if (gub.getMenucompras().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menucompras.setVisible(status);
             if (gub.getSubmenusolicitacaodecompras().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitemsolicitacaodecompras.setVisible(status);
             if (gub.getSubmenupedidodecompras().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuitempedidodecompras.setVisible(status);
             if (gub.getSubmenuinsumos().equals("false")) {
                 status = false;
-            } else {
-                status = true;
             }
             TelaPrincipal.menuiteminsumos.setVisible(status);
         }
@@ -671,12 +624,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void menuitemusuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemusuariosActionPerformed
-        // TODO add your handling code here:
         Usuarios telauser = new Usuarios();
         jDesktopPane1.add(telauser);
         Dimension desktopsize = jDesktopPane1.getSize();

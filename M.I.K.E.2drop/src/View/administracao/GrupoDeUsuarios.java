@@ -283,7 +283,7 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
 
             gud.readgrupocadastrado().forEach((ub) -> {
                 txtnomegrupo.setText(ub.getNome());
-                Boolean status;
+                Boolean status = true;
                 if (ub.getMenuadministracao().equals("false")) {
                     status = false;
                 } else {
@@ -308,128 +308,217 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 3, 0);
-                if (ub.getMenucomercial().equals("false")) {
+                if (ub.getSubmenuregioesdeatuacao().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 4, 0);
-                if (ub.getSubmenuclientes().equals("false")) {
+                if (ub.getMenucomercial().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 5, 0);
-                if (ub.getSubmenugrupodeclientes().equals("false")) {
+                if (ub.getSubmenuclientes().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 6, 0);
-                if (ub.getSubmenucondicoesdepagamento().equals("false")) {
+                if (ub.getSubmenugrupodeclientes().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 7, 0);
-                if (ub.getMenuvendas().equals("false")) {
+                if (ub.getSubmenufornecedores().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 8, 0);
-                if (ub.getSubmenuorcamentosvenda().equals("false")) {
+                if (ub.getMenufinanceiro().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 9, 0);
-                if (ub.getSubmenupedidosvenda().equals("false")) {
+                if (ub.getSubmenucontasareceber().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 10, 0);
-                if (ub.getSubmenuops().equals("false")) {
+                if (ub.getSubmenucontasapagar().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 11, 0);
-                if (ub.getSubmenuprodutosvenda().equals("false")) {
+                if (ub.getSubmenucondicoesdepagamento().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 12, 0);
-                if (ub.getMenuservicos().equals("false")) {
+                if (ub.getSubmenubancos().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
                 tablepermissoes.setValueAt(status, 13, 0);
-                if (ub.getSubmenuorcamentosservico().equals("false")) {
-                    status = false;
-                } else {
-                    status = true;
-                }
-                tablepermissoes.setValueAt(status, 14, 0);
-                if (ub.getSubmenupedidosservico().equals("false")) {
-                    status = false;
-                } else {
-                    status = true;
-                }
-                tablepermissoes.setValueAt(status, 15, 0);
-                if (ub.getSubmenuoss().equals("false")) {
-                    status = false;
-                } else {
-                    status = true;
-                }
-                tablepermissoes.setValueAt(status, 16, 0);
-                if (ub.getSubmenuprodutosservico().equals("false")) {
-                    status = false;
-                } else {
-                    status = true;
-                }
-                tablepermissoes.setValueAt(status, 17, 0);
-                if (ub.getMenuconfiguracoes().equals("false")) {
-                    status = false;
-                } else {
-                    status = true;
-                }
-                tablepermissoes.setValueAt(status, 18, 0);
-                if (ub.getSubmenumenus().equals("false")) {
-                    status = false;
-                } else {
-                    status = true;
-                }
-                tablepermissoes.setValueAt(status, 19, 0);
                 if (ub.getMenucompras().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
-                tablepermissoes.setValueAt(status, 20, 0);
+                tablepermissoes.setValueAt(status, 14, 0);
                 if (ub.getSubmenusolicitacaodecompras().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
-                tablepermissoes.setValueAt(status, 21, 0);
+                tablepermissoes.setValueAt(status, 15, 0);
+                if (ub.getSubmenuorcamentodecompras().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 16, 0);
                 if (ub.getSubmenupedidodecompras().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
-                tablepermissoes.setValueAt(status, 22, 0);
+                tablepermissoes.setValueAt(status, 17, 0);
                 if (ub.getSubmenuinsumos().equals("false")) {
                     status = false;
                 } else {
                     status = true;
                 }
+                tablepermissoes.setValueAt(status, 18, 0);
+                if (ub.getMenulogistica().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 19, 0);
+                if (ub.getSubmenucarros().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 20, 0);
+                if (ub.getMenuqualidade().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 21, 0);
+                if (ub.getSubmenuinstrumentosdemedicao().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 22, 0);
+                if (ub.getMenuvendas().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
                 tablepermissoes.setValueAt(status, 23, 0);
+                if (ub.getSubmenuorcamentosvenda().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 24, 0);
+                if (ub.getSubmenupedidosvenda().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 25, 0);
+                if (ub.getSubmenuops().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 26, 0);
+                if (ub.getSubmenuprodutosvenda().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 27, 0);
+                if (ub.getSubmenuprocessosvenda().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 28, 0);
+                if (ub.getSubmenugrupodeprocessosvenda().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 29, 0);
+                if (ub.getMenuservicos().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 30, 0);
+                if (ub.getSubmenuorcamentosservico().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 31, 0);
+                if (ub.getSubmenupedidosservico().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 32, 0);
+                if (ub.getSubmenuoss().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 33, 0);
+                if (ub.getSubmenuprodutosservico().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 34, 0);
+                if (ub.getSubmenuprocessosservico().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 35, 0);
+                if (ub.getSubmenugrupodeprocessosservico().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 36, 0);
+                if (ub.getMenuconfiguracoes().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 37, 0);
+                if (ub.getSubmenumenus().equals("false")) {
+                    status = false;
+                } else {
+                    status = true;
+                }
+                tablepermissoes.setValueAt(status, 38, 0);
             });
-
         }
     }//GEN-LAST:event_tablegruposMouseClicked
 
@@ -445,27 +534,43 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
             gub.setSubmenuusuarios(tablepermissoes.getValueAt(1, 0).toString());
             gub.setSubmenugrupodeusuarios(tablepermissoes.getValueAt(2, 0).toString());
             gub.setSubmenurepresentantes(tablepermissoes.getValueAt(3, 0).toString());
-            gub.setMenucomercial(tablepermissoes.getValueAt(4, 0).toString());
-            gub.setSubmenuclientes(tablepermissoes.getValueAt(5, 0).toString());
-            gub.setSubmenugrupodeclientes(tablepermissoes.getValueAt(6, 0).toString());
-            gub.setSubmenucondicoesdepagamento(tablepermissoes.getValueAt(7, 0).toString());
-            gub.setMenuvendas(tablepermissoes.getValueAt(8, 0).toString());
-            gub.setSubmenuorcamentosvenda(tablepermissoes.getValueAt(9, 0).toString());
-            gub.setSubmenupedidosvenda(tablepermissoes.getValueAt(10, 0).toString());
-            gub.setSubmenuops(tablepermissoes.getValueAt(11, 0).toString());
-            gub.setSubmenuprodutosvenda(tablepermissoes.getValueAt(12, 0).toString());
-            gub.setMenuservicos(tablepermissoes.getValueAt(13, 0).toString());
-            gub.setSubmenuorcamentosservico(tablepermissoes.getValueAt(14, 0).toString());
-            gub.setSubmenupedidosservico(tablepermissoes.getValueAt(15, 0).toString());
-            gub.setSubmenuoss(tablepermissoes.getValueAt(16, 0).toString());
-            gub.setSubmenuprodutosservico(tablepermissoes.getValueAt(17, 0).toString());
-            gub.setMenuconfiguracoes(tablepermissoes.getValueAt(18, 0).toString());
-            gub.setSubmenumenus(tablepermissoes.getValueAt(19, 0).toString());
-            gub.setMenucompras(tablepermissoes.getValueAt(20, 0).toString());
-            gub.setSubmenusolicitacaodecompras(tablepermissoes.getValueAt(21, 0).toString());
-            gub.setSubmenupedidodecompras(tablepermissoes.getValueAt(22, 0).toString());
-            gub.setSubmenuinsumos(tablepermissoes.getValueAt(23, 0).toString());
+            gub.setSubmenuregioesdeatuacao(tablepermissoes.getValueAt(4, 0).toString());
+            gub.setMenucomercial(tablepermissoes.getValueAt(5, 0).toString());
+            gub.setSubmenuclientes(tablepermissoes.getValueAt(6, 0).toString());
+            gub.setSubmenugrupodeclientes(tablepermissoes.getValueAt(7, 0).toString());
+            gub.setSubmenufornecedores(tablepermissoes.getValueAt(8, 0).toString());
+            gub.setMenufinanceiro(tablepermissoes.getValueAt(9, 0).toString());
+            gub.setSubmenucontasareceber(tablepermissoes.getValueAt(10, 0).toString());
+            gub.setSubmenucontasapagar(tablepermissoes.getValueAt(11, 0).toString());
+            gub.setSubmenucondicoesdepagamento(tablepermissoes.getValueAt(12, 0).toString());
+            gub.setSubmenubancos(tablepermissoes.getValueAt(13, 0).toString());
+            gub.setMenucompras(tablepermissoes.getValueAt(14, 0).toString());
+            gub.setSubmenusolicitacaodecompras(tablepermissoes.getValueAt(15, 0).toString());
+            gub.setSubmenuorcamentodecompras(tablepermissoes.getValueAt(16, 0).toString());
+            gub.setSubmenupedidodecompras(tablepermissoes.getValueAt(17, 0).toString());
+            gub.setSubmenuinsumos(tablepermissoes.getValueAt(18, 0).toString());
+            gub.setMenulogistica(tablepermissoes.getValueAt(19, 0).toString());
+            gub.setSubmenucarros(tablepermissoes.getValueAt(20, 0).toString());
+            gub.setMenuqualidade(tablepermissoes.getValueAt(21, 0).toString());
+            gub.setSubmenuinstrumentosdemedicao(tablepermissoes.getValueAt(22, 0).toString());
+            gub.setMenuvendas(tablepermissoes.getValueAt(23, 0).toString());
+            gub.setSubmenuorcamentosvenda(tablepermissoes.getValueAt(24, 0).toString());
+            gub.setSubmenupedidosvenda(tablepermissoes.getValueAt(25, 0).toString());
+            gub.setSubmenuops(tablepermissoes.getValueAt(26, 0).toString());
+            gub.setSubmenuprodutosvenda(tablepermissoes.getValueAt(27, 0).toString());
+            gub.setSubmenuprocessosvenda(tablepermissoes.getValueAt(28, 0).toString());
+            gub.setSubmenugrupodeprocessosvenda(tablepermissoes.getValueAt(29, 0).toString());
+            gub.setMenuservicos(tablepermissoes.getValueAt(30, 0).toString());
+            gub.setSubmenuorcamentosservico(tablepermissoes.getValueAt(31, 0).toString());
+            gub.setSubmenupedidosservico(tablepermissoes.getValueAt(32, 0).toString());
+            gub.setSubmenuoss(tablepermissoes.getValueAt(33, 0).toString());
+            gub.setSubmenuprodutosservico(tablepermissoes.getValueAt(34, 0).toString());
+            gub.setSubmenuprocessosservico(tablepermissoes.getValueAt(35, 0).toString());
+            gub.setSubmenugrupodeprocessosservico(tablepermissoes.getValueAt(36, 0).toString());
+            gub.setMenuconfiguracoes(tablepermissoes.getValueAt(37, 0).toString());
+            gub.setSubmenumenus(tablepermissoes.getValueAt(38, 0).toString());
 
+            //nome, menuadministracao, submenuusuarios, submenugrupodeusuarios, submenurepresentantes, submenuregioesdeatuacao, menucomercial, submenuclientes, submenugrupodeclientes, submenufornecedores, menufinanceiro, submenucontasareceber, submenucontasapagar, submenucondicoesdepagamento, submenubancos, menucompras, submenusolicitacaodecompras, submenuorcamentodecompras, submenupedidodecompras, submenuinsumos, menulogistica, submenucarros, menuqualidade, submenuinstrumentosdemedicao, menuvendas, submenuorcamentosvenda, submenupedidosvenda, submenuops, submenuprodutosvenda, submenuprocessosvenda, submenugrupodeprocessosvenda, menuservicos, submenuorcamentosservico, submenupedidosservico, submenuoss, submenuprodutosservico, submenuprocessosservico, submenugrupodeprocessosservico, menuconfiguracoes, submenumenus
             gudao.create(gub);
             txtidgrupo.setText("");
             txtnomegrupo.setText("");
@@ -480,28 +585,44 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
             gub.setSubmenuusuarios(tablepermissoes.getValueAt(1, 0).toString());
             gub.setSubmenugrupodeusuarios(tablepermissoes.getValueAt(2, 0).toString());
             gub.setSubmenurepresentantes(tablepermissoes.getValueAt(3, 0).toString());
-            gub.setMenucomercial(tablepermissoes.getValueAt(4, 0).toString());
-            gub.setSubmenuclientes(tablepermissoes.getValueAt(5, 0).toString());
-            gub.setSubmenugrupodeclientes(tablepermissoes.getValueAt(6, 0).toString());
-            gub.setSubmenucondicoesdepagamento(tablepermissoes.getValueAt(7, 0).toString());
-            gub.setMenuvendas(tablepermissoes.getValueAt(8, 0).toString());
-            gub.setSubmenuorcamentosvenda(tablepermissoes.getValueAt(9, 0).toString());
-            gub.setSubmenupedidosvenda(tablepermissoes.getValueAt(10, 0).toString());
-            gub.setSubmenuops(tablepermissoes.getValueAt(11, 0).toString());
-            gub.setSubmenuprodutosvenda(tablepermissoes.getValueAt(12, 0).toString());
-            gub.setMenuservicos(tablepermissoes.getValueAt(13, 0).toString());
-            gub.setSubmenuorcamentosservico(tablepermissoes.getValueAt(14, 0).toString());
-            gub.setSubmenupedidosservico(tablepermissoes.getValueAt(15, 0).toString());
-            gub.setSubmenuoss(tablepermissoes.getValueAt(16, 0).toString());
-            gub.setSubmenuprodutosservico(tablepermissoes.getValueAt(17, 0).toString());
-            gub.setMenuconfiguracoes(tablepermissoes.getValueAt(18, 0).toString());
-            gub.setSubmenumenus(tablepermissoes.getValueAt(19, 0).toString());
-            gub.setMenucompras(tablepermissoes.getValueAt(20, 0).toString());
-            gub.setSubmenusolicitacaodecompras(tablepermissoes.getValueAt(21, 0).toString());
-            gub.setSubmenupedidodecompras(tablepermissoes.getValueAt(22, 0).toString());
-            gub.setSubmenuinsumos(tablepermissoes.getValueAt(23, 0).toString());
+            gub.setSubmenuregioesdeatuacao(tablepermissoes.getValueAt(4, 0).toString());
+            gub.setMenucomercial(tablepermissoes.getValueAt(5, 0).toString());
+            gub.setSubmenuclientes(tablepermissoes.getValueAt(6, 0).toString());
+            gub.setSubmenugrupodeclientes(tablepermissoes.getValueAt(7, 0).toString());
+            gub.setSubmenufornecedores(tablepermissoes.getValueAt(8, 0).toString());
+            gub.setMenufinanceiro(tablepermissoes.getValueAt(9, 0).toString());
+            gub.setSubmenucontasareceber(tablepermissoes.getValueAt(10, 0).toString());
+            gub.setSubmenucontasapagar(tablepermissoes.getValueAt(11, 0).toString());
+            gub.setSubmenucondicoesdepagamento(tablepermissoes.getValueAt(12, 0).toString());
+            gub.setSubmenubancos(tablepermissoes.getValueAt(13, 0).toString());
+            gub.setMenucompras(tablepermissoes.getValueAt(14, 0).toString());
+            gub.setSubmenusolicitacaodecompras(tablepermissoes.getValueAt(15, 0).toString());
+            gub.setSubmenuorcamentodecompras(tablepermissoes.getValueAt(16, 0).toString());
+            gub.setSubmenupedidodecompras(tablepermissoes.getValueAt(17, 0).toString());
+            gub.setSubmenuinsumos(tablepermissoes.getValueAt(18, 0).toString());
+            gub.setMenulogistica(tablepermissoes.getValueAt(19, 0).toString());
+            gub.setSubmenucarros(tablepermissoes.getValueAt(20, 0).toString());
+            gub.setMenuqualidade(tablepermissoes.getValueAt(21, 0).toString());
+            gub.setSubmenuinstrumentosdemedicao(tablepermissoes.getValueAt(22, 0).toString());
+            gub.setMenuvendas(tablepermissoes.getValueAt(23, 0).toString());
+            gub.setSubmenuorcamentosvenda(tablepermissoes.getValueAt(24, 0).toString());
+            gub.setSubmenupedidosvenda(tablepermissoes.getValueAt(25, 0).toString());
+            gub.setSubmenuops(tablepermissoes.getValueAt(26, 0).toString());
+            gub.setSubmenuprodutosvenda(tablepermissoes.getValueAt(27, 0).toString());
+            gub.setSubmenuprocessosvenda(tablepermissoes.getValueAt(28, 0).toString());
+            gub.setSubmenugrupodeprocessosvenda(tablepermissoes.getValueAt(29, 0).toString());
+            gub.setMenuservicos(tablepermissoes.getValueAt(30, 0).toString());
+            gub.setSubmenuorcamentosservico(tablepermissoes.getValueAt(31, 0).toString());
+            gub.setSubmenupedidosservico(tablepermissoes.getValueAt(32, 0).toString());
+            gub.setSubmenuoss(tablepermissoes.getValueAt(33, 0).toString());
+            gub.setSubmenuprodutosservico(tablepermissoes.getValueAt(34, 0).toString());
+            gub.setSubmenuprocessosservico(tablepermissoes.getValueAt(35, 0).toString());
+            gub.setSubmenugrupodeprocessosservico(tablepermissoes.getValueAt(36, 0).toString());
+            gub.setMenuconfiguracoes(tablepermissoes.getValueAt(37, 0).toString());
+            gub.setSubmenumenus(tablepermissoes.getValueAt(38, 0).toString());
             gub.setId(Integer.parseInt(txtidgrupo.getText()));
 
+            //nome = ?, menuadministracao = ?, submenuusuarios = ?, submenugrupodeusuarios = ?, submenurepresentantes = ?, submenuregioesdeatuacao = ?, menucomercial = ?, submenuclientes = ?, submenugrupodeclientes = ?, submenufornecedores = ?, menufinanceiro = ?, submenucontasareceber = ?, submenucontasapagar = ?, submenucondicoesdepagamento = ?, submenubancos = ?, menucompras = ?, submenusolicitacaodecompras = ?, submenuorcamentodecompras = ?, submenupedidodecompras = ?, submenuinsumos = ?, menulogistica = ?, submenucarros = ?, menuqualidade = ?, submenuinstrumentosdemedicao = ?, menuvendas = ?, submenuorcamentosvenda = ?, submenupedidosvenda = ?, submenuops = ?, submenuprodutosvenda = ?, submenuprocessosvenda = ?, submenugrupodeprocessosvenda = ?, menuservicos = ?, submenuorcamentosservico = ?, submenupedidosservico = ?, submenuoss = ?, submenuprodutosservico = ?, submenuprocessosservico = ?, submenugrupodeprocessosservico = ?, menuconfiguracoes = ?, submenumenus = ? WHERE id = ?
             gudao.update(gub);
             txtidgrupo.setText("");
             txtnomegrupo.setText("");
