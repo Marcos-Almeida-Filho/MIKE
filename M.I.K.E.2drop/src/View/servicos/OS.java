@@ -9,6 +9,8 @@ import Bean.OSBean;
 import Bean.OSDocumentosBean;
 import Bean.OSInspecaoBean;
 import Bean.OSProcessosBean;
+import Bean.ServicoMateriaisBean;
+import Bean.ServicoMateriaisMovimentacaoBean;
 import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
@@ -16,11 +18,14 @@ import DAO.OSDAO;
 import DAO.OSDocumentosDAO;
 import DAO.OSInspecaoDAO;
 import DAO.OSProcessosDAO;
+import DAO.ServicoMateriaisDAO;
+import DAO.ServicoMateriaisMovimentacaoDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import Methods.SendEmail;
 import Methods.SoNumeros;
+import Print.PrintOS;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.PedidoServico.txtnumeropedido;
@@ -60,6 +65,7 @@ public class OS extends javax.swing.JInternalFrame {
         camposnumeros();
         radiovazio.setVisible(false);
         reados();
+        jButton2.addActionListener(new PrintOS());
     }
 
     public static void reados() {
@@ -183,7 +189,7 @@ public class OS extends javax.swing.JInternalFrame {
     }
 
     public static void travarcampos() {
-        if (txtstatus.getText().equals("Ativo") || txtstatus.getText().equals("Cancelado") || txtstatus.getText().equals("Fechado")) {
+        if (txtstatus.getText().equals("Ativo")) {
             //Desabilitar botões
             btnprocurarcliente.setEnabled(false);
             btnprocurarmaterial.setEnabled(false);
@@ -191,6 +197,32 @@ public class OS extends javax.swing.JInternalFrame {
 
             //Desabilitar txts
             txtinicial.setEditable(false);
+
+            //Desabilitar checks
+            checkraio.setEnabled(false);
+            checkfrontal.setEnabled(false);
+
+            //Desabilitar radios
+            if (radiotopo.isSelected()) {
+                radiotopo.setSelected(true);
+                radioreconstrucao.setEnabled(false);
+            } else {
+                radioreconstrucao.setSelected(true);
+                radiotopo.setEnabled(false);
+            }
+        } else if (txtstatus.getText().equals("Cancelado") || txtstatus.getText().equals("Fechado")) {
+            //Desabilitar botões
+            btnprocurarcliente.setEnabled(false);
+            btnprocurarmaterial.setEnabled(false);
+            btnmudarprocesso.setEnabled(false);
+            btnadddoc.setEnabled(false);
+            btndeldoc.setEnabled(false);
+            btnalterarstatus.setEnabled(false);
+            btnsalvaros.setEnabled(false);
+
+            //Desabilitar txts
+            txtinicial.setEditable(false);
+            txtnotes.setEditable(false);
 
             //Desabilitar checks
             checkraio.setEnabled(false);
@@ -286,6 +318,25 @@ public class OS extends javax.swing.JInternalFrame {
         OSDAO od = new OSDAO();
         OSBean ob = new OSBean();
 
+        //DAO para id do material
+        ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+        ServicoMateriaisBean smb = new ServicoMateriaisBean();
+
+        //DAO e Bean para movimentação do produto
+        ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+        ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+
+        //Pegar data para gravar
+        Calendar c = Calendar.getInstance();
+        String pattern = "dd/MM/yyyy HH:mm:ss";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+        //Pegar id do material
+        int idmaterial = 0;
+        for (ServicoMateriaisBean smb2 : smd.readid(txtcodigo.getText())) {
+            idmaterial = smb2.getId();
+        }
+
         //Número de processos encerrados e rowcount da table de processos
         int procencerrado = 0;
         int rc = tableprocessos.getRowCount();
@@ -297,14 +348,46 @@ public class OS extends javax.swing.JInternalFrame {
             }
         }
 
+        //Pegar saldo atual do produto
+        int saldoatual = 0;
+        for (ServicoMateriaisBean smb2 : smd.readestoque(idmaterial)) {
+            saldoatual = smb2.getEstoque();
+        }
+
         //Checagem se todos os processos estão encerrados para alterar status da OP
         if (rc == procencerrado) {
-            ob.setStatus("Fechado");
-            ob.setIdtela(txtnumeroos.getText());
+            int resp = JOptionPane.showConfirmDialog(null, "Último processo está sendo encerrado.\n Deseja encerrar a OS?", "Último processo", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                ob.setStatus("Fechado");
+                txtstatus.setText("Fechado");
+                ob.setIdtela(txtnumeroos.getText());
 
-            //status = ? WHERE idtela = ?
-            od.updatestatus(ob);
+                //status = ? WHERE idtela = ?
+                od.updatestatus(ob);
+
+                //Criar movimentação do material
+                smmb.setIdmaterial(idmaterial);
+                smmb.setInicial(saldoatual);
+                smmb.setMovimentada(Integer.parseInt(txtfinal.getText()));
+                smmb.setTipo(txtnumeroos.getText());
+                smmb.setSaldo(saldoatual + Integer.parseInt(txtfinal.getText()));
+                smmb.setData(simpleDateFormat.format(c.getTime()));
+                smmb.setUsuario(TelaPrincipal.lblapelido.getText());
+
+                //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
+                smmd.create(smmb);
+
+                //Alterar estoque do material
+                smb.setEstoque(saldoatual + Integer.parseInt(txtfinal.getText()));
+                smb.setId(idmaterial);
+
+                //estoque = ? WHERE id = ?
+                smd.updateestoque(smb);
+            }
         }
+
+        //Atualizar tabela de OS
+        reados();
     }
 
     /**
@@ -356,7 +439,7 @@ public class OS extends javax.swing.JInternalFrame {
         jLabel7 = new javax.swing.JLabel();
         txtdesc = new javax.swing.JTextField();
         btnprocurarmaterial = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnsalvaros = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         radiotopo = new javax.swing.JRadioButton();
@@ -366,6 +449,7 @@ public class OS extends javax.swing.JInternalFrame {
         txtfrontal = new javax.swing.JTextField();
         checkfrontal = new javax.swing.JCheckBox();
         radiovazio = new javax.swing.JRadioButton();
+        radiocompleta = new javax.swing.JRadioButton();
         tabadp = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -373,8 +457,8 @@ public class OS extends javax.swing.JInternalFrame {
         jPanel8 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tabledoc = new javax.swing.JTable();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        btnadddoc = new javax.swing.JButton();
+        btndeldoc = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tableprocessos = new javax.swing.JTable();
@@ -390,6 +474,7 @@ public class OS extends javax.swing.JInternalFrame {
         txtmortas = new javax.swing.JTextField();
         txtinicial = new javax.swing.JTextField();
         btnalterarstatus = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -454,9 +539,9 @@ public class OS extends javax.swing.JInternalFrame {
             tableos.getColumnModel().getColumn(0).setMinWidth(40);
             tableos.getColumnModel().getColumn(0).setPreferredWidth(40);
             tableos.getColumnModel().getColumn(0).setMaxWidth(40);
-            tableos.getColumnModel().getColumn(1).setMinWidth(70);
-            tableos.getColumnModel().getColumn(1).setPreferredWidth(70);
-            tableos.getColumnModel().getColumn(1).setMaxWidth(70);
+            tableos.getColumnModel().getColumn(1).setMinWidth(80);
+            tableos.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tableos.getColumnModel().getColumn(1).setMaxWidth(80);
             tableos.getColumnModel().getColumn(4).setMinWidth(110);
             tableos.getColumnModel().getColumn(4).setPreferredWidth(110);
             tableos.getColumnModel().getColumn(4).setMaxWidth(110);
@@ -726,10 +811,10 @@ public class OS extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton2.setText("Salvar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnsalvaros.setText("Salvar");
+        btnsalvaros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnsalvarosActionPerformed(evt);
             }
         });
 
@@ -771,30 +856,35 @@ public class OS extends javax.swing.JInternalFrame {
         buttonGroup1.add(radiovazio);
         radiovazio.setText("Vazio");
 
+        buttonGroup1.add(radiocompleta);
+        radiocompleta.setText("Completa");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addComponent(radiotopo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radioreconstrucao))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addComponent(checkraio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addComponent(checkfrontal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtfrontal, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-            .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(radiovazio)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(checkraio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(checkfrontal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtfrontal, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(radiocompleta)
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                            .addComponent(radiotopo)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(radioreconstrucao))))
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -803,6 +893,8 @@ public class OS extends javax.swing.JInternalFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radiotopo)
                     .addComponent(radioreconstrucao))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(radiocompleta)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -883,17 +975,17 @@ public class OS extends javax.swing.JInternalFrame {
             tabledoc.getColumnModel().getColumn(4).setMaxWidth(0);
         }
 
-        jButton8.setText("Incluir");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        btnadddoc.setText("Incluir");
+        btnadddoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                btnadddocActionPerformed(evt);
             }
         });
 
-        jButton9.setText("Excluir");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
+        btndeldoc.setText("Excluir");
+        btndeldoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
+                btndeldocActionPerformed(evt);
             }
         });
 
@@ -907,9 +999,9 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton9)
+                        .addComponent(btndeldoc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton8)))
+                        .addComponent(btnadddoc)))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -919,8 +1011,8 @@ public class OS extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton8)
-                    .addComponent(jButton9))
+                    .addComponent(btnadddoc)
+                    .addComponent(btndeldoc))
                 .addContainerGap())
         );
 
@@ -1101,6 +1193,8 @@ public class OS extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton2.setText("Teste Imprimir");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1112,11 +1206,13 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnalterarstatus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
+                        .addComponent(btnsalvaros))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1140,13 +1236,14 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabadp)
+                    .addComponent(tabadp, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(btnsalvaros)
                     .addComponent(jButton3)
-                    .addComponent(btnalterarstatus))
+                    .addComponent(btnalterarstatus)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -1209,7 +1306,7 @@ public class OS extends javax.swing.JInternalFrame {
                         ServicoPedidoDAO spd = new ServicoPedidoDAO();
 
                         for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
-                            PedidoServico.txtcliente.setText(spb.getCliente());
+                            PedidoServico.txtclientepedido.setText(spb.getCliente());
                             PedidoServico.txtcondicao.setText(spb.getCondicao());
                             PedidoServico.txtrepresentante.setText(spb.getRepresentante());
                             PedidoServico.txtvendedor.setText(spb.getVendedor());
@@ -1260,7 +1357,7 @@ public class OS extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtdasMouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnsalvarosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsalvarosActionPerformed
         if (txtnumeroos.getText().equals("")) {
             if (txtcliente.getText().equals("")) {
                 JOptionPane.showMessageDialog(rootPane, "Escolha um cliente primeiro!");
@@ -1283,7 +1380,7 @@ public class OS extends javax.swing.JInternalFrame {
                         String patterny = "yy";
                         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
                         String year = simpleDateFormaty.format(ca.getTime());
-                        String idtela = year + "-0001";
+                        String idtela = year + "-0001S";
                         ob.setIdtela(idtela);
                         txtnumeroos.setText(idtela);
                     } else {
@@ -1297,12 +1394,12 @@ public class OS extends javax.swing.JInternalFrame {
                         }
                         int yearint = Integer.parseInt(hua.replace(year + "-", ""));
                         int yearnovo = yearint + 1;
-                        String idtela = year + "-" + String.format("%04d", yearnovo);
+                        String idtela = year + "-" + String.format("%04d", yearnovo) + "S";
                         ob.setIdtela(idtela);
                         txtnumeroos.setText(idtela);
                     }
                 } catch (SQLException ex) {
-                    Logger.getLogger(OrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 //Criar data do dia para data de criação e prazo de entrega
                 Calendar c = Calendar.getInstance();
@@ -1330,20 +1427,26 @@ public class OS extends javax.swing.JInternalFrame {
                 ob.setNotes(txtnotes.getText());
                 String topo = "false";
                 String rec = "false";
+                String com = "false";
                 if (radiotopo.isSelected()) {
                     topo = "true";
-                } else {
+                }
+                if (radioreconstrucao.isSelected()) {
                     rec = "true";
+                }
+                if (radiocompleta.isSelected()) {
+                    com = "true";
                 }
                 ob.setTopo(topo);
                 ob.setReconstrucao(rec);
+                ob.setCompleta(com);
                 ob.setRaio(txtraio.getText());
                 txtraio.setEditable(false);
                 checkraio.setEnabled(false);
                 ob.setFrontal(txtfrontal.getText());
                 txtfrontal.setEditable(false);
                 checkfrontal.setEnabled(false);
-                //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, desc, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
+                //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, raio, frontal
                 od.create(ob);
 
                 //Criar Processos
@@ -1423,15 +1526,31 @@ public class OS extends javax.swing.JInternalFrame {
             ob.setNotes(txtnotes.getText());
             String topo = "false";
             String rec = "false";
+            String com = "false";
             if (radiotopo.isSelected()) {
                 topo = "true";
-                radioreconstrucao.setEnabled(false);
-            } else {
+                if (!txtstatus.getText().equals("Rascunho")) {
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                }
+            }
+            if (radioreconstrucao.isSelected()) {
                 rec = "true";
-                radiotopo.setEnabled(false);
+                if (!txtstatus.getText().equals("Rascunho")) {
+                    radiotopo.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                }
+            }
+            if (radiocompleta.isSelected()) {
+                com = "true";
+                if (!txtstatus.getText().equals("Rascunho")) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                }
             }
             ob.setTopo(topo);
             ob.setReconstrucao(rec);
+            ob.setCompleta(com);
             ob.setRaio(txtraio.getText());
 //            txtraio.setEditable(false);
 //            checkraio.setEnabled(false);
@@ -1439,7 +1558,7 @@ public class OS extends javax.swing.JInternalFrame {
 //            txtfrontal.setEditable(false);
 //            checkfrontal.setEnabled(false);
             ob.setIdtela(txtnumeroos.getText());
-            //dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, raio = ?, frontal = ? WHERE idtela = ?
+            //dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, completa = ?, raio = ?, frontal = ? WHERE idtela = ?
             od.update(ob);
 
             //Atualizar Processos
@@ -1519,7 +1638,7 @@ public class OS extends javax.swing.JInternalFrame {
             readprocessos();
             JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnsalvarosActionPerformed
 
     private void btnprocurarmaterialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarmaterialActionPerformed
         ProcuraItemOS p = new ProcuraItemOS();
@@ -1604,6 +1723,7 @@ public class OS extends javax.swing.JInternalFrame {
                     ProcessoOS.txtdispprocesso.setText(tableprocessos.getValueAt(tableprocessos.getSelectedRow(), 9).toString());
                     ProcessoOS.readprocesso();
                     ProcessoOS.readinspecao();
+                    ProcessoOS.travarcampos();
                 }
             }
         }
@@ -1638,13 +1758,13 @@ public class OS extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void btnadddocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnadddocActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_btnadddocActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    private void btndeldocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeldocActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }//GEN-LAST:event_btndeldocActionPerformed
 
     private void tableosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableosMouseClicked
         if (evt.getClickCount() == 2) {
@@ -1660,6 +1780,7 @@ public class OS extends javax.swing.JInternalFrame {
                 txtstatus.setText(ob.getStatus());
                 txtdas.setText(ob.getDas());
                 txtcliente.setText(ob.getCliente());
+                txtdas.setText(ob.getDas());
                 txtcodigo.setText(ob.getCodigo());
                 txtdesc.setText(ob.getDescricao());
                 txtinicial.setText(String.valueOf(ob.getQtdinicial()));
@@ -1669,7 +1790,17 @@ public class OS extends javax.swing.JInternalFrame {
                 if (ob.getTopo().equals("true")) {
                     radiotopo.setSelected(true);
                 } else {
+                    radiovazio.setSelected(true);
+                }
+                if (ob.getReconstrucao().equals("true")) {
                     radioreconstrucao.setSelected(true);
+                } else {
+                    radiovazio.setSelected(true);
+                }
+                if (ob.getCompleta().equals("true")) {
+                    radiocompleta.setSelected(true);
+                } else {
+                    radiovazio.setSelected(true);
                 }
                 txtraio.setText(ob.getRaio());
                 if (!txtraio.getText().equals("")) {
@@ -1789,10 +1920,13 @@ public class OS extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton btnadddoc;
     public static javax.swing.JButton btnalterarstatus;
+    public static javax.swing.JButton btndeldoc;
     public static javax.swing.JButton btnmudarprocesso;
     public static javax.swing.JButton btnprocurarcliente;
     public static javax.swing.JButton btnprocurarmaterial;
+    public static javax.swing.JButton btnsalvaros;
     public javax.swing.ButtonGroup buttonGroup1;
     public javax.swing.ButtonGroup buttonGroup2;
     public static javax.swing.JComboBox<String> cbstatus;
@@ -1802,8 +1936,6 @@ public class OS extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton12;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
-    public javax.swing.JButton jButton8;
-    public javax.swing.JButton jButton9;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel11;
@@ -1839,6 +1971,7 @@ public class OS extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane6;
     public javax.swing.JScrollPane jScrollPane7;
     public javax.swing.JTable jTable1;
+    public javax.swing.JRadioButton radiocompleta;
     public static javax.swing.JRadioButton radioreconstrucao;
     public static javax.swing.JRadioButton radiotopo;
     public javax.swing.JRadioButton radiovazio;
@@ -1857,7 +1990,7 @@ public class OS extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtfrontal;
     public static javax.swing.JTextField txtinicial;
     public static javax.swing.JTextField txtmortas;
-    public javax.swing.JTextArea txtnotes;
+    public static javax.swing.JTextArea txtnotes;
     public static javax.swing.JTextField txtnumeroos;
     public javax.swing.JTextField txtpesquisa;
     public javax.swing.JTextField txtprevisao;

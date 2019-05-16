@@ -6,7 +6,7 @@
 package Reports;
 
 import Bean.ServicoOrcamentoItensBean;
-import View.servicos.OrcamentoServico;
+import View.servicos.CotacaoServico;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class JasperOrcamentoServico {
 
     public void gerar(String layout) throws JRException, SQLException, ClassNotFoundException {
         
-        int rc = OrcamentoServico.tableitens.getRowCount();
+        int rc = CotacaoServico.tableitens.getRowCount();
         
         //gerando o jasper design
         InputStream is = JRLoader.getResourceInputStream(layout);
@@ -46,9 +46,9 @@ public class JasperOrcamentoServico {
         List<ServicoOrcamentoItensBean> li = new ArrayList<>();
         
         //Criar itens
-//        li.add(OrcamentoServico.tableitens.getValueAt(0, 0).toString());
+//        li.add(CotacaoServico.tableitens.getValueAt(0, 0).toString());
         ServicoOrcamentoItensBean item = new ServicoOrcamentoItensBean();
-        item.setCodigo(OrcamentoServico.tableitens.getValueAt(0, 2).toString());
+        item.setCodigo(CotacaoServico.tableitens.getValueAt(0, 2).toString());
         li.add(item);
         
         //Converte List para JRBeanCollectionDataSource
@@ -56,12 +56,12 @@ public class JasperOrcamentoServico {
 
         //executa o relatório
         Map parametros = new HashMap();
-        parametros.put("cliente", OrcamentoServico.txtnomecliente.getText());
-        parametros.put("vendedor", OrcamentoServico.txtvendedor.getText());
-        parametros.put("representante", OrcamentoServico.txtrepresentante.getText());
-        parametros.put("condicao", OrcamentoServico.txtcondicao.getText());
+        parametros.put("cliente", CotacaoServico.txtnomecliente.getText());
+        parametros.put("vendedor", CotacaoServico.txtvendedor.getText());
+        parametros.put("representante", CotacaoServico.txtrepresentante.getText());
+        parametros.put("condicao", CotacaoServico.txtcondicao.getText());
         parametros.put("itens", jrbeanlist);
-        parametros.put("obs", OrcamentoServico.txtnotes.getText());
+        parametros.put("obs", CotacaoServico.txtnotes.getText());
 
         JasperPrint impressao = JasperFillManager.fillReport(relatorio, parametros);
 

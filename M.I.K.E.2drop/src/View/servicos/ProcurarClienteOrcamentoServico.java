@@ -159,14 +159,14 @@ public class ProcurarClienteOrcamentoServico extends javax.swing.JInternalFrame 
 
     private void tableclientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableclientesMouseClicked
         if (evt.getClickCount() == 2) {
-            OrcamentoServico.txtnomecliente.setText(tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString());
+            CotacaoServico.txtnomecliente.setText(tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString());
 
             ClientesDAO cd = new ClientesDAO();
 
-            for (ClientesBean cb : cd.readcondicoes(OrcamentoServico.txtnomecliente.getText())) {
-                OrcamentoServico.txtcondicao.setText(cb.getCondicaodepagamento());
-                OrcamentoServico.txtvendedor.setText(cb.getVendedor());
-                OrcamentoServico.txtrepresentante.setText(cb.getRepresentante());
+            for (ClientesBean cb : cd.readcondicoes(CotacaoServico.txtnomecliente.getText())) {
+                CotacaoServico.txtcondicao.setText(cb.getCondicaodepagamento());
+                CotacaoServico.txtvendedor.setText(cb.getVendedor());
+                CotacaoServico.txtrepresentante.setText(cb.getRepresentante());
             }
             dispose();
         }

@@ -12,6 +12,7 @@ import Bean.ServicoGrupoDeProcessosBean;
 import Bean.ServicoGrupoDeProcessosItensBean;
 import Bean.ServicoMateriaisBean;
 import Bean.ServicoMateriaisDocumentosBean;
+import Bean.ServicoMateriaisMovimentacaoBean;
 import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
@@ -23,6 +24,7 @@ import DAO.ServicoGrupoDeProcessosDAO;
 import DAO.ServicoGrupoDeProcessosItensDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.ServicoMateriaisDocumentosDAO;
+import DAO.ServicoMateriaisMovimentacaoDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
@@ -201,7 +203,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        txtcliente = new javax.swing.JTextField();
+        txtclientepedido = new javax.swing.JTextField();
         BtnProcurar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         txtvendedor = new javax.swing.JTextField();
@@ -310,9 +312,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tablepedidoservico);
         if (tablepedidoservico.getColumnModel().getColumnCount() > 0) {
-            tablepedidoservico.getColumnModel().getColumn(0).setMinWidth(60);
-            tablepedidoservico.getColumnModel().getColumn(0).setPreferredWidth(60);
-            tablepedidoservico.getColumnModel().getColumn(0).setMaxWidth(60);
+            tablepedidoservico.getColumnModel().getColumn(0).setMinWidth(80);
+            tablepedidoservico.getColumnModel().getColumn(0).setPreferredWidth(80);
+            tablepedidoservico.getColumnModel().getColumn(0).setMaxWidth(80);
         }
 
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
@@ -370,7 +372,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Cliente");
 
-        txtcliente.setEditable(false);
+        txtclientepedido.setEditable(false);
 
         BtnProcurar.setText("Procurar");
         BtnProcurar.addActionListener(new java.awt.event.ActionListener() {
@@ -387,7 +389,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtcliente, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtclientepedido, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(BtnProcurar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -398,7 +400,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtcliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtclientepedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(BtnProcurar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -513,6 +515,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel12.setText("Cobrança");
 
+        txtstatuscobranca.setEditable(false);
         txtstatuscobranca.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -753,9 +756,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             tableitensorcamento.getColumnModel().getColumn(8).setMinWidth(110);
             tableitensorcamento.getColumnModel().getColumn(8).setPreferredWidth(110);
             tableitensorcamento.getColumnModel().getColumn(8).setMaxWidth(110);
-            tableitensorcamento.getColumnModel().getColumn(9).setMinWidth(70);
-            tableitensorcamento.getColumnModel().getColumn(9).setPreferredWidth(70);
-            tableitensorcamento.getColumnModel().getColumn(9).setMaxWidth(70);
+            tableitensorcamento.getColumnModel().getColumn(9).setMinWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(9).setPreferredWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(9).setMaxWidth(80);
             tableitensorcamento.getColumnModel().getColumn(10).setMinWidth(90);
             tableitensorcamento.getColumnModel().getColumn(10).setPreferredWidth(90);
             tableitensorcamento.getColumnModel().getColumn(10).setMaxWidth(90);
@@ -1101,7 +1104,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         try {
                             Files.delete(file.toPath());
                         } catch (IOException ex) {
-                            Logger.getLogger(OrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
                             JOptionPane.showMessageDialog(rootPane, "Erro!\n" + ex);
                         }
 
@@ -1121,7 +1124,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtcliente.getText().equals("")) {
+        if (txtclientepedido.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Selecione um cliente primeiro!");
         } else if (txtcondicao.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Selecione uma condição de pagamento primeiro!");
@@ -1142,7 +1145,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     String patterny = "yy";
                     SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
                     String year = simpleDateFormaty.format(ca.getTime());
-                    String idtela = year + "-0001";
+                    String idtela = "PS" + year + "-0001";
                     spb.setIdtela(idtela);
                     txtnumeropedido.setText(idtela);
                 } else {
@@ -1156,15 +1159,15 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     }
                     int yearint = Integer.parseInt(hua.replace(year + "-", ""));
                     int yearnovo = yearint + 1;
-                    String idtela = year + "-" + String.format("%04d", yearnovo);
+                    String idtela = "PS" + year + "-" + String.format("%04d", yearnovo);
                     spb.setIdtela(idtela);
                     txtnumeropedido.setText(idtela);
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(OrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
             }
             spb.setIdorcamento(txtorcamento.getText());
-            spb.setCliente(txtcliente.getText());
+            spb.setCliente(txtclientepedido.getText());
             spb.setCondicao(txtcondicao.getText());
             spb.setRepresentante(txtrepresentante.getText());
             spb.setVendedor(txtvendedor.getText());
@@ -1265,7 +1268,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             ServicoPedidoDAO spd = new ServicoPedidoDAO();
             ServicoPedidoBean spb = new ServicoPedidoBean();
 
-            spb.setCliente(txtcliente.getText());
+            spb.setCliente(txtclientepedido.getText());
             spb.setCondicao(txtcondicao.getText());
             spb.setRepresentante(txtrepresentante.getText());
             spb.setVendedor(txtvendedor.getText());
@@ -1401,7 +1404,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             ServicoPedidoDAO spd = new ServicoPedidoDAO();
 
             for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
-                txtcliente.setText(spb.getCliente());
+                txtclientepedido.setText(spb.getCliente());
                 txtcondicao.setText(spb.getCondicao());
                 txtrepresentante.setText(spb.getRepresentante());
                 txtvendedor.setText(spb.getVendedor());
@@ -1443,7 +1446,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja criar um novo pedido?", "Novo pedido", JOptionPane.YES_NO_OPTION);
         if (resp == 0) {
-            txtcliente.setText("");
+            txtclientepedido.setText("");
             txtcondicao.setText("");
             txtrepresentante.setText("");
             txtvendedor.setText("");
@@ -1473,45 +1476,114 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        //DAO e Bean para atualizar estoque do item
+        ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+        ServicoMateriaisBean smb = new ServicoMateriaisBean();
+
+        //DAO e Bean para atualizar itens do pedido
+        ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+        ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+
+        //DAO e Bean para alterar pedido
+        ServicoPedidoDAO spd = new ServicoPedidoDAO();
+        ServicoPedidoBean spb = new ServicoPedidoBean();
+
+        //DAO e Bean para criar movimentação do material
+        ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+        ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+
+        //Número de linhas na table para fazer os métodos na table inteira
         int rc = tableitensorcamento.getRowCount();
+        //Número de linhas selecionadas
         int numerotrue = 0;
+        //Número de itens com nota lançados antes de clicar no botão
         int numeronota = 0;
+        //Número de itens com nota lançados depois de clicar no botão
         int numeronota2 = 0;
+
         for (int i = 0; i < rc; i++) {
+            //Pegar número de linhas selecionadas
             if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
                 numerotrue++;
             }
+            //Pegar número de notas lançadas antes de clicar no botão
             if (tableitensorcamento.getValueAt(i, 0).equals(true) && !tableitensorcamento.getValueAt(i, 10).equals("")) {
                 numeronota++;
             }
         }
-        if (numerotrue == 0) {
+        if (numerotrue == 0) { //Verificar se existem itens selecionados
             JOptionPane.showMessageDialog(rootPane, "Escolha um item primeiro!");
-        } else if (numeronota > 0) {
+        } else if (numeronota > 0) { //Verificar se existem itens selecionados com nota fiscal já lançada
             JOptionPane.showMessageDialog(rootPane, "Item selecionado já com nota fiscal.");
         } else {
-            ServicoPedidoDAO spd = new ServicoPedidoDAO();
-            ServicoPedidoBean spb = new ServicoPedidoBean();
+            //Saldo atual do item selecionado
+            int saldoatual = 0;
 
+            //Id do material
+            int idmaterial = 0;
+
+            //Pegar número da nota para atualizar itens selecionados
             String nota = JOptionPane.showInputDialog(rootPane, "Qual o número da nota de cobrança?", "Nota de Cobrança", JOptionPane.YES_NO_OPTION);
+
+            //Atualizar itens com valor da nota anteriormente digitada
             for (int i = 0; i < rc; i++) {
-                if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
-                    ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
-                    ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+                //Quantidade do item
+                int qtditem = Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString());
+                
+                //Pegar id do material
+                for (ServicoMateriaisBean smb2 : smd.readid(tableitensorcamento.getValueAt(i, 2).toString())) {
+                    idmaterial = smb2.getId();
+                }
+                //Pegar saldo atual do material
+                for (ServicoMateriaisBean smb3 : smd.readestoque(idmaterial)) {
+                    saldoatual = smb3.getEstoque();
+                }
+                if (tableitensorcamento.getValueAt(i, 0).equals(true)) { //Verificar se a linha está selecionada
+                    if (saldoatual >= qtditem) { //Verificar se o saldo atual é maior ou igual à quantidade do pedido 
+                        //Dados para o método chamado
+                        spib.setNf(nota);
+                        spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
 
-                    spib.setNf(nota);
-                    spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
+                        //nf = ? WHERE id = ?
+                        spid.updatenotacobranca(spib);
 
-                    //nf = ? WHERE id = ?
-                    spid.updatenotacobranca(spib);
+                        //Pegar data para gravar
+                        Calendar c = Calendar.getInstance();
+                        String pattern = "dd/MM/yyyy HH:mm:ss";
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+                        //Criar movimentação do material
+                        smmb.setIdmaterial(idmaterial);
+                        smmb.setInicial(saldoatual);
+                        smmb.setMovimentada(qtditem);
+                        smmb.setTipo(txtnumeropedido.getText());
+                        smmb.setSaldo(saldoatual - qtditem);
+                        smmb.setData(simpleDateFormat.format(c.getTime()));
+                        smmb.setUsuario(TelaPrincipal.lblapelido.getText());
+
+                        //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
+                        smmd.create(smmb);
+
+                        //Alterar estoque do material
+                        smb.setEstoque(saldoatual - qtditem);
+                        smb.setId(idmaterial);
+
+                        //estoque = ? WHERE id = ?
+                        smd.updateestoque(smb);
+                    } else {
+                        JOptionPane.showMessageDialog(rootPane, "O item " + tableitensorcamento.getValueAt(i, 2) + " não possui saldo suficiente.\n Favor verificar informações e refazer processo.");
+                    }
                 }
             }
+            //Atualizar table com os itens
             readitenscobranca();
+            //Pegar número de linhas com nota lançada depois de clicar no botão
             for (int i = 0; i < rc; i++) {
                 if (!tableitensorcamento.getValueAt(i, 10).equals("")) {
                     numeronota2++;
                 }
             }
+            //Alterar status do pedido de acordo com o número de linhas com notas lançadas
             if (numeronota2 < rc) {
                 spb.setStatus_cobranca("Parcial");
                 spb.setIdtela(txtnumeropedido.getText());
@@ -1525,6 +1597,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 //status_cobranca = ? WHERE idtela = ?
                 spd.updatestatuscobranca(spb);
             }
+            //Atualizar table de pedidos para ver status novos
             filltablepedidoorcamento();
         }
     }//GEN-LAST:event_jButton11ActionPerformed
@@ -1579,7 +1652,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                             p.txtabertura.setText(ob.getDataabertura());
                             p.txtprevisao.setText(ob.getDataprevisao());
                             txtstatus.setText(ob.getStatus());
-                            txtcliente.setText(ob.getCliente());
+                            p.txtcliente.setText(ob.getCliente());
+                            p.txtdas.setText(ob.getDas());
                             txtcodigo.setText(ob.getCodigo());
                             txtdesc.setText(ob.getDescricao());
                             txtinicial.setText(String.valueOf(ob.getQtdinicial()));
@@ -1588,8 +1662,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                             txtnotes.setText(ob.getNotes());
                             if (ob.getTopo().equals("true")) {
                                 radiotopo.setSelected(true);
-                            } else {
+                            }
+                            if (ob.getReconstrucao().equals("true")){
                                 radioreconstrucao.setSelected(true);
+                            }
+                            if (ob.getCompleta().equals("true")) {
+                                p.radiocompleta.setSelected(true);
                             }
                             txtraio.setText(ob.getRaio());
                             txtfrontal.setText(ob.getFrontal());
@@ -1701,7 +1779,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                             String patterny = "yy";
                             SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
                             String year = simpleDateFormaty.format(ca.getTime());
-                            String idtela = year + "-0001";
+                            String idtela = "OS" + year + "-0001";
                             ob.setIdtela(idtela);
                         } else {
                             Calendar ca = Calendar.getInstance();
@@ -1712,13 +1790,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                             for (OSBean sob2 : od.read()) {
                                 hua = String.valueOf(sob2.getIdtela());
                             }
-                            int yearint = Integer.parseInt(hua.replace(year + "-", ""));
+                            int yearint = Integer.parseInt(hua.replace("OS" + year + "-", ""));
                             int yearnovo = yearint + 1;
-                            String idtela = year + "-" + String.format("%04d", yearnovo);
+                            String idtela = "OS" + year + "-" + String.format("%04d", yearnovo);
                             ob.setIdtela(idtela);
                         }
                     } catch (SQLException ex) {
-                        Logger.getLogger(OrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     Calendar c = Calendar.getInstance();
                     String pattern = "dd/MM/yyyy HH:mm:ss";
@@ -1729,7 +1807,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     c.add(Calendar.DAY_OF_MONTH, days);
                     ob.setDataprevisao(simpleDateFormat.format(c.getTime()));
                     ob.setStatus("Rascunho");
-                    ob.setCliente(txtcliente.getText());
+                    ob.setCliente(txtclientepedido.getText());
                     ob.setDas(txtnumeropedido.getText());
                     ob.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
                     ob.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
@@ -1739,14 +1817,15 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     ob.setNotes("");
                     ob.setTopo("false");
                     ob.setReconstrucao("false");
+                    ob.setCompleta("false");
                     ob.setRaio("");
                     ob.setFrontal("");
 
-                    //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, desc, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
+                    //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, raio, frontal
                     od.create(ob);
 
                     String oscriada = "";
-                    String n = tableitensorcamento.getValueAt(0, 10).toString();
+                    String n = tableitensorcamento.getValueAt(i, 10).toString();
 
                     for (OSBean osb : od.readcreated(tableitensorcamento.getValueAt(i, 2).toString(), data)) {
                         oscriada = osb.getIdtela();
@@ -1766,7 +1845,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     } else {
                         spib.setNf(n);
                     }
-                    
+
                     spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
 
                     //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?
@@ -1932,14 +2011,14 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tableitensorcamento;
     public static javax.swing.JTable tablepedidoservico;
     public static javax.swing.JTabbedPane tabpedidos;
-    public static javax.swing.JTextField txtcliente;
+    public static javax.swing.JTextField txtclientepedido;
     public static javax.swing.JTextField txtcondicao;
     public static javax.swing.JTextField txtnfcliente;
     public static javax.swing.JTextArea txtnotes;
     public static javax.swing.JTextField txtnumeropedido;
     public static javax.swing.JTextField txtorcamento;
     public static javax.swing.JTextField txtrepresentante;
-    private javax.swing.JTextField txtstatuscobranca;
+    public static javax.swing.JTextField txtstatuscobranca;
     public static javax.swing.JTextField txtstatusretorno;
     public static javax.swing.JTextField txttotal;
     public static javax.swing.JTextField txttotalretorno;

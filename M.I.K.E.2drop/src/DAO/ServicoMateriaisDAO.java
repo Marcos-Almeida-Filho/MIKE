@@ -175,6 +175,38 @@ public class ServicoMateriaisDAO {
         return listso;
 
     }
+    
+    public List<ServicoMateriaisBean> readestoque(int idmaterial) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoMateriaisBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT estoque FROM servicos_materiais WHERE id = ?");
+            stmt.setInt(1, idmaterial);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoMateriaisBean sob = new ServicoMateriaisBean();
+
+                sob.setEstoque(rs.getInt("estoque"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
 
     public List<ServicoMateriaisBean> click(int id) {
 
@@ -256,6 +288,27 @@ public class ServicoMateriaisDAO {
             stmt.setInt(3, sob.getEstoque());
             stmt.setString(4, sob.getGrupo_de_processos());
             stmt.setInt(5, sob.getId());
+
+            stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updateestoque(ServicoMateriaisBean sob) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE servicos_materiais SET estoque = ? WHERE id = ?");
+            stmt.setInt(1, sob.getEstoque());
+            stmt.setInt(2, sob.getId());
 
             stmt.executeUpdate();
 

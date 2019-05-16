@@ -31,12 +31,8 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
     public ProcessoOS() {
         initComponents();
         camposnumeros();
-        txtdisponivel.setVisible(false);
-        txtrow.setVisible(false);
-        txtnaookprocesso.setVisible(false);
-        txtokprocesso.setVisible(false);
-        txtnaookos.setVisible(false);
-        txtdispprocesso.setVisible(false);
+        escondetxt();
+        travarcampos();
     }
 
     public static void readprocesso() {
@@ -76,6 +72,25 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         txtnaook.setDocument(new SoNumeros());
     }
 
+    public static void travarcampos() {
+        if (!txttermino.getText().equals("")) {
+            txtok.setEnabled(false);
+            txtnaook.setEnabled(false);
+            btnaddmedicao.setEnabled(false);
+            btnsalvar.setEnabled(false);
+            txtobservacao.setEditable(false);
+        }
+    }
+
+    public static void escondetxt() {
+        txtdisponivel.setVisible(false);
+        txtrow.setVisible(false);
+        txtnaookprocesso.setVisible(false);
+        txtokprocesso.setVisible(false);
+        txtnaookos.setVisible(false);
+        txtdispprocesso.setVisible(false);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -110,8 +125,8 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableinspecao = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnaddmedicao = new javax.swing.JButton();
+        btnsalvar = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtobservacao = new javax.swing.JTextArea();
@@ -169,9 +184,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtnaookFocusGained(evt);
             }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtnaookFocusLost(evt);
-            }
         });
         txtnaook.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -184,11 +196,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
         txtdisponivel.setEditable(false);
         txtdisponivel.setToolTipText("Quantidade final da OS");
-        txtdisponivel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtdisponivelActionPerformed(evt);
-            }
-        });
 
         txtrow.setEditable(false);
         txtrow.setToolTipText("Row que foi selecionada");
@@ -198,11 +205,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
         txtdispprocesso.setEditable(false);
         txtdispprocesso.setToolTipText("Quantidade disponível no processo");
-        txtdispprocesso.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtdispprocessoActionPerformed(evt);
-            }
-        });
 
         txtokprocesso.setEditable(false);
         txtokprocesso.setToolTipText("Quantidade ok no processo");
@@ -329,10 +331,10 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
             tableinspecao.getColumnModel().getColumn(3).setMaxWidth(120);
         }
 
-        jButton2.setText("Adicionar Medição");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnaddmedicao.setText("Adicionar Medição");
+        btnaddmedicao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnaddmedicaoActionPerformed(evt);
             }
         });
 
@@ -345,7 +347,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton2))
+                        .addComponent(btnaddmedicao))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -355,14 +357,14 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(btnaddmedicao)
                 .addContainerGap())
         );
 
-        jButton1.setText("Salvar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnsalvar.setText("Salvar");
+        btnsalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnsalvarActionPerformed(evt);
             }
         });
 
@@ -423,7 +425,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addComponent(btnsalvar)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -439,7 +441,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(btnsalvar)
                 .addContainerGap())
         );
 
@@ -457,7 +459,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnsalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsalvarActionPerformed
         int inicial = Integer.parseInt(txtdisponivel.getText());
         int dispprocesso = Integer.parseInt(txtdispprocesso.getText());
         int okprocesso = Integer.parseInt(txtokprocesso.getText());
@@ -467,6 +469,20 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         int row = Integer.parseInt(txtrow.getText());
         int newrow = row + 1;
         int resto = inicial - naook;
+        if (naook > 0) {
+            if (txtmotivo.getText().equals("")) {
+                String motivo = JOptionPane.showInputDialog(rootPane, "Qual o motivo das peças não estarem aprovadas?", "Peças reprovadas", JOptionPane.YES_OPTION);
+                txtmotivo.setText(motivo);
+            } else {
+                int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja mudar o motivo das peças estarem reprovadas?", "Alterar motivo", JOptionPane.YES_NO_OPTION);
+                if (resp == 0) {
+                    String motivo = JOptionPane.showInputDialog(rootPane, "Qual o motivo das peças não estarem aprovadas?", "Peças reprovadas", JOptionPane.YES_OPTION);
+                    txtmotivo.setText(motivo);
+                }
+            }
+        } else {
+            txtmotivo.setText("");
+        }
         if (!txttermino.getText().equals("")) {
             dispose();
         } else if (tableinspecao.getRowCount() == 0) {
@@ -1068,7 +1084,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                 dispose();
             }
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnsalvarActionPerformed
 
     private void txtokFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtokFocusGained
         txtok.selectAll();
@@ -1078,7 +1094,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         txtnaook.selectAll();
     }//GEN-LAST:event_txtnaookFocusGained
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnaddmedicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnaddmedicaoActionPerformed
         MedicaoOS p = new MedicaoOS();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
@@ -1086,15 +1102,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         Dimension jinternalframesize = p.getSize();
         p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
         p.setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void txtdisponivelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdisponivelActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtdisponivelActionPerformed
-
-    private void txtdispprocessoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdispprocessoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtdispprocessoActionPerformed
+    }//GEN-LAST:event_btnaddmedicaoActionPerformed
 
     private void txtokKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtokKeyReleased
         int ok = Integer.parseInt(txtok.getText());
@@ -1117,32 +1125,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_txtokKeyReleased
 
-    private void txtnaookFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtnaookFocusLost
-//        int ok = Integer.parseInt(txtok.getText());
-//        int totalprocesso = Integer.parseInt(txtdispprocesso.getText());
-//        int naook = Integer.parseInt(txtnaook.getText());
-//        int dispprocesso2 = totalprocesso - Integer.parseInt(txtokprocesso.getText()) + Integer.parseInt(txtnaookprocesso.getText());
-//        if (ok + naook > dispprocesso2) {
-//            JOptionPane.showMessageDialog(rootPane, "Quantidade aprovada + Quantidade reprovada maior que a quantidade da OS.\nPor favor insira uma quantidade aceitável.");
-//            txtnaook.setText("0");
-//            txtnaook.requestFocus();
-//            txtnaook.selectAll();
-//        } else if (naook > 0) {
-//            if (txtmotivo.getText().equals("")) {
-//                String motivo = JOptionPane.showInputDialog(rootPane, "Qual o motivo das peças não estarem aprovadas?", "Peças reprovadas", JOptionPane.YES_OPTION);
-//                txtmotivo.setText(motivo);
-//            } else {
-//                int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja mudar o motivo das peças estarem reprovadas?", "Alterar motivo", JOptionPane.YES_NO_OPTION);
-//                if (resp == 0) {
-//                    String motivo = JOptionPane.showInputDialog(rootPane, "Qual o motivo das peças não estarem aprovadas?", "Peças reprovadas", JOptionPane.YES_OPTION);
-//                    txtmotivo.setText(motivo);
-//                }
-//            }
-//        } else {
-//            txtmotivo.setText("");
-//        }
-    }//GEN-LAST:event_txtnaookFocusLost
-
     private void txtnaookKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnaookKeyReleased
         int ok = Integer.parseInt(txtok.getText());
 //        JOptionPane.showMessageDialog(rootPane, "Quantidade ok: " + ok);
@@ -1161,26 +1143,13 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
             txtnaook.setText("0");
             txtnaook.requestFocus();
             txtnaook.selectAll();
-        } else if (naook > 0) {
-            if (txtmotivo.getText().equals("")) {
-                String motivo = JOptionPane.showInputDialog(rootPane, "Qual o motivo das peças não estarem aprovadas?", "Peças reprovadas", JOptionPane.YES_OPTION);
-                txtmotivo.setText(motivo);
-            } else {
-                int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja mudar o motivo das peças estarem reprovadas?", "Alterar motivo", JOptionPane.YES_NO_OPTION);
-                if (resp == 0) {
-                    String motivo = JOptionPane.showInputDialog(rootPane, "Qual o motivo das peças não estarem aprovadas?", "Peças reprovadas", JOptionPane.YES_OPTION);
-                    txtmotivo.setText(motivo);
-                }
-            }
-        } else {
-            txtmotivo.setText("");
         }
     }//GEN-LAST:event_txtnaookKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton jButton1;
-    public javax.swing.JButton jButton2;
+    public static javax.swing.JButton btnaddmedicao;
+    public static javax.swing.JButton btnsalvar;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;

@@ -154,7 +154,7 @@ public class ProcurarVendedorOrcamentoServico extends javax.swing.JInternalFrame
 
     private void tablevendedoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablevendedoresMouseClicked
         if (evt.getClickCount() == 2) {
-            OrcamentoServico.txtvendedor.setText(tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString());
+            CotacaoServico.txtvendedor.setText(tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString());
             dispose();
         }
     }//GEN-LAST:event_tablevendedoresMouseClicked

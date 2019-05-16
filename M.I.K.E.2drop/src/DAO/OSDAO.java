@@ -32,7 +32,7 @@ public class OSDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO os (idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO os (idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, raio, frontal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, osb.getIdtela());
             stmt.setString(2, osb.getDataabertura());
@@ -48,8 +48,9 @@ public class OSDAO {
             stmt.setString(12, osb.getNotes());
             stmt.setString(13, osb.getTopo());
             stmt.setString(14, osb.getReconstrucao());
-            stmt.setString(15, osb.getRaio());
-            stmt.setString(16, osb.getFrontal());
+            stmt.setString(15, osb.getCompleta());
+            stmt.setString(16, osb.getRaio());
+            stmt.setString(17, osb.getFrontal());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -91,6 +92,7 @@ public class OSDAO {
                 cb.setNotes(rs.getString("notes"));
                 cb.setTopo(rs.getString("topo"));
                 cb.setReconstrucao(rs.getString("reconstrucao"));
+                cb.setCompleta(rs.getString("completa"));
                 cb.setRaio(rs.getString("raio"));
                 cb.setFrontal(rs.getString("frontal"));
 
@@ -137,6 +139,7 @@ public class OSDAO {
                 cb.setNotes(rs.getString("notes"));
                 cb.setTopo(rs.getString("topo"));
                 cb.setReconstrucao(rs.getString("reconstrucao"));
+                cb.setCompleta(rs.getString("completa"));
                 cb.setRaio(rs.getString("raio"));
                 cb.setFrontal(rs.getString("frontal"));
 
@@ -184,6 +187,7 @@ public class OSDAO {
                 cb.setNotes(rs.getString("notes"));
                 cb.setTopo(rs.getString("topo"));
                 cb.setReconstrucao(rs.getString("reconstrucao"));
+                cb.setCompleta(rs.getString("completa"));
                 cb.setRaio(rs.getString("raio"));
                 cb.setFrontal(rs.getString("frontal"));
 
@@ -243,7 +247,7 @@ public class OSDAO {
         String patterny = "yy";
         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
         String year = simpleDateFormaty.format(c.getTime());
-        String idtela = year + "-0001";
+        String idtela = "OS" + year + "-0001";
 
         Boolean resp = false;
 
@@ -294,6 +298,7 @@ public class OSDAO {
                 cb.setNotes(rs.getString("notes"));
                 cb.setTopo(rs.getString("topo"));
                 cb.setReconstrucao(rs.getString("reconstrucao"));
+                cb.setCompleta(rs.getString("completa"));
                 cb.setRaio(rs.getString("raio"));
                 cb.setFrontal(rs.getString("frontal"));
 
@@ -315,7 +320,7 @@ public class OSDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE os SET dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, raio = ?, frontal = ? WHERE idtela = ?");
+            stmt = con.prepareStatement("UPDATE os SET dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, completa = ?, raio = ?, frontal = ? WHERE idtela = ?");
 
             stmt.setString(1, bb.getDataabertura());
             stmt.setString(2, bb.getDataprevisao());
@@ -330,9 +335,10 @@ public class OSDAO {
             stmt.setString(11, bb.getNotes());
             stmt.setString(12, bb.getTopo());
             stmt.setString(13, bb.getReconstrucao());
-            stmt.setString(14, bb.getRaio());
-            stmt.setString(15, bb.getFrontal());
-            stmt.setString(16, bb.getIdtela());
+            stmt.setString(14, bb.getCompleta());
+            stmt.setString(15, bb.getRaio());
+            stmt.setString(16, bb.getFrontal());
+            stmt.setString(17, bb.getIdtela());
             //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, desc, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
 
             stmt.executeUpdate();

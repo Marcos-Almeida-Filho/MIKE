@@ -155,7 +155,7 @@ public class ProcurarRepresentanteOrcamentoServico extends javax.swing.JInternal
 
     private void tablerepresentanteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablerepresentanteMouseClicked
         if (evt.getClickCount() == 2) {
-            OrcamentoServico.txtrepresentante.setText(tablerepresentante.getValueAt(tablerepresentante.getSelectedRow(), 1).toString());
+            CotacaoServico.txtrepresentante.setText(tablerepresentante.getValueAt(tablerepresentante.getSelectedRow(), 1).toString());
             dispose();
         }
     }//GEN-LAST:event_tablerepresentanteMouseClicked

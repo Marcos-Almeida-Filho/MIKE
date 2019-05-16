@@ -99,7 +99,7 @@ public class DocumentosOrcamentoServico extends javax.swing.JInternalFrame {
         } else {
             File fileoriginal = chooser.getSelectedFile();
             if (evt.getActionCommand().equals("ApproveSelection")) {
-                DefaultTableModel model = (DefaultTableModel) OrcamentoServico.tabledocumentos.getModel();
+                DefaultTableModel model = (DefaultTableModel) CotacaoServico.tabledocumentos.getModel();
                 model.addRow(new Object[]{
                     false,
                     "",

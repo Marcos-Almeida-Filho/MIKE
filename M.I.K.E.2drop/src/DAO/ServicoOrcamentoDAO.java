@@ -181,7 +181,7 @@ public class ServicoOrcamentoDAO {
         String patterny = "yy";
         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
         String year = simpleDateFormaty.format(c.getTime());
-        String idtela = year + "-0001";
+        String idtela = "CS" + year + "-0001";
 
         Boolean resp = false;
 

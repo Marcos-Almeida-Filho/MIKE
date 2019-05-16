@@ -153,7 +153,7 @@ public class ProcurarCondicaoDePagamentoOrcamentoServico extends javax.swing.JIn
 
     private void tablecondicaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablecondicaoMouseClicked
         if (evt.getClickCount() == 2) {
-            OrcamentoServico.txtcondicao.setText(tablecondicao.getValueAt(tablecondicao.getSelectedRow(), 1).toString());
+            CotacaoServico.txtcondicao.setText(tablecondicao.getValueAt(tablecondicao.getSelectedRow(), 1).toString());
             dispose();
         }
     }//GEN-LAST:event_tablecondicaoMouseClicked

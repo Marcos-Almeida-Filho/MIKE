@@ -64,6 +64,11 @@ public class TelaLogin extends javax.swing.JFrame {
         jLabel2.setLabelFor(TxtSenha);
         jLabel2.setText("Senha:");
 
+        TxtSenha.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                TxtSenhaFocusGained(evt);
+            }
+        });
         TxtSenha.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 TxtSenhaKeyReleased(evt);
@@ -210,6 +215,10 @@ public class TelaLogin extends javax.swing.JFrame {
 //        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
 //        JOptionPane.showMessageDialog(rootPane, simpleDateFormaty.format(c.getTime()));
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void TxtSenhaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TxtSenhaFocusGained
+        TxtSenha.selectAll();
+    }//GEN-LAST:event_TxtSenhaFocusGained
 
     /**
      * @param args the command line arguments

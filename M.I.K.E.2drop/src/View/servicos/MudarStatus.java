@@ -6,7 +6,17 @@
 package View.servicos;
 
 import Bean.OSBean;
+import Bean.ServicoMateriaisBean;
+import Bean.ServicoMateriaisMovimentacaoBean;
 import DAO.OSDAO;
+import DAO.ServicoMateriaisDAO;
+import DAO.ServicoMateriaisMovimentacaoDAO;
+import View.TelaPrincipal;
+import static View.servicos.OS.txtcodigo;
+import static View.servicos.OS.txtfinal;
+import static View.servicos.OS.txtnumeroos;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import javax.swing.JOptionPane;
 
 /**
@@ -113,19 +123,85 @@ public class MudarStatus extends javax.swing.JInternalFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (cbstatus.getSelectedItem().equals("Selecione")) {
             JOptionPane.showMessageDialog(rootPane, "Selecione um status primeiro!");
-        } else {
+        } else if (cbstatus.getSelectedItem().equals("Fechado")) {
+            //DAO e Bean para alterar OS
             OSDAO od = new OSDAO();
             OSBean ob = new OSBean();
 
+            //DAO e Bean para criar movimentação
+            ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+            ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+
+            //DAO para id do material
+            ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+            ServicoMateriaisBean smb = new ServicoMateriaisBean();
+
+            //Alterar status
             ob.setStatus(cbstatus.getSelectedItem().toString());
             OS.txtstatus.setText(cbstatus.getSelectedItem().toString());
             ob.setIdtela(OS.txtnumeroos.getText());
 
             od.updatestatus(ob);
-            
+
+            //Pegar id do material
+            int idmaterial = 0;
+            for (ServicoMateriaisBean smb2 : smd.readid(txtcodigo.getText())) {
+                idmaterial = smb2.getId();
+            }
+
+            //Pegar saldo atual do produto
+            int saldoatual = 0;
+            for (ServicoMateriaisBean smb2 : smd.readestoque(idmaterial)) {
+                saldoatual = smb2.getEstoque();
+            }
+
+            //Pegar data para gravar
+            Calendar c = Calendar.getInstance();
+            String pattern = "dd/MM/yyyy HH:mm:ss";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+            //Criar movimentação do material
+            smmb.setIdmaterial(idmaterial);
+            smmb.setInicial(saldoatual);
+            smmb.setMovimentada(Integer.parseInt(txtfinal.getText()));
+            smmb.setTipo("OS " + txtnumeroos.getText());
+            smmb.setSaldo(saldoatual + Integer.parseInt(txtfinal.getText()));
+            smmb.setData(simpleDateFormat.format(c.getTime()));
+            smmb.setUsuario(TelaPrincipal.lblapelido.getText());
+
+            //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
+            smmd.create(smmb);
+
+            //Alterar estoque do material
+            smb.setEstoque(saldoatual + Integer.parseInt(txtfinal.getText()));
+            smb.setId(idmaterial);
+
+            //estoque = ? WHERE id = ?
+            smd.updateestoque(smb);
+
+            //Atualizar OS e travar campos de acordo com o status
             OS.reados();
             OS.travarcampos();
-            
+
+            //Fechar tela
+            dispose();
+        } else {
+            //DAO e Bean para alterar OS
+            OSDAO od = new OSDAO();
+            OSBean ob = new OSBean();
+
+            //Alterar status
+            ob.setStatus(cbstatus.getSelectedItem().toString());
+            OS.txtstatus.setText(cbstatus.getSelectedItem().toString());
+            ob.setIdtela(OS.txtnumeroos.getText());
+
+            od.updatestatus(ob);
+
+            //Atualizar OS e travar campos de acordo com o status
+            OS.reados();
+            OS.travarcampos();
+
+            //Fechar tela
             dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed

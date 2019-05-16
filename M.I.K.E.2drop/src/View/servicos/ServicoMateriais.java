@@ -5,19 +5,52 @@
  */
 package View.servicos;
 
+import Bean.OSBean;
 import Bean.ServicoMateriaisBean;
 import Bean.ServicoMateriaisDocumentosBean;
 import Bean.ServicoMateriaisMovimentacaoBean;
+import Bean.ServicoPedidoBean;
+import Bean.ServicoPedidoDocumentosBean;
+import DAO.OSDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.ServicoMateriaisDocumentosDAO;
 import DAO.ServicoMateriaisMovimentacaoDAO;
+import DAO.ServicoPedidoDAO;
+import DAO.ServicoPedidoDocumentosDAO;
 import Methods.SendEmail;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
+import static View.servicos.OS.radioreconstrucao;
+import static View.servicos.OS.radiotopo;
+import static View.servicos.OS.txtfinal;
+import static View.servicos.OS.txtfrontal;
+import static View.servicos.OS.txtinicial;
+import static View.servicos.OS.txtmortas;
+import static View.servicos.OS.txtnumeroos;
+import static View.servicos.OS.txtraio;
+import static View.servicos.OS.txtstatus;
+import static View.servicos.PedidoServico.camposeditaveis;
+import static View.servicos.PedidoServico.readitenscobranca;
+import static View.servicos.PedidoServico.readitensretorno;
+import static View.servicos.PedidoServico.tabledocumentos;
+import static View.servicos.PedidoServico.txtclientepedido;
+import static View.servicos.PedidoServico.txtcondicao;
+import static View.servicos.PedidoServico.txtnfcliente;
+import static View.servicos.PedidoServico.txtnotes;
+import static View.servicos.PedidoServico.txtnumeropedido;
+import static View.servicos.PedidoServico.txtorcamento;
+import static View.servicos.PedidoServico.txtrepresentante;
+import static View.servicos.PedidoServico.txtstatusretorno;
+import static View.servicos.PedidoServico.txtvalorcobranca;
+import static View.servicos.PedidoServico.txtvalorretorno;
+import static View.servicos.PedidoServico.txtvendedor;
 import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +60,9 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -102,6 +137,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         txtid = new javax.swing.JTextField();
         txtestoque = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         tabopcoes = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
@@ -233,6 +269,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Descrição");
 
+        txtdesc.setToolTipText("Padrão: Código - Diam x Comprimento");
+
         jLabel5.setText("ID");
 
         txtid.setEditable(false);
@@ -242,6 +280,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         txtestoque.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel8.setText("Estoque");
+
+        jLabel9.setText("Exemplo: Código - Diam x Comprimento Canal x Comprimento Total");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -262,10 +302,14 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtdesc, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -282,7 +326,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtdesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtdesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -309,6 +354,14 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tableestoque.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableestoqueMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tableestoqueMouseReleased(evt);
             }
         });
         jScrollPane3.setViewportView(tableestoque);
@@ -727,6 +780,151 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
 
+    private void tableestoqueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableestoqueMouseClicked
+        //Criar string com tipo da movimentação
+        String tipo = tableestoque.getValueAt(tableestoque.getSelectedRow(), 3).toString();
+        String tipo2 = tipo.substring(0, 2);
+        if (evt.getButton() == 3) {
+            if (tipo2.equals("OS")) {
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem das = new JMenuItem("Abrir " + tipo);
+
+                das.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                        String OS = tipo.substring(3, tipo.length());
+                        if (OS.equals("")) {
+                            JOptionPane.showMessageDialog(rootPane, "Produto sem OS");
+                        } else {
+                            OS p = new OS();
+                            jDesktopPane1.add(p);
+                            p.setVisible(true);
+                            try {
+                                p.setMaximum(true);
+                            } catch (PropertyVetoException ex) {
+                                Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            p.txtnumeroos.setText(OS);
+                            p.tabos.setSelectedIndex(1);
+
+                            OSDAO od = new OSDAO();
+
+                            for (OSBean ob : od.click(txtnumeroos.getText())) {
+                                p.txtabertura.setText(ob.getDataabertura());
+                                p.txtprevisao.setText(ob.getDataprevisao());
+                                txtstatus.setText(ob.getStatus());
+                                txtclientepedido.setText(ob.getCliente());
+                                txtcodigo.setText(ob.getCodigo());
+                                txtdesc.setText(ob.getDescricao());
+                                txtinicial.setText(String.valueOf(ob.getQtdinicial()));
+                                txtfinal.setText(String.valueOf(ob.getQtdok()));
+                                txtmortas.setText(String.valueOf(ob.getQtdnaook()));
+                                txtnotes.setText(ob.getNotes());
+                                if (ob.getTopo().equals("true")) {
+                                    radiotopo.setSelected(true);
+                                }
+                                if (ob.getReconstrucao().equals("true")) {
+                                    radioreconstrucao.setSelected(true);
+                                }
+                                if (ob.getCompleta().equals("true")) {
+                                    p.radiocompleta.setSelected(true);
+                                }
+                                txtraio.setText(ob.getRaio());
+                                txtfrontal.setText(ob.getFrontal());
+
+                            }
+
+                            //Pegar documentos
+                            p.readdocs();
+
+                            //Pegar processos
+                            p.readprocessos();
+
+                            //Travar campos de acordo com status da op
+                            p.travarcampos();
+                        }
+                    }
+                });
+
+                menu.add(das);
+
+                menu.show(evt.getComponent(), evt.getPoint().x, evt.getPoint().y);
+            } else {
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem das = new JMenuItem("Abrir " + tipo);
+
+                das.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        String DAS = tipo.substring(4, tipo.length());
+                        if (DAS.equals("")) {
+                            JOptionPane.showMessageDialog(rootPane, "Produto sem DAS");
+                        } else {
+                            PedidoServico p = new PedidoServico();
+                            jDesktopPane1.add(p);
+                            p.setVisible(true);
+                            try {
+                                p.setMaximum(true);
+                            } catch (PropertyVetoException ex) {
+                                Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            PedidoServico.txtnumeropedido.setText(DAS);
+                            PedidoServico.tabpedidos.setSelectedIndex(1);
+
+                            ServicoPedidoDAO spd = new ServicoPedidoDAO();
+
+                            for (ServicoPedidoBean spb : spd.click(PedidoServico.txtnumeropedido.getText())) {
+                                PedidoServico.txtclientepedido.setText(spb.getCliente());
+                                PedidoServico.txtcondicao.setText(spb.getCondicao());
+                                PedidoServico.txtrepresentante.setText(spb.getRepresentante());
+                                PedidoServico.txtvendedor.setText(spb.getVendedor());
+                                PedidoServico.txtstatusretorno.setText(spb.getStatus_retorno());
+                                PedidoServico.txtstatuscobranca.setText(spb.getStatus_cobranca());
+                                PedidoServico.txtnotes.setText(spb.getNotes());
+                                PedidoServico.txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
+                                PedidoServico.txtnfcliente.setText(spb.getNfcliente());
+                            }
+
+                            camposeditaveis();
+
+                            readitenscobranca();
+
+                            txtvalorcobranca();
+
+                            readitensretorno();
+
+                            txtvalorretorno();
+
+                            DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
+                            modeldoc.setNumRows(0);
+                            ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+
+                            for (ServicoPedidoDocumentosBean spdb : spdd.readitens(txtnumeropedido.getText())) {
+                                modeldoc.addRow(new Object[]{
+                                    false,
+                                    spdb.getId(),
+                                    spdb.getDescricao(),
+                                    spdb.getLocal(),});
+                            }
+                        }
+                    }
+                });
+
+                menu.add(das);
+
+                menu.show(evt.getComponent(), evt.getPoint().x, evt.getPoint().y);
+            }
+        }
+    }//GEN-LAST:event_tableestoqueMouseClicked
+
+    private void tableestoqueMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableestoqueMouseReleased
+        int r = tableestoque.rowAtPoint(evt.getPoint());
+        if (r >= 0 && r < tableestoque.getRowCount()) {
+            tableestoque.setRowSelectionInterval(r, r);
+        } else {
+            tableestoque.clearSelection();
+        }
+    }//GEN-LAST:event_tableestoqueMouseReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -743,6 +941,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

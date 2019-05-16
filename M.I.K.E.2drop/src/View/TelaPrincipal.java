@@ -11,7 +11,7 @@ import DAO.GrupoDeUsuariosDAO;
 import DAO.UsuariosDAO;
 import View.comercial.Clientes;
 import View.administracao.Usuarios;
-import View.servicos.OrcamentoServico;
+import View.servicos.CotacaoServico;
 import View.vendas.OPs;
 import View.arquivo.Email;
 import Methods.EmBreve;
@@ -68,96 +68,238 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         for (GrupoDeUsuariosBean gub : gud.getmenus(nivel)) {
             if (gub.getMenuadministracao().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuadministracao.setVisible(status);
             if (gub.getSubmenuusuarios().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuitemusuarios.setVisible(status);
             if (gub.getSubmenugrupodeusuarios().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuitemgrupodeusuarios.setVisible(status);
             if (gub.getSubmenurepresentantes().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuitemrepresentantes.setVisible(status);
+            if (gub.getSubmenuregioesdeatuacao().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemregioesdeatuacao.setVisible(status);
             if (gub.getMenucomercial().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menucomercial.setVisible(status);
             if (gub.getSubmenuclientes().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuitemclientes.setVisible(status);
             if (gub.getSubmenugrupodeclientes().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuitemgrupodeclientes.setVisible(status);
-            if (gub.getMenuvendas().equals("false")) {
+            if (gub.getSubmenufornecedores().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
-            TelaPrincipal.menuvendas.setVisible(status);
-            if (gub.getSubmenuorcamentosvenda().equals("false")) {
+            TelaPrincipal.menuitemfornecedores.setVisible(status);
+            if (gub.getMenufinanceiro().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
-            TelaPrincipal.menuitemvendasorcamentos.setVisible(status);
-            if (gub.getSubmenupedidosvenda().equals("false")) {
+            TelaPrincipal.menufinanceiro.setVisible(status);
+            if (gub.getSubmenucontasareceber().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
-            TelaPrincipal.menuitemvendaspedidos.setVisible(status);
-            if (gub.getSubmenuops().equals("false")) {
+            TelaPrincipal.menuitemcontasareceber.setVisible(status);
+            if (gub.getSubmenucontasapagar().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
-            TelaPrincipal.menuitemvendasops.setVisible(status);
-            if (gub.getSubmenuprodutosvenda().equals("false")) {
+            TelaPrincipal.menuitemcontasapagar.setVisible(status);
+            if (gub.getSubmenucondicoesdepagamento().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
-            TelaPrincipal.menuitemvendasprodutos.setVisible(status);
-            if (gub.getMenuservicos().equals("false")) {
+            TelaPrincipal.menuitemcondicoesdepagamento.setVisible(status);
+            if (gub.getSubmenubancos().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
-            TelaPrincipal.menuservicos.setVisible(status);
-            if (gub.getSubmenuorcamentosservico().equals("false")) {
-                status = false;
-            }
-            TelaPrincipal.menuitemservicosorcamentos.setVisible(status);
-            if (gub.getSubmenupedidosservico().equals("false")) {
-                status = false;
-            }
-            TelaPrincipal.menuitemservicospedidos.setVisible(status);
-            if (gub.getSubmenuoss().equals("false")) {
-                status = false;
-            }
-            TelaPrincipal.menuitemservicososs.setVisible(status);
-            if (gub.getSubmenuprodutosservico().equals("false")) {
-                status = false;
-            }
-            TelaPrincipal.menuitemservicosprodutos.setVisible(status);
-            if (gub.getMenuconfiguracoes().equals("false")) {
-                status = false;
-            }
-            TelaPrincipal.menuconfiguracoes.setVisible(status);
-            if (gub.getSubmenumenus().equals("false")) {
-                status = false;
-            }
-            TelaPrincipal.menuitemmenus.setVisible(status);
+            TelaPrincipal.menuitembancos.setVisible(status);
             if (gub.getMenucompras().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menucompras.setVisible(status);
             if (gub.getSubmenusolicitacaodecompras().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuitemsolicitacaodecompras.setVisible(status);
+            if (gub.getSubmenuorcamentodecompras().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemorcamentodecompras.setVisible(status);
             if (gub.getSubmenupedidodecompras().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuitempedidodecompras.setVisible(status);
             if (gub.getSubmenuinsumos().equals("false")) {
                 status = false;
+            } else {
+                status = true;
             }
             TelaPrincipal.menuiteminsumos.setVisible(status);
+            if (gub.getMenulogistica().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menulogistica.setVisible(status);
+            if (gub.getSubmenucarros().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemcarros.setVisible(status);
+            if (gub.getMenuqualidade().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuqualidade.setVisible(status);
+            if (gub.getSubmenuinstrumentosdemedicao().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuiteminstrumentosmedicao.setVisible(status);
+            if (gub.getMenuvendas().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuvendas.setVisible(status);
+            if (gub.getSubmenuorcamentosvenda().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemvendasorcamentos.setVisible(status);
+            if (gub.getSubmenupedidosvenda().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemvendaspedidos.setVisible(status);
+            if (gub.getSubmenuops().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemvendasops.setVisible(status);
+            if (gub.getSubmenuprodutosvenda().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemvendasprodutos.setVisible(status);
+            if (gub.getSubmenuprocessosvenda().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemvendasprocessos.setVisible(status);
+            if (gub.getSubmenugrupodeprocessosvenda().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemvendasgrupodeprocessos.setVisible(status);
+            if (gub.getMenuservicos().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuservicos.setVisible(status);
+            if (gub.getSubmenuorcamentosservico().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemservicosorcamentos.setVisible(status);
+            if (gub.getSubmenupedidosservico().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemservicospedidos.setVisible(status);
+            if (gub.getSubmenuoss().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemservicososs.setVisible(status);
+            if (gub.getSubmenuprodutosservico().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemservicosprodutos.setVisible(status);
+            if (gub.getSubmenuprocessosservico().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemservicosproccessos.setVisible(status);
+            if (gub.getSubmenugrupodeprocessosservico().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemservicosgrupodeprocessos.setVisible(status);
+            if (gub.getMenuconfiguracoes().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuconfiguracoes.setVisible(status);
+            if (gub.getSubmenumenus().equals("false")) {
+                status = false;
+            } else {
+                status = true;
+            }
+            TelaPrincipal.menuitemmenus.setVisible(status);
         }
     }
 
@@ -184,39 +326,39 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemusuarios = new javax.swing.JMenuItem();
         menuitemgrupodeusuarios = new javax.swing.JMenuItem();
         menuitemrepresentantes = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menuitemregioesdeatuacao = new javax.swing.JMenuItem();
         menucomercial = new javax.swing.JMenu();
         menuitemclientes = new javax.swing.JMenuItem();
         menuitemgrupodeclientes = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        menuitemfornecedores = new javax.swing.JMenuItem();
         menufinanceiro = new javax.swing.JMenu();
         menuitemcontasareceber = new javax.swing.JMenuItem();
         menuitemcontasapagar = new javax.swing.JMenuItem();
         menuitemcondicoesdepagamento = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
+        menuitembancos = new javax.swing.JMenuItem();
         menucompras = new javax.swing.JMenu();
         menuitemsolicitacaodecompras = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
+        menuitemorcamentodecompras = new javax.swing.JMenuItem();
         menuitempedidodecompras = new javax.swing.JMenuItem();
         menuiteminsumos = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        menulogistica = new javax.swing.JMenu();
+        menuitemcarros = new javax.swing.JMenuItem();
+        menuqualidade = new javax.swing.JMenu();
         menuiteminstrumentosmedicao = new javax.swing.JMenuItem();
         menuvendas = new javax.swing.JMenu();
         menuitemvendasorcamentos = new javax.swing.JMenuItem();
         menuitemvendaspedidos = new javax.swing.JMenuItem();
         menuitemvendasops = new javax.swing.JMenuItem();
         menuitemvendasprodutos = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        menuitemvendasprocessos = new javax.swing.JMenuItem();
+        menuitemvendasgrupodeprocessos = new javax.swing.JMenuItem();
         menuservicos = new javax.swing.JMenu();
         menuitemservicosorcamentos = new javax.swing.JMenuItem();
         menuitemservicospedidos = new javax.swing.JMenuItem();
         menuitemservicososs = new javax.swing.JMenuItem();
         menuitemservicosprodutos = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
+        menuitemservicosproccessos = new javax.swing.JMenuItem();
+        menuitemservicosgrupodeprocessos = new javax.swing.JMenuItem();
         menuconfiguracoes = new javax.swing.JMenu();
         menuitemmenus = new javax.swing.JMenuItem();
         menuajuda = new javax.swing.JMenu();
@@ -338,14 +480,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menuadministracao.add(menuitemrepresentantes);
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/map.png"))); // NOI18N
-        jMenuItem2.setText("Regiões de Atuação");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        menuitemregioesdeatuacao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/map.png"))); // NOI18N
+        menuitemregioesdeatuacao.setText("Regiões de Atuação");
+        menuitemregioesdeatuacao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                menuitemregioesdeatuacaoActionPerformed(evt);
             }
         });
-        menuadministracao.add(jMenuItem2);
+        menuadministracao.add(menuitemregioesdeatuacao);
 
         jMenuBar1.add(menuadministracao);
 
@@ -365,14 +507,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemgrupodeclientes.setText("Grupo de Clientes");
         menucomercial.add(menuitemgrupodeclientes);
 
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry.png"))); // NOI18N
-        jMenuItem4.setText("Fornecedores");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        menuitemfornecedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry.png"))); // NOI18N
+        menuitemfornecedores.setText("Fornecedores");
+        menuitemfornecedores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                menuitemfornecedoresActionPerformed(evt);
             }
         });
-        menucomercial.add(jMenuItem4);
+        menucomercial.add(menuitemfornecedores);
 
         jMenuBar1.add(menucomercial);
 
@@ -401,14 +543,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menufinanceiro.add(menuitemcondicoesdepagamento);
 
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/coins.png"))); // NOI18N
-        jMenuItem3.setText("Bancos");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        menuitembancos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/coins.png"))); // NOI18N
+        menuitembancos.setText("Bancos");
+        menuitembancos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                menuitembancosActionPerformed(evt);
             }
         });
-        menufinanceiro.add(jMenuItem3);
+        menufinanceiro.add(menuitembancos);
 
         jMenuBar1.add(menufinanceiro);
 
@@ -424,9 +566,9 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menucompras.add(menuitemsolicitacaodecompras);
 
-        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_edit.png"))); // NOI18N
-        jMenuItem9.setText("Orçamento de Compra");
-        menucompras.add(jMenuItem9);
+        menuitemorcamentodecompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_edit.png"))); // NOI18N
+        menuitemorcamentodecompras.setText("Cotação de Compra");
+        menucompras.add(menuitemorcamentodecompras);
 
         menuitempedidodecompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_go.png"))); // NOI18N
         menuitempedidodecompras.setText("Pedido de Compra");
@@ -438,22 +580,22 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         jMenuBar1.add(menucompras);
 
-        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/package_green.png"))); // NOI18N
-        jMenu1.setText("Logística");
+        menulogistica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/package_green.png"))); // NOI18N
+        menulogistica.setText("Logística");
 
-        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/car.png"))); // NOI18N
-        jMenuItem10.setText("Carros");
-        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+        menuitemcarros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/car.png"))); // NOI18N
+        menuitemcarros.setText("Carros");
+        menuitemcarros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem10ActionPerformed(evt);
+                menuitemcarrosActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem10);
+        menulogistica.add(menuitemcarros);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(menulogistica);
 
-        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/award_star_bronze_3.png"))); // NOI18N
-        jMenu2.setText("Qualidade");
+        menuqualidade.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/award_star_bronze_3.png"))); // NOI18N
+        menuqualidade.setText("Qualidade");
 
         menuiteminstrumentosmedicao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/compress.png"))); // NOI18N
         menuiteminstrumentosmedicao.setText("Instrumentos de Medição");
@@ -462,15 +604,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                 menuiteminstrumentosmedicaoActionPerformed(evt);
             }
         });
-        jMenu2.add(menuiteminstrumentosmedicao);
+        menuqualidade.add(menuiteminstrumentosmedicao);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(menuqualidade);
 
         menuvendas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/wrench.png"))); // NOI18N
         menuvendas.setText("Vendas");
 
         menuitemvendasorcamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench.png"))); // NOI18N
-        menuitemvendasorcamentos.setText("Orçamentos");
+        menuitemvendasorcamentos.setText("Cotações");
         menuitemvendasorcamentos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemvendasorcamentosActionPerformed(evt);
@@ -500,13 +642,13 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemvendasprodutos.setText("Produtos");
         menuvendas.add(menuitemvendasprodutos);
 
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench.png"))); // NOI18N
-        jMenuItem5.setText("Processos");
-        menuvendas.add(jMenuItem5);
+        menuitemvendasprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench.png"))); // NOI18N
+        menuitemvendasprocessos.setText("Processos");
+        menuvendas.add(menuitemvendasprocessos);
 
-        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench.png"))); // NOI18N
-        jMenuItem6.setText("Grupo de Processos");
-        menuvendas.add(jMenuItem6);
+        menuitemvendasgrupodeprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench.png"))); // NOI18N
+        menuitemvendasgrupodeprocessos.setText("Grupo de Processos");
+        menuvendas.add(menuitemvendasgrupodeprocessos);
 
         jMenuBar1.add(menuvendas);
 
@@ -514,7 +656,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuservicos.setText("Serviços");
 
         menuitemservicosorcamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_orange.png"))); // NOI18N
-        menuitemservicosorcamentos.setText("Orçamentos");
+        menuitemservicosorcamentos.setText("Cotações");
         menuitemservicosorcamentos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemservicosorcamentosActionPerformed(evt);
@@ -549,23 +691,23 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menuservicos.add(menuitemservicosprodutos);
 
-        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench_orange.png"))); // NOI18N
-        jMenuItem7.setText("Processos");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+        menuitemservicosproccessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench_orange.png"))); // NOI18N
+        menuitemservicosproccessos.setText("Processos");
+        menuitemservicosproccessos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
+                menuitemservicosproccessosActionPerformed(evt);
             }
         });
-        menuservicos.add(jMenuItem7);
+        menuservicos.add(menuitemservicosproccessos);
 
-        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench_orange.png"))); // NOI18N
-        jMenuItem8.setText("Grupo de Processos");
-        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+        menuitemservicosgrupodeprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench_orange.png"))); // NOI18N
+        menuitemservicosgrupodeprocessos.setText("Grupo de Processos");
+        menuitemservicosgrupodeprocessos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem8ActionPerformed(evt);
+                menuitemservicosgrupodeprocessosActionPerformed(evt);
             }
         });
-        menuservicos.add(jMenuItem8);
+        menuservicos.add(menuitemservicosgrupodeprocessos);
 
         jMenuBar1.add(menuservicos);
 
@@ -684,7 +826,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
     private void menuitemservicosorcamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosorcamentosActionPerformed
         try {
-            OrcamentoServico tela = new OrcamentoServico();
+            CotacaoServico tela = new CotacaoServico();
             jDesktopPane1.add(tela);
             tela.setVisible(true);
             tela.setMaximum(true);
@@ -773,14 +915,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         r.setVisible(true);
     }//GEN-LAST:event_menuitemrepresentantesActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void menuitemregioesdeatuacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemregioesdeatuacaoActionPerformed
         Regioes r = new Regioes();
         jDesktopPane1.add(r);
         Dimension desk = jDesktopPane1.getSize();
         Dimension rsize = r.getSize();
         r.setLocation((desk.width - rsize.width) / 2, (desk.height - rsize.height) / 2);
         r.setVisible(true);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_menuitemregioesdeatuacaoActionPerformed
 
     private void menuitemcondicoesdepagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcondicoesdepagamentoActionPerformed
         CondicoesDePagamento cp = new CondicoesDePagamento();
@@ -802,7 +944,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         c.setVisible(true);
     }//GEN-LAST:event_menuitemcontasapagarActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void menuitembancosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitembancosActionPerformed
         Bancos b = new Bancos();
         jDesktopPane1.add(b);
         try {
@@ -811,34 +953,34 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
         b.setVisible(true);
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    }//GEN-LAST:event_menuitembancosActionPerformed
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void menuitemfornecedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemfornecedoresActionPerformed
         Fornecedores f = new Fornecedores();
         jDesktopPane1.add(f);
         Dimension jif = f.getSize();
         Dimension d = jDesktopPane1.getSize();
         f.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
         f.setVisible(true);
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    }//GEN-LAST:event_menuitemfornecedoresActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+    private void menuitemservicosproccessosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosproccessosActionPerformed
         ProcessosServico ps = new ProcessosServico();
         jDesktopPane1.add(ps);
         Dimension jif = ps.getSize();
         Dimension desk = jDesktopPane1.getSize();
         ps.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
         ps.setVisible(true);
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
+    }//GEN-LAST:event_menuitemservicosproccessosActionPerformed
 
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+    private void menuitemservicosgrupodeprocessosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosgrupodeprocessosActionPerformed
         GrupoDeProcessosServico gps = new GrupoDeProcessosServico();
         jDesktopPane1.add(gps);
         Dimension jif = gps.getSize();
         Dimension desk = jDesktopPane1.getSize();
         gps.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
         gps.setVisible(true);
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
+    }//GEN-LAST:event_menuitemservicosgrupodeprocessosActionPerformed
 
     private void menuitemsolicitacaodecomprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemsolicitacaodecomprasActionPerformed
 
@@ -853,9 +995,9 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         p.setVisible(true);
     }//GEN-LAST:event_menuiteminstrumentosmedicaoActionPerformed
 
-    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+    private void menuitemcarrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcarrosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem10ActionPerformed
+    }//GEN-LAST:event_menuitemcarrosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -895,20 +1037,9 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JMenu MenuArquivo;
     public static javax.swing.JDesktopPane jDesktopPane1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     public static javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem12;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     public static javax.swing.JLabel lblapelido;
     public static javax.swing.JLabel lblgrupo;
@@ -919,30 +1050,41 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenu menucomercial;
     public static javax.swing.JMenu menucompras;
     public static javax.swing.JMenu menuconfiguracoes;
-    private javax.swing.JMenu menufinanceiro;
+    public static javax.swing.JMenu menufinanceiro;
+    public static javax.swing.JMenuItem menuitembancos;
+    public static javax.swing.JMenuItem menuitemcarros;
     public static javax.swing.JMenuItem menuitemclientes;
     public static javax.swing.JMenuItem menuitemcondicoesdepagamento;
-    private javax.swing.JMenuItem menuitemcontasapagar;
-    private javax.swing.JMenuItem menuitemcontasareceber;
+    public static javax.swing.JMenuItem menuitemcontasapagar;
+    public static javax.swing.JMenuItem menuitemcontasareceber;
+    public static javax.swing.JMenuItem menuitemfornecedores;
     public static javax.swing.JMenuItem menuitemgrupodeclientes;
     public static javax.swing.JMenuItem menuitemgrupodeusuarios;
-    private javax.swing.JMenuItem menuiteminstrumentosmedicao;
+    public static javax.swing.JMenuItem menuiteminstrumentosmedicao;
     public static javax.swing.JMenuItem menuiteminsumos;
     public static javax.swing.JMenuItem menuitemmenus;
     private javax.swing.JMenuItem menuitemmike;
+    public static javax.swing.JMenuItem menuitemorcamentodecompras;
     public static javax.swing.JMenuItem menuitempedidodecompras;
+    public static javax.swing.JMenuItem menuitemregioesdeatuacao;
     public static javax.swing.JMenuItem menuitemrepresentantes;
+    public static javax.swing.JMenuItem menuitemservicosgrupodeprocessos;
     public static javax.swing.JMenuItem menuitemservicosorcamentos;
     public static javax.swing.JMenuItem menuitemservicososs;
     public static javax.swing.JMenuItem menuitemservicospedidos;
+    public static javax.swing.JMenuItem menuitemservicosproccessos;
     public static javax.swing.JMenuItem menuitemservicosprodutos;
     private javax.swing.JMenuItem menuitemsobre;
     public static javax.swing.JMenuItem menuitemsolicitacaodecompras;
     public static javax.swing.JMenuItem menuitemusuarios;
+    public static javax.swing.JMenuItem menuitemvendasgrupodeprocessos;
     public static javax.swing.JMenuItem menuitemvendasops;
     public static javax.swing.JMenuItem menuitemvendasorcamentos;
     public static javax.swing.JMenuItem menuitemvendaspedidos;
+    public static javax.swing.JMenuItem menuitemvendasprocessos;
     public static javax.swing.JMenuItem menuitemvendasprodutos;
+    public static javax.swing.JMenu menulogistica;
+    public static javax.swing.JMenu menuqualidade;
     public static javax.swing.JMenu menuservicos;
     public static javax.swing.JMenu menuvendas;
     // End of variables declaration//GEN-END:variables

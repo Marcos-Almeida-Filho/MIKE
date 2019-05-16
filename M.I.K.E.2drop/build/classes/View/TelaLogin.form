@@ -131,6 +131,7 @@
         </Component>
         <Component class="javax.swing.JPasswordField" name="TxtSenha">
           <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="TxtSenhaFocusGained"/>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="TxtSenhaKeyReleased"/>
           </Events>
           <AuxValues>

@@ -27,6 +27,7 @@ public class OSBean {
     private String notes;
     private String topo;
     private String reconstrucao;
+    private String completa;
     private String raio;
     private String frontal;
 
@@ -148,6 +149,14 @@ public class OSBean {
 
     public void setReconstrucao(String reconstrucao) {
         this.reconstrucao = reconstrucao;
+    }
+
+    public String getCompleta() {
+        return completa;
+    }
+
+    public void setCompleta(String completa) {
+        this.completa = completa;
     }
 
     public String getRaio() {

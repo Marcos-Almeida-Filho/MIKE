@@ -106,7 +106,7 @@ public class ServicoPedidoDAO {
         String patterny = "yy";
         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
         String year = simpleDateFormaty.format(c.getTime());
-        String idtela = year + "-0001";
+        String idtela = "PS" + year + "-0001";
         
         Boolean resp = false;
 
@@ -178,7 +178,7 @@ public class ServicoPedidoDAO {
                 ServicoPedidoBean spb = new ServicoPedidoBean();
 
                 spb.setIdtela(rs.getString("idtela"));
-                spb.setId(rs.getInt("idorcamento"));
+                spb.setIdorcamento(rs.getString("idorcamento"));
                 spb.setCliente(rs.getString("cliente"));
                 spb.setCondicao(rs.getString("condicao"));
                 spb.setRepresentante(rs.getString("representante"));

@@ -284,7 +284,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
             } else {
                 DecimalFormat formatter = new DecimalFormat("#,###.00");
                 DecimalFormat formatterq = new DecimalFormat("#,###");
-                DefaultTableModel model = (DefaultTableModel) OrcamentoServico.tableitens.getModel();
+                DefaultTableModel model = (DefaultTableModel) CotacaoServico.tableitens.getModel();
                 int qtd = Integer.parseInt(txtqtd.getText());
                 String v = txtvalor.getText().replace(".", "");
                 float valor = Float.parseFloat(v.replace(",", "."));
@@ -304,12 +304,12 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
                     txtpedido.getText(),
                     ""
                 });
-                OrcamentoServico.txtvalor();
+                CotacaoServico.txtvalor();
                 dispose();
             }
         } else {
             DecimalFormat formatter = new DecimalFormat("#,###.00");
-            DefaultTableModel model = (DefaultTableModel) OrcamentoServico.tableitens.getModel();
+            DefaultTableModel model = (DefaultTableModel) CotacaoServico.tableitens.getModel();
             int qtd = Integer.parseInt(txtqtd.getText());
             String v = txtvalor.getText().replace(".", "");
             float valor = Float.parseFloat(v.replace(",", "."));
@@ -325,7 +325,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
             model.setValueAt(totf, Integer.parseInt(txtrow.getText()), 6);
             model.setValueAt(nprazo + " dias", Integer.parseInt(txtrow.getText()), 7);
             model.setValueAt(txtpedido.getText(), Integer.parseInt(txtrow.getText()), 8);
-            OrcamentoServico.txtvalor();
+            CotacaoServico.txtvalor();
             dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
