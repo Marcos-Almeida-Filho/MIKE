@@ -7,6 +7,9 @@ package DAO;
 
 import Bean.OSInspecaoBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
+import java.awt.AWTException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,6 +46,11 @@ public class OSInspecaoDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSInspecaoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -81,6 +89,11 @@ public class OSInspecaoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(OSInspecaoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSInspecaoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -120,6 +133,11 @@ public class OSInspecaoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(OSInspecaoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSInspecaoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }

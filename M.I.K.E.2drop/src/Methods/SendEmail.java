@@ -118,7 +118,7 @@ public class SendEmail {
                     attachmentBodyPart.setFileName("erro.png"); // ex : "test.pdf"
 
                     multipart.addBodyPart(textBodyPart);  // add the text part
-                    multipart.addBodyPart(attachmentBodyPart); // add the attachement part
+                    multipart.addBodyPart(attachmentBodyPart); // add the attachment part
 
                     message.setContent(multipart);
                   

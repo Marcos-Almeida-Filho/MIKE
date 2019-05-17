@@ -161,10 +161,22 @@ public class TelaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnloginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnloginActionPerformed
+        String apelido = "";
+
+        UsuariosDAO ud2 = new UsuariosDAO();
+
+        for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
+            apelido = ub.getNome();
+        }
+
+        Session session = new Session();
         UsuariosDAO ud = new UsuariosDAO();
         String senha = new String(TxtSenha.getPassword());
         if (ud.checklogin(TxtLogin.getText(), senha)) {
-            new TelaPrincipal().setVisible(true);
+            TelaPrincipal tela = new TelaPrincipal();
+            tela.setTitle("M.I.K.E. version 0.4.1 - Usuário: " + apelido);
+            tela.setVisible(true);
+            session.login = TxtLogin.getText();
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(rootPane, "Informações incorretas!");
@@ -179,9 +191,9 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void TxtSenhaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtSenhaKeyReleased
         String apelido = "";
-        
+
         UsuariosDAO ud2 = new UsuariosDAO();
-        
+
         for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
             apelido = ub.getNome();
         }
@@ -191,7 +203,7 @@ public class TelaLogin extends javax.swing.JFrame {
             String senha = new String(TxtSenha.getPassword());
             if (ud.checklogin(TxtLogin.getText(), senha)) {
                 TelaPrincipal tela = new TelaPrincipal();
-                tela.setTitle("M.I.K.E. version 0.1.1 - Usuário: " + apelido);
+                tela.setTitle("M.I.K.E. version 0.4.1 - Usuário: " + apelido);
                 tela.setVisible(true);
                 session.login = TxtLogin.getText();
                 this.dispose();

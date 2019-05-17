@@ -7,7 +7,10 @@ package DAO;
 
 import Bean.ServicoMateriaisDocumentosBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
+import java.awt.AWTException;
 import java.awt.HeadlessException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,7 +41,12 @@ public class ServicoMateriaisDocumentosDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -71,6 +79,11 @@ public class ServicoMateriaisDocumentosDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -95,7 +108,12 @@ public class ServicoMateriaisDocumentosDAO {
             stmt.executeUpdate();
 
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

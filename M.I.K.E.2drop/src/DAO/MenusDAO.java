@@ -7,8 +7,11 @@ package DAO;
 
 import Bean.MenusBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
 import View.configuracoes.Menus;
+import java.awt.AWTException;
 import java.awt.HeadlessException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,10 +39,13 @@ public class MenusDAO {
             stmt.setString(1, mb.getNome());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + 3);
+            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -69,6 +75,11 @@ public class MenusDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -99,6 +110,11 @@ public class MenusDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -117,10 +133,13 @@ public class MenusDAO {
             stmt.setInt(2, mb.getId());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -137,10 +156,13 @@ public class MenusDAO {
             stmt.setInt(1, mb.getId());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Excluído com sucesso!");
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao excluir!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

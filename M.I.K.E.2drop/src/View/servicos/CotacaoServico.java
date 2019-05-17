@@ -42,6 +42,8 @@ import javax.swing.JDesktopPane;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -58,6 +60,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         filltableorcamentoservico();
         tableitens();
         txtvalor();
+        centertable();
     }
 
     public static void filltableorcamentoservico() {
@@ -204,6 +207,26 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             btncriarpedido.setEnabled(true);
             btncancelarorcamento.setEnabled(true);
         }
+    }
+
+    public static void centertable() {
+        int cc = tableitens.getColumnCount();
+        for (int i = 0; i < cc - 1; i++) {
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+            tableitens.getColumnModel().getColumn(i + 1).setCellRenderer(centerRenderer);
+        }
+//        for (int i = 0; i < cc; i++) {
+//            DefaultTableCellHeaderRenderer centerHeader = new DefaultTableCellHeaderRenderer();
+//            centerHeader.setHorizontalAlignment(SwingConstants.CENTER);
+//            tableitens.getTableHeader().setDefaultRenderer(centerHeader);
+//        }
+
+//        To center all columns with String data you can do:
+//
+//        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+//        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+//        table.setDefaultRenderer(String.class, centerRenderer);
     }
 
     /**
@@ -519,7 +542,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtnumeroorcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtnumeroorcamento, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton4))
                     .addGroup(jPanel3Layout.createSequentialGroup()
@@ -682,6 +705,27 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             tableitens.getColumnModel().getColumn(1).setMinWidth(0);
             tableitens.getColumnModel().getColumn(1).setPreferredWidth(0);
             tableitens.getColumnModel().getColumn(1).setMaxWidth(0);
+            tableitens.getColumnModel().getColumn(2).setMinWidth(90);
+            tableitens.getColumnModel().getColumn(2).setPreferredWidth(90);
+            tableitens.getColumnModel().getColumn(2).setMaxWidth(90);
+            tableitens.getColumnModel().getColumn(4).setMinWidth(60);
+            tableitens.getColumnModel().getColumn(4).setPreferredWidth(60);
+            tableitens.getColumnModel().getColumn(4).setMaxWidth(60);
+            tableitens.getColumnModel().getColumn(5).setMinWidth(110);
+            tableitens.getColumnModel().getColumn(5).setPreferredWidth(110);
+            tableitens.getColumnModel().getColumn(5).setMaxWidth(110);
+            tableitens.getColumnModel().getColumn(6).setMinWidth(80);
+            tableitens.getColumnModel().getColumn(6).setPreferredWidth(80);
+            tableitens.getColumnModel().getColumn(6).setMaxWidth(80);
+            tableitens.getColumnModel().getColumn(7).setMinWidth(110);
+            tableitens.getColumnModel().getColumn(7).setPreferredWidth(110);
+            tableitens.getColumnModel().getColumn(7).setMaxWidth(110);
+            tableitens.getColumnModel().getColumn(8).setMinWidth(110);
+            tableitens.getColumnModel().getColumn(8).setPreferredWidth(110);
+            tableitens.getColumnModel().getColumn(8).setMaxWidth(110);
+            tableitens.getColumnModel().getColumn(9).setMinWidth(80);
+            tableitens.getColumnModel().getColumn(9).setPreferredWidth(80);
+            tableitens.getColumnModel().getColumn(9).setMaxWidth(80);
         }
 
         btnincluiritem.setText("Incluir");
@@ -693,6 +737,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
         txttotal.setEditable(false);
         txttotal.setBackground(new java.awt.Color(255, 255, 255));
+        txttotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel8.setText("Total: R$");
 

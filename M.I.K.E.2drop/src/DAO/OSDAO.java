@@ -7,6 +7,9 @@ package DAO;
 
 import Bean.OSBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
+import java.awt.AWTException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,6 +58,11 @@ public class OSDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -101,6 +109,11 @@ public class OSDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -148,6 +161,11 @@ public class OSDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -196,6 +214,11 @@ public class OSDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -227,6 +250,11 @@ public class OSDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -260,6 +288,11 @@ public class OSDAO {
             resp = rs.next();
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -307,6 +340,11 @@ public class OSDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -344,6 +382,11 @@ public class OSDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -365,6 +408,11 @@ public class OSDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -387,6 +435,11 @@ public class OSDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

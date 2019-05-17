@@ -7,7 +7,10 @@ package DAO;
 
 import Bean.ServicoMateriaisBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
+import java.awt.AWTException;
 import java.awt.HeadlessException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,7 +43,12 @@ public class ServicoMateriaisDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -71,6 +79,11 @@ public class ServicoMateriaisDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -78,7 +91,7 @@ public class ServicoMateriaisDAO {
         return listso;
 
     }
-    
+
     public List<ServicoMateriaisBean> readid(String codigo) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -103,14 +116,17 @@ public class ServicoMateriaisDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
         return listso;
-
     }
-    
+
     public List<ServicoMateriaisBean> readgrupo(String codigo) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -135,6 +151,11 @@ public class ServicoMateriaisDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -142,7 +163,7 @@ public class ServicoMateriaisDAO {
         return listso;
 
     }
-    
+
     public List<ServicoMateriaisBean> readcreated(String nome, String data) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -168,6 +189,11 @@ public class ServicoMateriaisDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -175,7 +201,7 @@ public class ServicoMateriaisDAO {
         return listso;
 
     }
-    
+
     public List<ServicoMateriaisBean> readestoque(int idmaterial) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -200,6 +226,11 @@ public class ServicoMateriaisDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -236,14 +267,17 @@ public class ServicoMateriaisDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
         return listso;
-
     }
-    
+
     public List<ServicoMateriaisBean> pesquisa(String pesquisa) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -269,6 +303,11 @@ public class ServicoMateriaisDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -290,15 +329,18 @@ public class ServicoMateriaisDAO {
             stmt.setInt(5, sob.getId());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void updateestoque(ServicoMateriaisBean sob) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -311,10 +353,13 @@ public class ServicoMateriaisDAO {
             stmt.setInt(2, sob.getId());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

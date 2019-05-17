@@ -126,7 +126,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         tablelistamaterialservico = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtpesquisa = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -215,6 +215,12 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Pesquisa");
 
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -223,7 +229,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3)
+                .addComponent(txtpesquisa)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -232,7 +238,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -590,8 +596,12 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             smb.setEstoque(0);
             smb.setGrupo_de_processos(txtgrupo.getText());
             smb.setData(data);
-            //codigo, descricao, estoque, grupo_de_processos
-            smd.create(smb);
+            try {
+                //codigo, descricao, estoque, grupo_de_processos
+                smd.create(smb);
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriais.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             //Ler id do material criado
             int idcriado = 0;
@@ -925,6 +935,20 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableestoqueMouseReleased
 
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        DefaultTableModel model = (DefaultTableModel) tablelistamaterialservico.getModel();
+        model.setNumRows(0);
+        ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+
+        for (ServicoMateriaisBean sob : smd.pesquisa(txtpesquisa.getText())) {
+            model.addRow(new Object[]{
+                sob.getId(),
+                sob.getCodigo(),
+                sob.getDescricao()
+            });
+        }
+    }//GEN-LAST:event_txtpesquisaKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -954,7 +978,6 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     public static javax.swing.JTable tabledocumentos;
@@ -967,5 +990,6 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtestoque;
     public static javax.swing.JTextField txtgrupo;
     public static javax.swing.JTextField txtid;
+    private javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables
 }

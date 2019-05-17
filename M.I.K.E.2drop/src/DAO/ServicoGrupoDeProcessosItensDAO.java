@@ -7,6 +7,9 @@ package DAO;
 
 import Bean.ServicoGrupoDeProcessosItensBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
+import java.awt.AWTException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,6 +41,11 @@ public class ServicoGrupoDeProcessosItensDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoGrupoDeProcessosItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -68,12 +76,17 @@ public class ServicoGrupoDeProcessosItensDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoGrupoDeProcessosItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
         return listpsb;
     }
-    
+
     public List<ServicoGrupoDeProcessosItensBean> reados(String nome) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -99,6 +112,11 @@ public class ServicoGrupoDeProcessosItensDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoGrupoDeProcessosItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -120,12 +138,17 @@ public class ServicoGrupoDeProcessosItensDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "");
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoGrupoDeProcessosItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void delete(ServicoGrupoDeProcessosItensBean sgdpib) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -139,6 +162,11 @@ public class ServicoGrupoDeProcessosItensDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoGrupoDeProcessosItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

@@ -7,7 +7,10 @@ package DAO;
 
 import Bean.ServicoOrcamentoBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
+import java.awt.AWTException;
 import java.awt.HeadlessException;
+import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +46,12 @@ public class ServicoOrcamentoDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -80,12 +88,15 @@ public class ServicoOrcamentoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
         return listso;
-
     }
     
     public List<ServicoOrcamentoBean> reademaberto() {
@@ -121,12 +132,15 @@ public class ServicoOrcamentoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
         return listso;
-
     }
     
     public List<ServicoOrcamentoBean> readstatus(String status) {
@@ -161,12 +175,15 @@ public class ServicoOrcamentoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
         return listso;
-
     }
 
     public Boolean readnome() throws SQLException {
@@ -194,6 +211,11 @@ public class ServicoOrcamentoDAO {
             resp = rs.next();
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -233,12 +255,15 @@ public class ServicoOrcamentoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
         return listso;
-
     }
     
     public List<ServicoOrcamentoBean> pesquisa(String pesquisa) {
@@ -266,6 +291,11 @@ public class ServicoOrcamentoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -291,7 +321,12 @@ public class ServicoOrcamentoDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -310,7 +345,12 @@ public class ServicoOrcamentoDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

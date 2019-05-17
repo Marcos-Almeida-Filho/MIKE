@@ -5,10 +5,12 @@
  */
 package View.servicos;
 
+import Bean.OSProcessosBean;
 import Bean.ServicoGrupoDeProcessosBean;
 import Bean.ServicoGrupoDeProcessosItensBean;
 import Bean.ServicoMateriaisBean;
 import Bean.ServicoMateriaisDocumentosBean;
+import DAO.OSProcessosDAO;
 import DAO.ServicoGrupoDeProcessosDAO;
 import DAO.ServicoGrupoDeProcessosItensDAO;
 import DAO.ServicoMateriaisDAO;
@@ -179,7 +181,7 @@ public class ProcuraItemOS extends javax.swing.JInternalFrame {
             //Colocar documentos do material selecionado na OS
             ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
             
-            DefaultTableModel modeld = (DefaultTableModel) OS.tabledoc.getModel();
+            DefaultTableModel modeld = (DefaultTableModel) OS.tabledocumentos.getModel();
             modeld.setNumRows(0);
             for(ServicoMateriaisDocumentosBean smdb : smdd.read(Integer.parseInt(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 0).toString()))) {
                 modeld.addRow(new Object[]{
@@ -189,6 +191,19 @@ public class ProcuraItemOS extends javax.swing.JInternalFrame {
                     "",
                     smdb.getLocal()
                 });
+            }
+            
+            //Excluir antigos processos
+            //DAO e Bean para excluir processos
+            OSProcessosDAO opd = new OSProcessosDAO();
+            OSProcessosBean opb = new OSProcessosBean();
+            
+            //Loop para excluir os processos
+            for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+                opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
+                
+                //id = ?
+                opd.delete(opb);
             }
             
             //Descobrir grupo e colocar processos do grupo na OS

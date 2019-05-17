@@ -6,9 +6,11 @@
 package DAO;
 
 import Bean.ServicoPedidoItensBean;
-import Bean.ServicoPedidoItensNFBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
+import java.awt.AWTException;
 import java.awt.HeadlessException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,6 +49,11 @@ public class ServicoPedidoItensDAO {
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar os itens do pedido!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -87,6 +94,11 @@ public class ServicoPedidoItensDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -117,6 +129,11 @@ public class ServicoPedidoItensDAO {
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -136,6 +153,11 @@ public class ServicoPedidoItensDAO {
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

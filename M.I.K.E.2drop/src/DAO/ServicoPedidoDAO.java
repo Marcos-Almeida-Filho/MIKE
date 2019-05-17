@@ -7,7 +7,10 @@ package DAO;
 
 import Bean.ServicoPedidoBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
+import java.awt.AWTException;
 import java.awt.HeadlessException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,6 +52,11 @@ public class ServicoPedidoDAO {
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao criar o pedido!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -86,6 +94,11 @@ public class ServicoPedidoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -93,7 +106,7 @@ public class ServicoPedidoDAO {
         return listsp;
 
     }
-    
+
     public Boolean readnome() throws SQLException {
 
         Connection con = ConnectionFactory.getConnection();
@@ -107,7 +120,7 @@ public class ServicoPedidoDAO {
         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
         String year = simpleDateFormaty.format(c.getTime());
         String idtela = "PS" + year + "-0001";
-        
+
         Boolean resp = false;
 
         try {
@@ -119,13 +132,18 @@ public class ServicoPedidoDAO {
             resp = rs.next();
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
 
         return resp;
     }
-    
+
     public List<ServicoPedidoBean> readcreated(String cliente, String data) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -151,6 +169,11 @@ public class ServicoPedidoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -193,6 +216,11 @@ public class ServicoPedidoDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -220,11 +248,16 @@ public class ServicoPedidoDAO {
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void updatestatusretorno(ServicoPedidoBean spb) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -238,12 +271,17 @@ public class ServicoPedidoDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void updatestatuscobranca(ServicoPedidoBean spb) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -257,7 +295,12 @@ public class ServicoPedidoDAO {
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!/n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

@@ -147,7 +147,7 @@ public class OS extends javax.swing.JInternalFrame {
     }
 
     public static void readdocs() {
-        DefaultTableModel model = (DefaultTableModel) tabledoc.getModel();
+        DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
         model.setNumRows(0);
         OSDocumentosDAO odd = new OSDocumentosDAO();
 
@@ -456,7 +456,7 @@ public class OS extends javax.swing.JInternalFrame {
         txtnotes = new javax.swing.JTextArea();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        tabledoc = new javax.swing.JTable();
+        tabledocumentos = new javax.swing.JTable();
         btnadddoc = new javax.swing.JButton();
         btndeldoc = new javax.swing.JButton();
         jPanel10 = new javax.swing.JPanel();
@@ -931,7 +931,7 @@ public class OS extends javax.swing.JInternalFrame {
 
         tabadp.addTab("Anotações", jPanel7);
 
-        tabledoc.setModel(new javax.swing.table.DefaultTableModel(
+        tabledocumentos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -954,25 +954,25 @@ public class OS extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tabledoc.addMouseListener(new java.awt.event.MouseAdapter() {
+        tabledocumentos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tabledocMouseClicked(evt);
+                tabledocumentosMouseClicked(evt);
             }
         });
-        jScrollPane5.setViewportView(tabledoc);
-        if (tabledoc.getColumnModel().getColumnCount() > 0) {
-            tabledoc.getColumnModel().getColumn(0).setMinWidth(40);
-            tabledoc.getColumnModel().getColumn(0).setPreferredWidth(40);
-            tabledoc.getColumnModel().getColumn(0).setMaxWidth(40);
-            tabledoc.getColumnModel().getColumn(1).setMinWidth(0);
-            tabledoc.getColumnModel().getColumn(1).setPreferredWidth(0);
-            tabledoc.getColumnModel().getColumn(1).setMaxWidth(0);
-            tabledoc.getColumnModel().getColumn(3).setMinWidth(0);
-            tabledoc.getColumnModel().getColumn(3).setPreferredWidth(0);
-            tabledoc.getColumnModel().getColumn(3).setMaxWidth(0);
-            tabledoc.getColumnModel().getColumn(4).setMinWidth(0);
-            tabledoc.getColumnModel().getColumn(4).setPreferredWidth(0);
-            tabledoc.getColumnModel().getColumn(4).setMaxWidth(0);
+        jScrollPane5.setViewportView(tabledocumentos);
+        if (tabledocumentos.getColumnModel().getColumnCount() > 0) {
+            tabledocumentos.getColumnModel().getColumn(0).setMinWidth(40);
+            tabledocumentos.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tabledocumentos.getColumnModel().getColumn(0).setMaxWidth(40);
+            tabledocumentos.getColumnModel().getColumn(1).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(1).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(3).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(3).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(3).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(4).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(4).setMaxWidth(0);
         }
 
         btnadddoc.setText("Incluir");
@@ -1473,9 +1473,9 @@ public class OS extends javax.swing.JInternalFrame {
                 OSDocumentosDAO odd = new OSDocumentosDAO();
                 OSDocumentosBean odb = new OSDocumentosBean();
 
-                int rcdoc = tabledoc.getRowCount();
+                int rcdoc = tabledocumentos.getRowCount();
                 for (int i = 0; i < rcdoc; i++) {
-                    File fileoriginal = new File(tabledoc.getValueAt(i, 4).toString());
+                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
                     File folder = new File("Q:/MIKE_ERP/os_arq/" + txtnumeroos.getText());
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
@@ -1496,7 +1496,7 @@ public class OS extends javax.swing.JInternalFrame {
                     }
 
                     odb.setIdos(txtnumeroos.getText());
-                    odb.setDesc(tabledoc.getValueAt(i, 2).toString());
+                    odb.setDesc(tabledocumentos.getValueAt(i, 2).toString());
                     odb.setLocal(filecopy.toString());
 
                     //idos, descricao, local
@@ -1601,10 +1601,10 @@ public class OS extends javax.swing.JInternalFrame {
             OSDocumentosDAO odd = new OSDocumentosDAO();
             OSDocumentosBean odb = new OSDocumentosBean();
 
-            int rcdoc = tabledoc.getRowCount();
+            int rcdoc = tabledocumentos.getRowCount();
             for (int i = 0; i < rcdoc; i++) {
-                if (tabledoc.getValueAt(i, 1).equals("")) {
-                    File fileoriginal = new File(tabledoc.getValueAt(i, 4).toString());
+                if (tabledocumentos.getValueAt(i, 1).equals("")) {
+                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
                     File folder = new File("Q:/MIKE_ERP/os_arq/" + txtnumeroos.getText());
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
@@ -1625,14 +1625,13 @@ public class OS extends javax.swing.JInternalFrame {
                     }
 
                     odb.setIdos(txtnumeroos.getText());
-                    odb.setDesc(tabledoc.getValueAt(i, 2).toString());
+                    odb.setDesc(tabledocumentos.getValueAt(i, 2).toString());
                     odb.setLocal(filecopy.toString());
 
                     //idos, descricao, local
                     odd.create(odb);
                 }
             }
-
             reados();
             readdocs();
             readprocessos();
@@ -1751,7 +1750,7 @@ public class OS extends javax.swing.JInternalFrame {
             checkfrontal.setSelected(false);
             txtfrontal.setText("");
             txtfrontal.setEditable(false);
-            DefaultTableModel modeldoc = (DefaultTableModel) tabledoc.getModel();
+            DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
             DefaultTableModel modelproc = (DefaultTableModel) tableprocessos.getModel();
             modeldoc.setNumRows(0);
             modelproc.setNumRows(0);
@@ -1759,11 +1758,54 @@ public class OS extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnadddocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnadddocActionPerformed
-        // TODO add your handling code here:
+        DocumentosOS p = new DocumentosOS();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
     }//GEN-LAST:event_btnadddocActionPerformed
 
     private void btndeldocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeldocActionPerformed
-        // TODO add your handling code here:
+        int numerotrue = 0;
+        for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+            if (tabledocumentos.getValueAt(i, 0).equals(true)) {
+                numerotrue++;
+            }
+        }
+        DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
+        if (tabledocumentos.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Não existem itens para excluir");
+        } else if (numerotrue == 0) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione um item para excluir!");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(rootPane, "Excluir documentos selecionados?", "Excluir documentos", JOptionPane.OK_CANCEL_OPTION);
+            if (resp == 0) {
+                int nr = tabledocumentos.getRowCount();
+                for (int i = 0; i < nr; i++) {
+                    if (tabledocumentos.getValueAt(i, 0).equals(true)) {
+                        File file = new File((String) tabledocumentos.getValueAt(i, 3));
+                        try {
+                            Files.delete(file.toPath());
+                        } catch (IOException ex) {
+                            Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + ex);
+                        }
+
+                        OSDocumentosBean spdb = new OSDocumentosBean();
+                        OSDocumentosDAO spdd = new OSDocumentosDAO();
+
+                        spdb.setId(Integer.parseInt(tabledocumentos.getValueAt(i, 1).toString()));
+                        //id
+
+                        spdd.delete(spdb);
+
+                        model.removeRow(i);
+                    }
+                }
+            }
+        }
     }//GEN-LAST:event_btndeldocActionPerformed
 
     private void tableosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableosMouseClicked
@@ -1905,18 +1947,18 @@ public class OS extends javax.swing.JInternalFrame {
         p.setVisible(true);
     }//GEN-LAST:event_btnalterarstatusActionPerformed
 
-    private void tabledocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocMouseClicked
+    private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
         if (evt.getClickCount() == 2) {
             Desktop desk = Desktop.getDesktop();
             try {
-                desk.open(new File((String) tabledoc.getValueAt(tabledoc.getSelectedRow(), 3)));
+                desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
 
             } catch (IOException ex) {
                 Logger.getLogger(DocumentosOrcamentoServico.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_tabledocMouseClicked
+    }//GEN-LAST:event_tabledocumentosMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1976,7 +2018,7 @@ public class OS extends javax.swing.JInternalFrame {
     public static javax.swing.JRadioButton radiotopo;
     public javax.swing.JRadioButton radiovazio;
     public static javax.swing.JTabbedPane tabadp;
-    public static javax.swing.JTable tabledoc;
+    public static javax.swing.JTable tabledocumentos;
     public static javax.swing.JTable tableinspecoes;
     public static javax.swing.JTable tableos;
     public static javax.swing.JTable tableprocessos;
