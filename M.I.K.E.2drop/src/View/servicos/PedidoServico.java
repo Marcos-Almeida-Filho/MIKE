@@ -1669,6 +1669,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                             if (ob.getCompleta().equals("true")) {
                                 p.radiocompleta.setSelected(true);
                             }
+                            if (ob.getDesenho().equals("true")) {
+                                p.radiodesenho.setSelected(true);
+                            }
                             txtraio.setText(ob.getRaio());
                             txtfrontal.setText(ob.getFrontal());
 
@@ -1818,10 +1821,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     ob.setTopo("false");
                     ob.setReconstrucao("false");
                     ob.setCompleta("false");
+                    ob.setDesenho("false");
                     ob.setRaio("");
                     ob.setFrontal("");
 
-                    //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, raio, frontal
+                    //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, desenho, raio, frontal
                     od.create(ob);
 
                     String oscriada = "";

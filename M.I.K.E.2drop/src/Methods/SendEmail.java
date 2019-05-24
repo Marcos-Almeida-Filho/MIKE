@@ -37,6 +37,7 @@ public class SendEmail {
  
             Session session = Session.getDefaultInstance(props,
                         new javax.mail.Authenticator() {
+                             @Override
                              protected PasswordAuthentication getPasswordAuthentication() 
                              {
                                    return new PasswordAuthentication("sistema@speedcut.com.br", "Sistema271113=");
@@ -73,6 +74,7 @@ public class SendEmail {
  
             Session session = Session.getDefaultInstance(props,
                         new javax.mail.Authenticator() {
+                             @Override
                              protected PasswordAuthentication getPasswordAuthentication() 
                              {
                                    return new PasswordAuthentication("sistema@speedcut.com.br", "Sistema271113=");

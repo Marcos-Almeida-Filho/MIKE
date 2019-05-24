@@ -66,6 +66,7 @@ public class OS extends javax.swing.JInternalFrame {
         radiovazio.setVisible(false);
         reados();
         jButton2.addActionListener(new PrintOS());
+        lbldirectory.setVisible(false);
     }
 
     public static void reados() {
@@ -404,7 +405,6 @@ public class OS extends javax.swing.JInternalFrame {
         jPanel9 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        buttonGroup2 = new javax.swing.ButtonGroup();
         tabos = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -450,6 +450,7 @@ public class OS extends javax.swing.JInternalFrame {
         checkfrontal = new javax.swing.JCheckBox();
         radiovazio = new javax.swing.JRadioButton();
         radiocompleta = new javax.swing.JRadioButton();
+        radiodesenho = new javax.swing.JRadioButton();
         tabadp = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -459,6 +460,7 @@ public class OS extends javax.swing.JInternalFrame {
         tabledocumentos = new javax.swing.JTable();
         btnadddoc = new javax.swing.JButton();
         btndeldoc = new javax.swing.JButton();
+        lbldirectory = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tableprocessos = new javax.swing.JTable();
@@ -859,31 +861,39 @@ public class OS extends javax.swing.JInternalFrame {
         buttonGroup1.add(radiocompleta);
         radiocompleta.setText("Completa");
 
+        buttonGroup1.add(radiodesenho);
+        radiodesenho.setText("Desenho");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(radiovazio)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(checkraio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(checkfrontal)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtfrontal, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel6Layout.createSequentialGroup()
+                                    .addComponent(radiocompleta)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(radiodesenho))
+                                .addGroup(jPanel6Layout.createSequentialGroup()
+                                    .addComponent(radiotopo)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(radioreconstrucao)))))
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(checkraio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(checkfrontal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtfrontal, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(radiocompleta)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                            .addComponent(radiotopo)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(radioreconstrucao))))
+                        .addComponent(radiovazio)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -894,7 +904,9 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(radiotopo)
                     .addComponent(radioreconstrucao))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(radiocompleta)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(radiocompleta)
+                    .addComponent(radiodesenho))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -999,6 +1011,8 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lbldirectory)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btndeldoc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnadddoc)))
@@ -1012,7 +1026,8 @@ public class OS extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnadddoc)
-                    .addComponent(btndeldoc))
+                    .addComponent(btndeldoc)
+                    .addComponent(lbldirectory))
                 .addContainerGap())
         );
 
@@ -1236,7 +1251,7 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabadp, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                    .addComponent(tabadp, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1428,6 +1443,7 @@ public class OS extends javax.swing.JInternalFrame {
                 String topo = "false";
                 String rec = "false";
                 String com = "false";
+                String des = "false";
                 if (radiotopo.isSelected()) {
                     topo = "true";
                 }
@@ -1437,16 +1453,20 @@ public class OS extends javax.swing.JInternalFrame {
                 if (radiocompleta.isSelected()) {
                     com = "true";
                 }
+                if (radiodesenho.isSelected()) {
+                    des = "true";
+                }
                 ob.setTopo(topo);
                 ob.setReconstrucao(rec);
                 ob.setCompleta(com);
+                ob.setDesenho(des);
                 ob.setRaio(txtraio.getText());
                 txtraio.setEditable(false);
                 checkraio.setEnabled(false);
                 ob.setFrontal(txtfrontal.getText());
                 txtfrontal.setEditable(false);
                 checkfrontal.setEnabled(false);
-                //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, raio, frontal
+                //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, desenho, raio, frontal
                 od.create(ob);
 
                 //Criar Processos
@@ -1527,11 +1547,13 @@ public class OS extends javax.swing.JInternalFrame {
             String topo = "false";
             String rec = "false";
             String com = "false";
+            String des = "false";
             if (radiotopo.isSelected()) {
                 topo = "true";
                 if (!txtstatus.getText().equals("Rascunho")) {
                     radioreconstrucao.setEnabled(false);
                     radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
                 }
             }
             if (radioreconstrucao.isSelected()) {
@@ -1539,6 +1561,7 @@ public class OS extends javax.swing.JInternalFrame {
                 if (!txtstatus.getText().equals("Rascunho")) {
                     radiotopo.setEnabled(false);
                     radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
                 }
             }
             if (radiocompleta.isSelected()) {
@@ -1546,6 +1569,15 @@ public class OS extends javax.swing.JInternalFrame {
                 if (!txtstatus.getText().equals("Rascunho")) {
                     radiotopo.setEnabled(false);
                     radioreconstrucao.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                }
+            }
+            if (radiodesenho.isSelected()) {
+                des = "true";
+                if (!txtstatus.getText().equals("Rascunho")) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
                 }
             }
             ob.setTopo(topo);
@@ -1558,7 +1590,7 @@ public class OS extends javax.swing.JInternalFrame {
 //            txtfrontal.setEditable(false);
 //            checkfrontal.setEnabled(false);
             ob.setIdtela(txtnumeroos.getText());
-            //dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, completa = ?, raio = ?, frontal = ? WHERE idtela = ?
+            //dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, completa = ?, desenho = ?, raio = ?, frontal = ? WHERE idtela = ?
             od.update(ob);
 
             //Atualizar Processos
@@ -1758,13 +1790,25 @@ public class OS extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnadddocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnadddocActionPerformed
-        DocumentosOS p = new DocumentosOS();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        File dir = new File(lbldirectory.getText());
+        if (lbldirectory.getText().equals("")) {
+            DocumentosOS p = new DocumentosOS();
+            JDesktopPane desk = this.getDesktopPane();
+            desk.add(p);
+            Dimension desktopsize = jDesktopPane1.getSize();
+            Dimension jinternalframesize = p.getSize();
+            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+            p.setVisible(true);
+        } else {
+            DocumentosOS p = new DocumentosOS();
+            JDesktopPane desk = this.getDesktopPane();
+            desk.add(p);
+            Dimension desktopsize = jDesktopPane1.getSize();
+            Dimension jinternalframesize = p.getSize();
+            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+            DocumentosOS.chooser.setCurrentDirectory(dir);
+            p.setVisible(true);
+        }
     }//GEN-LAST:event_btnadddocActionPerformed
 
     private void btndeldocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeldocActionPerformed
@@ -1841,6 +1885,11 @@ public class OS extends javax.swing.JInternalFrame {
                 }
                 if (ob.getCompleta().equals("true")) {
                     radiocompleta.setSelected(true);
+                } else {
+                    radiovazio.setSelected(true);
+                }
+                if (ob.getDesenho().equals("true")) {
+                    radiodesenho.setSelected(true);
                 } else {
                     radiovazio.setSelected(true);
                 }
@@ -1970,7 +2019,6 @@ public class OS extends javax.swing.JInternalFrame {
     public static javax.swing.JButton btnprocurarmaterial;
     public static javax.swing.JButton btnsalvaros;
     public javax.swing.ButtonGroup buttonGroup1;
-    public javax.swing.ButtonGroup buttonGroup2;
     public static javax.swing.JComboBox<String> cbstatus;
     public static javax.swing.JCheckBox checkfrontal;
     public static javax.swing.JCheckBox checkraio;
@@ -2013,7 +2061,9 @@ public class OS extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane6;
     public javax.swing.JScrollPane jScrollPane7;
     public javax.swing.JTable jTable1;
+    public static javax.swing.JLabel lbldirectory;
     public javax.swing.JRadioButton radiocompleta;
+    public static javax.swing.JRadioButton radiodesenho;
     public static javax.swing.JRadioButton radioreconstrucao;
     public static javax.swing.JRadioButton radiotopo;
     public javax.swing.JRadioButton radiovazio;

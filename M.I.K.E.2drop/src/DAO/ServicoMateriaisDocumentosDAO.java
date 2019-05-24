@@ -118,4 +118,27 @@ public class ServicoMateriaisDocumentosDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    public void delete(ServicoMateriaisDocumentosBean sodb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM servicos_materiais_documentos WHERE id = ?");
+            stmt.setInt(1, sodb.getId());
+
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 }

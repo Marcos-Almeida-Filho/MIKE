@@ -18,6 +18,7 @@ import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import Methods.SendEmail;
+import Reports.JasperOrcamentoServico;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.PedidoServico.txtnumeropedido;
@@ -45,6 +46,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  *
@@ -1394,6 +1396,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         }
 
                         txtvalor();
+                        PedidoServico.txtvalorcobranca();
+                        PedidoServico.txtvalorretorno();
 
                         DefaultTableModel modeldoc = (DefaultTableModel) PedidoServico.tabledocumentos.getModel();
                         modeldoc.setNumRows(0);

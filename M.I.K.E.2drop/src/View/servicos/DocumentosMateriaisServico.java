@@ -5,15 +5,7 @@
  */
 package View.servicos;
 
-import Methods.SendEmail;
-import java.awt.AWTException;
-import java.awt.HeadlessException;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -116,6 +108,7 @@ public class DocumentosMateriaisServico extends javax.swing.JInternalFrame {
                     "",
                     fileoriginal.toString()
                 });
+                ServicoMateriais.lbldirectory.setText(String.valueOf(chooser.getCurrentDirectory()));
                 dispose();
                 JOptionPane.showMessageDialog(null, "Incluído com sucesso!");
             }
@@ -123,7 +116,6 @@ public class DocumentosMateriaisServico extends javax.swing.JInternalFrame {
                 dispose();
             }
         }
-
     }//GEN-LAST:event_chooserActionPerformed
 
 

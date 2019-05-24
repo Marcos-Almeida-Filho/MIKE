@@ -109,6 +109,7 @@ public class DocumentosOS extends javax.swing.JInternalFrame {
                 });
                 dispose();
                 JOptionPane.showMessageDialog(null, "Incluído com sucesso!");
+                OS.lbldirectory.setText(String.valueOf(chooser.getCurrentDirectory()));
             }
             if (evt.getActionCommand().equals("CancelSelection")) {
                 dispose();
