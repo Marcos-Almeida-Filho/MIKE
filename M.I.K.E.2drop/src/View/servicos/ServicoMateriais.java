@@ -710,6 +710,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                     smdd.create(smdb);
                 }
             }
+            JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
         }
         readtablemateriais();
     }//GEN-LAST:event_jButton1ActionPerformed

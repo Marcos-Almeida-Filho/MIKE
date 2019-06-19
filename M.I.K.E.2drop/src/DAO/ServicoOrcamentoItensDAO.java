@@ -133,4 +133,27 @@ public class ServicoOrcamentoItensDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    public void delete(ServicoOrcamentoItensBean soib) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM servicos_orcamento_itens WHERE id = ?");
+            stmt.setInt(1, soib.getId());
+
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoOrcamentoItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 }

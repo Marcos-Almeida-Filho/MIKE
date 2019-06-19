@@ -104,7 +104,7 @@ public class MudarStatusEmLote extends javax.swing.JInternalFrame {
                 .addComponent(cbstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -137,6 +137,7 @@ public class MudarStatusEmLote extends javax.swing.JInternalFrame {
                 }
             }
             OS.reados();
+            dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

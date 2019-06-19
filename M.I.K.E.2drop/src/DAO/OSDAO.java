@@ -35,7 +35,7 @@ public class OSDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO os (idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, desenho, raio, frontal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO os (idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, desenho, raio, frontal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, osb.getIdtela());
             stmt.setString(2, osb.getDataabertura());
@@ -340,6 +340,59 @@ public class OSDAO {
                 cb.setFrontal(rs.getString("frontal"));
 
                 //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, desc, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<OSBean> pesquisa(String pesquisa, String status) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<OSBean> listbb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM os WHERE idtela LIKE '%" + pesquisa + "%' OR cliente LIKE '%" + pesquisa + "%' OR codigo LIKE '%" + pesquisa + "%' AND status = ?");
+            stmt.setString(1, status);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OSBean cb = new OSBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setIdtela(rs.getString("idtela"));
+                cb.setDataabertura(rs.getString("dataabertura"));
+                cb.setDataprevisao(rs.getString("dataprevisao"));
+                cb.setStatus(rs.getString("status"));
+                cb.setCliente(rs.getString("cliente"));
+                cb.setDas(rs.getString("das"));
+                cb.setCodigo(rs.getString("codigo"));
+                cb.setDescricao(rs.getString("descricao"));
+                cb.setQtdinicial(rs.getInt("qtdinicial"));
+                cb.setQtdok(rs.getInt("qtdok"));
+                cb.setQtdnaook(rs.getInt("qtdnaook"));
+                cb.setNotes(rs.getString("notes"));
+                cb.setTopo(rs.getString("topo"));
+                cb.setReconstrucao(rs.getString("reconstrucao"));
+                cb.setCompleta(rs.getString("completa"));
+                cb.setRaio(rs.getString("raio"));
+                cb.setFrontal(rs.getString("frontal"));
+
+                //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
                 listbb.add(cb);
             }
         } catch (SQLException e) {

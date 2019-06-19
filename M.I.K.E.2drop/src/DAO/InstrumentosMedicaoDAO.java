@@ -190,6 +190,40 @@ public class InstrumentosMedicaoDAO {
         return listbb;
     }
 
+    public List<InstrumentosMedicaoBean> pesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<InstrumentosMedicaoBean> listub = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM instrumento_medicao WHERE codigo LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                InstrumentosMedicaoBean ub = new InstrumentosMedicaoBean();
+
+                ub.setCodigo(rs.getString("codigo"));
+
+                listub.add(ub);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(InstrumentosMedicaoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(InstrumentosMedicaoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listub;
+    }
+    
     public void update(InstrumentosMedicaoBean bb) {
 
         Connection con = ConnectionFactory.getConnection();

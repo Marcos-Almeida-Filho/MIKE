@@ -65,6 +65,25 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
             btnadicionarcalibracao.setEnabled(true);
         }
     }
+    
+    public static void camposembranco() {
+        txtcodigo.setText("");
+        cbstatusinstrumento.setSelectedIndex(0);
+        cbtipo.setSelectedIndex(0);
+        txtmodelo.setText("");
+        txtserie.setText("");
+        txtcapacidade.setText("");
+        txtresolucao.setText("");
+        txttolerancia.setText("");
+        txtid.setText("");
+        txtperiodicidade.setText("");
+        txtperiodicidade.setEnabled(true);
+        txtlocal.setText("");
+        checknrc.setSelected(false);
+        btnadicionarcalibracao.setEnabled(true);
+        DefaultTableModel model = (DefaultTableModel) tablecertificados.getModel();
+        model.setNumRows(0);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -372,6 +391,11 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
         });
 
         jButton2.setText("Novo");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Certificados Calibração"));
 
@@ -642,6 +666,9 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
                 }
             }
             JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
+            
+            DefaultTableModel model = (DefaultTableModel) tableinstrumentos.getModel();
+            model.setNumRows(0);
             readinstrumentos();
         } else {
             InstrumentosMedicaoDAO imd = new InstrumentosMedicaoDAO();
@@ -717,6 +744,10 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
                 }
             }
             JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
+            
+            DefaultTableModel model = (DefaultTableModel) tableinstrumentos.getModel();
+            model.setNumRows(0);
+            
             readinstrumentos();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -731,6 +762,14 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_tablecertificadosMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja cadastrar outro Instrumento de Medição?", "Cadastrar Novo", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            camposembranco();
+            txtcodigo.requestFocus();
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -767,7 +806,7 @@ public class InstrumentosMedicao extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tableinstrumentos;
     public static javax.swing.JTextField txtcapacidade;
     public static javax.swing.JTextField txtcodigo;
-    public javax.swing.JTextField txtid;
+    public static javax.swing.JTextField txtid;
     public static javax.swing.JTextField txtlocal;
     public static javax.swing.JTextField txtmodelo;
     public static javax.swing.JTextField txtperiodicidade;

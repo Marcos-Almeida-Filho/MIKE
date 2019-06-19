@@ -11,6 +11,7 @@ import Bean.ServicoOrcamentoDocumentosBean;
 import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
+import Connection.ConnectionFactory;
 import DAO.ServicoOrcamentoItensDAO;
 import DAO.ServicoOrcamentoDAO;
 import DAO.ServicoOrcamentoDocumentosDAO;
@@ -18,7 +19,6 @@ import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import Methods.SendEmail;
-import Reports.JasperOrcamentoServico;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.PedidoServico.txtnumeropedido;
@@ -31,12 +31,15 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
@@ -47,6 +50,9 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -1278,18 +1284,50 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnsalvarorcamentoActionPerformed
 
     private void btnexcluiritemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnexcluiritemActionPerformed
-        int i = JOptionPane.showConfirmDialog(rootPane, "Deseja excluir os itens selecionados?", "Excluir itens", JOptionPane.YES_NO_OPTION);
-        DefaultTableModel model = (DefaultTableModel) tableitens.getModel();
-        if (tableitens.getRowCount() < 1) {
+        //Descobrir número de linhas na tableitens
+        int rc = tableitens.getRowCount();
+
+        //Descobrir número de itens selecionados para excluir
+        int numerotrue = 0;
+        for (int i = 0; i < rc; i++) {
+            if (tableitens.getValueAt(i, 0).equals(true)) {
+                numerotrue++;
+            }
+        }
+
+        if (rc < 1) {//Se o número de linhas na tableitens for menor que 1
             JOptionPane.showMessageDialog(rootPane, "Não existem itens para excluir.");
-        } else if (i == 0) {
-            for (int j = 0; j < tableitens.getRowCount(); j++) {
-                String v = tableitens.getValueAt(j, 0).toString();
-                if (v.equals("true")) {
-                    model.removeRow(j);
+        } else if (numerotrue == 0) {//Se não existem itens selecionados para exclusão
+            JOptionPane.showMessageDialog(rootPane, "Não foram selecionados itens para excluir.");
+        } else {//Se existem itens na tableitens e pelo menos 1 item foi selecionado para exclusão
+
+            //Mensagem para confirmação da exclusão dos itens
+            int i = JOptionPane.showConfirmDialog(rootPane, "Deseja excluir os itens selecionados?", "Excluir itens", JOptionPane.YES_NO_OPTION);
+
+            if (i == 0) {//Se a resposta foi afirmativa para a exclusão
+
+                //Transformar a tableitens em Default para excluir os itens
+                DefaultTableModel model = (DefaultTableModel) tableitens.getModel();
+
+                for (int j = 0; j < tableitens.getRowCount(); j++) {
+                    if (tableitens.getValueAt(j, 0).equals(true)) {//Se a linha estiver selecionada
+
+                        //DAO e Bean para exclusão dos itens selecionados
+                        ServicoOrcamentoItensBean soib = new ServicoOrcamentoItensBean();
+                        ServicoOrcamentoItensDAO soid = new ServicoOrcamentoItensDAO();
+
+                        soib.setId(Integer.parseInt(tableitens.getValueAt(j, 1).toString()));
+
+                        //id = ?
+                        soid.delete(soib);
+
+                        //tableitens removendo o item da tabela
+                        model.removeRow(j);
+                    }
                 }
             }
         }
+        //Colocar o valor total do orçamento
         txtvalor();
     }//GEN-LAST:event_btnexcluiritemActionPerformed
 
@@ -1483,14 +1521,22 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableorcamentoservicoMouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Em breve!");
-//        try {
-//            new JasperOrcamentoServico().gerar("Reports/orcamento_servico2.jrxml");
-//        } catch (ClassNotFoundException | SQLException e) {
-//            JOptionPane.showMessageDialog(rootPane, "Erro ao mostrar relatório!\n" + e);
-//        } catch (JRException ex) {
-//            Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        //Conexão com o banco de dados
+        Connection con = ConnectionFactory.getConnection();
+        HashMap parametros = new HashMap();
+        //o nome do parâmetro e o valor é passado ao HashMap
+        String numorc = txtnumeroorcamento.getText();
+        parametros.put("idtela", numorc);
+        //pega o caminho físico até o arquivo .jasper
+        InputStream stream = CotacaoServico.class.getResourceAsStream("/Reports/CotacaoServico.jasper");
+        //chama fillreport
+        try {
+            JasperPrint jp = JasperFillManager.fillReport(stream, parametros, con);
+            //exibe o relatório com viewReport
+            JasperViewer.viewReport(jp, false);
+        } catch (JRException e) {
+            JOptionPane.showMessageDialog(rootPane, "Erro ao gerar relatório!\n" + e);
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void tableitensMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableitensMouseReleased

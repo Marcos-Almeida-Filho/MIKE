@@ -7,6 +7,9 @@ package View.servicos;
 
 import Bean.InstrumentosMedicaoBean;
 import DAO.InstrumentosMedicaoDAO;
+import static View.TelaPrincipal.jDesktopPane1;
+import java.awt.Dimension;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,15 +24,6 @@ public class MedicaoOS extends javax.swing.JInternalFrame {
      */
     public MedicaoOS() {
         initComponents();
-        readinstrumentos();
-    }
-
-    public static void readinstrumentos() {
-        InstrumentosMedicaoDAO imd = new InstrumentosMedicaoDAO();
-
-        for (InstrumentosMedicaoBean imb : imd.read()) {
-            cbinstrumento.addItem(imb.getCodigo());
-        }
     }
 
     /**
@@ -48,10 +42,11 @@ public class MedicaoOS extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        cbinstrumento = new javax.swing.JComboBox<>();
         txtmedida = new javax.swing.JTextField();
         txtmenor = new javax.swing.JTextField();
         txtmaior = new javax.swing.JTextField();
+        txtinstrumento = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Nova Medição");
@@ -75,7 +70,14 @@ public class MedicaoOS extends javax.swing.JInternalFrame {
 
         jLabel4.setText("Instrumento");
 
-        cbinstrumento.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
+        txtinstrumento.setEditable(false);
+
+        jButton2.setText("Procurar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -99,7 +101,9 @@ public class MedicaoOS extends javax.swing.JInternalFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbinstrumento, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtinstrumento, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -118,8 +122,9 @@ public class MedicaoOS extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(cbinstrumento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtinstrumento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -169,7 +174,7 @@ public class MedicaoOS extends javax.swing.JInternalFrame {
         } else if (txtmaior.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Coloque o maior valor do lote.");
             txtmaior.requestFocus();
-        } else if (cbinstrumento.getSelectedItem().equals("Selecione")) {
+        } else if (txtinstrumento.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Selecione um instrumento.");
         } else {
             DefaultTableModel model = (DefaultTableModel) ProcessoOS.tableinspecao.getModel();
@@ -179,22 +184,33 @@ public class MedicaoOS extends javax.swing.JInternalFrame {
                 txtmedida.getText(),
                 txtmaior.getText(),
                 txtmenor.getText(),
-                cbinstrumento.getSelectedItem()
+                txtinstrumento.getText()
             });
             dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        ProcuraInstrumentoMedicao p = new ProcuraInstrumentoMedicao();
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public static javax.swing.JComboBox<String> cbinstrumento;
     public javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton2;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
+    public static javax.swing.JTextField txtinstrumento;
     public javax.swing.JTextField txtmaior;
     public javax.swing.JTextField txtmedida;
     public javax.swing.JTextField txtmenor;

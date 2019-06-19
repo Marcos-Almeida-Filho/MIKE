@@ -174,7 +174,7 @@ public class TelaLogin extends javax.swing.JFrame {
         String senha = new String(TxtSenha.getPassword());
         if (ud.checklogin(TxtLogin.getText(), senha)) {
             TelaPrincipal tela = new TelaPrincipal();
-            tela.setTitle("M.I.K.E. version 0.4.1 - Usuário: " + apelido);
+            tela.setTitle("M.I.K.E. version 1.0.0 - Usuário: " + apelido);
             tela.setVisible(true);
             session.login = TxtLogin.getText();
             this.dispose();
@@ -190,14 +190,14 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_btncancelarActionPerformed
 
     private void TxtSenhaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtSenhaKeyReleased
-        String apelido = "";
-
-        UsuariosDAO ud2 = new UsuariosDAO();
-
-        for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
-            apelido = ub.getNome();
-        }
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String apelido = "";
+
+            UsuariosDAO ud2 = new UsuariosDAO();
+
+            for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
+                apelido = ub.getNome();
+            }
             Session session = new Session();
             UsuariosDAO ud = new UsuariosDAO();
             String senha = new String(TxtSenha.getPassword());

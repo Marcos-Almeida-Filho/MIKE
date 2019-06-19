@@ -147,6 +147,83 @@ public class OS extends javax.swing.JInternalFrame {
 
     }
 
+    public static void camposembranco() {
+        txtnumeroos.setText("");
+        txtabertura.setText("");
+        txtprevisao.setText("");
+        txtstatus.setText("");
+        txtcliente.setText("");
+        txtdas.setText("");
+        txtcodigo.setText("");
+        txtdesc.setText("");
+        txtinicial.setText("");
+        txtfinal.setText("");
+        txtmortas.setText("");
+        txtnotes.setText("");
+        radiovazio.setSelected(true);
+        checkraio.setSelected(false);
+        txtraio.setText("");
+        txtraio.setEditable(false);
+        checkfrontal.setSelected(false);
+        txtfrontal.setText("");
+        txtfrontal.setEditable(false);
+        DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
+        DefaultTableModel modelproc = (DefaultTableModel) tableprocessos.getModel();
+        modeldoc.setNumRows(0);
+        modelproc.setNumRows(0);
+    }
+
+    public static void dadosos() {
+        OSDAO od = new OSDAO();
+
+        for (OSBean ob : od.click(txtnumeroos.getText())) {
+            txtabertura.setText(ob.getDataabertura());
+            txtprevisao.setText(ob.getDataprevisao());
+            txtstatus.setText(ob.getStatus());
+            txtdas.setText(ob.getDas());
+            txtcliente.setText(ob.getCliente());
+            txtdas.setText(ob.getDas());
+            txtcodigo.setText(ob.getCodigo());
+            txtdesc.setText(ob.getDescricao());
+            txtinicial.setText(String.valueOf(ob.getQtdinicial()));
+            txtfinal.setText(String.valueOf(ob.getQtdok()));
+            txtmortas.setText(String.valueOf(ob.getQtdnaook()));
+            txtnotes.setText(ob.getNotes());
+            if (ob.getTopo().equals("true")) {
+                radiotopo.setSelected(true);
+            } else {
+                radiovazio.setSelected(true);
+            }
+            if (ob.getReconstrucao().equals("true")) {
+                radioreconstrucao.setSelected(true);
+            } else {
+                radiovazio.setSelected(true);
+            }
+            if (ob.getCompleta().equals("true")) {
+                radiocompleta.setSelected(true);
+            } else {
+                radiovazio.setSelected(true);
+            }
+            if (ob.getDesenho().equals("true")) {
+                radiodesenho.setSelected(true);
+            } else {
+                radiovazio.setSelected(true);
+            }
+            txtraio.setText(ob.getRaio());
+            if (!txtraio.getText().equals("")) {
+                checkraio.setSelected(true);
+            } else {
+                checkraio.setSelected(false);
+            }
+            txtfrontal.setText(ob.getFrontal());
+            if (!txtfrontal.getText().equals("")) {
+                checkfrontal.setSelected(true);
+            } else {
+                checkfrontal.setSelected(false);
+            }
+        }
+    }
+
     public static void readdocs() {
         DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
         model.setNumRows(0);
@@ -207,9 +284,26 @@ public class OS extends javax.swing.JInternalFrame {
             if (radiotopo.isSelected()) {
                 radiotopo.setSelected(true);
                 radioreconstrucao.setEnabled(false);
-            } else {
-                radioreconstrucao.setSelected(true);
+                radiocompleta.setEnabled(false);
+                radiodesenho.setEnabled(false);
+            }
+            if (radioreconstrucao.isSelected()) {
                 radiotopo.setEnabled(false);
+                radioreconstrucao.setSelected(true);
+                radiocompleta.setEnabled(false);
+                radiodesenho.setEnabled(false);
+            }
+            if (radiocompleta.isSelected()) {
+                radiotopo.setEnabled(false);
+                radioreconstrucao.setEnabled(false);
+                radiocompleta.setSelected(true);
+                radiodesenho.setEnabled(false);
+            }
+            if (radiodesenho.isSelected()) {
+                radiotopo.setEnabled(false);
+                radioreconstrucao.setEnabled(false);
+                radiocompleta.setEnabled(false);
+                radiodesenho.setSelected(true);
             }
         } else if (txtstatus.getText().equals("Cancelado") || txtstatus.getText().equals("Fechado")) {
             //Desabilitar botões
@@ -233,9 +327,26 @@ public class OS extends javax.swing.JInternalFrame {
             if (radiotopo.isSelected()) {
                 radiotopo.setSelected(true);
                 radioreconstrucao.setEnabled(false);
-            } else {
-                radioreconstrucao.setSelected(true);
+                radiocompleta.setEnabled(false);
+                radiodesenho.setEnabled(false);
+            }
+            if (radioreconstrucao.isSelected()) {
                 radiotopo.setEnabled(false);
+                radioreconstrucao.setSelected(true);
+                radiocompleta.setEnabled(false);
+                radiodesenho.setEnabled(false);
+            }
+            if (radiocompleta.isSelected()) {
+                radiotopo.setEnabled(false);
+                radioreconstrucao.setEnabled(false);
+                radiocompleta.setSelected(true);
+                radiodesenho.setEnabled(false);
+            }
+            if (radiodesenho.isSelected()) {
+                radiotopo.setEnabled(false);
+                radioreconstrucao.setEnabled(false);
+                radiocompleta.setEnabled(false);
+                radiodesenho.setSelected(true);
             }
         } else {
             //Habilitar botões
@@ -427,6 +538,8 @@ public class OS extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         txtabertura = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtcliente = new javax.swing.JTextField();
@@ -550,10 +663,21 @@ public class OS extends javax.swing.JInternalFrame {
         }
 
         jButton1.setText("Novo");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
 
         jLabel8.setText("Pesquisa:");
+
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -674,15 +798,33 @@ public class OS extends javax.swing.JInternalFrame {
 
         jLabel11.setText("Data de Abertura");
 
+        jButton4.setText("<");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText(">");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtnumeroos, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -709,8 +851,10 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(txtprevisao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
                     .addComponent(txtabertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel11)
+                    .addComponent(jButton4)
+                    .addComponent(jButton5))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Cliente"));
@@ -937,7 +1081,7 @@ public class OS extends javax.swing.JInternalFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -955,7 +1099,7 @@ public class OS extends javax.swing.JInternalFrame {
                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                true, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1022,7 +1166,7 @@ public class OS extends javax.swing.JInternalFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnadddoc)
@@ -1102,7 +1246,7 @@ public class OS extends javax.swing.JInternalFrame {
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnmudarprocesso)
                 .addContainerGap())
@@ -1146,7 +1290,7 @@ public class OS extends javax.swing.JInternalFrame {
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1251,7 +1395,7 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabadp, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addComponent(tabadp)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -1381,7 +1525,7 @@ public class OS extends javax.swing.JInternalFrame {
             } else if (txtinicial.getText().equals("")) {
                 JOptionPane.showMessageDialog(rootPane, "Coloque uma quantidade!");
                 txtinicial.requestFocus();
-            } else if (!radiotopo.isSelected() && !radioreconstrucao.isSelected()) {
+            } else if (!radiotopo.isSelected() && !radioreconstrucao.isSelected() && !radiocompleta.isSelected() && !radiodesenho.isSelected()) {
                 JOptionPane.showMessageDialog(rootPane, "Escolha um serviço a ser executado.");
             } else {
                 //Criar OS
@@ -1522,12 +1666,12 @@ public class OS extends javax.swing.JInternalFrame {
                     //idos, descricao, local
                     odd.create(odb);
                 }
+                reados();
+                readdocs();
+                readprocessos();
+                radios();
+                JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
             }
-            reados();
-            readdocs();
-            readprocessos();
-            radios();
-            JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
         } else {
             //Atualizar OS
             OSDAO od = new OSDAO();
@@ -1583,6 +1727,7 @@ public class OS extends javax.swing.JInternalFrame {
             ob.setTopo(topo);
             ob.setReconstrucao(rec);
             ob.setCompleta(com);
+            ob.setDesenho(des);
             ob.setRaio(txtraio.getText());
 //            txtraio.setEditable(false);
 //            checkraio.setEnabled(false);
@@ -1599,34 +1744,19 @@ public class OS extends javax.swing.JInternalFrame {
 
             int rcproc = tableprocessos.getRowCount();
             for (int i = 0; i < rcproc; i++) {
-                if (tableprocessos.getValueAt(i, 1).equals("")) {
-                    opb.setIdos(txtnumeroos.getText());
-                    opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
-                    opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
-                    opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
-                    opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
-                    opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
-                    opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
-                    opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                    opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
+                opb.setIdos(txtnumeroos.getText());
+                opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
+                opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
+                opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
+                opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
+                opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
+                opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
+                opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
+                opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
+                opb.setId(Integer.parseInt(tableprocessos.getValueAt(i, 1).toString()));
 
-                    //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
-                    opd.create(opb);
-                } else {
-                    opb.setIdos(txtnumeroos.getText());
-                    opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
-                    opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
-                    opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
-                    opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
-                    opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
-                    opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
-                    opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                    opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
-                    opb.setId(Integer.parseInt(tableprocessos.getValueAt(i, 1).toString()));
-
-                    //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
-                    opd.updatetotal(opb);
-                }
+                //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
+                opd.updatetotal(opb);
             }
 
             //Atualizar Documentos da OS
@@ -1763,29 +1893,7 @@ public class OS extends javax.swing.JInternalFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja criar uma nova OS?", "Nova OS", JOptionPane.YES_NO_OPTION);
         if (resp == 0) {
-            txtnumeroos.setText("");
-            txtabertura.setText("");
-            txtprevisao.setText("");
-            txtstatus.setText("");
-            txtcliente.setText("");
-            txtdas.setText("");
-            txtcodigo.setText("");
-            txtdesc.setText("");
-            txtinicial.setText("");
-            txtfinal.setText("");
-            txtmortas.setText("");
-            txtnotes.setText("");
-            radiovazio.setSelected(true);
-            checkraio.setSelected(false);
-            txtraio.setText("");
-            txtraio.setEditable(false);
-            checkfrontal.setSelected(false);
-            txtfrontal.setText("");
-            txtfrontal.setEditable(false);
-            DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
-            DefaultTableModel modelproc = (DefaultTableModel) tableprocessos.getModel();
-            modeldoc.setNumRows(0);
-            modelproc.setNumRows(0);
+            OS.camposembranco();
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -1857,55 +1965,10 @@ public class OS extends javax.swing.JInternalFrame {
             tabos.setSelectedIndex(1);
             txtnumeroos.setText(tableos.getValueAt(tableos.getSelectedRow(), 1).toString());
 
-            //Pegar dados da OS
-            OSDAO od = new OSDAO();
+            tabadp.setSelectedIndex(0);
 
-            for (OSBean ob : od.click(txtnumeroos.getText())) {
-                txtabertura.setText(ob.getDataabertura());
-                txtprevisao.setText(ob.getDataprevisao());
-                txtstatus.setText(ob.getStatus());
-                txtdas.setText(ob.getDas());
-                txtcliente.setText(ob.getCliente());
-                txtdas.setText(ob.getDas());
-                txtcodigo.setText(ob.getCodigo());
-                txtdesc.setText(ob.getDescricao());
-                txtinicial.setText(String.valueOf(ob.getQtdinicial()));
-                txtfinal.setText(String.valueOf(ob.getQtdok()));
-                txtmortas.setText(String.valueOf(ob.getQtdnaook()));
-                txtnotes.setText(ob.getNotes());
-                if (ob.getTopo().equals("true")) {
-                    radiotopo.setSelected(true);
-                } else {
-                    radiovazio.setSelected(true);
-                }
-                if (ob.getReconstrucao().equals("true")) {
-                    radioreconstrucao.setSelected(true);
-                } else {
-                    radiovazio.setSelected(true);
-                }
-                if (ob.getCompleta().equals("true")) {
-                    radiocompleta.setSelected(true);
-                } else {
-                    radiovazio.setSelected(true);
-                }
-                if (ob.getDesenho().equals("true")) {
-                    radiodesenho.setSelected(true);
-                } else {
-                    radiovazio.setSelected(true);
-                }
-                txtraio.setText(ob.getRaio());
-                if (!txtraio.getText().equals("")) {
-                    checkraio.setSelected(true);
-                } else {
-                    checkraio.setSelected(false);
-                }
-                txtfrontal.setText(ob.getFrontal());
-                if (!txtfrontal.getText().equals("")) {
-                    checkfrontal.setSelected(true);
-                } else {
-                    checkfrontal.setSelected(false);
-                }
-            }
+            //Pegar dados da OS
+            OS.dadosos();
 
             //Pegar documentos
             readdocs();
@@ -2009,6 +2072,101 @@ public class OS extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
 
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        DefaultTableModel model = (DefaultTableModel) tableos.getModel();
+        model.setNumRows(0);
+
+        OSDAO od = new OSDAO();
+        for (OSBean ob : od.pesquisa(txtpesquisa.getText(), cbstatus.getSelectedItem().toString())) {
+            model.addRow(new Object[]{
+                false,
+                ob.getIdtela(),
+                ob.getCliente(),
+                ob.getCodigo(),
+                ob.getStatus()
+            });
+        }
+    }//GEN-LAST:event_txtpesquisaKeyReleased
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (txtnumeroos.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione uma OP primeiro!");
+        } else {
+            //Pegar OS atual
+            String osoriginal = txtnumeroos.getText();
+
+            //Zerar campos
+            OS.camposembranco();
+            
+            //Transformar na próxima OS
+            int numero = Integer.parseInt(osoriginal.replace("OS19-", "")) + 1;
+
+            //Colocar novo número de OS
+            txtnumeroos.setText("OS19-" + String.format("%04d", numero));
+
+            //Pegar dados da OS
+            OS.dadosos();
+
+            //Pegar documentos
+            readdocs();
+
+            //Pegar processos
+            readprocessos();
+
+            //Travar campos de acordo com status da op
+            travarcampos();
+
+            //Pegar inspeções
+            readinspecoes();
+
+            //Atualizar quantidade final
+            qtdok();
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if (txtnumeroos.getText().equals("")) {
+            JOptionPane.showMessageDialog(rootPane, "Selecione uma OP primeiro!");
+        } else {
+            //Pegar OS atual
+            String osoriginal = txtnumeroos.getText();
+
+            //Zerar campos
+            OS.camposembranco();
+
+            //Transformar na próxima OS
+            int numero = Integer.parseInt(osoriginal.replace("OS19-", "")) - 1;
+
+            //Colocar novo número de OS
+            txtnumeroos.setText("OS19-" + String.format("%04d", numero));
+
+            //Pegar dados da OS
+            OS.dadosos();
+
+            //Pegar documentos
+            readdocs();
+
+            //Pegar processos
+            readprocessos();
+
+            //Travar campos de acordo com status da op
+            travarcampos();
+
+            //Pegar inspeções
+            readinspecoes();
+
+            //Atualizar quantidade final
+            qtdok();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja criar uma nova OS?", "Nova OS", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            OS.camposembranco();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnadddoc;
@@ -2026,6 +2184,8 @@ public class OS extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton12;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
+    public javax.swing.JButton jButton4;
+    public static javax.swing.JButton jButton5;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel11;
@@ -2062,21 +2222,21 @@ public class OS extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane7;
     public javax.swing.JTable jTable1;
     public static javax.swing.JLabel lbldirectory;
-    public javax.swing.JRadioButton radiocompleta;
+    public static javax.swing.JRadioButton radiocompleta;
     public static javax.swing.JRadioButton radiodesenho;
     public static javax.swing.JRadioButton radioreconstrucao;
     public static javax.swing.JRadioButton radiotopo;
-    public javax.swing.JRadioButton radiovazio;
+    public static javax.swing.JRadioButton radiovazio;
     public static javax.swing.JTabbedPane tabadp;
     public static javax.swing.JTable tabledocumentos;
     public static javax.swing.JTable tableinspecoes;
     public static javax.swing.JTable tableos;
     public static javax.swing.JTable tableprocessos;
     public javax.swing.JTabbedPane tabos;
-    public javax.swing.JTextField txtabertura;
+    public static javax.swing.JTextField txtabertura;
     public static javax.swing.JTextField txtcliente;
     public static javax.swing.JTextField txtcodigo;
-    public javax.swing.JTextField txtdas;
+    public static javax.swing.JTextField txtdas;
     public static javax.swing.JTextField txtdesc;
     public static javax.swing.JTextField txtfinal;
     public static javax.swing.JTextField txtfrontal;
@@ -2085,7 +2245,7 @@ public class OS extends javax.swing.JInternalFrame {
     public static javax.swing.JTextArea txtnotes;
     public static javax.swing.JTextField txtnumeroos;
     public javax.swing.JTextField txtpesquisa;
-    public javax.swing.JTextField txtprevisao;
+    public static javax.swing.JTextField txtprevisao;
     public static javax.swing.JTextField txtraio;
     public static javax.swing.JTextField txtstatus;
     // End of variables declaration//GEN-END:variables

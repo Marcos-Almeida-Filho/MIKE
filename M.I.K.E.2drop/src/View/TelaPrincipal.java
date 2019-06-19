@@ -65,6 +65,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lblapelido.setVisible(false);
         GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
         Boolean status = true;
+        TelaPrincipal.MenuArquivo.setVisible(false);
         for (GrupoDeUsuariosBean gub : gud.getmenus(nivel)) {
             if (gub.getMenuadministracao().equals("false")) {
                 status = false;
@@ -327,6 +328,9 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemgrupodeusuarios = new javax.swing.JMenuItem();
         menuitemrepresentantes = new javax.swing.JMenuItem();
         menuitemregioesdeatuacao = new javax.swing.JMenuItem();
+        menufiscal = new javax.swing.JMenu();
+        menuitemnotasfiscais = new javax.swing.JMenuItem();
+        menuitemnatureza = new javax.swing.JMenuItem();
         menucomercial = new javax.swing.JMenu();
         menuitemclientes = new javax.swing.JMenuItem();
         menuitemgrupodeclientes = new javax.swing.JMenuItem();
@@ -404,7 +408,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 924, Short.MAX_VALUE)
+            .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 1160, Short.MAX_VALUE)
             .addComponent(lblgrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addContainerGap()
@@ -424,7 +428,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                 .addComponent(lbllogin)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblapelido)
-                .addContainerGap(184, Short.MAX_VALUE))
+                .addContainerGap(223, Short.MAX_VALUE))
         );
 
         MenuArquivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
@@ -490,6 +494,29 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuadministracao.add(menuitemregioesdeatuacao);
 
         jMenuBar1.add(menuadministracao);
+
+        menufiscal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
+        menufiscal.setText("Fiscal");
+
+        menuitemnotasfiscais.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_refresh.png"))); // NOI18N
+        menuitemnotasfiscais.setText("Notas Fiscais");
+        menuitemnotasfiscais.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuitemnotasfiscaisActionPerformed(evt);
+            }
+        });
+        menufiscal.add(menuitemnotasfiscais);
+
+        menuitemnatureza.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_gear.png"))); // NOI18N
+        menuitemnatureza.setText("Natureza de Operação");
+        menuitemnatureza.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuitemnaturezaActionPerformed(evt);
+            }
+        });
+        menufiscal.add(menuitemnatureza);
+
+        jMenuBar1.add(menufiscal);
 
         menucomercial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/phone.png"))); // NOI18N
         menucomercial.setText("Comercial");
@@ -999,6 +1026,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_menuitemcarrosActionPerformed
 
+    private void menuitemnotasfiscaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemnotasfiscaisActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuitemnotasfiscaisActionPerformed
+
+    private void menuitemnaturezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemnaturezaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuitemnaturezaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1051,6 +1086,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenu menucompras;
     public static javax.swing.JMenu menuconfiguracoes;
     public static javax.swing.JMenu menufinanceiro;
+    public static javax.swing.JMenu menufiscal;
     public static javax.swing.JMenuItem menuitembancos;
     public static javax.swing.JMenuItem menuitemcarros;
     public static javax.swing.JMenuItem menuitemclientes;
@@ -1064,6 +1100,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenuItem menuiteminsumos;
     public static javax.swing.JMenuItem menuitemmenus;
     private javax.swing.JMenuItem menuitemmike;
+    public static javax.swing.JMenuItem menuitemnatureza;
+    public static javax.swing.JMenuItem menuitemnotasfiscais;
     public static javax.swing.JMenuItem menuitemorcamentodecompras;
     public static javax.swing.JMenuItem menuitempedidodecompras;
     public static javax.swing.JMenuItem menuitemregioesdeatuacao;
