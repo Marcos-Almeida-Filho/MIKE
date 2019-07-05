@@ -65,7 +65,7 @@ public class OS extends javax.swing.JInternalFrame {
         camposnumeros();
         radiovazio.setVisible(false);
         reados();
-        jButton2.addActionListener(new PrintOS());
+//        jButton2.addActionListener(new PrintOS());
         lbldirectory.setVisible(false);
     }
 
@@ -191,20 +191,11 @@ public class OS extends javax.swing.JInternalFrame {
             txtnotes.setText(ob.getNotes());
             if (ob.getTopo().equals("true")) {
                 radiotopo.setSelected(true);
-            } else {
-                radiovazio.setSelected(true);
-            }
-            if (ob.getReconstrucao().equals("true")) {
+            } else if (ob.getReconstrucao().equals("true")) {
                 radioreconstrucao.setSelected(true);
-            } else {
-                radiovazio.setSelected(true);
-            }
-            if (ob.getCompleta().equals("true")) {
+            } else if (ob.getCompleta().equals("true")) {
                 radiocompleta.setSelected(true);
-            } else {
-                radiovazio.setSelected(true);
-            }
-            if (ob.getDesenho().equals("true")) {
+            } else if (ob.getDesenho().equals("true")) {
                 radiodesenho.setSelected(true);
             } else {
                 radiovazio.setSelected(true);
@@ -589,7 +580,6 @@ public class OS extends javax.swing.JInternalFrame {
         txtmortas = new javax.swing.JTextField();
         txtinicial = new javax.swing.JTextField();
         btnalterarstatus = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -1352,8 +1342,6 @@ public class OS extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton2.setText("Teste Imprimir");
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1365,8 +1353,6 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnalterarstatus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
@@ -1395,14 +1381,13 @@ public class OS extends javax.swing.JInternalFrame {
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabadp)
+                    .addComponent(tabadp, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnsalvaros)
                     .addComponent(jButton3)
-                    .addComponent(btnalterarstatus)
-                    .addComponent(jButton2))
+                    .addComponent(btnalterarstatus))
                 .addContainerGap())
         );
 
@@ -2182,7 +2167,6 @@ public class OS extends javax.swing.JInternalFrame {
     public static javax.swing.JCheckBox checkraio;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton12;
-    public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public static javax.swing.JButton jButton5;

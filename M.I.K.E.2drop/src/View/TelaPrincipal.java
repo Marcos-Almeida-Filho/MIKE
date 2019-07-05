@@ -19,7 +19,10 @@ import View.administracao.GrupoDeUsuarios;
 import View.administracao.Regioes;
 import View.administracao.Representantes;
 import View.comercial.Fornecedores;
+import View.compras.ComprasSolicitacao;
+import View.compras.TiposProduto;
 import View.configuracoes.Menus;
+import View.configuracoes.Menus_1;
 import View.financeiro.Bancos;
 import View.financeiro.CondicoesDePagamento;
 import View.financeiro.ContasPagar;
@@ -29,6 +32,7 @@ import View.servicos.OS;
 import View.servicos.ServicoMateriais;
 import View.servicos.PedidoServico;
 import View.servicos.ProcessosServico;
+import View.vendas.VendasMateriais;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.logging.Level;
@@ -48,6 +52,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         initComponents();
         this.setExtendedState(TelaPrincipal.MAXIMIZED_BOTH);
         menus();
+        btntestemenus.setVisible(false);
     }
 
     public void menus() {
@@ -65,7 +70,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lblapelido.setVisible(false);
         GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
         Boolean status = true;
-        TelaPrincipal.MenuArquivo.setVisible(false);
+        TelaPrincipal.menuarquivo.setVisible(false);
         for (GrupoDeUsuariosBean gub : gud.getmenus(nivel)) {
             if (gub.getMenuadministracao().equals("false")) {
                 status = false;
@@ -319,10 +324,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lblgrupo = new javax.swing.JLabel();
         lbllogin = new javax.swing.JLabel();
         lblapelido = new javax.swing.JLabel();
+        btntestemenus = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        MenuArquivo = new javax.swing.JMenu();
-        jMenuItem12 = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        menuarquivo = new javax.swing.JMenu();
+        menuitememail = new javax.swing.JMenuItem();
+        menuitemsair = new javax.swing.JMenuItem();
         menuadministracao = new javax.swing.JMenu();
         menuitemusuarios = new javax.swing.JMenuItem();
         menuitemgrupodeusuarios = new javax.swing.JMenuItem();
@@ -345,6 +351,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemorcamentodecompras = new javax.swing.JMenuItem();
         menuitempedidodecompras = new javax.swing.JMenuItem();
         menuiteminsumos = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         menulogistica = new javax.swing.JMenu();
         menuitemcarros = new javax.swing.JMenuItem();
         menuqualidade = new javax.swing.JMenu();
@@ -399,10 +406,18 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lblapelido.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblapelido.setText("Apelido");
 
+        btntestemenus.setText("Teste Menus");
+        btntestemenus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntestemenusActionPerformed(evt);
+            }
+        });
+
         jDesktopPane1.setLayer(lblnome, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(lblgrupo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(lbllogin, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(lblapelido, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(btntestemenus, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -416,6 +431,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                     .addComponent(lbllogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblapelido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                .addGap(492, 492, 492)
+                .addComponent(btntestemenus)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -428,37 +447,44 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                 .addComponent(lbllogin)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblapelido)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addGap(87, 87, 87)
+                .addComponent(btntestemenus)
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
-        MenuArquivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
-        MenuArquivo.setText("Arquivo");
+        menuarquivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
+        menuarquivo.setText("Arquivo");
+        menuarquivo.setName("menuarquivo"); // NOI18N
 
-        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/email.png"))); // NOI18N
-        jMenuItem12.setText("Email");
-        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+        menuitememail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/email.png"))); // NOI18N
+        menuitememail.setText("Email");
+        menuitememail.setName("menuitememail"); // NOI18N
+        menuitememail.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem12ActionPerformed(evt);
+                menuitememailActionPerformed(evt);
             }
         });
-        MenuArquivo.add(jMenuItem12);
+        menuarquivo.add(menuitememail);
 
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/door_out.png"))); // NOI18N
-        jMenuItem1.setText("Sair");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        menuitemsair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/door_out.png"))); // NOI18N
+        menuitemsair.setText("Sair");
+        menuitemsair.setName("menuitemsair"); // NOI18N
+        menuitemsair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                menuitemsairActionPerformed(evt);
             }
         });
-        MenuArquivo.add(jMenuItem1);
+        menuarquivo.add(menuitemsair);
 
-        jMenuBar1.add(MenuArquivo);
+        jMenuBar1.add(menuarquivo);
 
         menuadministracao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user_gray.png"))); // NOI18N
         menuadministracao.setText("Administração");
+        menuadministracao.setName("menuadministracao"); // NOI18N
 
         menuitemusuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user.png"))); // NOI18N
         menuitemusuarios.setText("Usuários");
+        menuitemusuarios.setName("menuitemusuarios"); // NOI18N
         menuitemusuarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemusuariosActionPerformed(evt);
@@ -468,6 +494,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemgrupodeusuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group.png"))); // NOI18N
         menuitemgrupodeusuarios.setText("Grupo de Usuários");
+        menuitemgrupodeusuarios.setName("menuitemgrupodeusuarios"); // NOI18N
         menuitemgrupodeusuarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemgrupodeusuariosActionPerformed(evt);
@@ -477,6 +504,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemrepresentantes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group_go.png"))); // NOI18N
         menuitemrepresentantes.setText("Representantes");
+        menuitemrepresentantes.setName("menuitemrepresentantes"); // NOI18N
         menuitemrepresentantes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemrepresentantesActionPerformed(evt);
@@ -486,6 +514,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemregioesdeatuacao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/map.png"))); // NOI18N
         menuitemregioesdeatuacao.setText("Regiões de Atuação");
+        menuitemregioesdeatuacao.setName("menuitemregioesdeatuacao"); // NOI18N
         menuitemregioesdeatuacao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemregioesdeatuacaoActionPerformed(evt);
@@ -497,9 +526,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menufiscal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
         menufiscal.setText("Fiscal");
+        menufiscal.setName("menufiscal"); // NOI18N
 
         menuitemnotasfiscais.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_refresh.png"))); // NOI18N
         menuitemnotasfiscais.setText("Notas Fiscais");
+        menuitemnotasfiscais.setName("menuitemnotasfiscais"); // NOI18N
         menuitemnotasfiscais.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemnotasfiscaisActionPerformed(evt);
@@ -509,6 +540,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemnatureza.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_gear.png"))); // NOI18N
         menuitemnatureza.setText("Natureza de Operação");
+        menuitemnatureza.setName("menuitemnatureza"); // NOI18N
         menuitemnatureza.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemnaturezaActionPerformed(evt);
@@ -520,9 +552,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menucomercial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/phone.png"))); // NOI18N
         menucomercial.setText("Comercial");
+        menucomercial.setName("menucomercial"); // NOI18N
 
         menuitemclientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group.png"))); // NOI18N
         menuitemclientes.setText("Clientes");
+        menuitemclientes.setName("menuitemclientes"); // NOI18N
         menuitemclientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemclientesActionPerformed(evt);
@@ -532,10 +566,12 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemgrupodeclientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group_add.png"))); // NOI18N
         menuitemgrupodeclientes.setText("Grupo de Clientes");
+        menuitemgrupodeclientes.setName("menuitemgrupodeclientes"); // NOI18N
         menucomercial.add(menuitemgrupodeclientes);
 
         menuitemfornecedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry.png"))); // NOI18N
         menuitemfornecedores.setText("Fornecedores");
+        menuitemfornecedores.setName("menuitemfornecedores"); // NOI18N
         menuitemfornecedores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemfornecedoresActionPerformed(evt);
@@ -547,13 +583,16 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menufinanceiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money.png"))); // NOI18N
         menufinanceiro.setText("Financeiro");
+        menufinanceiro.setName("menufinanceiro"); // NOI18N
 
         menuitemcontasareceber.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_add.png"))); // NOI18N
         menuitemcontasareceber.setText("Contas a Receber");
+        menuitemcontasareceber.setName("menuitemcontasareceber"); // NOI18N
         menufinanceiro.add(menuitemcontasareceber);
 
         menuitemcontasapagar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_delete.png"))); // NOI18N
         menuitemcontasapagar.setText("Contas a Pagar");
+        menuitemcontasapagar.setName("menuitemcontasapagar"); // NOI18N
         menuitemcontasapagar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemcontasapagarActionPerformed(evt);
@@ -563,6 +602,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemcondicoesdepagamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_dollar.png"))); // NOI18N
         menuitemcondicoesdepagamento.setText("Condições de Pagamento");
+        menuitemcondicoesdepagamento.setName("menuitemcondicoesdepagamento"); // NOI18N
         menuitemcondicoesdepagamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemcondicoesdepagamentoActionPerformed(evt);
@@ -572,6 +612,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitembancos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/coins.png"))); // NOI18N
         menuitembancos.setText("Bancos");
+        menuitembancos.setName("menuitembancos"); // NOI18N
         menuitembancos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitembancosActionPerformed(evt);
@@ -583,9 +624,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menucompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart.png"))); // NOI18N
         menucompras.setText("Compras");
+        menucompras.setName("menucompras"); // NOI18N
 
         menuitemsolicitacaodecompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_add.png"))); // NOI18N
         menuitemsolicitacaodecompras.setText("Solicitação de Compra");
+        menuitemsolicitacaodecompras.setName("menuitemsolicitacaodecompras"); // NOI18N
         menuitemsolicitacaodecompras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemsolicitacaodecomprasActionPerformed(evt);
@@ -595,23 +638,37 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemorcamentodecompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_edit.png"))); // NOI18N
         menuitemorcamentodecompras.setText("Cotação de Compra");
+        menuitemorcamentodecompras.setName("menuitemorcamentodecompras"); // NOI18N
         menucompras.add(menuitemorcamentodecompras);
 
         menuitempedidodecompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_go.png"))); // NOI18N
         menuitempedidodecompras.setText("Pedido de Compra");
+        menuitempedidodecompras.setName("menuitempedidodecompras"); // NOI18N
         menucompras.add(menuitempedidodecompras);
 
         menuiteminsumos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_put.png"))); // NOI18N
         menuiteminsumos.setText("Insumos");
+        menuiteminsumos.setName("menuiteminsumos"); // NOI18N
         menucompras.add(menuiteminsumos);
+
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/basket.png"))); // NOI18N
+        jMenuItem1.setText("Tipos de Produto");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        menucompras.add(jMenuItem1);
 
         jMenuBar1.add(menucompras);
 
         menulogistica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/package_green.png"))); // NOI18N
         menulogistica.setText("Logística");
+        menulogistica.setName("menulogistica"); // NOI18N
 
         menuitemcarros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/car.png"))); // NOI18N
         menuitemcarros.setText("Carros");
+        menuitemcarros.setName("menuitemcarros"); // NOI18N
         menuitemcarros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemcarrosActionPerformed(evt);
@@ -623,9 +680,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuqualidade.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/award_star_bronze_3.png"))); // NOI18N
         menuqualidade.setText("Qualidade");
+        menuqualidade.setName("menuqualidade"); // NOI18N
 
         menuiteminstrumentosmedicao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/compress.png"))); // NOI18N
         menuiteminstrumentosmedicao.setText("Instrumentos de Medição");
+        menuiteminstrumentosmedicao.setName("menuiteminstrumentosmedicao"); // NOI18N
         menuiteminstrumentosmedicao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuiteminstrumentosmedicaoActionPerformed(evt);
@@ -637,9 +696,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuvendas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/wrench.png"))); // NOI18N
         menuvendas.setText("Vendas");
+        menuvendas.setName("menuvendas"); // NOI18N
 
         menuitemvendasorcamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench.png"))); // NOI18N
         menuitemvendasorcamentos.setText("Cotações");
+        menuitemvendasorcamentos.setName("menuitemvendasorcamentos"); // NOI18N
         menuitemvendasorcamentos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemvendasorcamentosActionPerformed(evt);
@@ -649,6 +710,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemvendaspedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_go.png"))); // NOI18N
         menuitemvendaspedidos.setText("Pedidos");
+        menuitemvendaspedidos.setName("menuitemvendaspedidos"); // NOI18N
         menuitemvendaspedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemvendaspedidosActionPerformed(evt);
@@ -658,6 +720,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemvendasops.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_wrench.png"))); // NOI18N
         menuitemvendasops.setText("OP's");
+        menuitemvendasops.setName("menuitemvendasops"); // NOI18N
         menuitemvendasops.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemvendasopsActionPerformed(evt);
@@ -667,23 +730,33 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemvendasprodutos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cog_wrench.png"))); // NOI18N
         menuitemvendasprodutos.setText("Produtos");
+        menuitemvendasprodutos.setName("menuitemvendasprodutos"); // NOI18N
+        menuitemvendasprodutos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuitemvendasprodutosActionPerformed(evt);
+            }
+        });
         menuvendas.add(menuitemvendasprodutos);
 
         menuitemvendasprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench.png"))); // NOI18N
         menuitemvendasprocessos.setText("Processos");
+        menuitemvendasprocessos.setName("menuitemvendasprocessos"); // NOI18N
         menuvendas.add(menuitemvendasprocessos);
 
         menuitemvendasgrupodeprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench.png"))); // NOI18N
         menuitemvendasgrupodeprocessos.setText("Grupo de Processos");
+        menuitemvendasgrupodeprocessos.setName("menuitemvendasgrupodeprocessos"); // NOI18N
         menuvendas.add(menuitemvendasgrupodeprocessos);
 
         jMenuBar1.add(menuvendas);
 
         menuservicos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/wrench_orange.png"))); // NOI18N
         menuservicos.setText("Serviços");
+        menuservicos.setName("menuservicos"); // NOI18N
 
         menuitemservicosorcamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_orange.png"))); // NOI18N
         menuitemservicosorcamentos.setText("Cotações");
+        menuitemservicosorcamentos.setName("menuitemservicosorcamentos"); // NOI18N
         menuitemservicosorcamentos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemservicosorcamentosActionPerformed(evt);
@@ -693,6 +766,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemservicospedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_orange_go.png"))); // NOI18N
         menuitemservicospedidos.setText("Pedidos");
+        menuitemservicospedidos.setName("menuitemservicospedidos"); // NOI18N
         menuitemservicospedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemservicospedidosActionPerformed(evt);
@@ -702,6 +776,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemservicososs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_wrench_orange.png"))); // NOI18N
         menuitemservicososs.setText("OS's");
+        menuitemservicososs.setName("menuitemservicososs"); // NOI18N
         menuitemservicososs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemservicosossActionPerformed(evt);
@@ -711,6 +786,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemservicosprodutos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cog_wrench_orange.png"))); // NOI18N
         menuitemservicosprodutos.setText("Produtos");
+        menuitemservicosprodutos.setName("menuitemservicosprodutos"); // NOI18N
         menuitemservicosprodutos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemservicosprodutosActionPerformed(evt);
@@ -720,6 +796,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemservicosproccessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench_orange.png"))); // NOI18N
         menuitemservicosproccessos.setText("Processos");
+        menuitemservicosproccessos.setName("menuitemservicosproccessos"); // NOI18N
         menuitemservicosproccessos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemservicosproccessosActionPerformed(evt);
@@ -729,6 +806,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemservicosgrupodeprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench_orange.png"))); // NOI18N
         menuitemservicosgrupodeprocessos.setText("Grupo de Processos");
+        menuitemservicosgrupodeprocessos.setName("menuitemservicosgrupodeprocessos"); // NOI18N
         menuitemservicosgrupodeprocessos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemservicosgrupodeprocessosActionPerformed(evt);
@@ -740,9 +818,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuconfiguracoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/plugin.png"))); // NOI18N
         menuconfiguracoes.setText("Configurações");
+        menuconfiguracoes.setName("menuconfiguracoes"); // NOI18N
 
         menuitemmenus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade.png"))); // NOI18N
         menuitemmenus.setText("Menus");
+        menuitemmenus.setName("menuitemmenus"); // NOI18N
         menuitemmenus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemmenusActionPerformed(evt);
@@ -754,10 +834,12 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuajuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/information.png"))); // NOI18N
         menuajuda.setText("Ajuda");
+        menuajuda.setName("menuajuda"); // NOI18N
 
         menuitemmike.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuitemmike.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lightbulb.png"))); // NOI18N
         menuitemmike.setText("M.I.K.E.");
+        menuitemmike.setName("menuitemmike"); // NOI18N
         menuitemmike.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemmikeActionPerformed(evt);
@@ -767,6 +849,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         menuitemsobre.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_text.png"))); // NOI18N
         menuitemsobre.setText("Sobre");
+        menuitemsobre.setName("menuitemsobre"); // NOI18N
         menuitemsobre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 menuitemsobreActionPerformed(evt);
@@ -792,9 +875,9 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void menuitemsairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemsairActionPerformed
         this.dispose();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_menuitemsairActionPerformed
 
     private void menuitemusuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemusuariosActionPerformed
         Usuarios telauser = new Usuarios();
@@ -821,7 +904,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuitemvendasopsActionPerformed
 
-    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+    private void menuitememailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitememailActionPerformed
         // TODO add your handling code here:
         Email email = new Email();
         jDesktopPane1.add(email);
@@ -829,7 +912,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         Dimension jinternalframesize = email.getSize();
         email.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
         email.setVisible(true);
-    }//GEN-LAST:event_jMenuItem12ActionPerformed
+    }//GEN-LAST:event_menuitememailActionPerformed
 
     private void menuitemvendaspedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendaspedidosActionPerformed
         // TODO add your handling code here:
@@ -1010,7 +1093,12 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_menuitemservicosgrupodeprocessosActionPerformed
 
     private void menuitemsolicitacaodecomprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemsolicitacaodecomprasActionPerformed
-
+        ComprasSolicitacao p = new ComprasSolicitacao();
+        jDesktopPane1.add(p);
+        Dimension jif = p.getSize();
+        Dimension desk = jDesktopPane1.getSize();
+        p.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
+        p.setVisible(true);
     }//GEN-LAST:event_menuitemsolicitacaodecomprasActionPerformed
 
     private void menuiteminstrumentosmedicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuiteminstrumentosmedicaoActionPerformed
@@ -1033,6 +1121,41 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     private void menuitemnaturezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemnaturezaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_menuitemnaturezaActionPerformed
+
+    private void btntestemenusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntestemenusActionPerformed
+//        int menu = TelaPrincipal.jMenuBar1.getMenuCount();
+//        for (int i = 0; i < menu; i++) {
+//            JOptionPane.showMessageDialog(rootPane, TelaPrincipal.jMenuBar1.getMenu(i).getName());
+//            int sub = TelaPrincipal.jMenuBar1.getMenu(i).getItemCount();
+//            for (int j = 0; j < sub; j++) {
+//                JOptionPane.showMessageDialog(rootPane, TelaPrincipal.jMenuBar1.getMenu(i).getItem(j).getName());
+//            }
+//        }
+        Menus_1 p = new Menus_1();
+        jDesktopPane1.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
+    }//GEN-LAST:event_btntestemenusActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        TiposProduto p = new TiposProduto();
+        jDesktopPane1.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void menuitemvendasprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasprodutosActionPerformed
+        VendasMateriais p = new VendasMateriais();
+        jDesktopPane1.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
+    }//GEN-LAST:event_menuitemvendasprodutosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1070,18 +1193,18 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private static javax.swing.JMenu MenuArquivo;
+    private javax.swing.JButton btntestemenus;
     public static javax.swing.JDesktopPane jDesktopPane1;
     public static javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JPanel jPanel1;
     public static javax.swing.JLabel lblapelido;
     public static javax.swing.JLabel lblgrupo;
     public static javax.swing.JLabel lbllogin;
     public static javax.swing.JLabel lblnome;
     public static javax.swing.JMenu menuadministracao;
-    private javax.swing.JMenu menuajuda;
+    public static javax.swing.JMenu menuajuda;
+    public static javax.swing.JMenu menuarquivo;
     public static javax.swing.JMenu menucomercial;
     public static javax.swing.JMenu menucompras;
     public static javax.swing.JMenu menuconfiguracoes;
@@ -1093,26 +1216,28 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenuItem menuitemcondicoesdepagamento;
     public static javax.swing.JMenuItem menuitemcontasapagar;
     public static javax.swing.JMenuItem menuitemcontasareceber;
+    public static javax.swing.JMenuItem menuitememail;
     public static javax.swing.JMenuItem menuitemfornecedores;
     public static javax.swing.JMenuItem menuitemgrupodeclientes;
     public static javax.swing.JMenuItem menuitemgrupodeusuarios;
     public static javax.swing.JMenuItem menuiteminstrumentosmedicao;
     public static javax.swing.JMenuItem menuiteminsumos;
     public static javax.swing.JMenuItem menuitemmenus;
-    private javax.swing.JMenuItem menuitemmike;
+    public static javax.swing.JMenuItem menuitemmike;
     public static javax.swing.JMenuItem menuitemnatureza;
     public static javax.swing.JMenuItem menuitemnotasfiscais;
     public static javax.swing.JMenuItem menuitemorcamentodecompras;
     public static javax.swing.JMenuItem menuitempedidodecompras;
     public static javax.swing.JMenuItem menuitemregioesdeatuacao;
     public static javax.swing.JMenuItem menuitemrepresentantes;
+    public static javax.swing.JMenuItem menuitemsair;
     public static javax.swing.JMenuItem menuitemservicosgrupodeprocessos;
     public static javax.swing.JMenuItem menuitemservicosorcamentos;
     public static javax.swing.JMenuItem menuitemservicososs;
     public static javax.swing.JMenuItem menuitemservicospedidos;
     public static javax.swing.JMenuItem menuitemservicosproccessos;
     public static javax.swing.JMenuItem menuitemservicosprodutos;
-    private javax.swing.JMenuItem menuitemsobre;
+    public static javax.swing.JMenuItem menuitemsobre;
     public static javax.swing.JMenuItem menuitemsolicitacaodecompras;
     public static javax.swing.JMenuItem menuitemusuarios;
     public static javax.swing.JMenuItem menuitemvendasgrupodeprocessos;

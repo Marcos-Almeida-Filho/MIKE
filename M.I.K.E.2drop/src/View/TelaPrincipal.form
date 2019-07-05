@@ -22,38 +22,47 @@
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
       </AuxValues>
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="MenuArquivo">
+        <Menu class="javax.swing.JMenu" name="menuarquivo">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/Images/page.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Arquivo"/>
+            <Property name="name" type="java.lang.String" value="menuarquivo" noResource="true"/>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
           </AuxValues>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem12">
+            <MenuItem class="javax.swing.JMenuItem" name="menuitememail">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/Images/email.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Email"/>
+                <Property name="name" type="java.lang.String" value="menuitememail" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem12ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitememailActionPerformed"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+              </AuxValues>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="menuitemsair">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/Images/door_out.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Sair"/>
+                <Property name="name" type="java.lang.String" value="menuitemsair" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemsairActionPerformed"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -63,6 +72,7 @@
               <Image iconType="3" name="/Images/user_gray.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Administra&#xe7;&#xe3;o"/>
+            <Property name="name" type="java.lang.String" value="menuadministracao" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -74,6 +84,7 @@
                   <Image iconType="3" name="/Images/user.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Usu&#xe1;rios"/>
+                <Property name="name" type="java.lang.String" value="menuitemusuarios" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemusuariosActionPerformed"/>
@@ -88,6 +99,7 @@
                   <Image iconType="3" name="/Images/group.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Grupo de Usu&#xe1;rios"/>
+                <Property name="name" type="java.lang.String" value="menuitemgrupodeusuarios" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemgrupodeusuariosActionPerformed"/>
@@ -102,6 +114,7 @@
                   <Image iconType="3" name="/Images/group_go.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Representantes"/>
+                <Property name="name" type="java.lang.String" value="menuitemrepresentantes" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemrepresentantesActionPerformed"/>
@@ -116,6 +129,7 @@
                   <Image iconType="3" name="/Images/map.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Regi&#xf5;es de Atua&#xe7;&#xe3;o"/>
+                <Property name="name" type="java.lang.String" value="menuitemregioesdeatuacao" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemregioesdeatuacaoActionPerformed"/>
@@ -132,6 +146,7 @@
               <Image iconType="3" name="/Images/page.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Fiscal"/>
+            <Property name="name" type="java.lang.String" value="menufiscal" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -143,6 +158,7 @@
                   <Image iconType="3" name="/Images/page_refresh.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Notas Fiscais"/>
+                <Property name="name" type="java.lang.String" value="menuitemnotasfiscais" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemnotasfiscaisActionPerformed"/>
@@ -157,6 +173,7 @@
                   <Image iconType="3" name="/Images/page_gear.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Natureza de Opera&#xe7;&#xe3;o"/>
+                <Property name="name" type="java.lang.String" value="menuitemnatureza" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemnaturezaActionPerformed"/>
@@ -173,6 +190,7 @@
               <Image iconType="3" name="/Images/phone.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Comercial"/>
+            <Property name="name" type="java.lang.String" value="menucomercial" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -184,6 +202,7 @@
                   <Image iconType="3" name="/Images/group.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Clientes"/>
+                <Property name="name" type="java.lang.String" value="menuitemclientes" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemclientesActionPerformed"/>
@@ -198,6 +217,7 @@
                   <Image iconType="3" name="/Images/group_add.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Grupo de Clientes"/>
+                <Property name="name" type="java.lang.String" value="menuitemgrupodeclientes" noResource="true"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -209,6 +229,7 @@
                   <Image iconType="3" name="/Images/lorry.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Fornecedores"/>
+                <Property name="name" type="java.lang.String" value="menuitemfornecedores" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemfornecedoresActionPerformed"/>
@@ -225,6 +246,7 @@
               <Image iconType="3" name="/Images/money.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Financeiro"/>
+            <Property name="name" type="java.lang.String" value="menufinanceiro" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -236,6 +258,7 @@
                   <Image iconType="3" name="/Images/money_add.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Contas a Receber"/>
+                <Property name="name" type="java.lang.String" value="menuitemcontasareceber" noResource="true"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -247,6 +270,7 @@
                   <Image iconType="3" name="/Images/money_delete.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Contas a Pagar"/>
+                <Property name="name" type="java.lang.String" value="menuitemcontasapagar" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemcontasapagarActionPerformed"/>
@@ -261,6 +285,7 @@
                   <Image iconType="3" name="/Images/money_dollar.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Condi&#xe7;&#xf5;es de Pagamento"/>
+                <Property name="name" type="java.lang.String" value="menuitemcondicoesdepagamento" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemcondicoesdepagamentoActionPerformed"/>
@@ -275,6 +300,7 @@
                   <Image iconType="3" name="/Images/coins.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Bancos"/>
+                <Property name="name" type="java.lang.String" value="menuitembancos" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitembancosActionPerformed"/>
@@ -291,6 +317,7 @@
               <Image iconType="3" name="/Images/cart.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Compras"/>
+            <Property name="name" type="java.lang.String" value="menucompras" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -302,6 +329,7 @@
                   <Image iconType="3" name="/Images/cart_add.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Solicita&#xe7;&#xe3;o de Compra"/>
+                <Property name="name" type="java.lang.String" value="menuitemsolicitacaodecompras" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemsolicitacaodecomprasActionPerformed"/>
@@ -316,6 +344,7 @@
                   <Image iconType="3" name="/Images/cart_edit.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cota&#xe7;&#xe3;o de Compra"/>
+                <Property name="name" type="java.lang.String" value="menuitemorcamentodecompras" noResource="true"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -327,6 +356,7 @@
                   <Image iconType="3" name="/Images/cart_go.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Pedido de Compra"/>
+                <Property name="name" type="java.lang.String" value="menuitempedidodecompras" noResource="true"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -338,10 +368,22 @@
                   <Image iconType="3" name="/Images/cart_put.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Insumos"/>
+                <Property name="name" type="java.lang.String" value="menuiteminsumos" noResource="true"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
               </AuxValues>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/Images/basket.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Tipos de Produto"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -351,6 +393,7 @@
               <Image iconType="3" name="/Images/package_green.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Log&#xed;stica"/>
+            <Property name="name" type="java.lang.String" value="menulogistica" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -362,6 +405,7 @@
                   <Image iconType="3" name="/Images/car.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Carros"/>
+                <Property name="name" type="java.lang.String" value="menuitemcarros" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemcarrosActionPerformed"/>
@@ -378,6 +422,7 @@
               <Image iconType="3" name="/Images/award_star_bronze_3.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Qualidade"/>
+            <Property name="name" type="java.lang.String" value="menuqualidade" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -389,6 +434,7 @@
                   <Image iconType="3" name="/Images/compress.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Instrumentos de Medi&#xe7;&#xe3;o"/>
+                <Property name="name" type="java.lang.String" value="menuiteminstrumentosmedicao" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuiteminstrumentosmedicaoActionPerformed"/>
@@ -405,6 +451,7 @@
               <Image iconType="3" name="/Images/wrench.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Vendas"/>
+            <Property name="name" type="java.lang.String" value="menuvendas" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -416,6 +463,7 @@
                   <Image iconType="3" name="/Images/table_wrench.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cota&#xe7;&#xf5;es"/>
+                <Property name="name" type="java.lang.String" value="menuitemvendasorcamentos" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemvendasorcamentosActionPerformed"/>
@@ -430,6 +478,7 @@
                   <Image iconType="3" name="/Images/table_wrench_go.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Pedidos"/>
+                <Property name="name" type="java.lang.String" value="menuitemvendaspedidos" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemvendaspedidosActionPerformed"/>
@@ -444,6 +493,7 @@
                   <Image iconType="3" name="/Images/page_white_wrench.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="OP&apos;s"/>
+                <Property name="name" type="java.lang.String" value="menuitemvendasops" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemvendasopsActionPerformed"/>
@@ -458,7 +508,11 @@
                   <Image iconType="3" name="/Images/cog_wrench.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Produtos"/>
+                <Property name="name" type="java.lang.String" value="menuitemvendasprodutos" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemvendasprodutosActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
               </AuxValues>
@@ -469,6 +523,7 @@
                   <Image iconType="3" name="/Images/application_wrench.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Processos"/>
+                <Property name="name" type="java.lang.String" value="menuitemvendasprocessos" noResource="true"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -480,6 +535,7 @@
                   <Image iconType="3" name="/Images/application_cascade_wrench.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Grupo de Processos"/>
+                <Property name="name" type="java.lang.String" value="menuitemvendasgrupodeprocessos" noResource="true"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -493,6 +549,7 @@
               <Image iconType="3" name="/Images/wrench_orange.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Servi&#xe7;os"/>
+            <Property name="name" type="java.lang.String" value="menuservicos" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -504,6 +561,7 @@
                   <Image iconType="3" name="/Images/table_wrench_orange.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cota&#xe7;&#xf5;es"/>
+                <Property name="name" type="java.lang.String" value="menuitemservicosorcamentos" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemservicosorcamentosActionPerformed"/>
@@ -518,6 +576,7 @@
                   <Image iconType="3" name="/Images/table_wrench_orange_go.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Pedidos"/>
+                <Property name="name" type="java.lang.String" value="menuitemservicospedidos" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemservicospedidosActionPerformed"/>
@@ -532,6 +591,7 @@
                   <Image iconType="3" name="/Images/page_white_wrench_orange.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="OS&apos;s"/>
+                <Property name="name" type="java.lang.String" value="menuitemservicososs" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemservicosossActionPerformed"/>
@@ -546,6 +606,7 @@
                   <Image iconType="3" name="/Images/cog_wrench_orange.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Produtos"/>
+                <Property name="name" type="java.lang.String" value="menuitemservicosprodutos" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemservicosprodutosActionPerformed"/>
@@ -560,6 +621,7 @@
                   <Image iconType="3" name="/Images/application_wrench_orange.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Processos"/>
+                <Property name="name" type="java.lang.String" value="menuitemservicosproccessos" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemservicosproccessosActionPerformed"/>
@@ -574,6 +636,7 @@
                   <Image iconType="3" name="/Images/application_cascade_wrench_orange.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Grupo de Processos"/>
+                <Property name="name" type="java.lang.String" value="menuitemservicosgrupodeprocessos" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemservicosgrupodeprocessosActionPerformed"/>
@@ -590,6 +653,7 @@
               <Image iconType="3" name="/Images/plugin.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Configura&#xe7;&#xf5;es"/>
+            <Property name="name" type="java.lang.String" value="menuconfiguracoes" noResource="true"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -601,6 +665,7 @@
                   <Image iconType="3" name="/Images/application_cascade.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Menus"/>
+                <Property name="name" type="java.lang.String" value="menuitemmenus" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemmenusActionPerformed"/>
@@ -617,7 +682,11 @@
               <Image iconType="3" name="/Images/information.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Ajuda"/>
+            <Property name="name" type="java.lang.String" value="menuajuda" noResource="true"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+          </AuxValues>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menuitemmike">
               <Properties>
@@ -628,10 +697,14 @@
                   <Image iconType="3" name="/Images/lightbulb.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="M.I.K.E."/>
+                <Property name="name" type="java.lang.String" value="menuitemmike" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemmikeActionPerformed"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuitemsobre">
               <Properties>
@@ -639,10 +712,14 @@
                   <Image iconType="3" name="/Images/page_white_text.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Sobre"/>
+                <Property name="name" type="java.lang.String" value="menuitemsobre" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuitemsobreActionPerformed"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -706,6 +783,11 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="492" max="-2" attributes="0"/>
+                  <Component id="btntestemenus" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -719,7 +801,9 @@
                   <Component id="lbllogin" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="lblapelido" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="223" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="87" max="-2" attributes="0"/>
+                  <Component id="btntestemenus" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="113" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -766,6 +850,14 @@
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="btntestemenus">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Teste Menus"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btntestemenusActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

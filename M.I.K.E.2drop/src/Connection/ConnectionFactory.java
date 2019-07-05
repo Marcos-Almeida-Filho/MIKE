@@ -16,11 +16,11 @@ import java.util.logging.Logger;
 public class ConnectionFactory {
 
     private static final String DRIVER = "com.mysql.jdbc.Driver";
-//    Conectar ao Servidor
+    //Conectar ao Servidor
     private static final String URL = "jdbc:mysql://192.168.1.11:3306/mike";
     private static final String USER = "Speeduser";
     private static final String PASS = "Speed271113=";
-//    Conectar localmente
+    //Conectar localmente
 //    private static final String URL = "jdbc:mysql://localhost:3306/mike";
 //    private static final String USER = "root";
 //    private static final String PASS = "";

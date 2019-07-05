@@ -8,7 +8,12 @@ package View.comercial;
 import Bean.ClientesBean;
 import CEP.WebServiceCep;
 import DAO.ClientesDAO;
+import br.com.correios.EnderecoERP;
+import br.com.correios.SQLException_Exception;
+import br.com.correios.SigepClienteException;
 import java.awt.Dimension;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -679,18 +684,36 @@ public class Clientes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+//        if (txtcep.getText().equals("")) {
+//            JOptionPane.showMessageDialog(rootPane, "Coloque um CEP!");
+//        } else {
+//            WebServiceCep w = WebServiceCep.searchCep(txtcep.getText());
+//            if (w.wasSuccessful()) {
+//                txtlogradouro.setText(w.getLogradouroFull());
+//                txtbairro.setText(w.getBairro());
+//                txtcidade.setText(w.getCidade());
+//                cbuf.setSelectedItem(w.getUf());
+//                txtnumero.requestFocus();
+//            } else {
+//                JOptionPane.showMessageDialog(rootPane, "CEP incorreto!");
+//            }
+//        }
         if (txtcep.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Coloque um CEP!");
         } else {
-            WebServiceCep w = WebServiceCep.searchCep(txtcep.getText());
-            if (w.wasSuccessful()) {
-                txtlogradouro.setText(w.getLogradouroFull());
-                txtbairro.setText(w.getBairro());
-                txtcidade.setText(w.getCidade());
-                cbuf.setSelectedItem(w.getUf());
-                txtnumero.requestFocus();
-            } else {
-                JOptionPane.showMessageDialog(rootPane, "CEP incorreto!");
+            try {
+                consultaCEP(txtcep.getText());
+                if (!consultaCEP(txtcep.getText()).getEnd().equals("")) {
+                    txtlogradouro.setText(consultaCEP(txtcep.getText()).getEnd());
+                    txtbairro.setText(consultaCEP(txtcep.getText()).getBairro());
+                    txtcidade.setText(consultaCEP(txtcep.getText()).getCidade());
+                    cbuf.setSelectedItem(consultaCEP(txtcep.getText()).getUf());
+                    txtnumero.requestFocus();
+                }
+
+            } catch (SigepClienteException | SQLException_Exception ex) {
+                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(rootPane, "Erro ao consultar! \n" + ex);
             }
         }
     }//GEN-LAST:event_jButton8ActionPerformed
@@ -752,4 +775,10 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JFormattedTextField txttelefone;
     public static javax.swing.JTextField txtvendedor;
     // End of variables declaration//GEN-END:variables
+
+    private static EnderecoERP consultaCEP(java.lang.String cep) throws SigepClienteException, SQLException_Exception {
+        br.com.correios.AtendeClienteService service = new br.com.correios.AtendeClienteService();
+        br.com.correios.AtendeCliente port = service.getAtendeClientePort();
+        return port.consultaCEP(cep);
+    }
 }
