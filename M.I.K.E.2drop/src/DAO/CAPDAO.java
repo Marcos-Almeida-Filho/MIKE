@@ -33,7 +33,7 @@ public class CAPDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO cap (datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, datapagamento, banco, metodo, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO cap (datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, status) VALUES (?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, capb.getDatalancamento());
             stmt.setString(2, capb.getFornecedor());
@@ -43,10 +43,7 @@ public class CAPDAO {
             stmt.setString(6, capb.getParcela());
             stmt.setString(7, capb.getValorparcela());
             stmt.setString(8, capb.getDataparcela());
-            stmt.setString(9, capb.getDatapagamento());
-            stmt.setString(10, capb.getBanco());
-            stmt.setString(11, capb.getMetodo());
-            stmt.setString(12, capb.getStatus());
+            stmt.setString(9, capb.getStatus());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -91,6 +88,41 @@ public class CAPDAO {
                 capb.setBanco(rs.getString("banco"));
                 capb.setMetodo(rs.getString("metodo"));
                 capb.setStatus(rs.getString("status"));
+
+                listcapb.add(capb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(CAPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listcapb;
+    }
+    
+    public List<CAPBean> readcreated(String data) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<CAPBean> listcapb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM cap WHERE datalancamento = ?");
+            stmt.setString(1, data);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                CAPBean capb = new CAPBean();
+
+                capb.setId(rs.getInt("id"));
 
                 listcapb.add(capb);
             }
@@ -187,7 +219,7 @@ public class CAPDAO {
                 listcapb.add(capb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(CAPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {

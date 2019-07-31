@@ -7,7 +7,7 @@ package View.comercial;
 
 import Bean.FornecedoresBean;
 import DAO.FornecedoresDAO;
-import View.financeiro.AdicionarContasPagar;
+import View.financeiro.ContaPagar;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -149,7 +149,7 @@ public class ProcurarFornecedor extends javax.swing.JInternalFrame {
 
     private void tablefornecedoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablefornecedoresMouseClicked
         if (evt.getClickCount() == 2) {
-            AdicionarContasPagar.txtfornecedor.setText(tablefornecedores.getValueAt(tablefornecedores.getSelectedRow(), 1).toString());
+            ContaPagar.txtfornecedor.setText(tablefornecedores.getValueAt(tablefornecedores.getSelectedRow(), 1).toString());
             dispose();
         }
     }//GEN-LAST:event_tablefornecedoresMouseClicked

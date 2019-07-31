@@ -257,7 +257,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        AdicionarContasPagar cp = new AdicionarContasPagar();
+        AdicionarContasAPagar cp = new AdicionarContasAPagar();
         JDesktopPane desk = this.getDesktopPane();
         desk.add(cp);
         Dimension jif = cp.getSize();
@@ -272,31 +272,31 @@ public class ContasPagar extends javax.swing.JInternalFrame {
 
     private void tablecapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablecapMouseClicked
         if (evt.getClickCount() == 2) {
-            AdicionarContasPagar acp = new AdicionarContasPagar();
+            ContaPagar acp = new ContaPagar();
             JDesktopPane desk = this.getDesktopPane();
             desk.add(acp);
-            AdicionarContasPagar.txtid.setText(tablecap.getValueAt(tablecap.getSelectedRow(), 1).toString());
+            ContaPagar.txtid.setText(tablecap.getValueAt(tablecap.getSelectedRow(), 1).toString());
 
             CAPDAO capd = new CAPDAO();
 
-            for (CAPBean capb : capd.click(Integer.parseInt(AdicionarContasPagar.txtid.getText()))) {
-                AdicionarContasPagar.txtdatalancamento.setText(capb.getDatalancamento());
-                AdicionarContasPagar.txtfornecedor.setText(capb.getFornecedor());
-                AdicionarContasPagar.txtnf.setText(capb.getNotafiscal());
-                AdicionarContasPagar.txtemissao.setText(capb.getDataemissao());
-                AdicionarContasPagar.txttotal.setText(capb.getTotal());
-                AdicionarContasPagar.txtparcela.setText(capb.getParcela());
-                AdicionarContasPagar.txtvalorparcela.setText(capb.getValorparcela());
-                AdicionarContasPagar.txtvencimento.setText(capb.getDataparcela());
-                AdicionarContasPagar.txtpagamento.setText(capb.getDatapagamento());
-                AdicionarContasPagar.cbbanco.setSelectedItem(capb.getBanco());
-                AdicionarContasPagar.cbmetodo.setSelectedItem(capb.getMetodo());
+            for (CAPBean capb : capd.click(Integer.parseInt(ContaPagar.txtid.getText()))) {
+                ContaPagar.txtdatalancamento.setText(capb.getDatalancamento());
+                ContaPagar.txtfornecedor.setText(capb.getFornecedor());
+                ContaPagar.txtnf.setText(capb.getNotafiscal());
+                ContaPagar.txtemissao.setText(capb.getDataemissao());
+                ContaPagar.txttotal.setText(capb.getTotal());
+                ContaPagar.txtparcela.setText(capb.getParcela());
+                ContaPagar.txtvalorparcela.setText(capb.getValorparcela());
+                ContaPagar.txtvencimento.setText(capb.getDataparcela());
+                ContaPagar.txtpagamento.setText(capb.getDatapagamento());
+                ContaPagar.cbbanco.setSelectedItem(capb.getBanco());
+                ContaPagar.cbmetodo.setSelectedItem(capb.getMetodo());
             }
             Dimension jif = acp.getSize();
             Dimension d = desk.getSize();
             acp.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
             acp.setVisible(true);
-            AdicionarContasPagar.travacampos();
+            ContaPagar.travacampos();
         }
     }//GEN-LAST:event_tablecapMouseClicked
 

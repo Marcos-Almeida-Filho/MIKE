@@ -6,8 +6,9 @@
 
 package Methods;
 
-import java.awt.Button;
 import java.awt.Color;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -15,9 +16,15 @@ import java.awt.Color;
  */
 public class Buttons {
     
-    public void btnexcluir () {
-        Button btnexcluir = new Button();
-        btnexcluir.setBackground(Color.red);
+    public static void btnexcluir (JInternalFrame internalframe) {
+        int comp = internalframe.getComponentCount();
+        JOptionPane.showMessageDialog(null, comp);
+        for (int i = 0; i < comp; i++) {
+            JOptionPane.showMessageDialog(null, internalframe.getComponent(i).getName());
+//            if (internalframe.getComponent(i).getName().equals("btnexcluir")) {
+//                internalframe.getComponent(i).setBackground(Color.red);
+//            }
+        }
     }
     
 }

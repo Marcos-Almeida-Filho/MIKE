@@ -19,6 +19,7 @@ import View.administracao.GrupoDeUsuarios;
 import View.administracao.Regioes;
 import View.administracao.Representantes;
 import View.comercial.Fornecedores;
+import View.comercial.TipoFornecedor;
 import View.compras.ComprasSolicitacao;
 import View.compras.TiposProduto;
 import View.configuracoes.Menus;
@@ -63,11 +64,13 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             nivel = ub.getNivel();
             lblnome.setText("Bem vindo(a) " + ub.getNome() + "!");
             lblapelido.setText(ub.getNome());
+            lbldb.setText(TelaLogin.cblogin.getSelectedItem().toString());
         }
         lblgrupo.setText(nivel);
         lblgrupo.setVisible(false);
         lbllogin.setVisible(false);
         lblapelido.setVisible(false);
+        lbldb.setVisible(false);
         GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
         Boolean status = true;
         TelaPrincipal.menuarquivo.setVisible(false);
@@ -325,6 +328,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lbllogin = new javax.swing.JLabel();
         lblapelido = new javax.swing.JLabel();
         btntestemenus = new javax.swing.JButton();
+        lbldb = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuarquivo = new javax.swing.JMenu();
         menuitememail = new javax.swing.JMenuItem();
@@ -341,6 +345,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemclientes = new javax.swing.JMenuItem();
         menuitemgrupodeclientes = new javax.swing.JMenuItem();
         menuitemfornecedores = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         menufinanceiro = new javax.swing.JMenu();
         menuitemcontasareceber = new javax.swing.JMenuItem();
         menuitemcontasapagar = new javax.swing.JMenuItem();
@@ -356,6 +361,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemcarros = new javax.swing.JMenuItem();
         menuqualidade = new javax.swing.JMenu();
         menuiteminstrumentosmedicao = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         menuvendas = new javax.swing.JMenu();
         menuitemvendasorcamentos = new javax.swing.JMenuItem();
         menuitemvendaspedidos = new javax.swing.JMenuItem();
@@ -413,11 +419,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
+        lbldb.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbldb.setText("jLabel1");
+
         jDesktopPane1.setLayer(lblnome, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(lblgrupo, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(lbllogin, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(lblapelido, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(btntestemenus, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jDesktopPane1.setLayer(lbldb, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
@@ -426,15 +436,18 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 1160, Short.MAX_VALUE)
             .addComponent(lblgrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbllogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblapelido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbllogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblapelido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
+                        .addGap(492, 492, 492)
+                        .addComponent(btntestemenus)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addGap(492, 492, 492)
-                .addComponent(btntestemenus)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(lbldb, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -447,7 +460,9 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                 .addComponent(lbllogin)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblapelido)
-                .addGap(87, 87, 87)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbldb)
+                .addGap(67, 67, 67)
                 .addComponent(btntestemenus)
                 .addContainerGap(113, Short.MAX_VALUE))
         );
@@ -579,6 +594,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menucomercial.add(menuitemfornecedores);
 
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry_add.png"))); // NOI18N
+        jMenuItem2.setText("Tipos de Fornecedor");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        menucomercial.add(jMenuItem2);
+
         jMenuBar1.add(menucomercial);
 
         menufinanceiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money.png"))); // NOI18N
@@ -691,6 +715,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         menuqualidade.add(menuiteminstrumentosmedicao);
+
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry_error.png"))); // NOI18N
+        jMenuItem3.setText("IQF");
+        menuqualidade.add(jMenuItem3);
 
         jMenuBar1.add(menuqualidade);
 
@@ -1131,12 +1159,12 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 //                JOptionPane.showMessageDialog(rootPane, TelaPrincipal.jMenuBar1.getMenu(i).getItem(j).getName());
 //            }
 //        }
-        Menus_1 p = new Menus_1();
-        jDesktopPane1.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+////////        Menus_1 p = new Menus_1();
+////////        jDesktopPane1.add(p);
+////////        Dimension desktopsize = jDesktopPane1.getSize();
+////////        Dimension jinternalframesize = p.getSize();
+////////        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+////////        p.setVisible(true);
     }//GEN-LAST:event_btntestemenusActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -1156,6 +1184,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
         p.setVisible(true);
     }//GEN-LAST:event_menuitemvendasprodutosActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        TipoFornecedor p = new TipoFornecedor();
+        jDesktopPane1.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1197,8 +1234,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JDesktopPane jDesktopPane1;
     public static javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     public static javax.swing.JLabel lblapelido;
+    public static javax.swing.JLabel lbldb;
     public static javax.swing.JLabel lblgrupo;
     public static javax.swing.JLabel lbllogin;
     public static javax.swing.JLabel lblnome;

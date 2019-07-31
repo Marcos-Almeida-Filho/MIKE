@@ -6,7 +6,6 @@
 package View.comercial;
 
 import Bean.ClientesBean;
-import CEP.WebServiceCep;
 import DAO.ClientesDAO;
 import br.com.correios.EnderecoERP;
 import br.com.correios.SQLException_Exception;

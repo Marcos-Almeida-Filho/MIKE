@@ -9,8 +9,6 @@ import Bean.UsuariosBean;
 import Connection.Session;
 import DAO.UsuariosDAO;
 import java.awt.event.KeyEvent;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,6 +22,30 @@ public class TelaLogin extends javax.swing.JFrame {
      */
     public TelaLogin() {
         initComponents();
+    }
+
+    public void login() {
+        String apelido = "";
+
+        UsuariosDAO ud2 = new UsuariosDAO();
+
+        for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
+            apelido = ub.getNome();
+        }
+        Session session = new Session();
+        UsuariosDAO ud = new UsuariosDAO();
+        String senha = new String(TxtSenha.getPassword());
+        if (ud.checklogin(TxtLogin.getText(), senha)) {
+            TelaPrincipal tela = new TelaPrincipal();
+            tela.setTitle("M.I.K.E. version 1.0.0 - Usuário: " + apelido);
+            tela.setVisible(true);
+            session.login = TxtLogin.getText();
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, "Informações incorretas!");
+            TxtLogin.requestFocus();
+            TxtLogin.selectAll();
+        }
     }
 
     /**
@@ -46,6 +68,7 @@ public class TelaLogin extends javax.swing.JFrame {
         btncancelar = new javax.swing.JButton();
         btnlogin = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        cblogin = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login M.I.K.E.");
@@ -92,6 +115,8 @@ public class TelaLogin extends javax.swing.JFrame {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/Logo Speed p-b_icon.jpg"))); // NOI18N
 
+        cblogin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NUVEM", "LOCAL", "TESTE" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -109,7 +134,8 @@ public class TelaLogin extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(TxtLogin)
                             .addComponent(jLabel1)
-                            .addComponent(TxtSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
+                            .addComponent(TxtSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                            .addComponent(cblogin, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -127,6 +153,8 @@ public class TelaLogin extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(TxtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cblogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btncancelar)
@@ -150,28 +178,7 @@ public class TelaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnloginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnloginActionPerformed
-        String apelido = "";
-
-        UsuariosDAO ud2 = new UsuariosDAO();
-
-        for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
-            apelido = ub.getNome();
-        }
-
-        Session session = new Session();
-        UsuariosDAO ud = new UsuariosDAO();
-        String senha = new String(TxtSenha.getPassword());
-        if (ud.checklogin(TxtLogin.getText(), senha)) {
-            TelaPrincipal tela = new TelaPrincipal();
-            tela.setTitle("M.I.K.E. version 1.0.0 - Usuário: " + apelido);
-            tela.setVisible(true);
-            session.login = TxtLogin.getText();
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(rootPane, "Informações incorretas!");
-            TxtLogin.requestFocus();
-            TxtLogin.selectAll();
-        }
+        login();
     }//GEN-LAST:event_btnloginActionPerformed
 
     private void btncancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncancelarActionPerformed
@@ -180,27 +187,7 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void TxtSenhaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtSenhaKeyReleased
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String apelido = "";
-
-            UsuariosDAO ud2 = new UsuariosDAO();
-
-            for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
-                apelido = ub.getNome();
-            }
-            Session session = new Session();
-            UsuariosDAO ud = new UsuariosDAO();
-            String senha = new String(TxtSenha.getPassword());
-            if (ud.checklogin(TxtLogin.getText(), senha)) {
-                TelaPrincipal tela = new TelaPrincipal();
-                tela.setTitle("M.I.K.E. version 0.4.1 - Usuário: " + apelido);
-                tela.setVisible(true);
-                session.login = TxtLogin.getText();
-                this.dispose();
-            } else {
-                JOptionPane.showMessageDialog(rootPane, "Informações incorretas!");
-                TxtLogin.requestFocus();
-                TxtLogin.selectAll();
-            }
+            login();
         }
     }//GEN-LAST:event_TxtSenhaKeyReleased
 
@@ -249,6 +236,7 @@ public class TelaLogin extends javax.swing.JFrame {
     public static javax.swing.JPasswordField TxtSenha;
     private javax.swing.JButton btncancelar;
     private javax.swing.JButton btnlogin;
+    public static javax.swing.JComboBox<String> cblogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

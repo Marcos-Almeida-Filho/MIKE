@@ -17,6 +17,7 @@ public class FornecedoresBean {
     private String cnpj;
     private String ie;
     private String telefone;
+    private String tipo;
     private String logradouro;
     private String numero;
     private String complemento;
@@ -71,6 +72,14 @@ public class FornecedoresBean {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getLogradouro() {

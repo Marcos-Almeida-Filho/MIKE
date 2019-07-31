@@ -132,7 +132,7 @@ public class UsuariosDAO {
 
     public List<UsuariosBean> readapelido(String login) {
 
-        Connection con = ConnectionFactory.getConnection();
+        Connection con = ConnectionFactory.getConnectionlogin();
 
         PreparedStatement stmt = null;
 
@@ -348,7 +348,7 @@ public class UsuariosDAO {
 
     public boolean checklogin(String login, String senha) {
 
-        Connection con = ConnectionFactory.getConnection();
+        Connection con = ConnectionFactory.getConnectionlogin();
 
         PreparedStatement stmt = null;
 

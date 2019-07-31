@@ -29,6 +29,7 @@ import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import DAO.ServicoPedidoItensNFDAO;
+import Methods.Buttons;
 import Methods.SendEmail;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
@@ -78,6 +79,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     public PedidoServico() {
         initComponents();
         filltablepedidoorcamento();
+        Buttons.btnexcluir(this);
     }
 
     public static void filltablepedidoorcamento() {
@@ -261,6 +263,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
         setTitle("Pedido de Serviço");
+
+        tabpedidos.setName("tabpedidos"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -772,6 +776,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         });
 
         jButton5.setText("Excluir");
+        jButton5.setName("btnexcluir"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("Criar OS's");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
@@ -1958,6 +1968,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, n);
         }
     }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        JOptionPane.showMessageDialog(rootPane, "Em breve!");
+    }//GEN-LAST:event_jButton5ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

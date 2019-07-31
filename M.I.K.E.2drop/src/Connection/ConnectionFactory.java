@@ -5,9 +5,12 @@
  */
 package Connection;
 
+import View.TelaLogin;
+import View.TelaPrincipal;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,17 +24,97 @@ public class ConnectionFactory {
     private static final String USER = "Speeduser";
     private static final String PASS = "Speed271113=";
     //Conectar localmente
-//    private static final String URL = "jdbc:mysql://localhost:3306/mike";
-//    private static final String USER = "root";
-//    private static final String PASS = "";
+    private static final String URLLOCAL = "jdbc:mysql://localhost:3306/mike";
+    private static final String USERLOCAL = "root";
+    private static final String PASSLOCAL = "";
+    //Conectar na nuvem
+    private static final String URLNUVEM = "jdbc:mysql://dberpsc.mysql.dbaas.com.br/dberpsc";
+    private static final String USERNUVEM = "dberpsc";
+    private static final String PASSNUVEM = "Speed271113=";
 
     public static Connection getConnection() {
-        try {
-            Class.forName(DRIVER);
+        String tipologin = TelaPrincipal.lbldb.getText();
 
-            return DriverManager.getConnection(URL, USER, PASS);
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException("Erro na conexão!\n" + e);
+        int logintype = 0;
+
+        if (tipologin.equals("NUVEM")) {
+            logintype = 0;
+        }
+        if (tipologin.equals("LOCAL")) {
+            logintype = 1;
+        }
+        if (tipologin.equals("TESTE")) {
+            logintype = 2;
+        }
+
+        switch (logintype) {
+            case 1:
+                try {
+                    Class.forName(DRIVER);
+
+                    return DriverManager.getConnection(URLLOCAL, USERLOCAL, PASSLOCAL);
+                } catch (ClassNotFoundException | SQLException e) {
+                    throw new RuntimeException("Erro na conexão!\n" + e);
+                }
+            case 2:
+                try {
+                    Class.forName(DRIVER);
+
+                    return DriverManager.getConnection(URL, USER, PASS);
+                } catch (ClassNotFoundException | SQLException e) {
+                    throw new RuntimeException("Erro na conexão!\n" + e);
+                }
+            default:
+                try {
+                    Class.forName(DRIVER);
+
+                    return DriverManager.getConnection(URLNUVEM, USERNUVEM, PASSNUVEM);
+                } catch (ClassNotFoundException | SQLException e) {
+                    throw new RuntimeException("Erro na conexão!\n" + e);
+                }
+        }
+    }
+
+    public static Connection getConnectionlogin() {
+        String tipologin = TelaLogin.cblogin.getSelectedItem().toString();
+
+        int logintype = 0;
+
+        if (tipologin.equals("NUVEM")) {
+            logintype = 0;
+        }
+        if (tipologin.equals("LOCAL")) {
+            logintype = 1;
+        }
+        if (tipologin.equals("TESTE")) {
+            logintype = 2;
+        }
+
+        switch (logintype) {
+            case 1:
+                try {
+                    Class.forName(DRIVER);
+
+                    return DriverManager.getConnection(URLLOCAL, USERLOCAL, PASSLOCAL);
+                } catch (ClassNotFoundException | SQLException e) {
+                    throw new RuntimeException("Erro na conexão!\n" + e);
+                }
+            case 2:
+                try {
+                    Class.forName(DRIVER);
+
+                    return DriverManager.getConnection(URL, USER, PASS);
+                } catch (ClassNotFoundException | SQLException e) {
+                    throw new RuntimeException("Erro na conexão!\n" + e);
+                }
+            default:
+                try {
+                    Class.forName(DRIVER);
+
+                    return DriverManager.getConnection(URLNUVEM, USERNUVEM, PASSNUVEM);
+                } catch (ClassNotFoundException | SQLException e) {
+                    throw new RuntimeException("Erro na conexão!\n" + e);
+                }
         }
     }
 

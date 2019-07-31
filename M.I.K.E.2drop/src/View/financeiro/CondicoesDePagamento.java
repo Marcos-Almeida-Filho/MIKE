@@ -298,7 +298,7 @@ public class CondicoesDePagamento extends javax.swing.JInternalFrame {
             model.setNumRows(0);
             int np = Integer.parseInt(cbparcelas.getSelectedItem().toString());
             for (int i = 1; i < np + 1; i++) {
-                int result = Integer.parseInt(JOptionPane.showInputDialog(null, "Coloque os dias das parcelas por favor"));
+                int result = Integer.parseInt(JOptionPane.showInputDialog(null, "Coloque os dias da parcela por favor"));
                 model.addRow(new Object[]{
                     i,
                     result
