@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for getStatusPLP complex type.
+ * <p>Classe Java de getStatusPLP complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="getStatusPLP">
@@ -68,7 +68,7 @@ public class GetStatusPLP {
     }
 
     /**
-     * Gets the value of the arg1 property.
+     * Obtém o valor da propriedade arg1.
      * 
      * @return
      *     possible object is
@@ -80,7 +80,7 @@ public class GetStatusPLP {
     }
 
     /**
-     * Sets the value of the arg1 property.
+     * Define o valor da propriedade arg1.
      * 
      * @param value
      *     allowed object is

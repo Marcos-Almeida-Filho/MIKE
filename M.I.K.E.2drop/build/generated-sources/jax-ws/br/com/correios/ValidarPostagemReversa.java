@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for validarPostagemReversa complex type.
+ * <p>Classe Java de validarPostagemReversa complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="validarPostagemReversa">
@@ -52,7 +52,7 @@ public class ValidarPostagemReversa {
     protected String senha;
 
     /**
-     * Gets the value of the codAdministrativo property.
+     * Obtém o valor da propriedade codAdministrativo.
      * 
      * @return
      *     possible object is
@@ -64,7 +64,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Sets the value of the codAdministrativo property.
+     * Define o valor da propriedade codAdministrativo.
      * 
      * @param value
      *     allowed object is
@@ -76,7 +76,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Gets the value of the codigoServico property.
+     * Obtém o valor da propriedade codigoServico.
      * 
      * @return
      *     possible object is
@@ -88,7 +88,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Sets the value of the codigoServico property.
+     * Define o valor da propriedade codigoServico.
      * 
      * @param value
      *     allowed object is
@@ -100,7 +100,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Gets the value of the cepDestinatario property.
+     * Obtém o valor da propriedade cepDestinatario.
      * 
      * @return
      *     possible object is
@@ -112,7 +112,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Sets the value of the cepDestinatario property.
+     * Define o valor da propriedade cepDestinatario.
      * 
      * @param value
      *     allowed object is
@@ -124,7 +124,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Gets the value of the idCartaoPostagem property.
+     * Obtém o valor da propriedade idCartaoPostagem.
      * 
      * @return
      *     possible object is
@@ -136,7 +136,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Sets the value of the idCartaoPostagem property.
+     * Define o valor da propriedade idCartaoPostagem.
      * 
      * @param value
      *     allowed object is
@@ -148,7 +148,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Gets the value of the coleta property.
+     * Obtém o valor da propriedade coleta.
      * 
      * @return
      *     possible object is
@@ -160,7 +160,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Sets the value of the coleta property.
+     * Define o valor da propriedade coleta.
      * 
      * @param value
      *     allowed object is
@@ -172,7 +172,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Gets the value of the usuario property.
+     * Obtém o valor da propriedade usuario.
      * 
      * @return
      *     possible object is
@@ -184,7 +184,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Sets the value of the usuario property.
+     * Define o valor da propriedade usuario.
      * 
      * @param value
      *     allowed object is
@@ -196,7 +196,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Gets the value of the senha property.
+     * Obtém o valor da propriedade senha.
      * 
      * @return
      *     possible object is
@@ -208,7 +208,7 @@ public class ValidarPostagemReversa {
     }
 
     /**
-     * Sets the value of the senha property.
+     * Define o valor da propriedade senha.
      * 
      * @param value
      *     allowed object is

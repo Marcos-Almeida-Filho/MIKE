@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for calculaTarifaServico complex type.
+ * <p>Classe Java de calculaTarifaServico complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="calculaTarifaServico">
@@ -76,7 +76,7 @@ public class CalculaTarifaServico {
     protected String codAvisoRecebimento;
 
     /**
-     * Gets the value of the codAdministrativo property.
+     * Obtém o valor da propriedade codAdministrativo.
      * 
      * @return
      *     possible object is
@@ -88,7 +88,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the codAdministrativo property.
+     * Define o valor da propriedade codAdministrativo.
      * 
      * @param value
      *     allowed object is
@@ -100,7 +100,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the usuario property.
+     * Obtém o valor da propriedade usuario.
      * 
      * @return
      *     possible object is
@@ -112,7 +112,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the usuario property.
+     * Define o valor da propriedade usuario.
      * 
      * @param value
      *     allowed object is
@@ -124,7 +124,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the senha property.
+     * Obtém o valor da propriedade senha.
      * 
      * @return
      *     possible object is
@@ -136,7 +136,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the senha property.
+     * Define o valor da propriedade senha.
      * 
      * @param value
      *     allowed object is
@@ -148,7 +148,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the codServico property.
+     * Obtém o valor da propriedade codServico.
      * 
      * @return
      *     possible object is
@@ -160,7 +160,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the codServico property.
+     * Define o valor da propriedade codServico.
      * 
      * @param value
      *     allowed object is
@@ -172,7 +172,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the cepOrigem property.
+     * Obtém o valor da propriedade cepOrigem.
      * 
      * @return
      *     possible object is
@@ -184,7 +184,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the cepOrigem property.
+     * Define o valor da propriedade cepOrigem.
      * 
      * @param value
      *     allowed object is
@@ -196,7 +196,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the cepDestino property.
+     * Obtém o valor da propriedade cepDestino.
      * 
      * @return
      *     possible object is
@@ -208,7 +208,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the cepDestino property.
+     * Define o valor da propriedade cepDestino.
      * 
      * @param value
      *     allowed object is
@@ -220,7 +220,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the peso property.
+     * Obtém o valor da propriedade peso.
      * 
      * @return
      *     possible object is
@@ -232,7 +232,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the peso property.
+     * Define o valor da propriedade peso.
      * 
      * @param value
      *     allowed object is
@@ -244,7 +244,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the codFormato property.
+     * Obtém o valor da propriedade codFormato.
      * 
      * @return
      *     possible object is
@@ -256,7 +256,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the codFormato property.
+     * Define o valor da propriedade codFormato.
      * 
      * @param value
      *     allowed object is
@@ -268,7 +268,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the comprimento property.
+     * Obtém o valor da propriedade comprimento.
      * 
      * @return
      *     possible object is
@@ -280,7 +280,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the comprimento property.
+     * Define o valor da propriedade comprimento.
      * 
      * @param value
      *     allowed object is
@@ -292,7 +292,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the altura property.
+     * Obtém o valor da propriedade altura.
      * 
      * @return
      *     possible object is
@@ -304,7 +304,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the altura property.
+     * Define o valor da propriedade altura.
      * 
      * @param value
      *     allowed object is
@@ -316,7 +316,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the largura property.
+     * Obtém o valor da propriedade largura.
      * 
      * @return
      *     possible object is
@@ -328,7 +328,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the largura property.
+     * Define o valor da propriedade largura.
      * 
      * @param value
      *     allowed object is
@@ -340,7 +340,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the diametro property.
+     * Obtém o valor da propriedade diametro.
      * 
      * @return
      *     possible object is
@@ -352,7 +352,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the diametro property.
+     * Define o valor da propriedade diametro.
      * 
      * @param value
      *     allowed object is
@@ -364,7 +364,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the codMaoPropria property.
+     * Obtém o valor da propriedade codMaoPropria.
      * 
      * @return
      *     possible object is
@@ -376,7 +376,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the codMaoPropria property.
+     * Define o valor da propriedade codMaoPropria.
      * 
      * @param value
      *     allowed object is
@@ -388,7 +388,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the valorDeclarado property.
+     * Obtém o valor da propriedade valorDeclarado.
      * 
      * @return
      *     possible object is
@@ -400,7 +400,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the valorDeclarado property.
+     * Define o valor da propriedade valorDeclarado.
      * 
      * @param value
      *     allowed object is
@@ -412,7 +412,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Gets the value of the codAvisoRecebimento property.
+     * Obtém o valor da propriedade codAvisoRecebimento.
      * 
      * @return
      *     possible object is
@@ -424,7 +424,7 @@ public class CalculaTarifaServico {
     }
 
     /**
-     * Sets the value of the codAvisoRecebimento property.
+     * Define o valor da propriedade codAvisoRecebimento.
      * 
      * @param value
      *     allowed object is

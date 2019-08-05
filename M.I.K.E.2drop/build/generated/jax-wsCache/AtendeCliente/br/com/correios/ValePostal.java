@@ -9,9 +9,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
- * <p>Java class for valePostal complex type.
+ * <p>Classe Java de valePostal complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="valePostal">
@@ -118,7 +118,7 @@ public class ValePostal {
     protected Double vapVrNominal;
 
     /**
-     * Gets the value of the cidNoCidade property.
+     * Obtém o valor da propriedade cidNoCidade.
      * 
      * @return
      *     possible object is
@@ -130,7 +130,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the cidNoCidade property.
+     * Define o valor da propriedade cidNoCidade.
      * 
      * @param value
      *     allowed object is
@@ -142,7 +142,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the ctcCoAadministrativo property.
+     * Obtém o valor da propriedade ctcCoAadministrativo.
      * 
      * @return
      *     possible object is
@@ -154,7 +154,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the ctcCoAadministrativo property.
+     * Define o valor da propriedade ctcCoAadministrativo.
      * 
      * @param value
      *     allowed object is
@@ -166,7 +166,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the ctcNuContrato property.
+     * Obtém o valor da propriedade ctcNuContrato.
      * 
      * @return
      *     possible object is
@@ -178,7 +178,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the ctcNuContrato property.
+     * Define o valor da propriedade ctcNuContrato.
      * 
      * @param value
      *     allowed object is
@@ -190,7 +190,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the ctcNuContratoEct property.
+     * Obtém o valor da propriedade ctcNuContratoEct.
      * 
      * @return
      *     possible object is
@@ -202,7 +202,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the ctcNuContratoEct property.
+     * Define o valor da propriedade ctcNuContratoEct.
      * 
      * @param value
      *     allowed object is
@@ -214,7 +214,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the cvpEdBairro property.
+     * Obtém o valor da propriedade cvpEdBairro.
      * 
      * @return
      *     possible object is
@@ -226,7 +226,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the cvpEdBairro property.
+     * Define o valor da propriedade cvpEdBairro.
      * 
      * @param value
      *     allowed object is
@@ -238,7 +238,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the cvpEdCliente property.
+     * Obtém o valor da propriedade cvpEdCliente.
      * 
      * @return
      *     possible object is
@@ -250,7 +250,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the cvpEdCliente property.
+     * Define o valor da propriedade cvpEdCliente.
      * 
      * @param value
      *     allowed object is
@@ -262,7 +262,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the cvpEdComplemento property.
+     * Obtém o valor da propriedade cvpEdComplemento.
      * 
      * @return
      *     possible object is
@@ -274,7 +274,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the cvpEdComplemento property.
+     * Define o valor da propriedade cvpEdComplemento.
      * 
      * @param value
      *     allowed object is
@@ -286,7 +286,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the cvpEdNumero property.
+     * Obtém o valor da propriedade cvpEdNumero.
      * 
      * @return
      *     possible object is
@@ -298,7 +298,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the cvpEdNumero property.
+     * Define o valor da propriedade cvpEdNumero.
      * 
      * @param value
      *     allowed object is
@@ -310,7 +310,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the cvpNoCliente property.
+     * Obtém o valor da propriedade cvpNoCliente.
      * 
      * @return
      *     possible object is
@@ -322,7 +322,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the cvpNoCliente property.
+     * Define o valor da propriedade cvpNoCliente.
      * 
      * @param value
      *     allowed object is
@@ -334,7 +334,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the cvpNuCep property.
+     * Obtém o valor da propriedade cvpNuCep.
      * 
      * @return
      *     possible object is
@@ -346,7 +346,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the cvpNuCep property.
+     * Define o valor da propriedade cvpNuCep.
      * 
      * @param value
      *     allowed object is
@@ -358,7 +358,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the descricaoErro property.
+     * Obtém o valor da propriedade descricaoErro.
      * 
      * @return
      *     possible object is
@@ -370,7 +370,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the descricaoErro property.
+     * Define o valor da propriedade descricaoErro.
      * 
      * @param value
      *     allowed object is
@@ -382,7 +382,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the estSgEstado property.
+     * Obtém o valor da propriedade estSgEstado.
      * 
      * @return
      *     possible object is
@@ -394,7 +394,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the estSgEstado property.
+     * Define o valor da propriedade estSgEstado.
      * 
      * @param value
      *     allowed object is
@@ -406,7 +406,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the monVarTarifaAdicional property.
+     * Obtém o valor da propriedade monVarTarifaAdicional.
      * 
      */
     public int getMonVarTarifaAdicional() {
@@ -414,7 +414,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the monVarTarifaAdicional property.
+     * Define o valor da propriedade monVarTarifaAdicional.
      * 
      */
     public void setMonVarTarifaAdicional(int value) {
@@ -422,7 +422,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the monVarTarifaServico property.
+     * Obtém o valor da propriedade monVarTarifaServico.
      * 
      */
     public int getMonVarTarifaServico() {
@@ -430,7 +430,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the monVarTarifaServico property.
+     * Define o valor da propriedade monVarTarifaServico.
      * 
      */
     public void setMonVarTarifaServico(int value) {
@@ -438,7 +438,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the monVarValorDescontos property.
+     * Obtém o valor da propriedade monVarValorDescontos.
      * 
      */
     public int getMonVarValorDescontos() {
@@ -446,7 +446,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the monVarValorDescontos property.
+     * Define o valor da propriedade monVarValorDescontos.
      * 
      */
     public void setMonVarValorDescontos(int value) {
@@ -454,7 +454,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the monVarValorImposto property.
+     * Obtém o valor da propriedade monVarValorImposto.
      * 
      */
     public int getMonVarValorImposto() {
@@ -462,7 +462,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the monVarValorImposto property.
+     * Define o valor da propriedade monVarValorImposto.
      * 
      */
     public void setMonVarValorImposto(int value) {
@@ -470,7 +470,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the prsCoProdutoServico property.
+     * Obtém o valor da propriedade prsCoProdutoServico.
      * 
      * @return
      *     possible object is
@@ -482,7 +482,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the prsCoProdutoServico property.
+     * Define o valor da propriedade prsCoProdutoServico.
      * 
      * @param value
      *     allowed object is
@@ -494,7 +494,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the pveNu property.
+     * Obtém o valor da propriedade pveNu.
      * 
      * @return
      *     possible object is
@@ -506,7 +506,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the pveNu property.
+     * Define o valor da propriedade pveNu.
      * 
      * @param value
      *     allowed object is
@@ -518,7 +518,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the pveOrgNuAgencia property.
+     * Obtém o valor da propriedade pveOrgNuAgencia.
      * 
      * @return
      *     possible object is
@@ -530,7 +530,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the pveOrgNuAgencia property.
+     * Define o valor da propriedade pveOrgNuAgencia.
      * 
      * @param value
      *     allowed object is
@@ -542,7 +542,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the pveOrgNuAgenciaDes property.
+     * Obtém o valor da propriedade pveOrgNuAgenciaDes.
      * 
      * @return
      *     possible object is
@@ -554,7 +554,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the pveOrgNuAgenciaDes property.
+     * Define o valor da propriedade pveOrgNuAgenciaDes.
      * 
      * @param value
      *     allowed object is
@@ -566,7 +566,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the pveOrgNuAgenciaOri property.
+     * Obtém o valor da propriedade pveOrgNuAgenciaOri.
      * 
      * @return
      *     possible object is
@@ -578,7 +578,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the pveOrgNuAgenciaOri property.
+     * Define o valor da propriedade pveOrgNuAgenciaOri.
      * 
      * @param value
      *     allowed object is
@@ -590,7 +590,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the retornaCodErro property.
+     * Obtém o valor da propriedade retornaCodErro.
      * 
      */
     public int getRetornaCodErro() {
@@ -598,7 +598,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the retornaCodErro property.
+     * Define o valor da propriedade retornaCodErro.
      * 
      */
     public void setRetornaCodErro(int value) {
@@ -606,7 +606,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the sitNoSituacao property.
+     * Obtém o valor da propriedade sitNoSituacao.
      * 
      * @return
      *     possible object is
@@ -618,7 +618,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the sitNoSituacao property.
+     * Define o valor da propriedade sitNoSituacao.
      * 
      * @param value
      *     allowed object is
@@ -630,7 +630,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the tlgTxDescricao property.
+     * Obtém o valor da propriedade tlgTxDescricao.
      * 
      * @return
      *     possible object is
@@ -642,7 +642,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the tlgTxDescricao property.
+     * Define o valor da propriedade tlgTxDescricao.
      * 
      * @param value
      *     allowed object is
@@ -654,7 +654,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the vapDhTransacao property.
+     * Obtém o valor da propriedade vapDhTransacao.
      * 
      * @return
      *     possible object is
@@ -666,7 +666,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the vapDhTransacao property.
+     * Define o valor da propriedade vapDhTransacao.
      * 
      * @param value
      *     allowed object is
@@ -678,7 +678,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the vapNuEtiquetaEncomenda property.
+     * Obtém o valor da propriedade vapNuEtiquetaEncomenda.
      * 
      * @return
      *     possible object is
@@ -690,7 +690,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the vapNuEtiquetaEncomenda property.
+     * Define o valor da propriedade vapNuEtiquetaEncomenda.
      * 
      * @param value
      *     allowed object is
@@ -702,7 +702,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the vapVrCobradoEct property.
+     * Obtém o valor da propriedade vapVrCobradoEct.
      * 
      * @return
      *     possible object is
@@ -714,7 +714,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the vapVrCobradoEct property.
+     * Define o valor da propriedade vapVrCobradoEct.
      * 
      * @param value
      *     allowed object is
@@ -726,7 +726,7 @@ public class ValePostal {
     }
 
     /**
-     * Gets the value of the vapVrNominal property.
+     * Obtém o valor da propriedade vapVrNominal.
      * 
      * @return
      *     possible object is
@@ -738,7 +738,7 @@ public class ValePostal {
     }
 
     /**
-     * Sets the value of the vapVrNominal property.
+     * Define o valor da propriedade vapVrNominal.
      * 
      * @param value
      *     allowed object is

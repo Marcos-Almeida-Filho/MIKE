@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for consultaSRO_NEW complex type.
+ * <p>Classe Java de consultaSRO_NEW complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="consultaSRO_NEW">
@@ -74,7 +74,7 @@ public class ConsultaSRONEW {
     }
 
     /**
-     * Gets the value of the tipoResultado property.
+     * Obtém o valor da propriedade tipoResultado.
      * 
      * @return
      *     possible object is
@@ -86,7 +86,7 @@ public class ConsultaSRONEW {
     }
 
     /**
-     * Sets the value of the tipoResultado property.
+     * Define o valor da propriedade tipoResultado.
      * 
      * @param value
      *     allowed object is
@@ -98,7 +98,7 @@ public class ConsultaSRONEW {
     }
 
     /**
-     * Gets the value of the usuarioSro property.
+     * Obtém o valor da propriedade usuarioSro.
      * 
      * @return
      *     possible object is
@@ -110,7 +110,7 @@ public class ConsultaSRONEW {
     }
 
     /**
-     * Sets the value of the usuarioSro property.
+     * Define o valor da propriedade usuarioSro.
      * 
      * @param value
      *     allowed object is
@@ -122,7 +122,7 @@ public class ConsultaSRONEW {
     }
 
     /**
-     * Gets the value of the senhaSro property.
+     * Obtém o valor da propriedade senhaSro.
      * 
      * @return
      *     possible object is
@@ -134,7 +134,7 @@ public class ConsultaSRONEW {
     }
 
     /**
-     * Sets the value of the senhaSro property.
+     * Define o valor da propriedade senhaSro.
      * 
      * @param value
      *     allowed object is

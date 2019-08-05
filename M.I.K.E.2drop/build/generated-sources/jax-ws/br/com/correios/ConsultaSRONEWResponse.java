@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for consultaSRO_NEWResponse complex type.
+ * <p>Classe Java de consultaSRO_NEWResponse complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="consultaSRO_NEWResponse">
@@ -36,7 +36,7 @@ public class ConsultaSRONEWResponse {
     protected String _return;
 
     /**
-     * Gets the value of the return property.
+     * Obtém o valor da propriedade return.
      * 
      * @return
      *     possible object is
@@ -48,7 +48,7 @@ public class ConsultaSRONEWResponse {
     }
 
     /**
-     * Sets the value of the return property.
+     * Define o valor da propriedade return.
      * 
      * @param value
      *     allowed object is

@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for SQLException complex type.
+ * <p>Classe Java de SQLException complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="SQLException">
@@ -42,7 +42,7 @@ public class SQLException {
     protected String message;
 
     /**
-     * Gets the value of the errorCode property.
+     * Obtém o valor da propriedade errorCode.
      * 
      * @return
      *     possible object is
@@ -54,7 +54,7 @@ public class SQLException {
     }
 
     /**
-     * Sets the value of the errorCode property.
+     * Define o valor da propriedade errorCode.
      * 
      * @param value
      *     allowed object is
@@ -66,7 +66,7 @@ public class SQLException {
     }
 
     /**
-     * Gets the value of the sqlState property.
+     * Obtém o valor da propriedade sqlState.
      * 
      * @return
      *     possible object is
@@ -78,7 +78,7 @@ public class SQLException {
     }
 
     /**
-     * Sets the value of the sqlState property.
+     * Define o valor da propriedade sqlState.
      * 
      * @param value
      *     allowed object is
@@ -90,7 +90,7 @@ public class SQLException {
     }
 
     /**
-     * Gets the value of the message property.
+     * Obtém o valor da propriedade message.
      * 
      * @return
      *     possible object is
@@ -102,7 +102,7 @@ public class SQLException {
     }
 
     /**
-     * Sets the value of the message property.
+     * Define o valor da propriedade message.
      * 
      * @param value
      *     allowed object is

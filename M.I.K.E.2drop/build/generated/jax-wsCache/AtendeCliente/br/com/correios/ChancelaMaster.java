@@ -12,9 +12,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
- * <p>Java class for chancelaMaster complex type.
+ * <p>Classe Java de chancelaMaster complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="chancelaMaster">
@@ -53,7 +53,7 @@ public class ChancelaMaster {
     protected List<ServicoSigep> servicosSigep;
 
     /**
-     * Gets the value of the chancela property.
+     * Obtém o valor da propriedade chancela.
      * 
      * @return
      *     possible object is
@@ -64,7 +64,7 @@ public class ChancelaMaster {
     }
 
     /**
-     * Sets the value of the chancela property.
+     * Define o valor da propriedade chancela.
      * 
      * @param value
      *     allowed object is
@@ -75,7 +75,7 @@ public class ChancelaMaster {
     }
 
     /**
-     * Gets the value of the dataAtualizacao property.
+     * Obtém o valor da propriedade dataAtualizacao.
      * 
      * @return
      *     possible object is
@@ -87,7 +87,7 @@ public class ChancelaMaster {
     }
 
     /**
-     * Sets the value of the dataAtualizacao property.
+     * Define o valor da propriedade dataAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -99,7 +99,7 @@ public class ChancelaMaster {
     }
 
     /**
-     * Gets the value of the descricao property.
+     * Obtém o valor da propriedade descricao.
      * 
      * @return
      *     possible object is
@@ -111,7 +111,7 @@ public class ChancelaMaster {
     }
 
     /**
-     * Sets the value of the descricao property.
+     * Define o valor da propriedade descricao.
      * 
      * @param value
      *     allowed object is
@@ -123,7 +123,7 @@ public class ChancelaMaster {
     }
 
     /**
-     * Gets the value of the id property.
+     * Obtém o valor da propriedade id.
      * 
      */
     public long getId() {
@@ -131,7 +131,7 @@ public class ChancelaMaster {
     }
 
     /**
-     * Sets the value of the id property.
+     * Define o valor da propriedade id.
      * 
      */
     public void setId(long value) {

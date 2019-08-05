@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for servicoAdicionalXML complex type.
+ * <p>Classe Java de servicoAdicionalXML complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="servicoAdicionalXML">
@@ -40,7 +40,7 @@ public class ServicoAdicionalXML {
     protected String sigla;
 
     /**
-     * Gets the value of the codigo property.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -52,7 +52,7 @@ public class ServicoAdicionalXML {
     }
 
     /**
-     * Sets the value of the codigo property.
+     * Define o valor da propriedade codigo.
      * 
      * @param value
      *     allowed object is
@@ -64,7 +64,7 @@ public class ServicoAdicionalXML {
     }
 
     /**
-     * Gets the value of the descricao property.
+     * Obtém o valor da propriedade descricao.
      * 
      * @return
      *     possible object is
@@ -76,7 +76,7 @@ public class ServicoAdicionalXML {
     }
 
     /**
-     * Sets the value of the descricao property.
+     * Define o valor da propriedade descricao.
      * 
      * @param value
      *     allowed object is
@@ -88,7 +88,7 @@ public class ServicoAdicionalXML {
     }
 
     /**
-     * Gets the value of the sigla property.
+     * Obtém o valor da propriedade sigla.
      * 
      * @return
      *     possible object is
@@ -100,7 +100,7 @@ public class ServicoAdicionalXML {
     }
 
     /**
-     * Sets the value of the sigla property.
+     * Define o valor da propriedade sigla.
      * 
      * @param value
      *     allowed object is

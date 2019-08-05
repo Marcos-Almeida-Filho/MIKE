@@ -12,9 +12,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
- * <p>Java class for clienteERP complex type.
+ * <p>Classe Java de clienteERP complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="clienteERP">
@@ -72,7 +72,7 @@ public class ClienteERP {
     protected String statusCodigo;
 
     /**
-     * Gets the value of the cnpj property.
+     * Obtém o valor da propriedade cnpj.
      * 
      * @return
      *     possible object is
@@ -84,7 +84,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the cnpj property.
+     * Define o valor da propriedade cnpj.
      * 
      * @param value
      *     allowed object is
@@ -125,7 +125,7 @@ public class ClienteERP {
     }
 
     /**
-     * Gets the value of the dataAtualizacao property.
+     * Obtém o valor da propriedade dataAtualizacao.
      * 
      * @return
      *     possible object is
@@ -137,7 +137,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the dataAtualizacao property.
+     * Define o valor da propriedade dataAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -149,7 +149,7 @@ public class ClienteERP {
     }
 
     /**
-     * Gets the value of the datajAtualizacao property.
+     * Obtém o valor da propriedade datajAtualizacao.
      * 
      * @return
      *     possible object is
@@ -161,7 +161,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the datajAtualizacao property.
+     * Define o valor da propriedade datajAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -173,7 +173,7 @@ public class ClienteERP {
     }
 
     /**
-     * Gets the value of the descricaoStatusCliente property.
+     * Obtém o valor da propriedade descricaoStatusCliente.
      * 
      * @return
      *     possible object is
@@ -185,7 +185,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the descricaoStatusCliente property.
+     * Define o valor da propriedade descricaoStatusCliente.
      * 
      * @param value
      *     allowed object is
@@ -226,7 +226,7 @@ public class ClienteERP {
     }
 
     /**
-     * Gets the value of the horajAtualizacao property.
+     * Obtém o valor da propriedade horajAtualizacao.
      * 
      * @return
      *     possible object is
@@ -238,7 +238,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the horajAtualizacao property.
+     * Define o valor da propriedade horajAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -250,7 +250,7 @@ public class ClienteERP {
     }
 
     /**
-     * Gets the value of the id property.
+     * Obtém o valor da propriedade id.
      * 
      */
     public long getId() {
@@ -258,7 +258,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the id property.
+     * Define o valor da propriedade id.
      * 
      */
     public void setId(long value) {
@@ -266,7 +266,7 @@ public class ClienteERP {
     }
 
     /**
-     * Gets the value of the inscricaoEstadual property.
+     * Obtém o valor da propriedade inscricaoEstadual.
      * 
      * @return
      *     possible object is
@@ -278,7 +278,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the inscricaoEstadual property.
+     * Define o valor da propriedade inscricaoEstadual.
      * 
      * @param value
      *     allowed object is
@@ -290,7 +290,7 @@ public class ClienteERP {
     }
 
     /**
-     * Gets the value of the nome property.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -302,7 +302,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the nome property.
+     * Define o valor da propriedade nome.
      * 
      * @param value
      *     allowed object is
@@ -314,7 +314,7 @@ public class ClienteERP {
     }
 
     /**
-     * Gets the value of the statusCodigo property.
+     * Obtém o valor da propriedade statusCodigo.
      * 
      * @return
      *     possible object is
@@ -326,7 +326,7 @@ public class ClienteERP {
     }
 
     /**
-     * Sets the value of the statusCodigo property.
+     * Define o valor da propriedade statusCodigo.
      * 
      * @param value
      *     allowed object is

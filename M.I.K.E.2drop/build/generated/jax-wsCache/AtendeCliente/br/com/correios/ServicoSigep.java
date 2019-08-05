@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for servicoSigep complex type.
+ * <p>Classe Java de servicoSigep complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="servicoSigep">
@@ -61,7 +61,7 @@ public class ServicoSigep {
     protected String ssiCoCodigoPostal;
 
     /**
-     * Gets the value of the categoriaServico property.
+     * Obtém o valor da propriedade categoriaServico.
      * 
      * @return
      *     possible object is
@@ -73,7 +73,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the categoriaServico property.
+     * Define o valor da propriedade categoriaServico.
      * 
      * @param value
      *     allowed object is
@@ -85,7 +85,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the chancela property.
+     * Obtém o valor da propriedade chancela.
      * 
      * @return
      *     possible object is
@@ -97,7 +97,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the chancela property.
+     * Define o valor da propriedade chancela.
      * 
      * @param value
      *     allowed object is
@@ -109,7 +109,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the exigeDimensoes property.
+     * Obtém o valor da propriedade exigeDimensoes.
      * 
      * @return
      *     possible object is
@@ -121,7 +121,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the exigeDimensoes property.
+     * Define o valor da propriedade exigeDimensoes.
      * 
      * @param value
      *     allowed object is
@@ -133,7 +133,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the exigeValorCobrar property.
+     * Obtém o valor da propriedade exigeValorCobrar.
      * 
      * @return
      *     possible object is
@@ -145,7 +145,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the exigeValorCobrar property.
+     * Define o valor da propriedade exigeValorCobrar.
      * 
      * @param value
      *     allowed object is
@@ -157,7 +157,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the imitm property.
+     * Obtém o valor da propriedade imitm.
      * 
      */
     public long getImitm() {
@@ -165,7 +165,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the imitm property.
+     * Define o valor da propriedade imitm.
      * 
      */
     public void setImitm(long value) {
@@ -173,7 +173,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the pagamentoEntrega property.
+     * Obtém o valor da propriedade pagamentoEntrega.
      * 
      * @return
      *     possible object is
@@ -185,7 +185,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the pagamentoEntrega property.
+     * Define o valor da propriedade pagamentoEntrega.
      * 
      * @param value
      *     allowed object is
@@ -197,7 +197,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the remessaAgrupada property.
+     * Obtém o valor da propriedade remessaAgrupada.
      * 
      * @return
      *     possible object is
@@ -209,7 +209,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the remessaAgrupada property.
+     * Define o valor da propriedade remessaAgrupada.
      * 
      * @param value
      *     allowed object is
@@ -221,7 +221,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the servico property.
+     * Obtém o valor da propriedade servico.
      * 
      */
     public long getServico() {
@@ -229,7 +229,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the servico property.
+     * Define o valor da propriedade servico.
      * 
      */
     public void setServico(long value) {
@@ -237,7 +237,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the servicoERP property.
+     * Obtém o valor da propriedade servicoERP.
      * 
      * @return
      *     possible object is
@@ -249,7 +249,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the servicoERP property.
+     * Define o valor da propriedade servicoERP.
      * 
      * @param value
      *     allowed object is
@@ -261,7 +261,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Gets the value of the ssiCoCodigoPostal property.
+     * Obtém o valor da propriedade ssiCoCodigoPostal.
      * 
      * @return
      *     possible object is
@@ -273,7 +273,7 @@ public class ServicoSigep {
     }
 
     /**
-     * Sets the value of the ssiCoCodigoPostal property.
+     * Define o valor da propriedade ssiCoCodigoPostal.
      * 
      * @param value
      *     allowed object is

@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for produto complex type.
+ * <p>Classe Java de produto complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="produto">
@@ -40,7 +40,7 @@ public class Produto {
     protected String tipo;
 
     /**
-     * Gets the value of the codigo property.
+     * Obtém o valor da propriedade codigo.
      * 
      * @return
      *     possible object is
@@ -52,7 +52,7 @@ public class Produto {
     }
 
     /**
-     * Sets the value of the codigo property.
+     * Define o valor da propriedade codigo.
      * 
      * @param value
      *     allowed object is
@@ -64,7 +64,7 @@ public class Produto {
     }
 
     /**
-     * Gets the value of the qtd property.
+     * Obtém o valor da propriedade qtd.
      * 
      * @return
      *     possible object is
@@ -76,7 +76,7 @@ public class Produto {
     }
 
     /**
-     * Sets the value of the qtd property.
+     * Define o valor da propriedade qtd.
      * 
      * @param value
      *     allowed object is
@@ -88,7 +88,7 @@ public class Produto {
     }
 
     /**
-     * Gets the value of the tipo property.
+     * Obtém o valor da propriedade tipo.
      * 
      * @return
      *     possible object is
@@ -100,7 +100,7 @@ public class Produto {
     }
 
     /**
-     * Sets the value of the tipo property.
+     * Define o valor da propriedade tipo.
      * 
      * @param value
      *     allowed object is

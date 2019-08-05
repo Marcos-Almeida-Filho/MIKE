@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for contratoERPPK complex type.
+ * <p>Classe Java de contratoERPPK complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="contratoERPPK">
@@ -37,7 +37,7 @@ public class ContratoERPPK {
     protected String numero;
 
     /**
-     * Gets the value of the diretoria property.
+     * Obtém o valor da propriedade diretoria.
      * 
      */
     public long getDiretoria() {
@@ -45,7 +45,7 @@ public class ContratoERPPK {
     }
 
     /**
-     * Sets the value of the diretoria property.
+     * Define o valor da propriedade diretoria.
      * 
      */
     public void setDiretoria(long value) {
@@ -53,7 +53,7 @@ public class ContratoERPPK {
     }
 
     /**
-     * Gets the value of the numero property.
+     * Obtém o valor da propriedade numero.
      * 
      * @return
      *     possible object is
@@ -65,7 +65,7 @@ public class ContratoERPPK {
     }
 
     /**
-     * Sets the value of the numero property.
+     * Define o valor da propriedade numero.
      * 
      * @param value
      *     allowed object is

@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for unidadePostagemERP complex type.
+ * <p>Classe Java de unidadePostagemERP complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="unidadePostagemERP">
@@ -49,7 +49,7 @@ public class UnidadePostagemERP {
     protected String tipo;
 
     /**
-     * Gets the value of the diretoriaRegional property.
+     * Obtém o valor da propriedade diretoriaRegional.
      * 
      * @return
      *     possible object is
@@ -61,7 +61,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Sets the value of the diretoriaRegional property.
+     * Define o valor da propriedade diretoriaRegional.
      * 
      * @param value
      *     allowed object is
@@ -73,7 +73,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Gets the value of the endereco property.
+     * Obtém o valor da propriedade endereco.
      * 
      * @return
      *     possible object is
@@ -85,7 +85,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Sets the value of the endereco property.
+     * Define o valor da propriedade endereco.
      * 
      * @param value
      *     allowed object is
@@ -97,7 +97,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Gets the value of the id property.
+     * Obtém o valor da propriedade id.
      * 
      * @return
      *     possible object is
@@ -109,7 +109,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Sets the value of the id property.
+     * Define o valor da propriedade id.
      * 
      * @param value
      *     allowed object is
@@ -121,7 +121,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Gets the value of the nome property.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -133,7 +133,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Sets the value of the nome property.
+     * Define o valor da propriedade nome.
      * 
      * @param value
      *     allowed object is
@@ -145,7 +145,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Gets the value of the status property.
+     * Obtém o valor da propriedade status.
      * 
      * @return
      *     possible object is
@@ -157,7 +157,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Sets the value of the status property.
+     * Define o valor da propriedade status.
      * 
      * @param value
      *     allowed object is
@@ -169,7 +169,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Gets the value of the tipo property.
+     * Obtém o valor da propriedade tipo.
      * 
      * @return
      *     possible object is
@@ -181,7 +181,7 @@ public class UnidadePostagemERP {
     }
 
     /**
-     * Sets the value of the tipo property.
+     * Define o valor da propriedade tipo.
      * 
      * @param value
      *     allowed object is

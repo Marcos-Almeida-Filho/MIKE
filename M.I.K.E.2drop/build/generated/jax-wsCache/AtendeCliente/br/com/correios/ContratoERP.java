@@ -12,9 +12,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
- * <p>Java class for contratoERP complex type.
+ * <p>Classe Java de contratoERP complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="contratoERP">
@@ -126,7 +126,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the cliente property.
+     * Obtém o valor da propriedade cliente.
      * 
      * @return
      *     possible object is
@@ -138,7 +138,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the cliente property.
+     * Define o valor da propriedade cliente.
      * 
      * @param value
      *     allowed object is
@@ -150,7 +150,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the codigoCliente property.
+     * Obtém o valor da propriedade codigoCliente.
      * 
      */
     public long getCodigoCliente() {
@@ -158,7 +158,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the codigoCliente property.
+     * Define o valor da propriedade codigoCliente.
      * 
      */
     public void setCodigoCliente(long value) {
@@ -166,7 +166,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the codigoDiretoria property.
+     * Obtém o valor da propriedade codigoDiretoria.
      * 
      * @return
      *     possible object is
@@ -178,7 +178,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the codigoDiretoria property.
+     * Define o valor da propriedade codigoDiretoria.
      * 
      * @param value
      *     allowed object is
@@ -190,7 +190,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the contratoPK property.
+     * Obtém o valor da propriedade contratoPK.
      * 
      * @return
      *     possible object is
@@ -202,7 +202,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the contratoPK property.
+     * Define o valor da propriedade contratoPK.
      * 
      * @param value
      *     allowed object is
@@ -214,7 +214,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the dataAtualizacao property.
+     * Obtém o valor da propriedade dataAtualizacao.
      * 
      * @return
      *     possible object is
@@ -226,7 +226,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the dataAtualizacao property.
+     * Define o valor da propriedade dataAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -238,7 +238,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the dataAtualizacaoDDMMYYYY property.
+     * Obtém o valor da propriedade dataAtualizacaoDDMMYYYY.
      * 
      * @return
      *     possible object is
@@ -250,7 +250,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the dataAtualizacaoDDMMYYYY property.
+     * Define o valor da propriedade dataAtualizacaoDDMMYYYY.
      * 
      * @param value
      *     allowed object is
@@ -262,7 +262,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the dataVigenciaFim property.
+     * Obtém o valor da propriedade dataVigenciaFim.
      * 
      * @return
      *     possible object is
@@ -274,7 +274,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the dataVigenciaFim property.
+     * Define o valor da propriedade dataVigenciaFim.
      * 
      * @param value
      *     allowed object is
@@ -286,7 +286,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the dataVigenciaFimDDMMYYYY property.
+     * Obtém o valor da propriedade dataVigenciaFimDDMMYYYY.
      * 
      * @return
      *     possible object is
@@ -298,7 +298,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the dataVigenciaFimDDMMYYYY property.
+     * Define o valor da propriedade dataVigenciaFimDDMMYYYY.
      * 
      * @param value
      *     allowed object is
@@ -310,7 +310,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the dataVigenciaInicio property.
+     * Obtém o valor da propriedade dataVigenciaInicio.
      * 
      * @return
      *     possible object is
@@ -322,7 +322,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the dataVigenciaInicio property.
+     * Define o valor da propriedade dataVigenciaInicio.
      * 
      * @param value
      *     allowed object is
@@ -334,7 +334,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the dataVigenciaInicioDDMMYYYY property.
+     * Obtém o valor da propriedade dataVigenciaInicioDDMMYYYY.
      * 
      * @return
      *     possible object is
@@ -346,7 +346,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the dataVigenciaInicioDDMMYYYY property.
+     * Define o valor da propriedade dataVigenciaInicioDDMMYYYY.
      * 
      * @param value
      *     allowed object is
@@ -358,7 +358,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the datajAtualizacao property.
+     * Obtém o valor da propriedade datajAtualizacao.
      * 
      * @return
      *     possible object is
@@ -370,7 +370,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the datajAtualizacao property.
+     * Define o valor da propriedade datajAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -382,7 +382,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the datajVigenciaFim property.
+     * Obtém o valor da propriedade datajVigenciaFim.
      * 
      * @return
      *     possible object is
@@ -394,7 +394,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the datajVigenciaFim property.
+     * Define o valor da propriedade datajVigenciaFim.
      * 
      * @param value
      *     allowed object is
@@ -406,7 +406,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the datajVigenciaInicio property.
+     * Obtém o valor da propriedade datajVigenciaInicio.
      * 
      * @return
      *     possible object is
@@ -418,7 +418,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the datajVigenciaInicio property.
+     * Define o valor da propriedade datajVigenciaInicio.
      * 
      * @param value
      *     allowed object is
@@ -430,7 +430,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the descricaoDiretoriaRegional property.
+     * Obtém o valor da propriedade descricaoDiretoriaRegional.
      * 
      * @return
      *     possible object is
@@ -442,7 +442,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the descricaoDiretoriaRegional property.
+     * Define o valor da propriedade descricaoDiretoriaRegional.
      * 
      * @param value
      *     allowed object is
@@ -454,7 +454,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the descricaoStatus property.
+     * Obtém o valor da propriedade descricaoStatus.
      * 
      * @return
      *     possible object is
@@ -466,7 +466,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the descricaoStatus property.
+     * Define o valor da propriedade descricaoStatus.
      * 
      * @param value
      *     allowed object is
@@ -478,7 +478,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the diretoriaRegional property.
+     * Obtém o valor da propriedade diretoriaRegional.
      * 
      * @return
      *     possible object is
@@ -490,7 +490,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the diretoriaRegional property.
+     * Define o valor da propriedade diretoriaRegional.
      * 
      * @param value
      *     allowed object is
@@ -502,7 +502,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the horajAtualizacao property.
+     * Obtém o valor da propriedade horajAtualizacao.
      * 
      * @return
      *     possible object is
@@ -514,7 +514,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the horajAtualizacao property.
+     * Define o valor da propriedade horajAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -526,7 +526,7 @@ public class ContratoERP {
     }
 
     /**
-     * Gets the value of the statusCodigo property.
+     * Obtém o valor da propriedade statusCodigo.
      * 
      * @return
      *     possible object is
@@ -538,7 +538,7 @@ public class ContratoERP {
     }
 
     /**
-     * Sets the value of the statusCodigo property.
+     * Define o valor da propriedade statusCodigo.
      * 
      * @param value
      *     allowed object is

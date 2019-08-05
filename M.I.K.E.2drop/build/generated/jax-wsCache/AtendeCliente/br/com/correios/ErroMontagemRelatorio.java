@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ErroMontagemRelatorio complex type.
+ * <p>Classe Java de ErroMontagemRelatorio complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ErroMontagemRelatorio">
@@ -34,7 +34,7 @@ public class ErroMontagemRelatorio {
     protected String message;
 
     /**
-     * Gets the value of the message property.
+     * Obtém o valor da propriedade message.
      * 
      * @return
      *     possible object is
@@ -46,7 +46,7 @@ public class ErroMontagemRelatorio {
     }
 
     /**
-     * Sets the value of the message property.
+     * Define o valor da propriedade message.
      * 
      * @param value
      *     allowed object is

@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for consultaSRO complex type.
+ * <p>Classe Java de consultaSRO complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="consultaSRO">
@@ -77,7 +77,7 @@ public class ConsultaSRO {
     }
 
     /**
-     * Gets the value of the tipoConsulta property.
+     * Obtém o valor da propriedade tipoConsulta.
      * 
      * @return
      *     possible object is
@@ -89,7 +89,7 @@ public class ConsultaSRO {
     }
 
     /**
-     * Sets the value of the tipoConsulta property.
+     * Define o valor da propriedade tipoConsulta.
      * 
      * @param value
      *     allowed object is
@@ -101,7 +101,7 @@ public class ConsultaSRO {
     }
 
     /**
-     * Gets the value of the tipoResultado property.
+     * Obtém o valor da propriedade tipoResultado.
      * 
      * @return
      *     possible object is
@@ -113,7 +113,7 @@ public class ConsultaSRO {
     }
 
     /**
-     * Sets the value of the tipoResultado property.
+     * Define o valor da propriedade tipoResultado.
      * 
      * @param value
      *     allowed object is
@@ -125,7 +125,7 @@ public class ConsultaSRO {
     }
 
     /**
-     * Gets the value of the usuarioSro property.
+     * Obtém o valor da propriedade usuarioSro.
      * 
      * @return
      *     possible object is
@@ -137,7 +137,7 @@ public class ConsultaSRO {
     }
 
     /**
-     * Sets the value of the usuarioSro property.
+     * Define o valor da propriedade usuarioSro.
      * 
      * @param value
      *     allowed object is
@@ -149,7 +149,7 @@ public class ConsultaSRO {
     }
 
     /**
-     * Gets the value of the senhaSro property.
+     * Obtém o valor da propriedade senhaSro.
      * 
      * @return
      *     possible object is
@@ -161,7 +161,7 @@ public class ConsultaSRO {
     }
 
     /**
-     * Sets the value of the senhaSro property.
+     * Define o valor da propriedade senhaSro.
      * 
      * @param value
      *     allowed object is

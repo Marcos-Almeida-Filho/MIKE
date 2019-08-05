@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for bloquearObjeto complex type.
+ * <p>Classe Java de bloquearObjeto complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="bloquearObjeto">
@@ -49,7 +49,7 @@ public class BloquearObjeto {
     protected String senha;
 
     /**
-     * Gets the value of the numeroEtiqueta property.
+     * Obtém o valor da propriedade numeroEtiqueta.
      * 
      * @return
      *     possible object is
@@ -61,7 +61,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Sets the value of the numeroEtiqueta property.
+     * Define o valor da propriedade numeroEtiqueta.
      * 
      * @param value
      *     allowed object is
@@ -73,7 +73,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Gets the value of the idPlp property.
+     * Obtém o valor da propriedade idPlp.
      * 
      * @return
      *     possible object is
@@ -85,7 +85,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Sets the value of the idPlp property.
+     * Define o valor da propriedade idPlp.
      * 
      * @param value
      *     allowed object is
@@ -97,7 +97,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Gets the value of the tipoBloqueio property.
+     * Obtém o valor da propriedade tipoBloqueio.
      * 
      * @return
      *     possible object is
@@ -109,7 +109,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Sets the value of the tipoBloqueio property.
+     * Define o valor da propriedade tipoBloqueio.
      * 
      * @param value
      *     allowed object is
@@ -121,7 +121,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Gets the value of the acao property.
+     * Obtém o valor da propriedade acao.
      * 
      * @return
      *     possible object is
@@ -133,7 +133,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Sets the value of the acao property.
+     * Define o valor da propriedade acao.
      * 
      * @param value
      *     allowed object is
@@ -145,7 +145,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Gets the value of the usuario property.
+     * Obtém o valor da propriedade usuario.
      * 
      * @return
      *     possible object is
@@ -157,7 +157,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Sets the value of the usuario property.
+     * Define o valor da propriedade usuario.
      * 
      * @param value
      *     allowed object is
@@ -169,7 +169,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Gets the value of the senha property.
+     * Obtém o valor da propriedade senha.
      * 
      * @return
      *     possible object is
@@ -181,7 +181,7 @@ public class BloquearObjeto {
     }
 
     /**
-     * Sets the value of the senha property.
+     * Define o valor da propriedade senha.
      * 
      * @param value
      *     allowed object is

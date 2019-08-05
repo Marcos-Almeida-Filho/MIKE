@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for solicitaEtiquetas complex type.
+ * <p>Classe Java de solicitaEtiquetas complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="solicitaEtiquetas">
@@ -49,7 +49,7 @@ public class SolicitaEtiquetas {
     protected String senha;
 
     /**
-     * Gets the value of the tipoDestinatario property.
+     * Obtém o valor da propriedade tipoDestinatario.
      * 
      * @return
      *     possible object is
@@ -61,7 +61,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Sets the value of the tipoDestinatario property.
+     * Define o valor da propriedade tipoDestinatario.
      * 
      * @param value
      *     allowed object is
@@ -73,7 +73,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Gets the value of the identificador property.
+     * Obtém o valor da propriedade identificador.
      * 
      * @return
      *     possible object is
@@ -85,7 +85,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Sets the value of the identificador property.
+     * Define o valor da propriedade identificador.
      * 
      * @param value
      *     allowed object is
@@ -97,7 +97,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Gets the value of the idServico property.
+     * Obtém o valor da propriedade idServico.
      * 
      * @return
      *     possible object is
@@ -109,7 +109,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Sets the value of the idServico property.
+     * Define o valor da propriedade idServico.
      * 
      * @param value
      *     allowed object is
@@ -121,7 +121,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Gets the value of the qtdEtiquetas property.
+     * Obtém o valor da propriedade qtdEtiquetas.
      * 
      * @return
      *     possible object is
@@ -133,7 +133,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Sets the value of the qtdEtiquetas property.
+     * Define o valor da propriedade qtdEtiquetas.
      * 
      * @param value
      *     allowed object is
@@ -145,7 +145,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Gets the value of the usuario property.
+     * Obtém o valor da propriedade usuario.
      * 
      * @return
      *     possible object is
@@ -157,7 +157,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Sets the value of the usuario property.
+     * Define o valor da propriedade usuario.
      * 
      * @param value
      *     allowed object is
@@ -169,7 +169,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Gets the value of the senha property.
+     * Obtém o valor da propriedade senha.
      * 
      * @return
      *     possible object is
@@ -181,7 +181,7 @@ public class SolicitaEtiquetas {
     }
 
     /**
-     * Sets the value of the senha property.
+     * Define o valor da propriedade senha.
      * 
      * @param value
      *     allowed object is

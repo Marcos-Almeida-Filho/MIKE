@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for objeto complex type.
+ * <p>Classe Java de objeto complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="objeto">
@@ -46,7 +46,7 @@ public class Objeto {
     protected String num;
 
     /**
-     * Gets the value of the desc property.
+     * Obtém o valor da propriedade desc.
      * 
      * @return
      *     possible object is
@@ -58,7 +58,7 @@ public class Objeto {
     }
 
     /**
-     * Sets the value of the desc property.
+     * Define o valor da propriedade desc.
      * 
      * @param value
      *     allowed object is
@@ -70,7 +70,7 @@ public class Objeto {
     }
 
     /**
-     * Gets the value of the entrega property.
+     * Obtém o valor da propriedade entrega.
      * 
      * @return
      *     possible object is
@@ -82,7 +82,7 @@ public class Objeto {
     }
 
     /**
-     * Sets the value of the entrega property.
+     * Define o valor da propriedade entrega.
      * 
      * @param value
      *     allowed object is
@@ -94,7 +94,7 @@ public class Objeto {
     }
 
     /**
-     * Gets the value of the id property.
+     * Obtém o valor da propriedade id.
      * 
      * @return
      *     possible object is
@@ -106,7 +106,7 @@ public class Objeto {
     }
 
     /**
-     * Sets the value of the id property.
+     * Define o valor da propriedade id.
      * 
      * @param value
      *     allowed object is
@@ -118,7 +118,7 @@ public class Objeto {
     }
 
     /**
-     * Gets the value of the item property.
+     * Obtém o valor da propriedade item.
      * 
      * @return
      *     possible object is
@@ -130,7 +130,7 @@ public class Objeto {
     }
 
     /**
-     * Sets the value of the item property.
+     * Define o valor da propriedade item.
      * 
      * @param value
      *     allowed object is
@@ -142,7 +142,7 @@ public class Objeto {
     }
 
     /**
-     * Gets the value of the num property.
+     * Obtém o valor da propriedade num.
      * 
      * @return
      *     possible object is
@@ -154,7 +154,7 @@ public class Objeto {
     }
 
     /**
-     * Sets the value of the num property.
+     * Define o valor da propriedade num.
      * 
      * @param value
      *     allowed object is

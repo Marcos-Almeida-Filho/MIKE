@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for consultaCEP complex type.
+ * <p>Classe Java de consultaCEP complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="consultaCEP">
@@ -34,7 +34,7 @@ public class ConsultaCEP {
     protected String cep;
 
     /**
-     * Gets the value of the cep property.
+     * Obtém o valor da propriedade cep.
      * 
      * @return
      *     possible object is
@@ -46,7 +46,7 @@ public class ConsultaCEP {
     }
 
     /**
-     * Sets the value of the cep property.
+     * Define o valor da propriedade cep.
      * 
      * @param value
      *     allowed object is

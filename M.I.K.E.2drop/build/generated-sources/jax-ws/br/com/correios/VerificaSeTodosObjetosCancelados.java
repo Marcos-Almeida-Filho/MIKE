@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for VerificaSeTodosObjetosCancelados complex type.
+ * <p>Classe Java de VerificaSeTodosObjetosCancelados complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="VerificaSeTodosObjetosCancelados">

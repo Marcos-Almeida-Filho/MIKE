@@ -11,9 +11,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for coleta complex type.
+ * <p>Classe Java de coleta complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="coleta">
@@ -67,7 +67,7 @@ public class Coleta {
     protected String valorDeclarado;
 
     /**
-     * Gets the value of the cklist property.
+     * Obtém o valor da propriedade cklist.
      * 
      * @return
      *     possible object is
@@ -79,7 +79,7 @@ public class Coleta {
     }
 
     /**
-     * Sets the value of the cklist property.
+     * Define o valor da propriedade cklist.
      * 
      * @param value
      *     allowed object is
@@ -91,7 +91,7 @@ public class Coleta {
     }
 
     /**
-     * Gets the value of the descricao property.
+     * Obtém o valor da propriedade descricao.
      * 
      * @return
      *     possible object is
@@ -103,7 +103,7 @@ public class Coleta {
     }
 
     /**
-     * Sets the value of the descricao property.
+     * Define o valor da propriedade descricao.
      * 
      * @param value
      *     allowed object is
@@ -144,7 +144,7 @@ public class Coleta {
     }
 
     /**
-     * Gets the value of the idCliente property.
+     * Obtém o valor da propriedade idCliente.
      * 
      * @return
      *     possible object is
@@ -156,7 +156,7 @@ public class Coleta {
     }
 
     /**
-     * Sets the value of the idCliente property.
+     * Define o valor da propriedade idCliente.
      * 
      * @param value
      *     allowed object is
@@ -197,7 +197,7 @@ public class Coleta {
     }
 
     /**
-     * Gets the value of the remetente property.
+     * Obtém o valor da propriedade remetente.
      * 
      * @return
      *     possible object is
@@ -209,7 +209,7 @@ public class Coleta {
     }
 
     /**
-     * Sets the value of the remetente property.
+     * Define o valor da propriedade remetente.
      * 
      * @param value
      *     allowed object is
@@ -221,7 +221,7 @@ public class Coleta {
     }
 
     /**
-     * Gets the value of the tipo property.
+     * Obtém o valor da propriedade tipo.
      * 
      * @return
      *     possible object is
@@ -233,7 +233,7 @@ public class Coleta {
     }
 
     /**
-     * Sets the value of the tipo property.
+     * Define o valor da propriedade tipo.
      * 
      * @param value
      *     allowed object is
@@ -245,7 +245,7 @@ public class Coleta {
     }
 
     /**
-     * Gets the value of the valorDeclarado property.
+     * Obtém o valor da propriedade valorDeclarado.
      * 
      * @return
      *     possible object is
@@ -257,7 +257,7 @@ public class Coleta {
     }
 
     /**
-     * Sets the value of the valorDeclarado property.
+     * Define o valor da propriedade valorDeclarado.
      * 
      * @param value
      *     allowed object is

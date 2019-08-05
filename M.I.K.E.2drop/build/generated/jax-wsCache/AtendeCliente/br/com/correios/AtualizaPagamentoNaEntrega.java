@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for atualizaPagamentoNaEntrega complex type.
+ * <p>Classe Java de atualizaPagamentoNaEntrega complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="atualizaPagamentoNaEntrega">
@@ -37,7 +37,7 @@ public class AtualizaPagamentoNaEntrega {
     protected String senha;
 
     /**
-     * Gets the value of the usuario property.
+     * Obtém o valor da propriedade usuario.
      * 
      * @return
      *     possible object is
@@ -49,7 +49,7 @@ public class AtualizaPagamentoNaEntrega {
     }
 
     /**
-     * Sets the value of the usuario property.
+     * Define o valor da propriedade usuario.
      * 
      * @param value
      *     allowed object is
@@ -61,7 +61,7 @@ public class AtualizaPagamentoNaEntrega {
     }
 
     /**
-     * Gets the value of the senha property.
+     * Obtém o valor da propriedade senha.
      * 
      * @return
      *     possible object is
@@ -73,7 +73,7 @@ public class AtualizaPagamentoNaEntrega {
     }
 
     /**
-     * Sets the value of the senha property.
+     * Define o valor da propriedade senha.
      * 
      * @param value
      *     allowed object is

@@ -10,9 +10,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for coletaReversa complex type.
+ * <p>Classe Java de coletaReversa complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="coletaReversa">
@@ -56,7 +56,7 @@ public class ColetaReversa
     protected String servicoAdicional;
 
     /**
-     * Gets the value of the ag property.
+     * Obtém o valor da propriedade ag.
      * 
      * @return
      *     possible object is
@@ -68,7 +68,7 @@ public class ColetaReversa
     }
 
     /**
-     * Sets the value of the ag property.
+     * Define o valor da propriedade ag.
      * 
      * @param value
      *     allowed object is
@@ -80,7 +80,7 @@ public class ColetaReversa
     }
 
     /**
-     * Gets the value of the ar property.
+     * Obtém o valor da propriedade ar.
      * 
      * @return
      *     possible object is
@@ -92,7 +92,7 @@ public class ColetaReversa
     }
 
     /**
-     * Sets the value of the ar property.
+     * Define o valor da propriedade ar.
      * 
      * @param value
      *     allowed object is
@@ -104,7 +104,7 @@ public class ColetaReversa
     }
 
     /**
-     * Gets the value of the cartao property.
+     * Obtém o valor da propriedade cartao.
      * 
      * @return
      *     possible object is
@@ -116,7 +116,7 @@ public class ColetaReversa
     }
 
     /**
-     * Sets the value of the cartao property.
+     * Define o valor da propriedade cartao.
      * 
      * @param value
      *     allowed object is
@@ -128,7 +128,7 @@ public class ColetaReversa
     }
 
     /**
-     * Gets the value of the numero property.
+     * Obtém o valor da propriedade numero.
      * 
      * @return
      *     possible object is
@@ -140,7 +140,7 @@ public class ColetaReversa
     }
 
     /**
-     * Sets the value of the numero property.
+     * Define o valor da propriedade numero.
      * 
      * @param value
      *     allowed object is
@@ -181,7 +181,7 @@ public class ColetaReversa
     }
 
     /**
-     * Gets the value of the servicoAdicional property.
+     * Obtém o valor da propriedade servicoAdicional.
      * 
      * @return
      *     possible object is
@@ -193,7 +193,7 @@ public class ColetaReversa
     }
 
     /**
-     * Sets the value of the servicoAdicional property.
+     * Define o valor da propriedade servicoAdicional.
      * 
      * @param value
      *     allowed object is

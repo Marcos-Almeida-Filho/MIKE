@@ -7,9 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for cancelarPedidoScol complex type.
+ * <p>Classe Java de cancelarPedidoScol complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="cancelarPedidoScol">
@@ -46,7 +46,7 @@ public class CancelarPedidoScol {
     protected String senha;
 
     /**
-     * Gets the value of the codAdministrativo property.
+     * Obtém o valor da propriedade codAdministrativo.
      * 
      * @return
      *     possible object is
@@ -58,7 +58,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Sets the value of the codAdministrativo property.
+     * Define o valor da propriedade codAdministrativo.
      * 
      * @param value
      *     allowed object is
@@ -70,7 +70,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Gets the value of the idPostagem property.
+     * Obtém o valor da propriedade idPostagem.
      * 
      * @return
      *     possible object is
@@ -82,7 +82,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Sets the value of the idPostagem property.
+     * Define o valor da propriedade idPostagem.
      * 
      * @param value
      *     allowed object is
@@ -94,7 +94,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Gets the value of the tipo property.
+     * Obtém o valor da propriedade tipo.
      * 
      * @return
      *     possible object is
@@ -106,7 +106,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Sets the value of the tipo property.
+     * Define o valor da propriedade tipo.
      * 
      * @param value
      *     allowed object is
@@ -118,7 +118,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Gets the value of the usuario property.
+     * Obtém o valor da propriedade usuario.
      * 
      * @return
      *     possible object is
@@ -130,7 +130,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Sets the value of the usuario property.
+     * Define o valor da propriedade usuario.
      * 
      * @param value
      *     allowed object is
@@ -142,7 +142,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Gets the value of the senha property.
+     * Obtém o valor da propriedade senha.
      * 
      * @return
      *     possible object is
@@ -154,7 +154,7 @@ public class CancelarPedidoScol {
     }
 
     /**
-     * Sets the value of the senha property.
+     * Define o valor da propriedade senha.
      * 
      * @param value
      *     allowed object is

@@ -10,9 +10,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
- * <p>Java class for buscaDataAtualResponse complex type.
+ * <p>Classe Java de buscaDataAtualResponse complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="buscaDataAtualResponse">
@@ -39,7 +39,7 @@ public class BuscaDataAtualResponse {
     protected XMLGregorianCalendar _return;
 
     /**
-     * Gets the value of the return property.
+     * Obtém o valor da propriedade return.
      * 
      * @return
      *     possible object is
@@ -51,7 +51,7 @@ public class BuscaDataAtualResponse {
     }
 
     /**
-     * Sets the value of the return property.
+     * Define o valor da propriedade return.
      * 
      * @param value
      *     allowed object is

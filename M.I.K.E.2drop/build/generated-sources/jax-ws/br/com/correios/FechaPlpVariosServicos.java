@@ -9,9 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for fechaPlpVariosServicos complex type.
+ * <p>Classe Java de fechaPlpVariosServicos complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="fechaPlpVariosServicos">
@@ -51,7 +51,7 @@ public class FechaPlpVariosServicos {
     protected String senha;
 
     /**
-     * Gets the value of the xml property.
+     * Obtém o valor da propriedade xml.
      * 
      * @return
      *     possible object is
@@ -63,7 +63,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Sets the value of the xml property.
+     * Define o valor da propriedade xml.
      * 
      * @param value
      *     allowed object is
@@ -75,7 +75,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Gets the value of the idPlpCliente property.
+     * Obtém o valor da propriedade idPlpCliente.
      * 
      * @return
      *     possible object is
@@ -87,7 +87,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Sets the value of the idPlpCliente property.
+     * Define o valor da propriedade idPlpCliente.
      * 
      * @param value
      *     allowed object is
@@ -99,7 +99,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Gets the value of the cartaoPostagem property.
+     * Obtém o valor da propriedade cartaoPostagem.
      * 
      * @return
      *     possible object is
@@ -111,7 +111,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Sets the value of the cartaoPostagem property.
+     * Define o valor da propriedade cartaoPostagem.
      * 
      * @param value
      *     allowed object is
@@ -152,7 +152,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Gets the value of the usuario property.
+     * Obtém o valor da propriedade usuario.
      * 
      * @return
      *     possible object is
@@ -164,7 +164,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Sets the value of the usuario property.
+     * Define o valor da propriedade usuario.
      * 
      * @param value
      *     allowed object is
@@ -176,7 +176,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Gets the value of the senha property.
+     * Obtém o valor da propriedade senha.
      * 
      * @return
      *     possible object is
@@ -188,7 +188,7 @@ public class FechaPlpVariosServicos {
     }
 
     /**
-     * Sets the value of the senha property.
+     * Define o valor da propriedade senha.
      * 
      * @param value
      *     allowed object is

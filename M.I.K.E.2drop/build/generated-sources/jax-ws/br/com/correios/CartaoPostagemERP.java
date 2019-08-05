@@ -12,9 +12,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
- * <p>Java class for cartaoPostagemERP complex type.
+ * <p>Classe Java de cartaoPostagemERP complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="cartaoPostagemERP">
@@ -93,7 +93,7 @@ public class CartaoPostagemERP {
     protected List<UnidadePostagemERP> unidadesPostagem;
 
     /**
-     * Gets the value of the codigoAdministrativo property.
+     * Obtém o valor da propriedade codigoAdministrativo.
      * 
      * @return
      *     possible object is
@@ -105,7 +105,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the codigoAdministrativo property.
+     * Define o valor da propriedade codigoAdministrativo.
      * 
      * @param value
      *     allowed object is
@@ -146,7 +146,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the dataAtualizacao property.
+     * Obtém o valor da propriedade dataAtualizacao.
      * 
      * @return
      *     possible object is
@@ -158,7 +158,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the dataAtualizacao property.
+     * Define o valor da propriedade dataAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -170,7 +170,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the dataVigenciaFim property.
+     * Obtém o valor da propriedade dataVigenciaFim.
      * 
      * @return
      *     possible object is
@@ -182,7 +182,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the dataVigenciaFim property.
+     * Define o valor da propriedade dataVigenciaFim.
      * 
      * @param value
      *     allowed object is
@@ -194,7 +194,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the dataVigenciaInicio property.
+     * Obtém o valor da propriedade dataVigenciaInicio.
      * 
      * @return
      *     possible object is
@@ -206,7 +206,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the dataVigenciaInicio property.
+     * Define o valor da propriedade dataVigenciaInicio.
      * 
      * @param value
      *     allowed object is
@@ -218,7 +218,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the datajAtualizacao property.
+     * Obtém o valor da propriedade datajAtualizacao.
      * 
      * @return
      *     possible object is
@@ -230,7 +230,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the datajAtualizacao property.
+     * Define o valor da propriedade datajAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -242,7 +242,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the datajVigenciaFim property.
+     * Obtém o valor da propriedade datajVigenciaFim.
      * 
      * @return
      *     possible object is
@@ -254,7 +254,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the datajVigenciaFim property.
+     * Define o valor da propriedade datajVigenciaFim.
      * 
      * @param value
      *     allowed object is
@@ -266,7 +266,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the datajVigenciaInicio property.
+     * Obtém o valor da propriedade datajVigenciaInicio.
      * 
      * @return
      *     possible object is
@@ -278,7 +278,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the datajVigenciaInicio property.
+     * Define o valor da propriedade datajVigenciaInicio.
      * 
      * @param value
      *     allowed object is
@@ -290,7 +290,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the descricaoStatusCartao property.
+     * Obtém o valor da propriedade descricaoStatusCartao.
      * 
      * @return
      *     possible object is
@@ -302,7 +302,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the descricaoStatusCartao property.
+     * Define o valor da propriedade descricaoStatusCartao.
      * 
      * @param value
      *     allowed object is
@@ -314,7 +314,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the descricaoUnidadePostagemGenerica property.
+     * Obtém o valor da propriedade descricaoUnidadePostagemGenerica.
      * 
      * @return
      *     possible object is
@@ -326,7 +326,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the descricaoUnidadePostagemGenerica property.
+     * Define o valor da propriedade descricaoUnidadePostagemGenerica.
      * 
      * @param value
      *     allowed object is
@@ -338,7 +338,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the horajAtualizacao property.
+     * Obtém o valor da propriedade horajAtualizacao.
      * 
      * @return
      *     possible object is
@@ -350,7 +350,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the horajAtualizacao property.
+     * Define o valor da propriedade horajAtualizacao.
      * 
      * @param value
      *     allowed object is
@@ -362,7 +362,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the numero property.
+     * Obtém o valor da propriedade numero.
      * 
      * @return
      *     possible object is
@@ -374,7 +374,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the numero property.
+     * Define o valor da propriedade numero.
      * 
      * @param value
      *     allowed object is
@@ -415,7 +415,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the statusCartaoPostagem property.
+     * Obtém o valor da propriedade statusCartaoPostagem.
      * 
      * @return
      *     possible object is
@@ -427,7 +427,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the statusCartaoPostagem property.
+     * Define o valor da propriedade statusCartaoPostagem.
      * 
      * @param value
      *     allowed object is
@@ -439,7 +439,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the statusCodigo property.
+     * Obtém o valor da propriedade statusCodigo.
      * 
      * @return
      *     possible object is
@@ -451,7 +451,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the statusCodigo property.
+     * Define o valor da propriedade statusCodigo.
      * 
      * @param value
      *     allowed object is
@@ -463,7 +463,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Gets the value of the unidadeGenerica property.
+     * Obtém o valor da propriedade unidadeGenerica.
      * 
      * @return
      *     possible object is
@@ -475,7 +475,7 @@ public class CartaoPostagemERP {
     }
 
     /**
-     * Sets the value of the unidadeGenerica property.
+     * Define o valor da propriedade unidadeGenerica.
      * 
      * @param value
      *     allowed object is
