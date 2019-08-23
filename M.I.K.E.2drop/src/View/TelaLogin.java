@@ -8,6 +8,7 @@ package View;
 import Bean.UsuariosBean;
 import Connection.Session;
 import DAO.UsuariosDAO;
+import static View.TelaPrincipal.lblnome;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
@@ -25,25 +26,48 @@ public class TelaLogin extends javax.swing.JFrame {
     }
 
     public void login() {
-        String apelido = "";
+        //Deixar o tipo de login salvo
+        Session.db = cblogin.getSelectedItem().toString();
 
-        UsuariosDAO ud2 = new UsuariosDAO();
-
-        for (UsuariosBean ub : ud2.readapelido(TxtLogin.getText())) {
-            apelido = ub.getNome();
-        }
-        Session session = new Session();
+        //DAO para pesquisar nome
         UsuariosDAO ud = new UsuariosDAO();
+
+        //Pegar nome e nível de quem está logando
+        for (UsuariosBean ub : ud.readapelido(TxtLogin.getText())) {
+            Session.nome = ub.getNome();
+            Session.nivel = ub.getNivel();
+        }
+
+        //Transformar campo password em String
         String senha = new String(TxtSenha.getPassword());
-        if (ud.checklogin(TxtLogin.getText(), senha)) {
+
+        //Checar se login e senha estão corretos
+        if (ud.checklogin(TxtLogin.getText(), senha)) {//Se estiver correto
+            //Instanciar TelaPrincipal
             TelaPrincipal tela = new TelaPrincipal();
-            tela.setTitle("M.I.K.E. version 1.0.0 - Usuário: " + apelido);
+
+            //Setar título da TelaPrincipal
+            tela.setTitle("M.I.K.E. version 1.0.0 - Usuário: " + Session.nome + " - Nível de Acesso: " + Session.nivel);
+
+            //Mensagem de boas-vindas
+            lblnome.setText("Bem vindo(a) " + Session.nome + "!");
+
+            //Deixar visível a TelaPrincipal
             tela.setVisible(true);
-            session.login = TxtLogin.getText();
+
+            //Salvar o login da sessão
+            Session.login = TxtLogin.getText();
+
+            //Fechar tela de login
             this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(null, "Informações incorretas!");
+        } else {//Se estiver errado
+            //Mensagem de erro
+            JOptionPane.showMessageDialog(null, "Informações de login incorretas!");
+
+            //Voltar para campo de login
             TxtLogin.requestFocus();
+
+            //Selecionar todo texto do campo login
             TxtLogin.selectAll();
         }
     }

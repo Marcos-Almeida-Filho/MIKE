@@ -17,6 +17,7 @@ import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
 import Bean.ServicoPedidoItensNFBean;
+import Connection.Session;
 import DAO.OSDAO;
 import DAO.OSDocumentosDAO;
 import DAO.OSProcessosDAO;
@@ -29,7 +30,6 @@ import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import DAO.ServicoPedidoItensNFDAO;
-import Methods.Buttons;
 import Methods.SendEmail;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
@@ -79,7 +79,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     public PedidoServico() {
         initComponents();
         filltablepedidoorcamento();
-        Buttons.btnexcluir(this);
     }
 
     public static void filltablepedidoorcamento() {
@@ -1539,7 +1538,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             for (int i = 0; i < rc; i++) {
                 //Quantidade do item
                 int qtditem = Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString());
-                
+
                 //Pegar id do material
                 for (ServicoMateriaisBean smb2 : smd.readid(tableitensorcamento.getValueAt(i, 2).toString())) {
                     idmaterial = smb2.getId();
@@ -1569,7 +1568,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         smmb.setTipo(txtnumeropedido.getText());
                         smmb.setSaldo(saldoatual - qtditem);
                         smmb.setData(simpleDateFormat.format(c.getTime()));
-                        smmb.setUsuario(TelaPrincipal.lblapelido.getText());
+                        smmb.setUsuario(Session.nome);
 
                         //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
                         smmd.create(smmb);
@@ -1673,7 +1672,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                             if (ob.getTopo().equals("true")) {
                                 radiotopo.setSelected(true);
                             }
-                            if (ob.getReconstrucao().equals("true")){
+                            if (ob.getReconstrucao().equals("true")) {
                                 radioreconstrucao.setSelected(true);
                             }
                             if (ob.getCompleta().equals("true")) {

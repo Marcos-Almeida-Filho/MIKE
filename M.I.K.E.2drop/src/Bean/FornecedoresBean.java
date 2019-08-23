@@ -12,12 +12,12 @@ package Bean;
 public class FornecedoresBean {
 
     private int id;
+    private String data;
     private String nome;
     private String razaosocial;
     private String cnpj;
     private String ie;
     private String telefone;
-    private String tipo;
     private String logradouro;
     private String numero;
     private String complemento;
@@ -25,6 +25,7 @@ public class FornecedoresBean {
     private String cidade;
     private String uf;
     private String cep;
+    private String emailnfe;
 
     public int getId() {
         return id;
@@ -32,6 +33,14 @@ public class FornecedoresBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     public String getNome() {
@@ -72,14 +81,6 @@ public class FornecedoresBean {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public String getLogradouro() {
@@ -136,6 +137,14 @@ public class FornecedoresBean {
 
     public void setCep(String cep) {
         this.cep = cep;
+    }
+
+    public String getEmailnfe() {
+        return emailnfe;
+    }
+
+    public void setEmailnfe(String emailnfe) {
+        this.emailnfe = emailnfe;
     }
 
 }

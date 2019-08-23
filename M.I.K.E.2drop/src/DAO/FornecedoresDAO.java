@@ -33,7 +33,7 @@ public class FornecedoresDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO fornecedores (nome, razaosocial, cnpj, ie, telefone, logradouro, numero, complemento, bairro, cidade, uf, cep) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO fornecedores (nome, razaosocial, cnpj, ie, telefone, logradouro, numero, complemento, bairro, cidade, uf, cep, data, emailnfe) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, fb.getNome());
             stmt.setString(2, fb.getRazaosocial());
@@ -47,10 +47,12 @@ public class FornecedoresDAO {
             stmt.setString(10, fb.getCidade());
             stmt.setString(11, fb.getUf());
             stmt.setString(12, fb.getCep());
+            stmt.setString(13, fb.getData());
+            stmt.setString(14, fb.getEmailnfe());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao criar Fornecedor!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -91,11 +93,48 @@ public class FornecedoresDAO {
                 fb.setCidade(rs.getString("cidade"));
                 fb.setUf(rs.getString("uf"));
                 fb.setCep(rs.getString("cep"));
+                fb.setData(rs.getString("data"));
+                fb.setEmailnfe(rs.getString("emailnfe"));
 
                 listfb.add(fb);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(FornecedoresDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listfb;
+    }
+    
+    public List<FornecedoresBean> readcreated(String data) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<FornecedoresBean> listfb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM fornecedores WHERE data = ?");
+            stmt.setString(1, data);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                FornecedoresBean fb = new FornecedoresBean();
+
+                fb.setId(rs.getInt("id"));
+
+                listfb.add(fb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(FornecedoresDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -137,6 +176,8 @@ public class FornecedoresDAO {
                 fb.setCidade(rs.getString("cidade"));
                 fb.setUf(rs.getString("uf"));
                 fb.setCep(rs.getString("cep"));
+                fb.setData(rs.getString("data"));
+                fb.setEmailnfe(rs.getString("emailnfe"));
 
                 listfb.add(fb);
             }
@@ -196,7 +237,7 @@ public class FornecedoresDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE clientes SET nome = ?, razaosocial = ?, cnpj = ?, ie = ?, telefone = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE fornecedores SET nome = ?, razaosocial = ?, cnpj = ?, ie = ?, telefone = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, emailnfe = ? WHERE id = ?");
 
             stmt.setString(1, fb.getNome());
             stmt.setString(2, fb.getRazaosocial());
@@ -210,11 +251,12 @@ public class FornecedoresDAO {
             stmt.setString(10, fb.getCidade());
             stmt.setString(11, fb.getUf());
             stmt.setString(12, fb.getCep());
-            stmt.setInt(13, fb.getId());
+            stmt.setString(13, fb.getEmailnfe());
+            stmt.setInt(14, fb.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar o Fornecedor!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {

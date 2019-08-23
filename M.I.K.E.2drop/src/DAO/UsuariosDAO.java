@@ -149,6 +149,7 @@ public class UsuariosDAO {
                 UsuariosBean ub = new UsuariosBean();
 
                 ub.setNome(rs.getString("nome"));
+                ub.setNivel(rs.getString("nivel"));
 
                 listu.add(ub);
             }

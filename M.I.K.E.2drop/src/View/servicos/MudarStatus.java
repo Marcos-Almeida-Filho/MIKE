@@ -8,10 +8,10 @@ package View.servicos;
 import Bean.OSBean;
 import Bean.ServicoMateriaisBean;
 import Bean.ServicoMateriaisMovimentacaoBean;
+import Connection.Session;
 import DAO.OSDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.ServicoMateriaisMovimentacaoDAO;
-import View.TelaPrincipal;
 import static View.servicos.OS.txtcodigo;
 import static View.servicos.OS.txtfinal;
 import static View.servicos.OS.txtnumeroos;
@@ -167,7 +167,7 @@ public class MudarStatus extends javax.swing.JInternalFrame {
             smmb.setTipo("OS " + txtnumeroos.getText());
             smmb.setSaldo(saldoatual + Integer.parseInt(txtfinal.getText()));
             smmb.setData(simpleDateFormat.format(c.getTime()));
-            smmb.setUsuario(TelaPrincipal.lblapelido.getText());
+            smmb.setUsuario(Session.nome);
 
             //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
             smmd.create(smmb);

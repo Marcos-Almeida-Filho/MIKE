@@ -6,8 +6,8 @@
 package View.compras;
 
 import Bean.ComprasSolicitacaoBean;
+import Connection.Session;
 import DAO.ComprasSolicitacaoDAO;
-import View.TelaPrincipal;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -498,7 +498,7 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
             //Dados para criar nova solicitação
             csb.setIdtela(title);
             csb.setData(title);
-            csb.setSolicitante(TelaPrincipal.lbllogin.getText());
+            csb.setSolicitante(Session.nome);
             csb.setTipo(String.valueOf(cbtipo.getSelectedItem()));
             csb.setNotes(txtnotes.getText());
             csb.setStatus("Ativo");

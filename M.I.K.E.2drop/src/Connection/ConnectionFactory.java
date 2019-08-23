@@ -6,11 +6,9 @@
 package Connection;
 
 import View.TelaLogin;
-import View.TelaPrincipal;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -33,7 +31,7 @@ public class ConnectionFactory {
     private static final String PASSNUVEM = "Speed271113=";
 
     public static Connection getConnection() {
-        String tipologin = TelaPrincipal.lbldb.getText();
+        String tipologin = Session.db;
 
         int logintype = 0;
 

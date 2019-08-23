@@ -11,6 +11,8 @@ package Connection;
  */
 public class Session {
 
-    public String login = "";
-    public String nivel = "";
+    public static String login;
+    public static String nome;
+    public static String nivel;
+    public static String db;
 }

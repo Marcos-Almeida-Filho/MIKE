@@ -340,11 +340,13 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         float totalparcelas = 0;
         //Verificar se os campos tem valores e então somar para comparar depois
         if (!txttotal.getText().equals("") && tableparcelas.getRowCount() > 0) {
-            total = Float.parseFloat(txttotal.getText().replace(",", "."));
+            String tot = txttotal.getText().replace(".", "");
+            total = Float.parseFloat(tot.replace(",", "."));
             for (int i = 0; i < tableparcelas.getRowCount(); i++) {
                 String valorparcela = tableparcelas.getValueAt(i, 2).toString();
-                String valorparcelar = valorparcela.replace(",", ".");
-                float valorparcelaf = Float.parseFloat(valorparcelar);
+                String valorparcelar = valorparcela.replace(".", "");
+                String valorparcelas = valorparcelar.replace(",", ".");
+                float valorparcelaf = Float.parseFloat(valorparcelas);
                 totalparcelas = totalparcelas + valorparcelaf;
             }
         }
@@ -484,8 +486,9 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                 model.setNumRows(0);
                 int parcelas = Integer.parseInt(JOptionPane.showInputDialog(null, "Quantas parcelas?", "Adicionar Parcelas", JOptionPane.YES_OPTION));
                 for (int i = 0; i < parcelas; i++) {
-                    String valor = txttotal.getText().replace(",", ".");
-                    Float parcela = Float.parseFloat(valor) / parcelas;
+                    String valor = txttotal.getText().replace(".", "");
+                    String vv = valor.replace(",", ".");
+                    Float parcela = Float.parseFloat(vv) / parcelas;
                     DecimalFormat formatter = new DecimalFormat("#,###.00");
                     String v = formatter.format(parcela);
                     model.addRow(new Object[]{

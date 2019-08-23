@@ -7,8 +7,8 @@ package DAO;
 
 import Bean.GrupoDeUsuariosBean;
 import Connection.ConnectionFactory;
+import Connection.Session;
 import Methods.SendEmail;
-import View.TelaPrincipal;
 import View.administracao.GrupoDeUsuarios;
 import java.awt.AWTException;
 import java.awt.HeadlessException;
@@ -212,7 +212,7 @@ public class GrupoDeUsuariosDAO {
 
         try {
             stmt = con.prepareStatement("SELECT * FROM grupo_usuarios WHERE nome = ?");
-            stmt.setString(1, TelaPrincipal.lblgrupo.getText());
+            stmt.setString(1, Session.nivel);
             rs = stmt.executeQuery();
 
             while (rs.next()) {

@@ -14,6 +14,7 @@ import Bean.ServicoMateriaisMovimentacaoBean;
 import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
+import Connection.Session;
 import DAO.OSDAO;
 import DAO.OSDocumentosDAO;
 import DAO.OSInspecaoDAO;
@@ -25,7 +26,6 @@ import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import Methods.SendEmail;
 import Methods.SoNumeros;
-import Print.PrintOS;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.PedidoServico.txtnumeropedido;
@@ -475,7 +475,7 @@ public class OS extends javax.swing.JInternalFrame {
                 smmb.setTipo(txtnumeroos.getText());
                 smmb.setSaldo(saldoatual + Integer.parseInt(txtfinal.getText()));
                 smmb.setData(simpleDateFormat.format(c.getTime()));
-                smmb.setUsuario(TelaPrincipal.lblapelido.getText());
+                smmb.setUsuario(Session.nome);
 
                 //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
                 smmd.create(smmb);
@@ -1831,7 +1831,7 @@ public class OS extends javax.swing.JInternalFrame {
                         String pattern = "dd/MM/yyyy HH:mm:ss";
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
                         opb.setInicio(simpleDateFormat.format(c.getTime()));
-                        opb.setUsuario(TelaPrincipal.lblapelido.getText());
+                        opb.setUsuario(Session.nome);
                         opb.setId(Integer.parseInt(tableprocessos.getValueAt(tableprocessos.getSelectedRow(), 1).toString()));
 
                         //inicio = ?, usuario = ? WHERE id = ?

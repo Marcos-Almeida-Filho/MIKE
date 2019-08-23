@@ -7,6 +7,7 @@ package View;
 
 import Bean.GrupoDeUsuariosBean;
 import Bean.UsuariosBean;
+import Connection.Session;
 import DAO.GrupoDeUsuariosDAO;
 import DAO.UsuariosDAO;
 import View.comercial.Clientes;
@@ -23,7 +24,6 @@ import View.comercial.TipoFornecedor;
 import View.compras.ComprasSolicitacao;
 import View.compras.TiposProduto;
 import View.configuracoes.Menus;
-import View.configuracoes.Menus_1;
 import View.financeiro.Bancos;
 import View.financeiro.CondicoesDePagamento;
 import View.financeiro.ContasPagar;
@@ -57,257 +57,95 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }
 
     public void menus() {
-        lbllogin.setText(TelaLogin.TxtLogin.getText());
+        //DAO para pesquisar
         UsuariosDAO ud = new UsuariosDAO();
-        String nivel = "";
-        for (UsuariosBean ub : ud.checknivel(lbllogin.getText())) {
-            nivel = ub.getNivel();
-            lblnome.setText("Bem vindo(a) " + ub.getNome() + "!");
-            lblapelido.setText(ub.getNome());
-            lbldb.setText(TelaLogin.cblogin.getSelectedItem().toString());
+        
+        //Retornar nível do acesso
+        for (UsuariosBean ub : ud.checknivel(Session.login)) {
+            //Setar nível do acesso
+            Session.nivel = ub.getNivel();
         }
-        lblgrupo.setText(nivel);
-        lblgrupo.setVisible(false);
-        lbllogin.setVisible(false);
-        lblapelido.setVisible(false);
-        lbldb.setVisible(false);
         GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
-        Boolean status = true;
-        TelaPrincipal.menuarquivo.setVisible(false);
-        for (GrupoDeUsuariosBean gub : gud.getmenus(nivel)) {
-            if (gub.getMenuadministracao().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+        Boolean status;
+//        TelaPrincipal.menuarquivo.setVisible(false);
+        for (GrupoDeUsuariosBean gub : gud.getmenus(Session.nivel)) {
+            status = !gub.getMenuadministracao().equals("false");
             TelaPrincipal.menuadministracao.setVisible(status);
-            if (gub.getSubmenuusuarios().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuusuarios().equals("false");
             TelaPrincipal.menuitemusuarios.setVisible(status);
-            if (gub.getSubmenugrupodeusuarios().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenugrupodeusuarios().equals("false");
             TelaPrincipal.menuitemgrupodeusuarios.setVisible(status);
-            if (gub.getSubmenurepresentantes().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenurepresentantes().equals("false");
             TelaPrincipal.menuitemrepresentantes.setVisible(status);
-            if (gub.getSubmenuregioesdeatuacao().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuregioesdeatuacao().equals("false");
             TelaPrincipal.menuitemregioesdeatuacao.setVisible(status);
-            if (gub.getMenucomercial().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getMenucomercial().equals("false");
             TelaPrincipal.menucomercial.setVisible(status);
-            if (gub.getSubmenuclientes().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuclientes().equals("false");
             TelaPrincipal.menuitemclientes.setVisible(status);
-            if (gub.getSubmenugrupodeclientes().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenugrupodeclientes().equals("false");
             TelaPrincipal.menuitemgrupodeclientes.setVisible(status);
-            if (gub.getSubmenufornecedores().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenufornecedores().equals("false");
             TelaPrincipal.menuitemfornecedores.setVisible(status);
-            if (gub.getMenufinanceiro().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getMenufinanceiro().equals("false");
             TelaPrincipal.menufinanceiro.setVisible(status);
-            if (gub.getSubmenucontasareceber().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenucontasareceber().equals("false");
             TelaPrincipal.menuitemcontasareceber.setVisible(status);
-            if (gub.getSubmenucontasapagar().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenucontasapagar().equals("false");
             TelaPrincipal.menuitemcontasapagar.setVisible(status);
-            if (gub.getSubmenucondicoesdepagamento().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenucondicoesdepagamento().equals("false");
             TelaPrincipal.menuitemcondicoesdepagamento.setVisible(status);
-            if (gub.getSubmenubancos().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenubancos().equals("false");
             TelaPrincipal.menuitembancos.setVisible(status);
-            if (gub.getMenucompras().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getMenucompras().equals("false");
             TelaPrincipal.menucompras.setVisible(status);
-            if (gub.getSubmenusolicitacaodecompras().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenusolicitacaodecompras().equals("false");
             TelaPrincipal.menuitemsolicitacaodecompras.setVisible(status);
-            if (gub.getSubmenuorcamentodecompras().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuorcamentodecompras().equals("false");
             TelaPrincipal.menuitemorcamentodecompras.setVisible(status);
-            if (gub.getSubmenupedidodecompras().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenupedidodecompras().equals("false");
             TelaPrincipal.menuitempedidodecompras.setVisible(status);
-            if (gub.getSubmenuinsumos().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuinsumos().equals("false");
             TelaPrincipal.menuiteminsumos.setVisible(status);
-            if (gub.getMenulogistica().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getMenulogistica().equals("false");
             TelaPrincipal.menulogistica.setVisible(status);
-            if (gub.getSubmenucarros().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenucarros().equals("false");
             TelaPrincipal.menuitemcarros.setVisible(status);
-            if (gub.getMenuqualidade().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getMenuqualidade().equals("false");
             TelaPrincipal.menuqualidade.setVisible(status);
-            if (gub.getSubmenuinstrumentosdemedicao().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuinstrumentosdemedicao().equals("false");
             TelaPrincipal.menuiteminstrumentosmedicao.setVisible(status);
-            if (gub.getMenuvendas().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getMenuvendas().equals("false");
             TelaPrincipal.menuvendas.setVisible(status);
-            if (gub.getSubmenuorcamentosvenda().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuorcamentosvenda().equals("false");
             TelaPrincipal.menuitemvendasorcamentos.setVisible(status);
-            if (gub.getSubmenupedidosvenda().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenupedidosvenda().equals("false");
             TelaPrincipal.menuitemvendaspedidos.setVisible(status);
-            if (gub.getSubmenuops().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuops().equals("false");
             TelaPrincipal.menuitemvendasops.setVisible(status);
-            if (gub.getSubmenuprodutosvenda().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuprodutosvenda().equals("false");
             TelaPrincipal.menuitemvendasprodutos.setVisible(status);
-            if (gub.getSubmenuprocessosvenda().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuprocessosvenda().equals("false");
             TelaPrincipal.menuitemvendasprocessos.setVisible(status);
-            if (gub.getSubmenugrupodeprocessosvenda().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenugrupodeprocessosvenda().equals("false");
             TelaPrincipal.menuitemvendasgrupodeprocessos.setVisible(status);
-            if (gub.getMenuservicos().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getMenuservicos().equals("false");
             TelaPrincipal.menuservicos.setVisible(status);
-            if (gub.getSubmenuorcamentosservico().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuorcamentosservico().equals("false");
             TelaPrincipal.menuitemservicosorcamentos.setVisible(status);
-            if (gub.getSubmenupedidosservico().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenupedidosservico().equals("false");
             TelaPrincipal.menuitemservicospedidos.setVisible(status);
-            if (gub.getSubmenuoss().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuoss().equals("false");
             TelaPrincipal.menuitemservicososs.setVisible(status);
-            if (gub.getSubmenuprodutosservico().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuprodutosservico().equals("false");
             TelaPrincipal.menuitemservicosprodutos.setVisible(status);
-            if (gub.getSubmenuprocessosservico().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenuprocessosservico().equals("false");
             TelaPrincipal.menuitemservicosproccessos.setVisible(status);
-            if (gub.getSubmenugrupodeprocessosservico().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenugrupodeprocessosservico().equals("false");
             TelaPrincipal.menuitemservicosgrupodeprocessos.setVisible(status);
-            if (gub.getMenuconfiguracoes().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getMenuconfiguracoes().equals("false");
             TelaPrincipal.menuconfiguracoes.setVisible(status);
-            if (gub.getSubmenumenus().equals("false")) {
-                status = false;
-            } else {
-                status = true;
-            }
+            status = !gub.getSubmenumenus().equals("false");
             TelaPrincipal.menuitemmenus.setVisible(status);
         }
     }
@@ -324,14 +162,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jDesktopPane1 = new javax.swing.JDesktopPane();
         lblnome = new javax.swing.JLabel();
-        lblgrupo = new javax.swing.JLabel();
-        lbllogin = new javax.swing.JLabel();
-        lblapelido = new javax.swing.JLabel();
         btntestemenus = new javax.swing.JButton();
-        lbldb = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuarquivo = new javax.swing.JMenu();
         menuitememail = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         menuitemsair = new javax.swing.JMenuItem();
         menuadministracao = new javax.swing.JMenu();
         menuitemusuarios = new javax.swing.JMenuItem();
@@ -359,9 +194,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jMenuItem1 = new javax.swing.JMenuItem();
         menulogistica = new javax.swing.JMenu();
         menuitemcarros = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
         menuqualidade = new javax.swing.JMenu();
         menuiteminstrumentosmedicao = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         menuvendas = new javax.swing.JMenu();
         menuitemvendasorcamentos = new javax.swing.JMenuItem();
         menuitemvendaspedidos = new javax.swing.JMenuItem();
@@ -403,15 +240,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lblnome.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblnome.setText("jLabel1");
 
-        lblgrupo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblgrupo.setText("Grupo");
-
-        lbllogin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbllogin.setText("Login");
-
-        lblapelido.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblapelido.setText("Apelido");
-
         btntestemenus.setText("Teste Menus");
         btntestemenus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -419,35 +247,18 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             }
         });
 
-        lbldb.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbldb.setText("jLabel1");
-
         jDesktopPane1.setLayer(lblnome, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(lblgrupo, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(lbllogin, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(lblapelido, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jDesktopPane1.setLayer(btntestemenus, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(lbldb, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 1160, Short.MAX_VALUE)
-            .addComponent(lblgrupo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbllogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblapelido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jDesktopPane1Layout.createSequentialGroup()
-                        .addGap(492, 492, 492)
-                        .addComponent(btntestemenus)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addComponent(lbldb, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btntestemenus)
+                .addGap(522, 522, 522))
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -455,16 +266,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(lblnome)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblgrupo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbllogin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblapelido)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbldb)
-                .addGap(67, 67, 67)
                 .addComponent(btntestemenus)
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addContainerGap(259, Short.MAX_VALUE))
         );
 
         menuarquivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
@@ -480,6 +283,9 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         menuarquivo.add(menuitememail);
+
+        jMenuItem5.setText("Protocolos de Atendimento");
+        menuarquivo.add(jMenuItem5);
 
         menuitemsair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/door_out.png"))); // NOI18N
         menuitemsair.setText("Sair");
@@ -700,6 +506,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menulogistica.add(menuitemcarros);
 
+        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_go.png"))); // NOI18N
+        jMenuItem6.setText("Rastreamento de Notas Fiscais");
+        menulogistica.add(jMenuItem6);
+
         jMenuBar1.add(menulogistica);
 
         menuqualidade.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/award_star_bronze_3.png"))); // NOI18N
@@ -719,6 +529,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry_error.png"))); // NOI18N
         jMenuItem3.setText("IQF");
         menuqualidade.add(jMenuItem3);
+
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/chart_bar.png"))); // NOI18N
+        jMenuItem4.setText("Medições");
+        menuqualidade.add(jMenuItem4);
 
         jMenuBar1.add(menuqualidade);
 
@@ -1236,11 +1050,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JPanel jPanel1;
-    public static javax.swing.JLabel lblapelido;
-    public static javax.swing.JLabel lbldb;
-    public static javax.swing.JLabel lblgrupo;
-    public static javax.swing.JLabel lbllogin;
     public static javax.swing.JLabel lblnome;
     public static javax.swing.JMenu menuadministracao;
     public static javax.swing.JMenu menuajuda;
