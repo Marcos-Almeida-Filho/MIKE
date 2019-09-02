@@ -182,7 +182,6 @@ public class OS extends javax.swing.JInternalFrame {
             txtstatus.setText(ob.getStatus());
             txtdas.setText(ob.getDas());
             txtcliente.setText(ob.getCliente());
-            txtdas.setText(ob.getDas());
             txtcodigo.setText(ob.getCodigo());
             txtdesc.setText(ob.getDescricao());
             txtinicial.setText(String.valueOf(ob.getQtdinicial()));
@@ -2051,8 +2050,7 @@ public class OS extends javax.swing.JInternalFrame {
                 desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
 
             } catch (IOException ex) {
-                Logger.getLogger(DocumentosOrcamentoServico.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
@@ -2082,7 +2080,7 @@ public class OS extends javax.swing.JInternalFrame {
 
             //Zerar campos
             OS.camposembranco();
-            
+
             //Transformar na próxima OS
             int numero = Integer.parseInt(osoriginal.replace("OS19-", "")) + 1;
 

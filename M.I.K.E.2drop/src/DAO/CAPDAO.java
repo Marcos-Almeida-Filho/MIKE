@@ -47,7 +47,7 @@ public class CAPDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao criar CAP!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -256,7 +256,7 @@ public class CAPDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar CAP!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -284,7 +284,7 @@ public class CAPDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar CAP!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {

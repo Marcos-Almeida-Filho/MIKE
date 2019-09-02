@@ -55,9 +55,9 @@ public class ClientesDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao criar cliente!\n" + e);
             try {
-                SendEmail.EnviarErro(e.toString());
+                SendEmail.EnviarErro("Erro ao criar cliente!\n" + e.toString());
             } catch (AWTException | IOException ex) {
                 Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, ex);
             }

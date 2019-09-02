@@ -110,7 +110,7 @@ public class FornecedoresDAO {
         }
         return listfb;
     }
-    
+
     public List<FornecedoresBean> readcreated(String data) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -219,6 +219,42 @@ public class FornecedoresDAO {
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(FornecedoresDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listfb;
+    }
+
+    public List<FornecedoresBean> pesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<FornecedoresBean> listfb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM clientes WHERE id LIKE '%" + pesquisa + "%' OR nome LIKE '%" + pesquisa + "%' OR razaosocial LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                FornecedoresBean mb = new FornecedoresBean();
+
+                mb.setId(rs.getInt("id"));
+                mb.setNome(rs.getString("nome"));
+                mb.setRazaosocial(rs.getString("razaosocial"));
+
+                listfb.add(mb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(FornecedoresDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {

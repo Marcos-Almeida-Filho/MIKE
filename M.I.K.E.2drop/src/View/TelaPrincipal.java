@@ -27,6 +27,7 @@ import View.configuracoes.Menus;
 import View.financeiro.Bancos;
 import View.financeiro.CondicoesDePagamento;
 import View.financeiro.ContasPagar;
+import View.logistica.RastreamentoDocumentos;
 import View.qualidade.InstrumentosMedicao;
 import View.servicos.GrupoDeProcessosServico;
 import View.servicos.OS;
@@ -59,7 +60,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public void menus() {
         //DAO para pesquisar
         UsuariosDAO ud = new UsuariosDAO();
-        
+
         //Retornar nível do acesso
         for (UsuariosBean ub : ud.checknivel(Session.login)) {
             //Setar nível do acesso
@@ -507,7 +508,12 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menulogistica.add(menuitemcarros);
 
         jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_go.png"))); // NOI18N
-        jMenuItem6.setText("Rastreamento de Notas Fiscais");
+        jMenuItem6.setText("Rastreamento de Documentos");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         menulogistica.add(jMenuItem6);
 
         jMenuBar1.add(menulogistica);
@@ -993,9 +999,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     private void menuitemvendasprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasprodutosActionPerformed
         VendasMateriais p = new VendasMateriais();
         jDesktopPane1.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+//        Dimension desktopsize = jDesktopPane1.getSize();
+//        Dimension jinternalframesize = p.getSize();
+//        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        try {
+            p.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
         p.setVisible(true);
     }//GEN-LAST:event_menuitemvendasprodutosActionPerformed
 
@@ -1007,6 +1018,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
         p.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        RastreamentoDocumentos p = new RastreamentoDocumentos();
+        jDesktopPane1.add(p);
+        Dimension desktopsize = jDesktopPane1.getSize();
+        Dimension jinternalframesize = p.getSize();
+        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+        p.setVisible(true);
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     /**
      * @param args the command line arguments

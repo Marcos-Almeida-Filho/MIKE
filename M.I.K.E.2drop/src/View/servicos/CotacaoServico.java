@@ -418,7 +418,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1060, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1116, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -437,7 +437,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton11)
                 .addContainerGap())
@@ -453,7 +453,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         jLabel3.setText("Cliente");
 
         txtnomecliente.setEditable(false);
-        txtnomecliente.setBackground(new java.awt.Color(255, 255, 255));
 
         btncliente.setText("Procurar");
         btncliente.addActionListener(new java.awt.event.ActionListener() {
@@ -519,11 +518,9 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         jLabel1.setText("Nº");
 
         txtnumeroorcamento.setEditable(false);
-        txtnumeroorcamento.setBackground(new java.awt.Color(255, 255, 255));
         txtnumeroorcamento.setSelectionColor(new java.awt.Color(255, 255, 255));
 
         txtstatus.setEditable(false);
-        txtstatus.setBackground(new java.awt.Color(255, 255, 255));
         txtstatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel2.setText("Status");
@@ -538,7 +535,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         jLabel9.setText("Data");
 
         txtdata.setEditable(false);
-        txtdata.setBackground(new java.awt.Color(255, 255, 255));
         txtdata.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -586,13 +582,10 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Comercial"));
 
         txtvendedor.setEditable(false);
-        txtvendedor.setBackground(new java.awt.Color(255, 255, 255));
 
         txtrepresentante.setEditable(false);
-        txtrepresentante.setBackground(new java.awt.Color(255, 255, 255));
 
         txtcondicao.setEditable(false);
-        txtcondicao.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel5.setText("Vendedor");
 
@@ -744,7 +737,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         });
 
         txttotal.setEditable(false);
-        txttotal.setBackground(new java.awt.Color(255, 255, 255));
         txttotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel8.setText("Total: R$");
@@ -797,7 +789,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1035, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 1104, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -874,7 +866,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1035, Short.MAX_VALUE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 1104, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnexcluirdoc)
@@ -961,7 +953,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(PanelOrcamentoServicoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnsalvarorcamento)
                     .addComponent(btncriarpedido)
@@ -979,11 +971,11 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1087, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1134, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
         );
 
         pack();

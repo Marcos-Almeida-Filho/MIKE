@@ -25,6 +25,15 @@ public class Dates {
 
         return data;
     }
+    
+    public static String criardatanormaldb(String data) {
+        String dia = data.substring(8, 10);
+        String mes = data.substring(5, 7);
+        String ano = data.substring(0, 4);
+        datanormal = ano + "-" + mes + "-" + dia;
+
+        return datanormal;
+    }
 
     public static String datanormal(String datadb) {
         String dia = datadb.substring(8, 10);
@@ -33,6 +42,16 @@ public class Dates {
         String hora = datadb.substring(11, 19);
         datanormal = dia + "/" + mes + "/" + ano + " " + hora;
 
+        return datanormal;
+    }
+
+    public static String dataxml(String dataxml) {
+        String dia = dataxml.substring(8, 10);
+        String mes = dataxml.substring(5, 7);
+        String ano = dataxml.substring(0, 4);
+        
+        datanormal = dia + "/" + mes + "/" + ano;
+        
         return datanormal;
     }
 }

@@ -133,7 +133,8 @@ public class FornecedoresTipoDAO {
             stmt.setBoolean(11, ftb.isRevestimento());
             stmt.setBoolean(12, ftb.isRetifica());
             stmt.setInt(13, ftb.getIdfornecedor());
-
+            
+            stmt.executeUpdate();
         } catch (SQLException e) {
             Logger.getLogger(FornecedoresTipoDAO.class.getName()).log(Level.SEVERE, null, e);
             JOptionPane.showMessageDialog(null, "Erro ao atualizar Tipo de Fornecedor!\n" + e);
