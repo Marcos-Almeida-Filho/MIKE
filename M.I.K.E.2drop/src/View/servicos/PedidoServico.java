@@ -30,7 +30,10 @@ import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import DAO.ServicoPedidoItensNFDAO;
+import Methods.InternalFrameProcura;
 import Methods.SendEmail;
+import View.Geral.ProcurarRepresentante;
+import View.Geral.ProcurarVendedor;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.OS.radioreconstrucao;
@@ -258,6 +261,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jButton10 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton14 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
@@ -292,6 +296,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        tablepedidoservico.setAutoCreateRowSorter(true);
         tablepedidoservico.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -375,7 +380,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Cliente");
 
-        txtclientepedido.setEditable(false);
+        txtclientepedido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtclientepedidoKeyReleased(evt);
+            }
+        });
 
         BtnProcurar.setText("Procurar");
         BtnProcurar.addActionListener(new java.awt.event.ActionListener() {
@@ -963,6 +972,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton14.setText("Cancelar Pedido");
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -975,10 +991,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
@@ -1000,7 +1018,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton14))
                 .addContainerGap())
         );
 
@@ -1041,7 +1060,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BtnCondicaoActionPerformed
 
     private void BtnRepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRepresentanteActionPerformed
-        ProcurarRepresentantePedidoServico p = new ProcurarRepresentantePedidoServico();
+        ProcurarRepresentante p = new ProcurarRepresentante("ServiçoPedido");
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -1051,7 +1070,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_BtnRepresentanteActionPerformed
 
     private void BtnVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVendedorActionPerformed
-        ProcurarVendedorPedidoServico p = new ProcurarVendedorPedidoServico();
+        ProcurarVendedor p = new ProcurarVendedor("ServiçoPedido");
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -1972,6 +1991,65 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         JOptionPane.showMessageDialog(rootPane, "Em breve!");
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        if (txtnumeropedido.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione um pedido primeiro!");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja cancelar o pedido?", "Cancelar Pedido", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                ServicoPedidoDAO spd = new ServicoPedidoDAO();
+                ServicoPedidoBean spb = new ServicoPedidoBean();
+
+                spb.setStatus_cobranca("Cancelado");
+                spb.setStatus_retorno("Cancelado");
+                spb.setIdtela(txtnumeropedido.getText());
+
+                //SET status_cobranca = ? WHERE idtela = ?
+                spd.updatestatuscobranca(spb);
+                //SET status_retorno = ? WHERE idtela = ?
+                spd.updatestatusretorno(spb);
+
+                for (ServicoPedidoBean spb2 : spd.click(txtnumeropedido.getText())) {
+                    txtclientepedido.setText(spb2.getCliente());
+                    txtcondicao.setText(spb2.getCondicao());
+                    txtrepresentante.setText(spb2.getRepresentante());
+                    txtvendedor.setText(spb2.getVendedor());
+                    txtstatusretorno.setText(spb2.getStatus_retorno());
+                    txtstatuscobranca.setText(spb2.getStatus_cobranca());
+                    txtnotes.setText(spb2.getNotes());
+                    txtorcamento.setText(String.valueOf(spb2.getIdorcamento()));
+                    txtnfcliente.setText(spb2.getNfcliente());
+                }
+
+                camposeditaveis();
+
+                readitenscobranca();
+
+                txtvalorcobranca();
+
+                readitensretorno();
+
+                txtvalorretorno();
+
+                DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
+                modeldoc.setNumRows(0);
+                ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+
+                for (ServicoPedidoDocumentosBean spdb : spdd.readitens(txtnumeropedido.getText())) {
+                    modeldoc.addRow(new Object[]{
+                        false,
+                        spdb.getId(),
+                        spdb.getDescricao(),
+                        spdb.getLocal(),});
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void txtclientepedidoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtclientepedidoKeyReleased
+        InternalFrameProcura.procuraCliente(txtclientepedido, "ServiçoPedido");
+    }//GEN-LAST:event_txtclientepedidoKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnCondicao;
@@ -1983,6 +2061,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;

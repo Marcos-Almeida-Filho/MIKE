@@ -3,6 +3,7 @@ package br.com.correios;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -49,6 +50,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class ServicoSigep {
 
+    @XmlSchemaType(name = "string")
     protected CategoriaServico categoriaServico;
     protected ChancelaMaster chancela;
     protected Boolean exigeDimensoes;

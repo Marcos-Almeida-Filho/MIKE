@@ -18,14 +18,19 @@ import DAO.ServicoOrcamentoDocumentosDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
+import Methods.InternalFrameProcura;
 import Methods.SendEmail;
+import View.Geral.ProcurarRepresentante;
+import View.Geral.ProcurarVendedor;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.PedidoServico.txtnumeropedido;
 import java.awt.AWTException;
+import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -47,6 +52,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JRException;
@@ -237,6 +243,19 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 //        table.setDefaultRenderer(String.class, centerRenderer);
     }
 
+    public static void clienteif() {
+        Container c = txtnomecliente.getParent().getParent();
+        Point p = txtnomecliente.getLocation();
+        ProcuraCliente t = new ProcuraCliente("ServiçoCotação");
+        BasicInternalFrameUI bi = (BasicInternalFrameUI) t.getUI();
+        bi.setNorthPane(null);
+        t.setSize(txtnomecliente.getWidth(), t.getHeight());
+        t.setLocation(p.x + 7, p.y + txtnomecliente.getHeight() + 7);
+        c.add(t);
+        t.setVisible(false);
+        c.setComponentZOrder(t, 0);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -261,7 +280,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         cbstatus = new javax.swing.JComboBox<>();
         jButton11 = new javax.swing.JButton();
         PanelOrcamentoServico = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        panel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtnomecliente = new javax.swing.JTextField();
         btncliente = new javax.swing.JButton();
@@ -448,11 +467,15 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         PanelOrcamentoServico.setBackground(new java.awt.Color(255, 255, 255));
         PanelOrcamentoServico.setPreferredSize(new java.awt.Dimension(836, 600));
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Cliente"));
+        panel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Cliente"));
 
         jLabel3.setText("Cliente");
 
-        txtnomecliente.setEditable(false);
+        txtnomecliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtnomeclienteKeyReleased(evt);
+            }
+        });
 
         btncliente.setText("Procurar");
         btncliente.addActionListener(new java.awt.event.ActionListener() {
@@ -478,18 +501,18 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout panel2Layout = new javax.swing.GroupLayout(panel2);
+        panel2.setLayout(panel2Layout);
+        panel2Layout.setHorizontalGroup(
+            panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel2Layout.createSequentialGroup()
                         .addComponent(radioc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(radionc))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(panel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtnomecliente, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -497,15 +520,15 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         .addComponent(btncliente)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        panel2Layout.setVerticalGroup(
+            panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radioc)
                     .addComponent(radionc))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtnomecliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btncliente))
@@ -921,7 +944,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     .addComponent(jTabbedPane2)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelOrcamentoServicoLayout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(PanelOrcamentoServicoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(PanelOrcamentoServicoLayout.createSequentialGroup()
@@ -948,12 +971,12 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 .addGroup(PanelOrcamentoServicoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(PanelOrcamentoServicoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnsalvarorcamento)
                     .addComponent(btncriarpedido)
@@ -1027,7 +1050,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btncondicaoActionPerformed
 
     private void btnrepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnrepresentanteActionPerformed
-        ProcurarRepresentanteOrcamentoServico p = new ProcurarRepresentanteOrcamentoServico();
+        ProcurarRepresentante p = new ProcurarRepresentante("ServiçoCotação");
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -1037,7 +1060,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnrepresentanteActionPerformed
 
     private void btnvendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvendedorActionPerformed
-        ProcurarVendedorOrcamentoServico p = new ProcurarVendedorOrcamentoServico();
+        ProcurarVendedor p = new ProcurarVendedor("ServiçoCotação");
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
@@ -1868,15 +1891,21 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 modeld.setNumRows(0);
                 ServicoOrcamentoDAO sodd = new ServicoOrcamentoDAO();
 
-                for (ServicoOrcamentoBean sob : sodd.readstatus(cbstatus.getSelectedItem().toString())) {
+                sodd.readstatus(cbstatus.getSelectedItem().toString()).forEach((sob) -> {
                     modeld.addRow(new Object[]{
                         sob.getIdtela(),
                         sob.getCliente(),
                         sob.getStatus()
                     });
-                }
+                });
         }
     }//GEN-LAST:event_cbstatusActionPerformed
+
+    private void txtnomeclienteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnomeclienteKeyReleased
+        if (radioc.isSelected()) {
+            InternalFrameProcura.procuraCliente(txtnomecliente, "ServiçoCotação");
+        }
+    }//GEN-LAST:event_txtnomeclienteKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1911,7 +1940,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -1924,6 +1952,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JPanel panel2;
     public static javax.swing.JRadioButton radioc;
     public static javax.swing.JRadioButton radionc;
     public static javax.swing.JTable tabledocumentos;

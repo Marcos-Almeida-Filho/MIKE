@@ -79,6 +79,7 @@ public class PreListaPostagem {
     @XmlElement(nillable = true)
     @XmlSchemaType(name = "unsignedShort")
     protected List<Integer> plpXmlRetorno;
+    @XmlSchemaType(name = "string")
     protected StatusPlp status;
 
     /**

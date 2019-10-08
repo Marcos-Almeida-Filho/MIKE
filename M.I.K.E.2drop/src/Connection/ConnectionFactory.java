@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class ConnectionFactory {
 
-    private static final String DRIVER = "com.mysql.jdbc.Driver";
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     //Conectar ao Servidor
     private static final String URL = "jdbc:mysql://192.168.1.11:3306/mike";
     private static final String USER = "Speeduser";

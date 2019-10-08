@@ -19,6 +19,7 @@ import Methods.EmBreve;
 import View.administracao.GrupoDeUsuarios;
 import View.administracao.Regioes;
 import View.administracao.Representantes;
+import View.comercial.CategoriaDePreco;
 import View.comercial.Fornecedores;
 import View.comercial.TipoFornecedor;
 import View.compras.ComprasSolicitacao;
@@ -181,7 +182,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemclientes = new javax.swing.JMenuItem();
         menuitemgrupodeclientes = new javax.swing.JMenuItem();
         menuitemfornecedores = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menuitemcategoriapreco = new javax.swing.JMenuItem();
         menufinanceiro = new javax.swing.JMenu();
         menuitemcontasareceber = new javax.swing.JMenuItem();
         menuitemcontasapagar = new javax.swing.JMenuItem();
@@ -401,14 +402,13 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menucomercial.add(menuitemfornecedores);
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry_add.png"))); // NOI18N
-        jMenuItem2.setText("Tipos de Fornecedor");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        menuitemcategoriapreco.setText("Categorias de Preço");
+        menuitemcategoriapreco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                menuitemcategoriaprecoActionPerformed(evt);
             }
         });
-        menucomercial.add(jMenuItem2);
+        menucomercial.add(menuitemcategoriapreco);
 
         jMenuBar1.add(menucomercial);
 
@@ -1010,15 +1010,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         p.setVisible(true);
     }//GEN-LAST:event_menuitemvendasprodutosActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        TipoFornecedor p = new TipoFornecedor();
-        jDesktopPane1.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         RastreamentoDocumentos p = new RastreamentoDocumentos();
         jDesktopPane1.add(p);
@@ -1027,6 +1018,18 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
         p.setVisible(true);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void menuitemcategoriaprecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcategoriaprecoActionPerformed
+        try {
+            CategoriaDePreco p = new CategoriaDePreco();
+            jDesktopPane1.add(p);
+            p.setMaximum(true);
+            p.setVisible(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro ao abrir! Contate suporte!");
+        }
+    }//GEN-LAST:event_menuitemcategoriaprecoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1068,7 +1071,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JDesktopPane jDesktopPane1;
     public static javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
@@ -1085,6 +1087,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenu menufiscal;
     public static javax.swing.JMenuItem menuitembancos;
     public static javax.swing.JMenuItem menuitemcarros;
+    private javax.swing.JMenuItem menuitemcategoriapreco;
     public static javax.swing.JMenuItem menuitemclientes;
     public static javax.swing.JMenuItem menuitemcondicoesdepagamento;
     public static javax.swing.JMenuItem menuitemcontasapagar;

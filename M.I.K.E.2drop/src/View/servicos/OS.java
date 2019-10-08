@@ -26,6 +26,7 @@ import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import Methods.SendEmail;
 import Methods.SoNumeros;
+import View.Geral.MudarStatus;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.PedidoServico.txtnumeropedido;
@@ -2000,41 +2001,68 @@ public class OS extends javax.swing.JInternalFrame {
         }
         if (numerotrue == 0) {
             JOptionPane.showMessageDialog(rootPane, "Não existem OS's selecionadas.");
-        } else if (rascunho > 0 && ativo > 0) {
+        } else if ((rascunho > 0 && (ativo > 0 | cancelado > 0 | fechado > 0)) || (ativo > 0 && (cancelado > 0 | fechado > 0)) || (cancelado > 0 && fechado > 0)) {
             JOptionPane.showMessageDialog(rootPane, "Mais de um status de OS's selecionado.");
-        } else if (rascunho > 0 && cancelado > 0) {
-            JOptionPane.showMessageDialog(rootPane, "Mais de um status de OS's selecionado.");
-        } else if (rascunho > 0 && fechado > 0) {
-            JOptionPane.showMessageDialog(rootPane, "Mais de um status de OS's selecionado.");
-        } else if (ativo > 0 && cancelado > 0) {
-            JOptionPane.showMessageDialog(rootPane, "Mais de um status de OS's selecionado.");
-        } else if (ativo > 0 && fechado > 0) {
-            JOptionPane.showMessageDialog(rootPane, "Mais de um status de OS's selecionado.");
-        } else if (cancelado > 0 && fechado > 0) {
-            JOptionPane.showMessageDialog(rootPane, "Mais de um status de OS's selecionado.");
-        } else if (cancelado > 0) {
-            JOptionPane.showMessageDialog(rootPane, "OS's canceladas. Status não pode ser alterado.");
-        } else if (fechado > 0) {
-            JOptionPane.showMessageDialog(rootPane, "OS's fechadas. Status não pode ser alterado.");
         } else {
-            MudarStatusEmLote p = new MudarStatusEmLote();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(p);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = p.getSize();
-            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            p.setVisible(true);
+            String[] ops = null;
             if (rascunho > 0) {
-                MudarStatusEmLote.txtrascunho.setText(String.valueOf(rascunho));
+                ops = new String[4];
+                ops[0] = "Selecione";
+                ops[1] = "Ativo";
+                ops[2] = "Cancelado";
+                ops[3] = "Fechado";
             }
             if (ativo > 0) {
-                MudarStatusEmLote.txtativo.setText(String.valueOf(ativo));
+                ops = new String[3];
+                ops[0] = "Selecione";
+                ops[1] = "Cancelado";
+                ops[2] = "Fechado";
             }
+            if (cancelado > 0 | fechado > 0) {
+                ops = new String[2];
+                ops[0] = "Selecione";
+                ops[1] = "Ativo";
+            }
+            MudarStatus sel = new MudarStatus(ops, "Mudar Status OS", "OSLote");
+            JDesktopPane desk = this.getDesktopPane();
+            desk.add(sel);
+            Dimension jif = sel.getSize();
+            Dimension d = desk.getSize();
+            sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
+            sel.setVisible(true);
         }
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void btnalterarstatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnalterarstatusActionPerformed
-        MudarStatus p = new MudarStatus();
+        String[] ops = null;
+        String status = txtstatus.getText();
+        switch (status) {
+            case "Rascunho":
+                ops = new String[4];
+                ops[0] = "Selecione";
+                ops[1] = "Ativo";
+                ops[2] = "Cancelado";
+                ops[3] = "Fechado";
+                break;
+            case "Ativo":
+                ops = new String[3];
+                ops[0] = "Selecione";
+                ops[1] = "Cancelado";
+                ops[2] = "Fechado";
+                break;
+            case "Cancelado":
+                ops = new String[3];
+                ops[0] = "Selecione";
+                ops[1] = "Ativo";
+                ops[2] = "Fechado";
+                break;
+            case "Fechado":
+                ops = new String[2];
+                ops[0] = "Selecione";
+                ops[1] = "Ativo";
+                break;
+        }
+        MudarStatus p = new MudarStatus(ops, "Mudar status da OP", "OSnormal");
         JDesktopPane desk = this.getDesktopPane();
         desk.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();

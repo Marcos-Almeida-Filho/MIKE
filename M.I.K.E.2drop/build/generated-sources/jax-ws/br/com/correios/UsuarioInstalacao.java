@@ -72,6 +72,7 @@ public class UsuarioInstalacao {
     @XmlElement(nillable = true)
     protected List<ParametroMaster> parametros;
     protected String senha;
+    @XmlSchemaType(name = "string")
     protected StatusUsuario status;
     protected String validade;
 

@@ -1590,9 +1590,11 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                     cbuf.setSelectedItem(consultaCEP(txtcep.getText()).getUf());
                     txtnumero.requestFocus();
                 }
-            } catch (SigepClienteException | SQLException_Exception ex) {
+            } catch (SigepClienteException ex) {
                 Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(rootPane, "Erro ao consultar! \n" + ex);
+            } catch (SQLException_Exception ex) {
+                Logger.getLogger(Fornecedores.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_jButton8ActionPerformed

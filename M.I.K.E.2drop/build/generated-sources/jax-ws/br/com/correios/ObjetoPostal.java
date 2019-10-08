@@ -64,6 +64,7 @@ public class ObjetoPostal {
     protected Long plpNu;
     protected PreListaPostagem preListaPostagem;
     protected String statusBloqueio;
+    @XmlSchemaType(name = "string")
     protected StatusObjetoPostal statusEtiqueta;
 
     /**

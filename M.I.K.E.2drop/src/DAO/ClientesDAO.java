@@ -378,4 +378,40 @@ public class ClientesDAO {
         }
         return listcb;
     }
+    
+    public List<ClientesBean> pesquisanome(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ClientesBean> listcb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM clientes WHERE nome LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ClientesBean mb = new ClientesBean();
+
+                mb.setId(rs.getInt("id"));
+                mb.setNome(rs.getString("nome"));
+                mb.setRazaosocial(rs.getString("razaosocial"));
+
+                listcb.add(mb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listcb;
+    }
 }

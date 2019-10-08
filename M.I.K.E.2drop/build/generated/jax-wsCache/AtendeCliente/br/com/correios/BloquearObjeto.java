@@ -3,6 +3,7 @@ package br.com.correios;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -43,7 +44,9 @@ public class BloquearObjeto {
 
     protected String numeroEtiqueta;
     protected Long idPlp;
+    @XmlSchemaType(name = "string")
     protected TipoBloqueio tipoBloqueio;
+    @XmlSchemaType(name = "string")
     protected Acao acao;
     protected String usuario;
     protected String senha;

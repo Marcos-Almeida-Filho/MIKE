@@ -10,7 +10,6 @@ import Connection.Session;
 import DAO.UsuariosDAO;
 import static View.TelaPrincipal.lblnome;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 import javax.swing.JOptionPane;
 
 /**

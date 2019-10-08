@@ -67,7 +67,9 @@ public class GerenteConta {
     protected String login;
     protected String matricula;
     protected String senha;
+    @XmlSchemaType(name = "string")
     protected StatusGerente status;
+    @XmlSchemaType(name = "string")
     protected TipoGerente tipoGerente;
     @XmlElement(nillable = true)
     protected List<UsuarioInstalacao> usuariosInstalacao;

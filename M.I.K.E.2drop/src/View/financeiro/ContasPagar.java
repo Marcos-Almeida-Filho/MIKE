@@ -7,8 +7,10 @@ package View.financeiro;
 
 import Bean.CAPBean;
 import DAO.CAPDAO;
+import View.Geral.MudarStatus;
 import java.awt.Dimension;
 import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -81,6 +83,9 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         cbstatus = new javax.swing.JComboBox<>();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+
+        jPanel2.setName("jPanel2"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -95,10 +100,13 @@ public class ContasPagar extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setTitle("Contas a Pagar");
+        setName("Form"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setName("jPanel1"); // NOI18N
 
         jButton1.setText("Incluir");
+        jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -106,6 +114,9 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         });
 
         jButton2.setText("Excluir");
+        jButton2.setName("jButton2"); // NOI18N
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         tablecap.setAutoCreateRowSorter(true);
         tablecap.setModel(new javax.swing.table.DefaultTableModel(
@@ -131,6 +142,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tablecap.setName("tablecap"); // NOI18N
         tablecap.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tablecapMouseClicked(evt);
@@ -147,8 +159,12 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         }
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
+        jPanel3.setName("jPanel3"); // NOI18N
 
         jLabel1.setText("Pesquisa");
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        txtpesquisa.setName("txtpesquisa"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -172,8 +188,10 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtro Status"));
+        jPanel4.setName("jPanel4"); // NOI18N
 
         cbstatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Pago", "Todos" }));
+        cbstatus.setName("cbstatus"); // NOI18N
         cbstatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbstatusActionPerformed(evt);
@@ -198,9 +216,18 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         );
 
         jButton3.setText("Pagar em Lote");
+        jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Alterar Status");
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
             }
         });
 
@@ -214,6 +241,8 @@ public class ContasPagar extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 855, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
@@ -238,7 +267,8 @@ public class ContasPagar extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addContainerGap())
         );
 
@@ -310,12 +340,28 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         pel.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        String[] ops = new String[4];
+        ops[0] = "Selecione";
+        ops[1] = "Lançado";
+        ops[2] = "Aprovado";
+        ops[3] = "Pago";
+        MudarStatus sel = new MudarStatus(ops, "Mudar Status CAP", "CAP");
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(sel);
+        Dimension jif = sel.getSize();
+        Dimension d = desk.getSize();
+        sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
+        sel.setVisible(true);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JComboBox<String> cbstatus;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
+    public javax.swing.JButton jButton4;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
