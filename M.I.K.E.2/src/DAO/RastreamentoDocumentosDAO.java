@@ -280,7 +280,7 @@ public class RastreamentoDocumentosDAO {
         List<RastreamentoDocumentosBean> listrdb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM rastreamento_doc WHERE numero LIKE '%" + pesquisa + "%' OR emitente LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM rastreamento_doc WHERE capuser IS NULL AND numero LIKE '%" + pesquisa + "%' OR emitente LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

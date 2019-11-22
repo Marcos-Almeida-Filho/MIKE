@@ -105,7 +105,7 @@ public class ClientesDAO {
                 listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -136,11 +136,11 @@ public class ClientesDAO {
                 check = true;
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
-                Logger.getLogger(FornecedoresDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
@@ -183,11 +183,11 @@ public class ClientesDAO {
                 listfb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
-                Logger.getLogger(FornecedoresDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
@@ -220,7 +220,7 @@ public class ClientesDAO {
                 listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -256,7 +256,7 @@ public class ClientesDAO {
                 listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -307,7 +307,7 @@ public class ClientesDAO {
                 listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -343,7 +343,7 @@ public class ClientesDAO {
                 listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -445,7 +445,7 @@ public class ClientesDAO {
                 listcb.add(mb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -481,7 +481,7 @@ public class ClientesDAO {
                 listcb.add(mb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {

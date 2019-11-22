@@ -14,15 +14,18 @@ import DAO.CAPDocumentosDAO;
 import DAO.RastreamentoDocumentosDAO;
 import Methods.Dates;
 import Methods.SendEmail;
+import Methods.Telas;
+import Methods.Valores;
+import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarFornecedor;
 import View.Geral.ProcurarRastreamentoDocumento;
-import static View.servicos.ServicoMateriais.txtid;
 import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.text.DecimalFormat;
@@ -41,19 +44,59 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
     /**
      * Creates new form AdicionarContasPagar
      */
-    
-    public int idrastreamento = 0;
-    
+    public static int idrastreamento = 0;
+
     public AdicionarContasAPagar() {
         initComponents();
+        radios();
     }
 
     public static void zeracampos() {
-        txtid.setText("");
-        txtfornecedor.setText("");
+        txtemitente.setText("");
         txtnumero.setText("");
-        txtemissao.setText("");
+        dateemissao.setCalendar(null);
         txttotal.setText("");
+
+        DefaultTableModel modelparcela = (DefaultTableModel) tableparcelas.getModel();
+        DefaultTableModel modeldocs = (DefaultTableModel) tabledocumentos.getModel();
+        DefaultTableModel modelobs = (DefaultTableModel) tableobs.getModel();
+
+        modelparcela.setNumRows(0);
+        modeldocs.setNumRows(0);
+        modelobs.setNumRows(0);
+    }
+
+    public void teladeprocura() {
+        ProcurarRastreamentoDocumento pf = new ProcurarRastreamentoDocumento("CAP");
+        JDesktopPane desk = this.getDesktopPane();
+        desk.add(pf);
+        Dimension jif = pf.getSize();
+        Dimension d = desk.getSize();
+        pf.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
+        pf.setVisible(true);
+    }
+
+    public static void radios() {
+        if (radiocliente.isSelected()) {
+            lblemitente.setText("Cliente");
+            txtemitente.setEnabled(false);
+            btnemitente.setText("Procurar Cliente");
+            btnemitente.setEnabled(true);
+            btnemitente.setVisible(true);
+        }
+        if (radiofornecedor.isSelected()) {
+            lblemitente.setText("Fornecedor");
+            txtemitente.setEnabled(false);
+            btnemitente.setText("Procurar Fornecedor");
+            btnemitente.setEnabled(true);
+            btnemitente.setVisible(true);
+        }
+        if (radiooutros.isSelected()) {
+            lblemitente.setText("Outros");
+            txtemitente.setEnabled(true);
+            btnemitente.setVisible(false);
+            btnemitente.setEnabled(false);
+        }
     }
 
     /**
@@ -71,13 +114,16 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtnumero = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        txtfornecedor = new javax.swing.JTextField();
+        lblemitente = new javax.swing.JLabel();
+        txtemitente = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtemissao = new javax.swing.JFormattedTextField();
         jLabel6 = new javax.swing.JLabel();
         txttotal = new javax.swing.JTextField();
-        jButton6 = new javax.swing.JButton();
+        btnemitente = new javax.swing.JButton();
+        radiocliente = new javax.swing.JRadioButton();
+        radiofornecedor = new javax.swing.JRadioButton();
+        radiooutros = new javax.swing.JRadioButton();
+        dateemissao = new com.toedter.calendar.JDateChooser();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableparcelas = new javax.swing.JTable();
@@ -113,14 +159,11 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
         txtnumero.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        jLabel4.setText("Fornecedor");
+        lblemitente.setText("Fornecedor");
 
-        txtfornecedor.setEditable(false);
+        txtemitente.setEnabled(false);
 
         jLabel5.setText("Data de Emissão");
-
-        txtemissao.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtemissao.setToolTipText("dd/mm/aaaa");
 
         jLabel6.setText("Valor Total R$");
 
@@ -131,10 +174,35 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton6.setText("Procurar Fornecedor");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnemitente.setText("Procurar Fornecedor");
+        btnemitente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnemitenteActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(radiocliente);
+        radiocliente.setText("Cliente");
+        radiocliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioclienteActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(radiofornecedor);
+        radiofornecedor.setSelected(true);
+        radiofornecedor.setText("Fornecedor");
+        radiofornecedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radiofornecedorActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(radiooutros);
+        radiooutros.setText("Outros");
+        radiooutros.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radiooutrosActionPerformed(evt);
             }
         });
 
@@ -146,11 +214,17 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addComponent(lblemitente)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtemitente, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6))
+                        .addComponent(btnemitente))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(radiocliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radiofornecedor)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radiooutros))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -158,7 +232,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtemissao, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dateemissao, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -168,21 +242,26 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6))
+                    .addComponent(radiocliente)
+                    .addComponent(radiofornecedor)
+                    .addComponent(radiooutros))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblemitente)
+                    .addComponent(txtemitente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnemitente))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
                         .addComponent(jLabel6)
                         .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel5)
-                        .addComponent(txtemissao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
-                        .addComponent(txtnumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtnumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dateemissao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -277,7 +356,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton5)
                 .addContainerGap())
@@ -354,7 +433,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
@@ -420,23 +499,26 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         //Total da nota fiscal
-        float total = 0;
+        BigDecimal total = new BigDecimal("0");
+
         //Total das parcelas
-        float totalparcelas = 0;
+        BigDecimal parcelatotal = new BigDecimal("0");
+        parcelatotal = parcelatotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+
         //Verificar se os campos tem valores e então somar para comparar depois
         if (!txttotal.getText().equals("") && tableparcelas.getRowCount() > 0) {
-            String tot = txttotal.getText().replace(".", "");
-            total = Float.parseFloat(tot.replace(",", "."));
+            total = new BigDecimal(Valores.TransformarDinheiroEmValorDouble(txttotal.getText()));
+            total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+
             for (int i = 0; i < tableparcelas.getRowCount(); i++) {
-                String valorparcela = tableparcelas.getValueAt(i, 2).toString();
-                String valorparcelar = valorparcela.replace(".", "");
-                String valorparcelas = valorparcelar.replace(",", ".");
-                float valorparcelaf = Float.parseFloat(valorparcelas);
-                totalparcelas = totalparcelas + valorparcelaf;
+                BigDecimal parcela = new BigDecimal(Valores.TransformarDinheiroEmValorDouble(tableparcelas.getValueAt(i, 2).toString()));
+                parcela = parcela.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                parcelatotal = parcelatotal.add(parcela);
+                parcelatotal = parcelatotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
             }
         }
         //Verifica se existe fornecedor selecionado, caso não, abre a tela de fornecedor
-        if (txtfornecedor.getText().equals("")) {
+        if (txtemitente.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Selecione um fornecedor.");
             ProcurarFornecedor pf = new ProcurarFornecedor("CAP");
             JDesktopPane desk = this.getDesktopPane();
@@ -448,9 +530,9 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         } else if (txtnumero.getText().equals("")) {//Verifica se tem número de nota fiscal
             JOptionPane.showMessageDialog(rootPane, "Coloque o número da nota fiscal.");
             txtnumero.requestFocus();
-        } else if (txtemissao.getText().equals("")) {//Verifica se tem data de emissão
+        } else if (dateemissao.getCalendar() == null) {//Verifica se tem data de emissão
             JOptionPane.showMessageDialog(rootPane, "Coloque a data de emissão da nota fiscal por favor.");
-            txtemissao.requestFocus();
+            dateemissao.requestFocus();
         } else if (txttotal.getText().equals("")) {//Verifica se tem valor total
             JOptionPane.showMessageDialog(rootPane, "Coloque o valor total da nota fiscal.");
             txttotal.requestFocus();
@@ -458,15 +540,15 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(rootPane, "Não existe(m) parcela(s) lançada(s).\nFavor lançar parcela(s).");
         } else if (tabledocumentos.getRowCount() == 0) {//Verifica se tem documento lançado
             JOptionPane.showMessageDialog(rootPane, "Não existe(m) documento(s) lançado(s).\nFavor lançar documento(s).");
-        } else if (total != totalparcelas) {//Verifica se os valores das parcelas e do total batem
-            if (total > totalparcelas) {
-                float diff = total - totalparcelas;
-                JOptionPane.showMessageDialog(rootPane, "O(s) valor(es) da(s) parcela(s) não corresponde(m) ao total da nota!\nFalta R$" + String.format("%.02f", diff));
+        } else if (total.compareTo(parcelatotal) != 0) {//Verifica se os valores das parcelas e do total batem
+            if (total.compareTo(parcelatotal) == 1) {
+                BigDecimal diff = total.subtract(parcelatotal);
+                JOptionPane.showMessageDialog(rootPane, "O(s) valor(es) da(s) parcela(s) não corresponde(m) ao total da nota!\nFalta R$" + diff);
                 txttotal.requestFocus();
                 txttotal.selectAll();
             } else {
-                float diff = totalparcelas - total;
-                JOptionPane.showMessageDialog(rootPane, "O(s) valor(es) da(s) parcela(s) não corresponde(m) ao total da nota!\nEstá sobrando R$" + String.format("%.02f", diff));
+                BigDecimal diff = total.subtract(parcelatotal);
+                JOptionPane.showMessageDialog(rootPane, "O(s) valor(es) da(s) parcela(s) não corresponde(m) ao total da nota!\nEstá sobrando R$" + diff);
                 txttotal.requestFocus();
                 txttotal.selectAll();
             }
@@ -478,7 +560,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
             //DAO e Bean para salvar documento
             CAPDocumentosDAO cdd = new CAPDocumentosDAO();
             CAPDocumentosBean cdb = new CAPDocumentosBean();
-            
+
             //DAO e Bean para atualizar Rastreio de Documento
             RastreamentoDocumentosDAO rdd = new RastreamentoDocumentosDAO();
             RastreamentoDocumentosBean rdb = new RastreamentoDocumentosBean();
@@ -490,19 +572,20 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
             if (idrastreamento != 0) {
                 rdb.setCapuser(Session.nome);
                 rdb.setCapdata(Dates.CriarDataCurtaDBSemDataExistente());
+                rdb.setStatus("Fechado");
                 rdb.setId(idrastreamento);
-                
-                //capuser = ?, capdata = ? WHERE id = ?
+
+                //capuser = ?, capdata = ?, status = ? WHERE id = ?
                 rdd.createcap(rdb);
             }
-            
+
             //Criar CAP
             for (int i = 0; i < tableparcelas.getRowCount(); i++) {
                 //Dados para salvar
                 cb.setDatalancamento(data);
-                cb.setFornecedor(txtfornecedor.getText());
+                cb.setFornecedor(txtemitente.getText());
                 cb.setNumero(txtnumero.getText());
-                cb.setDataemissao(Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()));
+                cb.setDataemissao(Dates.CriarDataCurtaDBJDateChooser(dateemissao.getDate()));
                 cb.setTotal(txttotal.getText());
                 cb.setParcela(tableparcelas.getValueAt(i, 0).toString());
                 cb.setValorparcela(tableparcelas.getValueAt(i, 2).toString());
@@ -522,7 +605,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
                 //Criar Documentos para o ID
                 for (int j = 0; j < tabledocumentos.getRowCount(); j++) {
-                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 3).toString());
+                    File fileoriginal = new File(tabledocumentos.getValueAt(j, 3).toString());
                     File folder = new File("Q:/MIKE_ERP/cap_arq/" + id);
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
@@ -554,11 +637,13 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
             //Mensagem de que foi salvo com sucesso
             JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
+            ContasPagar.readtablecap();
 
             //Pergunta se será lançado outro documento
             int sn = JOptionPane.showConfirmDialog(rootPane, "Deseja lançar outro registro?", "Novo registro", JOptionPane.YES_NO_OPTION);
             if (sn == 0) {
                 zeracampos();
+                teladeprocura();
             } else {
                 dispose();
             }
@@ -566,20 +651,11 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txttotalFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txttotalFocusLost
-        DecimalFormat formatter = new DecimalFormat("#,###.00");
-        String vv = txttotal.getText().replace(".", "");
-        String v = formatter.format(Float.parseFloat(vv.replace(",", ".")));
-        txttotal.setText(v);
+        Valores.SetarTxtNumeroEmDinheiro(txttotal);
     }//GEN-LAST:event_txttotalFocusLost
 
     private void btnprocurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarActionPerformed
-        ProcurarRastreamentoDocumento pf = new ProcurarRastreamentoDocumento("CAP");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(pf);
-        Dimension jif = pf.getSize();
-        Dimension d = desk.getSize();
-        pf.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        pf.setVisible(true);
+        teladeprocura();
     }//GEN-LAST:event_btnprocurarActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -598,7 +674,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                         Float parcela = Float.parseFloat(valor) / parcelas;
                         DecimalFormat formatter = new DecimalFormat("#,###.00");
                         String v = formatter.format(parcela);
-                        String data = Dates.verificadata();
+                        String data = Dates.verificadata1();
                         model.addRow(new Object[]{
                             i + 1 + "/" + String.valueOf(parcelas),
                             data,
@@ -616,7 +692,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                     Float parcela = Float.parseFloat(vv) / parcelas;
                     DecimalFormat formatter = new DecimalFormat("#,###.00");
                     String v = formatter.format(parcela);
-                    String data = Dates.verificadata();
+                    String data = Dates.verificadata1();
                     model.addRow(new Object[]{
                         i + 1 + "/" + String.valueOf(parcelas),
                         data,
@@ -637,15 +713,16 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         dcap.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        ProcurarFornecedor p = new ProcurarFornecedor("CAP");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension jif = p.getSize();
-        Dimension d = desk.getSize();
-        p.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        p.setVisible(true);
-    }//GEN-LAST:event_jButton6ActionPerformed
+    private void btnemitenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnemitenteActionPerformed
+        if (radiocliente.isSelected()) {
+            ProcurarCliente p = new ProcurarCliente("CAP");
+            Telas.AparecerTela(p);
+        }
+        if (radiofornecedor.isSelected()) {
+            ProcurarFornecedor p = new ProcurarFornecedor("CAP");
+            Telas.AparecerTela(p);
+        }
+    }//GEN-LAST:event_btnemitenteActionPerformed
 
     private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
         if (evt.getClickCount() == 2) {
@@ -677,18 +754,30 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
 
+    private void radioclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioclienteActionPerformed
+        radios();
+    }//GEN-LAST:event_radioclienteActionPerformed
+
+    private void radiofornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radiofornecedorActionPerformed
+        radios();
+    }//GEN-LAST:event_radiofornecedorActionPerformed
+
+    private void radiooutrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radiooutrosActionPerformed
+        radios();
+    }//GEN-LAST:event_radiooutrosActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton btnemitente;
     public static javax.swing.JButton btnprocurar;
     public javax.swing.ButtonGroup buttonGroup1;
+    public static com.toedter.calendar.JDateChooser dateemissao;
     public static javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
-    public javax.swing.JButton jButton6;
     public javax.swing.JLabel jLabel3;
-    public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
     public javax.swing.JLabel jLabel6;
     public javax.swing.JPanel jPanel1;
@@ -700,11 +789,14 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JTabbedPane jTabbedPane1;
+    public static javax.swing.JLabel lblemitente;
+    public static javax.swing.JRadioButton radiocliente;
+    public static javax.swing.JRadioButton radiofornecedor;
+    public static javax.swing.JRadioButton radiooutros;
     public static javax.swing.JTable tabledocumentos;
-    public javax.swing.JTable tableobs;
+    public static javax.swing.JTable tableobs;
     public static javax.swing.JTable tableparcelas;
-    public static javax.swing.JFormattedTextField txtemissao;
-    public static javax.swing.JTextField txtfornecedor;
+    public static javax.swing.JTextField txtemitente;
     public static javax.swing.JTextField txtnumero;
     public static javax.swing.JTextField txttotal;
     // End of variables declaration//GEN-END:variables

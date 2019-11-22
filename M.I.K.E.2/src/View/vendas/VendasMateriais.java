@@ -5,7 +5,15 @@
  */
 package View.vendas;
 
+import View.Geral.ProcuraMaterialVenda;
+import static View.TelaPrincipal.jDesktopPane1;
+import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JTextFieldDateEditor;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
@@ -606,6 +614,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         txtraio = new javax.swing.JTextField();
         checkri = new javax.swing.JCheckBox();
         jCheckBox1 = new javax.swing.JCheckBox();
+        jLabel17 = new javax.swing.JLabel();
+        txtoriginal = new javax.swing.JTextField();
         jPanel12 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         paneldadostxt = new javax.swing.JPanel();
@@ -1095,20 +1105,38 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jCheckBox1.setText("Weldon");
 
+        jLabel17.setText("Material Original");
+
+        txtoriginal.setEnabled(false);
+        txtoriginal.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtoriginalFocusGained(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
-                .addComponent(checkrevestimento)
+                .addComponent(jLabel17)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbrevestimento, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtoriginal))
             .addGroup(jPanel11Layout.createSequentialGroup()
-                .addComponent(checkraio)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(checkri)
-            .addComponent(jCheckBox1)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(checkrevestimento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbrevestimento, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(checkraio)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(checkri)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1118,12 +1146,17 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(cbrevestimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(txtoriginal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(checkraio)
                     .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(checkri)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBox1)
+                    .addComponent(checkri))
+                .addContainerGap())
         );
 
         jPanel12.setBackground(new java.awt.Color(255, 255, 255));
@@ -1430,7 +1463,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 125, Short.MAX_VALUE)
                 .addComponent(jButton7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6))
@@ -1479,9 +1512,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             .addGroup(paneldadosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneldadosLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btngerarcodigo))
                     .addGroup(paneldadosLayout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1502,7 +1532,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                         .addComponent(lbltopo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbtopo, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 219, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(paneldadosLayout.createSequentialGroup()
                         .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(paneldadosLayout.createSequentialGroup()
@@ -1511,11 +1541,15 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                                 .addComponent(panelcomp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneldadosLayout.createSequentialGroup()
+                                .addGap(463, 463, 463)
+                                .addComponent(btngerarcodigo)))))
                 .addContainerGap())
         );
         paneldadosLayout.setVerticalGroup(
@@ -1968,9 +2002,11 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     private void checkrevestimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkrevestimentoActionPerformed
         if (checkrevestimento.isSelected()) {
             cbrevestimento.setEnabled(true);
+            txtoriginal.setEnabled(true);
         } else {
             cbrevestimento.setEnabled(false);
             cbrevestimento.setSelectedIndex(0);
+            txtoriginal.setEnabled(false);
         }
     }//GEN-LAST:event_checkrevestimentoActionPerformed
 
@@ -2143,6 +2179,29 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         lblicon.setIcon(null);
     }//GEN-LAST:event_txtfrontalFocusLost
 
+    private void txtoriginalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtoriginalFocusGained
+        if (txtoriginal.getText().equals("")) {
+            ProcuraMaterialVenda pmv = new ProcuraMaterialVenda("MaterialVenda");
+            JDesktopPane desk = this.getDesktopPane();
+            desk.add(pmv);
+            Dimension desktopsize = jDesktopPane1.getSize();
+            Dimension jinternalframesize = pmv.getSize();
+            pmv.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+            pmv.setVisible(true);
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Material já selecionado.\nDeseja modificar?", "Modificar Material Original", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                ProcuraMaterialVenda pmv = new ProcuraMaterialVenda("MaterialVenda");
+                JDesktopPane desk = this.getDesktopPane();
+                desk.add(pmv);
+                Dimension desktopsize = jDesktopPane1.getSize();
+                Dimension jinternalframesize = pmv.getSize();
+                pmv.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+                pmv.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_txtoriginalFocusGained
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.ButtonGroup GroupRevestimento;
@@ -2174,6 +2233,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel14;
     public javax.swing.JLabel jLabel15;
     public javax.swing.JLabel jLabel16;
+    public javax.swing.JLabel jLabel17;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel25;
     public javax.swing.JLabel jLabel3;
@@ -2252,6 +2312,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtl5;
     public static javax.swing.JTextField txtmp;
     public static javax.swing.JTextField txtnucleo;
+    public static javax.swing.JTextField txtoriginal;
     public javax.swing.JTextField txtpesquisa;
     public static javax.swing.JTextField txtraio;
     public javax.swing.JTextField txtstatus;

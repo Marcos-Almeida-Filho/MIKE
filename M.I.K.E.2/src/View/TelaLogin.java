@@ -5,16 +5,19 @@
  */
 package View;
 
-import Bean.GrupoDeUsuariosBean;
 import Bean.UsuariosBean;
 import Connection.Session;
 import DAO.UsuariosDAO;
 import static View.TelaPrincipal.lblnome;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -242,7 +245,22 @@ public class TelaLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_TxtSenhaFocusGained
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        GrupoDeUsuariosBean.getNumberMethodsBoolean();
+//        GrupoDeUsuariosBean.getNumberMethodsBoolean();
+        Date today = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date venc = null;
+        try {
+            venc = dateFormat.parse("2019/11/02");
+        } catch (ParseException ex) {
+            Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (today.compareTo(venc) > 0) {
+            JOptionPane.showMessageDialog(null, "Hoje " + today + "é maior que " + venc);
+        } else if (today.compareTo(venc) == 0) {
+            JOptionPane.showMessageDialog(null, "As datas são iguais");
+        } else {
+            JOptionPane.showMessageDialog(null, "Hoje " + today + "é menor que " + venc);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

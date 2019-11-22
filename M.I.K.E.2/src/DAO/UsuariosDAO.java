@@ -34,7 +34,7 @@ public class UsuariosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO usuarios (nome, emailpessoal, dataadmissao, telefonefixo, telefonecelular, datanascimento, datademissao, emailfabrica, vendedor, status, login, senha, cargo, cpf, pis, rg, livrofolha, nivel, apelido) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO usuarios (nome, emailpessoal, dataadmissao, telefonefixo, telefonecelular, datanascimento, datademissao, emailfabrica, vendedor, status, login, senha, cargo, cpf, pis, rg, livrofolha, nivel, salario) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, ub.getNome());
             stmt.setString(2, ub.getEmailpessoal());
             stmt.setString(3, ub.getDataadmissao());
@@ -43,7 +43,7 @@ public class UsuariosDAO {
             stmt.setString(6, ub.getDatanascimento());
             stmt.setString(7, ub.getDatademissao());
             stmt.setString(8, ub.getEmailfabrica());
-            stmt.setString(9, ub.getVendedor());
+            stmt.setBoolean(9, ub.isVendedor());
             stmt.setString(10, ub.getStatus());
             stmt.setString(11, ub.getLogin());
             stmt.setString(12, ub.getSenha());
@@ -53,7 +53,7 @@ public class UsuariosDAO {
             stmt.setString(16, ub.getRg());
             stmt.setString(17, ub.getLivrofolha());
             stmt.setString(18, ub.getNivel());
-            stmt.setString(19, ub.getApelido());
+            stmt.setDouble(19, ub.getSalario());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -111,9 +111,8 @@ public class UsuariosDAO {
                 ub.setPis(rs.getString("pis"));
                 ub.setLogin(rs.getString("login"));
                 ub.setSenha(rs.getString("senha"));
-                ub.setVendedor(rs.getString("vendedor"));
+                ub.setVendedor(rs.getBoolean("vendedor"));
                 ub.setNivel(rs.getString("nivel"));
-                ub.setApelido(rs.getString("apelido"));
 
                 listu.add(ub);
             }
@@ -177,7 +176,7 @@ public class UsuariosDAO {
         List<UsuariosBean> listu = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM usuarios WHERE vendedor = 'true'");
+            stmt = con.prepareStatement("SELECT * FROM usuarios WHERE vendedor = 1");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -185,6 +184,41 @@ public class UsuariosDAO {
 
                 ub.setId(rs.getInt("id"));
                 ub.setNome(rs.getString("nome"));
+
+                listu.add(ub);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listu;
+    }
+    
+    public List<UsuariosBean> readsalario(String nome) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<UsuariosBean> listu = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT salario FROM usuarios WHERE nome = ?");
+            stmt.setString(1, nome);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                UsuariosBean ub = new UsuariosBean();
+
+                ub.setSalario(rs.getDouble("salario"));
 
                 listu.add(ub);
             }
@@ -212,7 +246,7 @@ public class UsuariosDAO {
         List<UsuariosBean> listu = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM usuarios WHERE status = 'ativo'");
+            stmt = con.prepareStatement("SELECT * FROM usuarios WHERE status = 'ativo' ORDER BY nome");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -421,7 +455,7 @@ public class UsuariosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE usuarios SET nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ?, nivel = ? , apelido = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE usuarios SET nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ?, nivel = ?, salario = ? WHERE id = ?");
             stmt.setString(1, ub.getNome());
             stmt.setString(2, ub.getEmailpessoal());
             stmt.setString(3, ub.getDataadmissao());
@@ -430,7 +464,7 @@ public class UsuariosDAO {
             stmt.setString(6, ub.getDatanascimento());
             stmt.setString(7, ub.getDatademissao());
             stmt.setString(8, ub.getEmailfabrica());
-            stmt.setString(9, ub.getVendedor());
+            stmt.setBoolean(9, ub.isVendedor());
             stmt.setString(10, ub.getStatus());
             stmt.setString(11, ub.getLogin());
             stmt.setString(12, ub.getSenha());
@@ -440,7 +474,7 @@ public class UsuariosDAO {
             stmt.setString(16, ub.getRg());
             stmt.setString(17, ub.getLivrofolha());
             stmt.setString(18, ub.getNivel());
-            stmt.setString(19, ub.getApelido());
+            stmt.setDouble(19, ub.getSalario());
             stmt.setInt(20, ub.getId());
 
             stmt.executeUpdate();

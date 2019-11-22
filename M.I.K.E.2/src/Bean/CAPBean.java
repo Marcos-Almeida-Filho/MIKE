@@ -24,6 +24,7 @@ public class CAPBean {
     private String banco;
     private String metodo;
     private String status;
+    private String cheque;
 
     public int getId() {
         return id;
@@ -127,6 +128,14 @@ public class CAPBean {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCheque() {
+        return cheque;
+    }
+
+    public void setCheque(String cheque) {
+        this.cheque = cheque;
     }
 
 }

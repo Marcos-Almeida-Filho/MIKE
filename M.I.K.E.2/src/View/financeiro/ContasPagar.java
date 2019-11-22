@@ -6,14 +6,18 @@
 package View.financeiro;
 
 import DAO.CAPDAO;
-import DAO.CAPDocumentosDAO;
+import Methods.Colors;
 import Methods.Dates;
+import Methods.Telas;
 import View.Geral.MudarStatus;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import javax.swing.BorderFactory;
 import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -26,27 +30,37 @@ public class ContasPagar extends javax.swing.JInternalFrame {
     /**
      * Creates new form ContasPagar
      */
-    
     private static JTable getNewRenderedTable(final JTable table, int coluna) {
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus, int row, int col) {
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-                String status = (String)table.getModel().getValueAt(row, coluna);
-                if (status.equals("Lançado")) {
-                    setBackground(Color.BLUE);
-                    setForeground(Color.BLACK);
-                } else {
-                    setBackground(table.getBackground());
-                    setForeground(table.getForeground());
-                }       
+                String status = (String) table.getModel().getValueAt(row, coluna);
+                switch (status) {
+                    case "Lançado":
+                        setBackground(Colors.blue);
+                        setForeground(Color.BLACK);
+                        break;
+                    case "Aprovado":
+                        setBackground(Colors.green);
+                        setForeground(Color.BLACK);
+                        break;
+                    case "Automático":
+                        setBackground(Colors.orange);
+                        setForeground(Color.BLACK);
+                        break;
+                    default:
+                        setBackground(table.getBackground());
+                        setForeground(table.getForeground());
+                        break;
+                }
                 return this;
-            }   
+            }
         });
         return table;
     }
-    
+
     public ContasPagar() {
         initComponents();
         readtablecap();
@@ -58,7 +72,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         model.setNumRows(0);
 
         CAPDAO capd = new CAPDAO();
-        
+
         switch (cbstatus.getSelectedIndex()) {
             case 0:
                 capd.readaberto().forEach((capb) -> {
@@ -148,6 +162,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         cbstatus = new javax.swing.JComboBox<>();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -207,6 +222,8 @@ public class ContasPagar extends javax.swing.JInternalFrame {
             }
         });
         tablecap.setName("tablecap"); // NOI18N
+        tablecap.setShowHorizontalLines(true);
+        tablecap.setShowVerticalLines(true);
         tablecap.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tablecapMouseClicked(evt);
@@ -295,6 +312,14 @@ public class ContasPagar extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton5.setText("Lançar Pagamentos RH");
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -305,6 +330,8 @@ public class ContasPagar extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 855, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
@@ -332,7 +359,8 @@ public class ContasPagar extends javax.swing.JInternalFrame {
                     .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(jButton5))
                 .addContainerGap())
         );
 
@@ -352,12 +380,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         AdicionarContasAPagar cp = new AdicionarContasAPagar();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(cp);
-        Dimension jif = cp.getSize();
-        Dimension d = desk.getSize();
-        cp.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        cp.setVisible(true);
+        Telas.AparecerTela(cp);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cbstatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbstatusActionPerformed
@@ -366,74 +389,116 @@ public class ContasPagar extends javax.swing.JInternalFrame {
 
     private void tablecapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablecapMouseClicked
         if (evt.getClickCount() == 2) {
-            ContaPagar acp = new ContaPagar();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(acp);
-            ContaPagar.txtid.setText(tablecap.getValueAt(tablecap.getSelectedRow(), 1).toString());
-
-            //DAOs para pesquisa
-            CAPDAO capd = new CAPDAO();
-            CAPDocumentosDAO cdd = new CAPDocumentosDAO();
-
-            //int ID
-            int id = Integer.parseInt(ContaPagar.txtid.getText());
-            
-            capd.click(id).forEach(cb -> {
-                ContaPagar.txtdatalancamento.setText(cb.getDatalancamento());
-                ContaPagar.txtfornecedor.setText(cb.getFornecedor());
-                ContaPagar.txtnf.setText(cb.getNumero());
-                ContaPagar.txtemissao.setText(Dates.TransformarDataCurtaDoDB(cb.getDataemissao()));
-                ContaPagar.txttotal.setText(cb.getTotal());
-                ContaPagar.txtparcela.setText(cb.getParcela());
-                ContaPagar.txtvalorparcela.setText(cb.getValorparcela());
-                ContaPagar.txtvencimento.setText(Dates.TransformarDataCurtaDoDB(cb.getDataparcela()));
-                ContaPagar.txtpagamento.setText(cb.getDatapagamento());
-            });
-            
-            //DefaultTableModel para adicionar linhas
-            DefaultTableModel modeldoc = (DefaultTableModel) ContaPagar.tabledocs.getModel();
-            
-            cdd.readitens(id).forEach(cdb -> {
-                modeldoc.addRow(new Object[]{
-                    cdb.getId(),
-                    false,
-                    cdb.getDescricao(),
-                    cdb.getLocal()
-                });
-            });
-            
-            Dimension jif = acp.getSize();
-            Dimension d = desk.getSize();
-            acp.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-            acp.setVisible(true);
+            ContaPagar acp = new ContaPagar(Integer.parseInt(tablecap.getValueAt(tablecap.getSelectedRow(), 1).toString()));
+            Telas.AparecerTela(acp);
             ContaPagar.travacampos();
         }
     }//GEN-LAST:event_tablecapMouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        PagarEmLote pel = new PagarEmLote();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(pel);
-        Dimension jif = pel.getSize();
-        Dimension d = desk.getSize();
-        pel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        pel.setVisible(true);
+        int pago = 0, seltrue = 0;
+        for (int i = 0; i < tablecap.getRowCount(); i++) {
+            if (tablecap.getValueAt(i, 0).equals(true)) {
+                seltrue++;
+                if (tablecap.getValueAt(i, 8).equals("Pago")) {
+                    pago++;
+                }
+            }
+        }
+        if (seltrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum pagamento selecionado.");
+        } else if (pago > 0) {
+            JOptionPane.showMessageDialog(null, "Pagamentos selecionados já estão pagos.");
+        } else {
+            PagarEmLote pel = new PagarEmLote();
+            Telas.AparecerTela(pel);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        String[] ops = new String[4];
-        ops[0] = "Selecione";
-        ops[1] = "Lançado";
-        ops[2] = "Aprovado";
-        ops[3] = "Automático";
-        MudarStatus sel = new MudarStatus(ops, "Mudar Status CAP", "CAP");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(sel);
-        Dimension jif = sel.getSize();
-        Dimension d = desk.getSize();
-        sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        sel.setVisible(true);
+        int lancado = 0, aprovado = 0, ativo = 0, pago = 0, seltrue = 0;
+        String[] ops;
+        String status;
+        for (int i = 0; i < tablecap.getRowCount(); i++) {
+            if (tablecap.getValueAt(i, 0).equals(true)) {
+                seltrue++;
+                status = tablecap.getValueAt(i, 8).toString();
+                switch (status) {
+                    case "Lançado":
+                        lancado++;
+                        break;
+                    case "Ativo":
+                        ativo++;
+                        break;
+                    case "Aprovado":
+                        aprovado++;
+                        break;
+                    case "Pago":
+                        pago++;
+                        break;
+                }
+            }
+        }
+        if (seltrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum pagamento selecionado.");
+        } else if ((lancado > 0 && (ativo > 0 | aprovado > 0 | pago > 0)) || (ativo > 0 && (aprovado > 0 | pago > 0)) || (aprovado > 0 && pago > 0)) {
+            JOptionPane.showMessageDialog(null, "Foi escolhido mais de um status!");
+        } else {
+            if (lancado > 0) {
+                ops = new String[3];
+                ops[0] = "Selecione";
+                ops[1] = "Aprovado";
+                ops[2] = "Automático";
+                MudarStatus sel = new MudarStatus(ops, "Mudar Status CAP", "CAP");
+                JDesktopPane desk = this.getDesktopPane();
+                desk.add(sel);
+                Dimension jif = sel.getSize();
+                Dimension d = desk.getSize();
+                sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
+                sel.setVisible(true);
+            }
+            if (ativo > 0) {
+                ops = new String[4];
+                ops[0] = "Selecione";
+                ops[1] = "Lançado";
+                ops[2] = "Aprovado";
+                ops[3] = "Automático";
+                MudarStatus sel = new MudarStatus(ops, "Mudar Status CAP", "CAP");
+                JDesktopPane desk = this.getDesktopPane();
+                desk.add(sel);
+                Dimension jif = sel.getSize();
+                Dimension d = desk.getSize();
+                sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
+                sel.setVisible(true);
+            }
+            if (aprovado > 0) {
+                JOptionPane.showMessageDialog(null, "Pagamentos selecionados estão aprovados. Favor usar botão Pagar em Lote.");
+            }
+            if (pago > 0) {
+                int resp = JOptionPane.showConfirmDialog(null, "Pagamentos já pagos.\nDeseja realmente alterar os status?", "Title", JOptionPane.YES_NO_OPTION);
+                if (resp == 0) {
+                    ops = new String[5];
+                    ops[0] = "Selecione";
+                    ops[1] = "Ativo";
+                    ops[2] = "Lançado";
+                    ops[3] = "Aprovado";
+                    ops[4] = "Automático";
+                    MudarStatus sel = new MudarStatus(ops, "Mudar Status CAP", "CAP");
+                    JDesktopPane desk = this.getDesktopPane();
+                    desk.add(sel);
+                    Dimension jif = sel.getSize();
+                    Dimension d = desk.getSize();
+                    sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
+                    sel.setVisible(true);
+                }
+            }
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        PagamentoRH prh = new PagamentoRH();
+        Telas.AparecerTela(prh);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -442,6 +507,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
+    public javax.swing.JButton jButton5;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;

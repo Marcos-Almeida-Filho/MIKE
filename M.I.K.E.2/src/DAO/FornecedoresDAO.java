@@ -33,7 +33,7 @@ public class FornecedoresDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO fornecedores (nome, razaosocial, cnpj, ie, telefone, logradouro, numero, complemento, bairro, cidade, uf, cep, data, emailnfe) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO fornecedores (nome, razaosocial, cnpj, ie, telefone, logradouro, numero, complemento, bairro, cidade, uf, cep, data, emailnfe, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, fb.getNome());
             stmt.setString(2, fb.getRazaosocial());
@@ -49,6 +49,7 @@ public class FornecedoresDAO {
             stmt.setString(12, fb.getCep());
             stmt.setString(13, fb.getData());
             stmt.setString(14, fb.getEmailnfe());
+            stmt.setString(15, fb.getStatus());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

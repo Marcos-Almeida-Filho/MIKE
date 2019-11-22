@@ -20,7 +20,7 @@ public class UsuariosBean {
     private String datanascimento;
     private String datademissao;
     private String emailfabrica;
-    private String vendedor;
+    private boolean vendedor;
     private String status;
     private String login;
     private String senha;
@@ -30,7 +30,7 @@ public class UsuariosBean {
     private String rg;
     private String livrofolha;
     private String nivel;
-    private String apelido;
+    private double salario;
 
     public int getId() {
         return id;
@@ -104,11 +104,11 @@ public class UsuariosBean {
         this.emailfabrica = emailfabrica;
     }
 
-    public String getVendedor() {
+    public boolean isVendedor() {
         return vendedor;
     }
 
-    public void setVendedor(String vendedor) {
+    public void setVendedor(boolean vendedor) {
         this.vendedor = vendedor;
     }
 
@@ -184,12 +184,12 @@ public class UsuariosBean {
         this.nivel = nivel;
     }
 
-    public String getApelido() {
-        return apelido;
+    public double getSalario() {
+        return salario;
     }
 
-    public void setApelido(String apelido) {
-        this.apelido = apelido;
+    public void setSalario(double salario) {
+        this.salario = salario;
     }
 
 }

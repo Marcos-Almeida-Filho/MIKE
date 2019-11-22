@@ -115,7 +115,7 @@ public class CAPDAO {
         List<CAPBean> listcapb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM cap WHERE datapagamento IS NULL");
+            stmt = con.prepareStatement("SELECT * FROM cap WHERE datapagamento IS NULL ORDER BY dataparcela, fornecedor");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -215,6 +215,7 @@ public class CAPDAO {
                 capb.setDatapagamento(rs.getString("datapagamento"));
                 capb.setBanco(rs.getString("banco"));
                 capb.setMetodo(rs.getString("metodo"));
+                capb.setStatus(rs.getString("status"));
 
                 listcapb.add(capb);
             }
@@ -259,6 +260,9 @@ public class CAPDAO {
                 capb.setValorparcela(rs.getString("valorparcela"));
                 capb.setDataparcela(rs.getString("dataparcela"));
                 capb.setDatapagamento(rs.getString("datapagamento"));
+                capb.setBanco(rs.getString("banco"));
+                capb.setMetodo(rs.getString("metodo"));
+                capb.setCheque(rs.getString("cheque"));
 
                 listcapb.add(capb);
             }
@@ -282,19 +286,19 @@ public class CAPDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE cap SET datalancamento = ?, fornecedor = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datapagamento = ?, banco = ?, metodo = ?, status = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE cap SET fornecedor = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datapagamento = ?, banco = ?, metodo = ?, cheque = ?, status = ? WHERE id = ?");
 
-            stmt.setString(1, capb.getDatalancamento());
-            stmt.setString(2, capb.getFornecedor());
-            stmt.setString(3, capb.getNumero());
-            stmt.setString(4, capb.getDataemissao());
-            stmt.setString(5, capb.getTotal());
-            stmt.setString(6, capb.getParcela());
-            stmt.setString(7, capb.getValorparcela());
-            stmt.setString(8, capb.getDataparcela());
-            stmt.setString(9, capb.getDatapagamento());
-            stmt.setString(10, capb.getBanco());
-            stmt.setString(11, capb.getMetodo());
+            stmt.setString(1, capb.getFornecedor());
+            stmt.setString(2, capb.getNumero());
+            stmt.setString(3, capb.getDataemissao());
+            stmt.setString(4, capb.getTotal());
+            stmt.setString(5, capb.getParcela());
+            stmt.setString(6, capb.getValorparcela());
+            stmt.setString(7, capb.getDataparcela());
+            stmt.setString(8, capb.getDatapagamento());
+            stmt.setString(9, capb.getBanco());
+            stmt.setString(10, capb.getMetodo());
+            stmt.setString(11, capb.getCheque());
             stmt.setString(12, capb.getStatus());
             stmt.setInt(13, capb.getId());
 
@@ -325,6 +329,31 @@ public class CAPDAO {
             stmt.setString(3, capb.getMetodo());
             stmt.setString(4, capb.getStatus());
             stmt.setInt(5, capb.getId());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar CAP!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(CAPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updatestatus(String status, int id) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE cap SET status = ? WHERE id = ?");
+
+            stmt.setString(1, status);
+            stmt.setInt(2, id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

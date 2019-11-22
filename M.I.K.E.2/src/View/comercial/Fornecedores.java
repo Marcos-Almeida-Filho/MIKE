@@ -1007,8 +1007,9 @@ public class Fornecedores extends javax.swing.JInternalFrame {
             fb.setCep(txtcep.getText());
             fb.setData(data);
             fb.setEmailnfe(txtnfe.getText());
+            fb.setStatus("Ativo");
 
-            //nome, razaosocial, cnpj, ie, telefone, logradouro, numero, complemento, bairro, cidade, uf, cep, data, emailnfe
+            //nome, razaosocial, cnpj, ie, telefone, logradouro, numero, complemento, bairro, cidade, uf, cep, data, emailnfe, status
             fd.create(fb);
 
             //Retornar ID do fornecedor criado
@@ -1101,6 +1102,8 @@ public class Fornecedores extends javax.swing.JInternalFrame {
 
             //Zerar campos
             zeracampos();
+            
+            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
 
             //Voltar para primeira tela de Fornecedores
             tabfornecedores.setSelectedIndex(0);
@@ -1128,10 +1131,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
             fd.update(fb);
 
             //Update do tipo de Fornecedor
-            JOptionPane.showMessageDialog(null, ftb.isMp());
             ftb.setMp((boolean) tabletipo.getValueAt(0, 0));
-            JOptionPane.showMessageDialog(null, (boolean) tabletipo.getValueAt(0, 0));
-            JOptionPane.showMessageDialog(null, ftb.isMp());
             ftb.setFerramentas((boolean) tabletipo.getValueAt(1, 0));
             ftb.setRebolo((boolean) tabletipo.getValueAt(2, 0));
             ftb.setOleo((boolean) tabletipo.getValueAt(3, 0));

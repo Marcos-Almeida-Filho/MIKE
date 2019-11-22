@@ -5,10 +5,12 @@
  */
 package View.financeiro;
 
-import Bean.BancosBean;
 import Bean.CAPBean;
 import DAO.BancosDAO;
 import DAO.CAPDAO;
+import DAO.CAPDocumentosDAO;
+import Methods.Dates;
+import Methods.Docs;
 import View.Geral.ProcurarFornecedor;
 import static View.financeiro.ContasPagar.readtablecap;
 import java.awt.Dimension;
@@ -17,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -27,12 +30,60 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     /**
      * Creates new form AdicionarContasPagar
      */
-    public ContaPagar() {
+    public static int id;
+
+    public ContaPagar(int idi) {
         initComponents();
+        id = idi;
+        readdados();
         data();
         readcbbancos();
         travacampos();
         cheque();
+    }
+
+    public static void readdados() {
+        //DAOs para pesquisa
+        CAPDAO capd = new CAPDAO();
+        CAPDocumentosDAO cdd = new CAPDocumentosDAO();
+
+        txtid.setText(String.valueOf(id));
+
+        capd.click(id).forEach(cb -> {
+            txtdatalancamento.setText(cb.getDatalancamento());
+            txtfornecedor.setText(cb.getFornecedor());
+            txtnf.setText(cb.getNumero());
+            txtemissao.setText(Dates.TransformarDataCurtaDoDB(cb.getDataemissao()));
+            txttotal.setText(cb.getTotal());
+            txtparcela.setText(cb.getParcela());
+            txtvalorparcela.setText(cb.getValorparcela());
+            txtvencimento.setText(Dates.TransformarDataCurtaDoDB(cb.getDataparcela()));
+            if (cb.getDatapagamento() != null) {
+                txtpagamento.setText(Dates.TransformarDataCurtaDoDB(cb.getDatapagamento()));
+            }
+            if (cb.getBanco() != null) {
+                cbbanco.addItem(cb.getBanco());
+                cbbanco.setSelectedItem(cb.getBanco());
+            }
+            if (cb.getMetodo() != null) {
+                cbmetodo.setSelectedItem(cb.getMetodo());
+            }
+            if (cb.getCheque() != null) {
+                txtcheque.setText(cb.getCheque());
+            }
+        });
+
+        //DefaultTableModel para adicionar linhas
+        DefaultTableModel modeldoc = (DefaultTableModel) ContaPagar.tabledocs.getModel();
+
+        cdd.readitens(id).forEach(cdb -> {
+            modeldoc.addRow(new Object[]{
+                cdb.getId(),
+                false,
+                cdb.getDescricao(),
+                cdb.getLocal()
+            });
+        });
     }
 
     public static void cheque() {
@@ -44,7 +95,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             txtcheque.setVisible(false);
         }
     }
-    
+
     public static void data() {
         Calendar c = Calendar.getInstance();
         String pattern = "dd/MM/yyyy";
@@ -53,10 +104,12 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     }
 
     public static void readcbbancos() {
-        BancosDAO bd = new BancosDAO();
+        if (cbbanco.getSelectedItem().equals("Selecione")) {
+            BancosDAO bd = new BancosDAO();
 
-        for (BancosBean bb : bd.read()) {
-            cbbanco.addItem(bb.getBanco());
+            bd.read().forEach(bb -> {
+                cbbanco.addItem(bb.getBanco());
+            });
         }
     }
 
@@ -313,6 +366,11 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
         txtpagamento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
         txtpagamento.setToolTipText("dd/mm/aaaa");
+        txtpagamento.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtpagamentoFocusLost(evt);
+            }
+        });
 
         jLabel11.setText("Banco");
 
@@ -344,7 +402,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                         .addComponent(jLabel11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 35, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -400,6 +458,11 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tabledocs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabledocsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabledocs);
         if (tabledocs.getColumnModel().getColumnCount() > 0) {
             tabledocs.getColumnModel().getColumn(0).setMinWidth(0);
@@ -446,12 +509,11 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtdatalancamento, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(669, 669, 669)
-                        .addComponent(jButton1)
-                        .addGap(0, 74, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton1))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -497,7 +559,6 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int sn = JOptionPane.showConfirmDialog(rootPane, "Deseja lançar outro registro?", "Novo registro", JOptionPane.YES_NO_OPTION);
         if (txtid.getText().equals("")) {
             CAPBean capb = new CAPBean();
             CAPDAO capd = new CAPDAO();
@@ -505,12 +566,12 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             capb.setDatalancamento(txtdatalancamento.getText());
             capb.setFornecedor(txtfornecedor.getText());
             capb.setNumero(txtnf.getText());
-            capb.setDataemissao(txtemissao.getText());
+            capb.setDataemissao(Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()));
             capb.setTotal(txttotal.getText());
             capb.setParcela(txtparcela.getText());
             capb.setValorparcela(txtvalorparcela.getText());
-            capb.setDataparcela(txtvencimento.getText());
-            capb.setDatapagamento(txtpagamento.getText());
+            capb.setDataparcela(Dates.CriarDataCurtaDBComDataExistente(txtvencimento.getText()));
+            capb.setDatapagamento(Dates.CriarDataCurtaDBComDataExistente(txtpagamento.getText()));
             capb.setBanco(cbbanco.getSelectedItem().toString());
             capb.setMetodo(cbmetodo.getSelectedItem().toString());
 
@@ -527,34 +588,35 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             CAPBean capb = new CAPBean();
             CAPDAO capd = new CAPDAO();
 
-            capb.setDatalancamento(txtdatalancamento.getText());
             capb.setFornecedor(txtfornecedor.getText());
             capb.setNumero(txtnf.getText());
-            capb.setDataemissao(txtemissao.getText());
+            capb.setDataemissao(Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()));
             capb.setTotal(txttotal.getText());
             capb.setParcela(txtparcela.getText());
             capb.setValorparcela(txtvalorparcela.getText());
-            capb.setDataparcela(txtvencimento.getText());
-            capb.setDatapagamento(txtpagamento.getText());
+            capb.setDataparcela(Dates.CriarDataCurtaDBComDataExistente(txtvencimento.getText()));
+            if (txtpagamento.getText().equals("")) {
+                capb.setDatapagamento(null);
+            } else {
+                capb.setDatapagamento(Dates.CriarDataCurtaDBComDataExistente(txtpagamento.getText()));
+            }
             capb.setBanco(cbbanco.getSelectedItem().toString());
             capb.setMetodo(cbmetodo.getSelectedItem().toString());
+            capb.setCheque(txtcheque.getText());
 
             if (txtpagamento.getText().equals("")) {
-                capb.setStatus("Em aberto");
+                capb.setStatus("Ativo");
             } else {
                 capb.setStatus("Pago");
             }
             capb.setId(Integer.parseInt(txtid.getText()));
-//            datalancamento = ?, fornecedor = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datapagamento = ?, banco = ?, metodo = ?, status = ? WHERE id = ?
+            //fornecedor = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datapagamento = ?, banco = ?, metodo = ?, cheque = ?, status = ? WHERE id = ?
             capd.update(capb);
             ContasPagar.cbstatus.setSelectedIndex(0);
             readtablecap();
+            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         }
-        if (sn == 0) {
-            zeracampos();
-        } else {
-            dispose();
-        }
+        dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void txttotalFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txttotalFocusLost
@@ -612,6 +674,19 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     private void cbmetodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmetodoActionPerformed
         cheque();
     }//GEN-LAST:event_cbmetodoActionPerformed
+
+    private void txtpagamentoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtpagamentoFocusLost
+        if (!Dates.verificadata(txtpagamento.getText())) {
+            txtpagamento.setText("");
+            txtpagamento.requestFocus();
+        }
+    }//GEN-LAST:event_txtpagamentoFocusLost
+
+    private void tabledocsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocsMouseClicked
+        if (evt.getClickCount() == 2) {
+            Docs.open(tabledocs.getValueAt(tabledocs.getSelectedRow(), 3).toString());
+        }
+    }//GEN-LAST:event_tabledocsMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

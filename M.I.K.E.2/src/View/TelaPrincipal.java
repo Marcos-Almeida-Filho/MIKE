@@ -5,7 +5,6 @@
  */
 package View;
 
-import Bean.GrupoDeUsuariosBean;
 import Bean.UsuariosBean;
 import Connection.Session;
 import DAO.GrupoDeUsuariosDAO;
@@ -16,18 +15,21 @@ import View.servicos.CotacaoServico;
 import View.vendas.OPs;
 import View.arquivo.Email;
 import Methods.EmBreve;
+import Methods.Telas;
 import View.administracao.GrupoDeUsuarios;
 import View.administracao.Regioes;
 import View.administracao.Representantes;
 import View.comercial.CategoriaDePreco;
+import View.comercial.F_UP;
 import View.comercial.Fornecedores;
-import View.comercial.TipoFornecedor;
 import View.compras.ComprasSolicitacao;
+import View.compras.Insumos;
 import View.compras.TiposProduto;
 import View.configuracoes.Menus;
 import View.financeiro.Bancos;
 import View.financeiro.CondicoesDePagamento;
 import View.financeiro.ContasPagar;
+import View.financeiro.ContasReceber;
 import View.logistica.RastreamentoDocumentos;
 import View.qualidade.InstrumentosMedicao;
 import View.servicos.GrupoDeProcessosServico;
@@ -76,9 +78,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             Session.nivel = ub.getNivel();
         }
         GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
-        Boolean status;
 //        TelaPrincipal.menuarquivo.setVisible(false);
-        for (GrupoDeUsuariosBean gub : gud.getmenus(Session.nivel)) {
+        gud.getmenus(Session.nivel).forEach(gub -> {
             TelaPrincipal.menuadministracao.setVisible(gub.isMenuadministracao());
             TelaPrincipal.menuitemusuarios.setVisible(gub.isSubmenuusuarios());
             TelaPrincipal.menuitemgrupodeusuarios.setVisible(gub.isSubmenugrupodeusuarios());
@@ -108,7 +109,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             TelaPrincipal.menuitemvendasops.setVisible(gub.isSubmenuops());
             TelaPrincipal.menuitemvendasprodutos.setVisible(gub.isSubmenuprodutosvenda());
             TelaPrincipal.menuitemvendasprocessos.setVisible(gub.isSubmenuprocessosvenda());
-            TelaPrincipal.menuitemvendasgrupodeprocessos.setVisible(gub.isSubmenugrupodeprocessosvenda());
             TelaPrincipal.menuservicos.setVisible(gub.isMenuservicos());
             TelaPrincipal.menuitemservicosorcamentos.setVisible(gub.isSubmenuorcamentosservico());
             TelaPrincipal.menuitemservicospedidos.setVisible(gub.isSubmenupedidosservico());
@@ -118,7 +118,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             TelaPrincipal.menuitemservicosgrupodeprocessos.setVisible(gub.isSubmenugrupodeprocessosservico());
             TelaPrincipal.menuconfiguracoes.setVisible(gub.isMenuconfiguracoes());
             TelaPrincipal.menuitemmenus.setVisible(gub.isSubmenumenus());
-        }
+        });
     }
 
     /**
@@ -152,6 +152,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemgrupodeclientes = new javax.swing.JMenuItem();
         menuitemfornecedores = new javax.swing.JMenuItem();
         menuitemcategoriapreco = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         menufinanceiro = new javax.swing.JMenu();
         menuitemcontasareceber = new javax.swing.JMenuItem();
         menuitemcontasapagar = new javax.swing.JMenuItem();
@@ -176,7 +177,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemvendasops = new javax.swing.JMenuItem();
         menuitemvendasprodutos = new javax.swing.JMenuItem();
         menuitemvendasprocessos = new javax.swing.JMenuItem();
-        menuitemvendasgrupodeprocessos = new javax.swing.JMenuItem();
         menuservicos = new javax.swing.JMenu();
         menuitemservicosorcamentos = new javax.swing.JMenuItem();
         menuitemservicospedidos = new javax.swing.JMenuItem();
@@ -380,6 +380,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menucomercial.add(menuitemcategoriapreco);
 
+        jMenuItem2.setText("Follow Up");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        menucomercial.add(jMenuItem2);
+
         jMenuBar1.add(menucomercial);
 
         menufinanceiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money.png"))); // NOI18N
@@ -389,6 +397,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemcontasareceber.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_add.png"))); // NOI18N
         menuitemcontasareceber.setText("Contas a Receber");
         menuitemcontasareceber.setName("menuitemcontasareceber"); // NOI18N
+        menuitemcontasareceber.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuitemcontasareceberActionPerformed(evt);
+            }
+        });
         menufinanceiro.add(menuitemcontasareceber);
 
         menuitemcontasapagar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_delete.png"))); // NOI18N
@@ -450,10 +463,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuiteminsumos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_put.png"))); // NOI18N
         menuiteminsumos.setText("Insumos");
         menuiteminsumos.setName("menuiteminsumos"); // NOI18N
+        menuiteminsumos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuiteminsumosActionPerformed(evt);
+            }
+        });
         menucompras.add(menuiteminsumos);
 
         jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/basket.png"))); // NOI18N
-        jMenuItem1.setText("Tipos de Produto");
+        jMenuItem1.setText("Tipos de Insumo");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
@@ -560,11 +578,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemvendasprocessos.setText("Processos");
         menuitemvendasprocessos.setName("menuitemvendasprocessos"); // NOI18N
         menuvendas.add(menuitemvendasprocessos);
-
-        menuitemvendasgrupodeprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench.png"))); // NOI18N
-        menuitemvendasgrupodeprocessos.setText("Grupo de Processos");
-        menuitemvendasgrupodeprocessos.setName("menuitemvendasgrupodeprocessos"); // NOI18N
-        menuvendas.add(menuitemvendasgrupodeprocessos);
 
         jMenuBar1.add(menuvendas);
 
@@ -699,51 +712,28 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
     private void menuitemusuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemusuariosActionPerformed
         Usuarios telauser = new Usuarios();
-        jDesktopPane1.add(telauser);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = telauser.getSize();
-        telauser.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        telauser.setVisible(true);
+        Telas.AparecerTela(telauser);
     }//GEN-LAST:event_menuitemusuariosActionPerformed
 
     private void menuitemvendasopsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasopsActionPerformed
-        try {
-            // TODO add your handling code here:
-            OPs ops = new OPs();
-            jDesktopPane1.add(ops);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = ops.getSize();
-            ops.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            ops.setVisible(true);
-            ops.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(rootPane, "Erro: " + ex);
-        }
+        OPs ops = new OPs();
+        Telas.AparecerTelaAumentada(ops);
     }//GEN-LAST:event_menuitemvendasopsActionPerformed
 
     private void menuitememailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitememailActionPerformed
-        // TODO add your handling code here:
         Email email = new Email();
-        jDesktopPane1.add(email);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = email.getSize();
-        email.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        email.setVisible(true);
+        Telas.AparecerTela(email);
     }//GEN-LAST:event_menuitememailActionPerformed
 
     private void menuitemvendaspedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendaspedidosActionPerformed
-        // TODO add your handling code here:
         EmBreve.EmBreve();
     }//GEN-LAST:event_menuitemvendaspedidosActionPerformed
 
     private void menuitemvendasorcamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasorcamentosActionPerformed
-        // TODO add your handling code here:
         EmBreve.EmBreve();
     }//GEN-LAST:event_menuitemvendasorcamentosActionPerformed
 
     private void menuitemsobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemsobreActionPerformed
-        // TODO add your handling code here:
         JOptionPane.showMessageDialog(rootPane, "Sistema M.I.K.E®\n\nCriado por Marcos Filho\nTodos os direitos reservados");
     }//GEN-LAST:event_menuitemsobreActionPerformed
 
@@ -753,179 +743,88 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_menuitemmikeActionPerformed
 
     private void menuitemservicosorcamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosorcamentosActionPerformed
-        try {
-            CotacaoServico tela = new CotacaoServico();
-            jDesktopPane1.add(tela);
-            tela.setVisible(true);
-            tela.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(rootPane, "Erro: " + ex);
-        }
+        CotacaoServico tela = new CotacaoServico();
+        Telas.AparecerTelaAumentada(tela);
     }//GEN-LAST:event_menuitemservicosorcamentosActionPerformed
 
     private void menuitemservicospedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicospedidosActionPerformed
         PedidoServico p = new PedidoServico();
-        jDesktopPane1.add(p);
-        p.setVisible(true);
-        try {
-            p.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Telas.AparecerTelaAumentada(p);
     }//GEN-LAST:event_menuitemservicospedidosActionPerformed
 
     private void menuitemservicosossActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosossActionPerformed
         OS os = new OS();
-        jDesktopPane1.add(os);
-        os.setVisible(true);
-        try {
-            os.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Telas.AparecerTelaAumentada(os);
     }//GEN-LAST:event_menuitemservicosossActionPerformed
 
     private void menuitemclientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemclientesActionPerformed
-        try {
-            Clientes telaclientes = new Clientes();
-            jDesktopPane1.add(telaclientes);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = telaclientes.getSize();
-            telaclientes.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            telaclientes.setVisible(true);
-            telaclientes.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(rootPane, "Erro: " + ex);
-        }
+        Clientes telaclientes = new Clientes();
+        Telas.AparecerTelaAumentada(telaclientes);
     }//GEN-LAST:event_menuitemclientesActionPerformed
 
     private void menuitemservicosprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosprodutosActionPerformed
-        try {
-            ServicoMateriais tela = new ServicoMateriais();
-            jDesktopPane1.add(tela);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = tela.getSize();
-            tela.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            tela.setVisible(true);
-            tela.setMaximum(true);
-        } catch (PropertyVetoException e) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, e);
-            JOptionPane.showMessageDialog(rootPane, "Erro: " + e);
-        }
+        ServicoMateriais tela = new ServicoMateriais();
+        Telas.AparecerTelaAumentada(tela);
     }//GEN-LAST:event_menuitemservicosprodutosActionPerformed
 
     private void menuitemgrupodeusuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemgrupodeusuariosActionPerformed
         GrupoDeUsuarios gu = new GrupoDeUsuarios();
-        jDesktopPane1.add(gu);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = gu.getSize();
-        gu.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        gu.setVisible(true);
+        Telas.AparecerTela(gu);
     }//GEN-LAST:event_menuitemgrupodeusuariosActionPerformed
 
     private void menuitemmenusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemmenusActionPerformed
         Menus m = new Menus();
-        jDesktopPane1.add(m);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = m.getSize();
-        m.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        m.setVisible(true);
+        Telas.AparecerTela(m);
     }//GEN-LAST:event_menuitemmenusActionPerformed
 
     private void menuitemrepresentantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemrepresentantesActionPerformed
         Representantes r = new Representantes();
-        jDesktopPane1.add(r);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = r.getSize();
-        r.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        r.setVisible(true);
+        Telas.AparecerTela(r);
     }//GEN-LAST:event_menuitemrepresentantesActionPerformed
 
     private void menuitemregioesdeatuacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemregioesdeatuacaoActionPerformed
         Regioes r = new Regioes();
-        jDesktopPane1.add(r);
-        Dimension desk = jDesktopPane1.getSize();
-        Dimension rsize = r.getSize();
-        r.setLocation((desk.width - rsize.width) / 2, (desk.height - rsize.height) / 2);
-        r.setVisible(true);
+        Telas.AparecerTela(r);
     }//GEN-LAST:event_menuitemregioesdeatuacaoActionPerformed
 
     private void menuitemcondicoesdepagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcondicoesdepagamentoActionPerformed
         CondicoesDePagamento cp = new CondicoesDePagamento();
-        jDesktopPane1.add(cp);
-        Dimension desk = jDesktopPane1.getSize();
-        Dimension inf = cp.getSize();
-        cp.setLocation((desk.width - inf.width) / 2, (desk.height - inf.height) / 2);
-        cp.setVisible(true);
+        Telas.AparecerTela(cp);
     }//GEN-LAST:event_menuitemcondicoesdepagamentoActionPerformed
 
     private void menuitemcontasapagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcontasapagarActionPerformed
         ContasPagar c = new ContasPagar();
-        jDesktopPane1.add(c);
-        try {
-            c.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        c.setVisible(true);
+        Telas.AparecerTelaAumentada(c);
     }//GEN-LAST:event_menuitemcontasapagarActionPerformed
 
     private void menuitembancosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitembancosActionPerformed
         Bancos b = new Bancos();
-        jDesktopPane1.add(b);
-        try {
-            b.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        b.setVisible(true);
+        Telas.AparecerTelaAumentada(b);
     }//GEN-LAST:event_menuitembancosActionPerformed
 
     private void menuitemfornecedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemfornecedoresActionPerformed
         Fornecedores f = new Fornecedores();
-        jDesktopPane1.add(f);
-        Dimension jif = f.getSize();
-        Dimension d = jDesktopPane1.getSize();
-        f.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        f.setVisible(true);
+        Telas.AparecerTela(f);
     }//GEN-LAST:event_menuitemfornecedoresActionPerformed
 
     private void menuitemservicosproccessosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosproccessosActionPerformed
         ProcessosServico ps = new ProcessosServico();
-        jDesktopPane1.add(ps);
-        Dimension jif = ps.getSize();
-        Dimension desk = jDesktopPane1.getSize();
-        ps.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
-        ps.setVisible(true);
+        Telas.AparecerTela(ps);
     }//GEN-LAST:event_menuitemservicosproccessosActionPerformed
 
     private void menuitemservicosgrupodeprocessosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosgrupodeprocessosActionPerformed
         GrupoDeProcessosServico gps = new GrupoDeProcessosServico();
-        jDesktopPane1.add(gps);
-        Dimension jif = gps.getSize();
-        Dimension desk = jDesktopPane1.getSize();
-        gps.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
-        gps.setVisible(true);
+        Telas.AparecerTela(gps);
     }//GEN-LAST:event_menuitemservicosgrupodeprocessosActionPerformed
 
     private void menuitemsolicitacaodecomprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemsolicitacaodecomprasActionPerformed
         ComprasSolicitacao p = new ComprasSolicitacao();
-        jDesktopPane1.add(p);
-        Dimension jif = p.getSize();
-        Dimension desk = jDesktopPane1.getSize();
-        p.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_menuitemsolicitacaodecomprasActionPerformed
 
     private void menuiteminstrumentosmedicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuiteminstrumentosmedicaoActionPerformed
         InstrumentosMedicao p = new InstrumentosMedicao();
-        jDesktopPane1.add(p);
-        Dimension jif = p.getSize();
-        Dimension desk = jDesktopPane1.getSize();
-        p.setLocation((desk.width - jif.width) / 2, (desk.height - jif.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_menuiteminstrumentosmedicaoActionPerformed
 
     private void menuitemcarrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcarrosActionPerformed
@@ -959,47 +858,38 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         TiposProduto p = new TiposProduto();
-        jDesktopPane1.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void menuitemvendasprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasprodutosActionPerformed
         VendasMateriais p = new VendasMateriais();
-        jDesktopPane1.add(p);
-//        Dimension desktopsize = jDesktopPane1.getSize();
-//        Dimension jinternalframesize = p.getSize();
-//        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        try {
-            p.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        p.setVisible(true);
+        Telas.AparecerTelaAumentada(p);
     }//GEN-LAST:event_menuitemvendasprodutosActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         RastreamentoDocumentos p = new RastreamentoDocumentos();
-        jDesktopPane1.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void menuitemcategoriaprecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcategoriaprecoActionPerformed
-        try {
-            CategoriaDePreco p = new CategoriaDePreco();
-            jDesktopPane1.add(p);
-            p.setMaximum(true);
-            p.setVisible(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Erro ao abrir! Contate suporte!");
-        }
+        CategoriaDePreco p = new CategoriaDePreco();
+        Telas.AparecerTelaAumentada(p);
     }//GEN-LAST:event_menuitemcategoriaprecoActionPerformed
+
+    private void menuitemcontasareceberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcontasareceberActionPerformed
+        ContasReceber p = new ContasReceber();
+        Telas.AparecerTelaAumentada(p);
+    }//GEN-LAST:event_menuitemcontasareceberActionPerformed
+
+    private void menuiteminsumosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuiteminsumosActionPerformed
+        Insumos i = new Insumos();
+        Telas.AparecerTelaAumentada(i);
+    }//GEN-LAST:event_menuiteminsumosActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        F_UP f = new F_UP();
+        Telas.AparecerTelaAumentada(f);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1041,6 +931,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JDesktopPane jDesktopPane1;
     public static javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
@@ -1086,7 +977,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenuItem menuitemsobre;
     public static javax.swing.JMenuItem menuitemsolicitacaodecompras;
     public static javax.swing.JMenuItem menuitemusuarios;
-    public static javax.swing.JMenuItem menuitemvendasgrupodeprocessos;
     public static javax.swing.JMenuItem menuitemvendasops;
     public static javax.swing.JMenuItem menuitemvendasorcamentos;
     public static javax.swing.JMenuItem menuitemvendaspedidos;

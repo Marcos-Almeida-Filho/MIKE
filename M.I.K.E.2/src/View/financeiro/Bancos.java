@@ -43,6 +43,7 @@ public class Bancos extends javax.swing.JInternalFrame {
         txtbanco.setText("");
         txtconta.setText("");
         cbtipo.setSelectedIndex(0);
+        txtagencia.setText("");
     }
 
     /**
@@ -69,6 +70,8 @@ public class Bancos extends javax.swing.JInternalFrame {
         txtconta = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         cbtipo = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        txtagencia = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
 
         setClosable(true);
@@ -76,10 +79,7 @@ public class Bancos extends javax.swing.JInternalFrame {
 
         tablebanco.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "", "ID", "Nome", "Conta"
@@ -140,7 +140,6 @@ public class Bancos extends javax.swing.JInternalFrame {
         jLabel1.setText("ID");
 
         txtid.setEditable(false);
-        txtid.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados"));
 
@@ -151,6 +150,8 @@ public class Bancos extends javax.swing.JInternalFrame {
         jLabel4.setText("Tipo");
 
         cbtipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Conta Corrente", "Conta Poupança" }));
+
+        jLabel5.setText("Agência");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -168,6 +169,10 @@ public class Bancos extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtagencia, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtconta, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -182,11 +187,13 @@ public class Bancos extends javax.swing.JInternalFrame {
                     .addComponent(txtbanco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(txtconta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtconta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(txtagencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         jButton3.setText("Salvar");
@@ -245,29 +252,37 @@ public class Bancos extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (txtid.getText().equals("")) {
-            BancosBean bb = new BancosBean();
-            BancosDAO bd = new BancosDAO();
+        BancosBean bb = new BancosBean();
+        BancosDAO bd = new BancosDAO();
 
+        if (txtid.getText().equals("")) {
             bb.setBanco(txtbanco.getText());
             bb.setConta(txtconta.getText());
             bb.setTipo(cbtipo.getSelectedItem().toString());
-            //banco, conta, tipo
+            bb.setAgencia(txtagencia.getText());
+
+            //banco, conta, tipo, agencia
             bd.create(bb);
+
             zeracampos();
+
             tabbancos.setSelectedIndex(0);
+
             readtablebancos();
         } else {
-            BancosBean bb = new BancosBean();
-            BancosDAO bd = new BancosDAO();
-
             bb.setBanco(txtbanco.getText());
             bb.setConta(txtconta.getText());
             bb.setTipo(cbtipo.getSelectedItem().toString());
-            //banco, conta, tipo
-            bd.create(bb);
+            bb.setAgencia(txtagencia.getText());
+            bb.setId(Integer.parseInt(txtid.getText()));
+
+            //banco = ?, conta = ?, tipo = ?, agencia = ? WHERE id = ?
+            bd.update(bb);
+            
             zeracampos();
+            
             tabbancos.setSelectedIndex(0);
+            
             readtablebancos();
         }
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -283,6 +298,7 @@ public class Bancos extends javax.swing.JInternalFrame {
                 txtbanco.setText(bb.getBanco());
                 txtconta.setText(bb.getConta());
                 cbtipo.setSelectedItem(bb.getTipo());
+                txtagencia.setText(bb.getAgencia());
             }
         }
     }//GEN-LAST:event_tablebancoMouseClicked
@@ -296,12 +312,14 @@ public class Bancos extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
+    public javax.swing.JLabel jLabel5;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTabbedPane tabbancos;
     public static javax.swing.JTable tablebanco;
+    public static javax.swing.JTextField txtagencia;
     public static javax.swing.JTextField txtbanco;
     public static javax.swing.JTextField txtconta;
     public static javax.swing.JTextField txtid;

@@ -26,6 +26,7 @@ public class FornecedoresBean {
     private String uf;
     private String cep;
     private String emailnfe;
+    private String status;
 
     public int getId() {
         return id;
@@ -145,6 +146,14 @@ public class FornecedoresBean {
 
     public void setEmailnfe(String emailnfe) {
         this.emailnfe = emailnfe;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

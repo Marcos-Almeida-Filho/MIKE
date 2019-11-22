@@ -8,6 +8,8 @@ package View.Geral;
 import View.servicos.*;
 import Bean.ClientesBean;
 import DAO.ClientesDAO;
+import View.financeiro.AdicionarContasAPagar;
+import View.financeiro.AdicionarContasAReceber;
 import View.logistica.RastreamentoDocumentos;
 import javax.swing.table.DefaultTableModel;
 
@@ -164,25 +166,34 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
 
     private void tableclientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableclientesMouseClicked
         if (evt.getClickCount() == 2) {
+            String cliente = tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString();
             switch (origem) {
                 case "ServiçoCotação":
-                    CotacaoServico.txtnomecliente.setText(tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    CotacaoServico.txtnomecliente.setText(cliente);
+                    dispose();
                     break;
                 case "ServiçoPedido":
-                    PedidoServico.txtclientepedido.setText(tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    PedidoServico.txtclientepedido.setText(cliente);
+                    dispose();
                     break;
                 case "VendaCotação":
                     break;
                 case "VendaPedido":
                     break;
                 case "OS":
-                    OS.txtcliente.setText(tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    OS.txtcliente.setText(cliente);
+                    dispose();
                     break;
                 case "Rastreamento":
-                    RastreamentoDocumentos.txtemitente.setText(tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString());
+                    RastreamentoDocumentos.txtemitente.setText(cliente);
+                    dispose();
+                    break;
+                case "CAR":
+                    AdicionarContasAReceber.txtcliente.setText(cliente);
+                    dispose();
+                    break;
+                case "CAP":
+                    AdicionarContasAPagar.txtemitente.setText(cliente);
                     dispose();
                     break;
             }

@@ -10,6 +10,7 @@ import DAO.RastreamentoDocumentosDocDAO;
 import Methods.Dates;
 import Methods.ReadXMLDocumento;
 import Methods.SendEmail;
+import Methods.Valores;
 import View.financeiro.AdicionarContasAPagar;
 import java.awt.AWTException;
 import java.io.File;
@@ -45,7 +46,6 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
         initComponents();
         readtablevendedores();
         origem = origin;
-        JOptionPane.showMessageDialog(null, origem);
     }
 
     public static void readtablevendedores() {
@@ -68,6 +68,7 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
 
         //DefaultTable para modificar tabledocs
         DefaultTableModel model = (DefaultTableModel) tabledocs.getModel();
+        model.setRowCount(0);
 
         rdd.pesquisa(txtpesquisa.getText()).forEach((rdb) -> {
             model.addRow(new Object[]{
@@ -206,95 +207,76 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
                     //ID em int
                     int id = Integer.parseInt(tabledocs.getValueAt(tabledocs.getSelectedRow(), 0).toString());
 
-                    //Modificar ID do AdicionarContasAPagar
-                    AdicionarContasAPagar acp = new AdicionarContasAPagar();
-                    acp.idrastreamento = id;
-
                     //Pegar dados do documento
                     rdd.click(id).forEach(rdb -> {
-                        AdicionarContasAPagar.txtfornecedor.setText(rdb.getEmitente());
+                        AdicionarContasAPagar.txtemitente.setText(rdb.getEmitente());
                         AdicionarContasAPagar.txtnumero.setText(rdb.getNumero());
-                        AdicionarContasAPagar.txtemissao.setText(Dates.TransformarDataCurtaDoDB(rdb.getEmissao()));
-                        xml = new File(rdb.getXml());
+                        Dates.SetarDataJDateChooser(AdicionarContasAPagar.dateemissao, rdb.getEmissao());
+                        AdicionarContasAPagar.idrastreamento = id;
+                        if (rdb.getXml() != null) {
+                            xml = new File(rdb.getXml());
+
+                            //Pegar parcelas
+                            try {
+                                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                                DocumentBuilder dBuilder = null;
+                                try {
+                                    dBuilder = dbFactory.newDocumentBuilder();
+                                } catch (ParserConfigurationException ex) {
+                                    Logger.getLogger(ReadXMLDocumento.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                Document doc = null;
+                                try {
+                                    doc = dBuilder.parse(xml);
+                                } catch (SAXException | IOException ex) {
+                                    Logger.getLogger(ReadXMLDocumento.class.getName()).log(Level.SEVERE, null, ex);
+                                    JOptionPane.showMessageDialog(null, "Erro ao ler XML!\n" + ex);
+                                }
+
+                                //optional, but recommended
+                                //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+                                doc.getDocumentElement().normalize();
+
+                                //Buscar Duplicatas
+                                NodeList duplist = doc.getElementsByTagName("dup");
+                                int qtd = duplist.getLength();
+
+                                //Buscar vencimentos
+                                NodeList vencimentolist = doc.getElementsByTagName("dVenc");
+
+                                //Buscar valores das parcelas
+                                NodeList valorlist = doc.getElementsByTagName("vDup");
+
+                                //Buscar valor total da nota
+                                NodeList totallist = doc.getElementsByTagName("vLiq");
+                                Node totalnode = totallist.item(0);
+                                if (totallist.getLength() > 0) {
+                                    AdicionarContasAPagar.txttotal.setText(Valores.TransformarValorFloatEmDinheiro(totalnode.getTextContent()));
+                                }
+
+                                DefaultTableModel modelparcelas = (DefaultTableModel) AdicionarContasAPagar.tableparcelas.getModel();
+
+                                for (int i = 0; i < qtd; i++) {
+                                    Node vencimentonode = vencimentolist.item(i);
+                                    Node valornode = valorlist.item(i);
+                                    String parcela = i + 1 + "/" + qtd;
+
+                                    modelparcelas.addRow(new Object[]{
+                                        parcela,
+                                        Dates.TransformarDataCurtaDoDB(vencimentonode.getTextContent()),
+                                        Valores.TransformarValorFloatEmDinheiro(valornode.getTextContent())
+                                    });
+                                }
+                            } catch (DOMException e) {
+                                JOptionPane.showMessageDialog(null, "Erro ao ler arquivo!\n" + e);
+                                try {
+                                    SendEmail.EnviarErro("Erro ao ler arquivo!\n" + e.toString());
+                                } catch (AWTException | IOException ex) {
+                                    Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
                     });
-
-                    //Pegar parcelas
-                    try {
-                        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder dBuilder = null;
-                        try {
-                            dBuilder = dbFactory.newDocumentBuilder();
-                        } catch (ParserConfigurationException ex) {
-                            Logger.getLogger(ReadXMLDocumento.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                        Document doc = null;
-                        try {
-                            doc = dBuilder.parse(xml);
-                        } catch (SAXException | IOException ex) {
-                            Logger.getLogger(ReadXMLDocumento.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                        //optional, but recommended
-                        //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-                        doc.getDocumentElement().normalize();
-
-//                System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-//
-//                NodeList nList = doc.getElementsByTagName("staff");
-//
-//                System.out.println("----------------------------");
-//
-//                for (int temp = 0; temp < nList.getLength(); temp++) {
-//
-//                    Node nNode = nList.item(temp);
-//
-//                    System.out.println("\nCurrent Element :" + nNode.getNodeName());
-//
-//                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-//
-//                        Element eElement = (Element) nNode;
-//
-//                        System.out.println("Staff id : " + eElement.getAttribute("id"));
-//                        System.out.println("First Name : " + eElement.getElementsByTagName("firstname").item(0).getTextContent());
-//                        System.out.println("Last Name : " + eElement.getElementsByTagName("lastname").item(0).getTextContent());
-//                        System.out.println("Nick Name : " + eElement.getElementsByTagName("nickname").item(0).getTextContent());
-//                        System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
-//
-//                    }
-//                }
-                        //Buscar Duplicatas
-                        NodeList duplist = doc.getElementsByTagName("dup");
-                        int qtd = duplist.getLength();
-
-                        //Buscar vencimentos
-                        NodeList vencimentolist = doc.getElementsByTagName("dVenc");
-
-                        //Buscar valores das parcelas
-                        NodeList valorlist = doc.getElementsByTagName("vDup");
-
-                        DefaultTableModel modelparcelas = (DefaultTableModel) AdicionarContasAPagar.tableparcelas.getModel();
-
-                        for (int i = 0; i < qtd; i++) {
-                            Node vencimentonode = vencimentolist.item(i);
-                            Node valornode = valorlist.item(i);
-                            JOptionPane.showMessageDialog(null, vencimentonode.getTextContent());
-                            JOptionPane.showMessageDialog(null, valornode.getTextContent());
-                            
-                            JOptionPane.showMessageDialog(null, vencimentolist.item(i));
-                            modelparcelas.addRow(new Object[]{
-                                i + 1 + "/" + qtd,
-                                vencimentonode.getTextContent(),
-                                valornode.getTextContent()
-                            });
-                        }
-                    } catch (DOMException e) {
-                        JOptionPane.showMessageDialog(null, "Erro ao ler arquivo!\n" + e);
-                        try {
-                            SendEmail.EnviarErro("Erro ao ler arquivo!\n" + e.toString());
-                        } catch (AWTException | IOException ex) {
-                            Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
 
                     //Pegar documentos do Documento
                     rddd.read(id).forEach(rddb -> {
@@ -307,7 +289,12 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
                             rddb.getLocal()
                         });
                     });
-                    this.dispose();
+
+                    dispose();
+                    break;
+
+                default:
+                    JOptionPane.showMessageDialog(null, "Deu ruim.");
                     break;
             }
         }

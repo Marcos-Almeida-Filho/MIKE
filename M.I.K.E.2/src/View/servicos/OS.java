@@ -24,6 +24,7 @@ import DAO.ServicoMateriaisMovimentacaoDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
+import Methods.Docs;
 import Methods.SendEmail;
 import Methods.SoNumeros;
 import View.Geral.MudarStatus;
@@ -2100,13 +2101,7 @@ public class OS extends javax.swing.JInternalFrame {
 
     private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
         if (evt.getClickCount() == 2) {
-            Desktop desk = Desktop.getDesktop();
-            try {
-                desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
-
-            } catch (IOException ex) {
-                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Docs.open(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).toString());
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
 

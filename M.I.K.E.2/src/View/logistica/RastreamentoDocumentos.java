@@ -5,6 +5,7 @@
  */
 package View.logistica;
 
+import View.Geral.ProcuraXML;
 import Bean.RastreamentoDocumentosBean;
 import Bean.RastreamentoDocumentosDocBean;
 import Connection.Session;
@@ -24,6 +25,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
@@ -69,7 +74,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             rdb.setOutros(radiooutros.isSelected());
             rdb.setEmitente(txtemitente.getText());
             rdb.setNumero(txtnumero.getText());
-            rdb.setEmissao(Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()));
+            rdb.setEmissao(Dates.CriarDataCurtaDBJDateChooser(txtemissao.getDate()));
             rdb.setNf(radionf.isSelected());
             rdb.setConta(radioconta.isSelected());
             rdb.setOutrostipo(radiooutrostipo.isSelected());
@@ -185,6 +190,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 //iddoc, descricao, local
                 rddd.create(rddb);
             }
+            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } else {//Se o item já tem ID
             //Variável ID
             int id = Integer.parseInt(txtid.getText());
@@ -196,7 +202,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             rdb.setOutros(radiooutros.isSelected());
             rdb.setEmitente(txtemitente.getText());
             rdb.setNumero(txtnumero.getText());
-            rdb.setEmissao(Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()));
+            rdb.setEmissao(Dates.CriarDataCurtaDBJDateChooser(txtemissao.getDate()));
             rdb.setNf(radionf.isSelected());
             rdb.setConta(radioconta.isSelected());
             rdb.setOutrostipo(radiooutrostipo.isSelected());
@@ -248,6 +254,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     rddd.create(rddb);
                 }
             }
+            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         }
     }
 
@@ -266,7 +273,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         txtid.setText("");
         txtemitente.setText("");
         txtemitente.setEditable(false);
-        txtemissao.setText("");
+        txtemissao.setCalendar(null);
         txtoutros.setText("");
         txtnumero.setText("");
         txtxml.setText("");
@@ -399,20 +406,20 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         if (radionf.isSelected()) {
             btnxml.setEnabled(true);
             txtoutros.setEditable(false);
-            txtemissao.setEditable(false);
+//            txtemissao.setEditable(false);
             txtnumero.setEditable(false);
         }
         if (radioconta.isSelected()) {
             btnxml.setEnabled(false);
             txtoutros.setEditable(false);
-            txtemissao.setEditable(true);
+//            txtemissao.setEditable(true);
             txtnumero.setEditable(true);
         }
         if (radiooutrostipo.isSelected()) {
             txtoutros.setEditable(true);
             txtoutros.requestFocus();
             btnxml.setEnabled(false);
-            txtemissao.setEditable(true);
+//            txtemissao.setEditable(true);
             txtnumero.setEditable(true);
         }
         if (radiovazio.isSelected()) {
@@ -445,7 +452,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         txtemitente = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtemissao = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         radionf = new javax.swing.JRadioButton();
         radioconta = new javax.swing.JRadioButton();
@@ -461,6 +467,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         radiovazio = new javax.swing.JRadioButton();
         checkpagamento = new javax.swing.JCheckBox();
+        txtemissao = new com.toedter.calendar.JDateChooser();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -537,7 +544,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -608,8 +615,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jLabel1.setText("Emitente");
 
         jLabel2.setText("Emissão");
-
-        txtemissao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Tipo"));
 
@@ -743,10 +748,10 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtemissao, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(checkpagamento)
+                .addComponent(txtemissao, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(checkpagamento)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(radiovazio)
                 .addContainerGap())
             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -766,13 +771,14 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     .addComponent(txtemitente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnpesquisa))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtnumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtemissao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(radiovazio)
-                    .addComponent(checkpagamento))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(txtnumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)
+                        .addComponent(radiovazio)
+                        .addComponent(checkpagamento))
+                    .addComponent(txtemissao, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -850,7 +856,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnaprovar)
@@ -927,7 +933,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton6)
@@ -980,7 +986,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                                 .addComponent(jButton2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton1))
-                            .addComponent(jTabbedPane2))))
+                            .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -1006,7 +1012,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabdocs)
+            .addComponent(tabdocs, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1017,7 +1023,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnxmlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxmlActionPerformed
-        ProcuraXML p = new ProcuraXML();
+        ProcuraXML p = new ProcuraXML("Rastreamento");
         jDesktopPane1.add(p);
         Dimension desktopsize = jDesktopPane1.getSize();
         Dimension jinternalframesize = p.getSize();
@@ -1029,7 +1035,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         txtoutros.setEditable(true);
         txtoutros.requestFocus();
         btnxml.setEnabled(false);
-        txtemissao.setEditable(true);
+//        txtemissao.setEditable(true);
         txtnumero.setEditable(true);
     }//GEN-LAST:event_radiooutrostipoActionPerformed
 
@@ -1055,25 +1061,14 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void radionfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radionfActionPerformed
-        if (radiooutros.isSelected()) {
-            JOptionPane.showMessageDialog(null, "Não é possível lançar nota fiscal de Cliente/Fornecedor não cadastrado!");
-            radiovazio.setSelected(true);
-        } else {
-            btnxml.setEnabled(true);
-            txtoutros.setEditable(false);
-        }
+        btnxml.setEnabled(true);
+        txtoutros.setEditable(false);
     }//GEN-LAST:event_radionfActionPerformed
 
     private void radiocontaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radiocontaActionPerformed
-        if (radiooutros.isSelected()) {
-            JOptionPane.showMessageDialog(null, "Não é possível lançar conta de Cliente/Fornecedor não cadastrado!");
-            radiovazio.setSelected(true);
-        } else {
-            btnxml.setEnabled(false);
-            txtoutros.setEditable(false);
-            txtemissao.setEditable(true);
-            txtnumero.setEditable(true);
-        }
+        btnxml.setEnabled(false);
+        txtoutros.setEditable(false);
+        txtnumero.setEditable(true);
     }//GEN-LAST:event_radiocontaActionPerformed
 
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
@@ -1093,7 +1088,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (txtemitente.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Escolha ou digite um emitente!");
-        } else if (txtemissao.getText().equals("")) {
+        } else if (txtemissao.getCalendar() == null) {
             JOptionPane.showMessageDialog(null, "Coloque uma data de emissão!");
             txtemissao.requestFocus();
         } else if (!radionf.isSelected() && !radioconta.isSelected() && !radiooutrostipo.isSelected()) {
@@ -1151,7 +1146,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 radiooutros.setSelected(rdb.isOutros());
                 txtemitente.setText(rdb.getEmitente());
                 txtnumero.setText(rdb.getNumero());
-                txtemissao.setText(Dates.TransformarDataCurtaDoDB(rdb.getEmissao()));
+                Dates.SetarDataJDateChooser(txtemissao, rdb.getEmissao());
                 radionf.setSelected(rdb.isNf());
                 radioconta.setSelected(rdb.isConta());
                 radiooutros.setSelected(rdb.isOutrostipo());
@@ -1210,8 +1205,11 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             //aprovacaouser = ?, aprovacaodata = ? WHERE iddoc = ?
             rdd.createaprovacao(rdb);
 
+            JOptionPane.showMessageDialog(null, "Aprovado com sucesso!");
+
             readdocumentosdodocumento();
             readhist();
+            readtabledocumentos();
         }
     }//GEN-LAST:event_btnaprovarActionPerformed
 
@@ -1267,7 +1265,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tabledocs;
     public static javax.swing.JTable tabledocumentos;
     public static javax.swing.JTable tablehistorico;
-    public static javax.swing.JTextField txtemissao;
+    public static com.toedter.calendar.JDateChooser txtemissao;
     public static javax.swing.JTextField txtemitente;
     private static javax.swing.JTextField txtid;
     public static javax.swing.JTextField txtnumero;

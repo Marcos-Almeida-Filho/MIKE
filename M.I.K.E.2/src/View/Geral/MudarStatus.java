@@ -5,10 +5,12 @@
  */
 package View.Geral;
 
+import Bean.CAPBean;
 import Bean.OSBean;
+import DAO.CAPDAO;
 import DAO.OSDAO;
+import View.financeiro.ContasPagar;
 import View.servicos.OS;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -92,7 +94,16 @@ public class MudarStatus extends javax.swing.JInternalFrame {
 
         switch (origem) {
             case "CAP":
-                JOptionPane.showMessageDialog(null, "Alterarei os pagamentos!");
+                for (int i = 0; i < ContasPagar.tablecap.getRowCount(); i++) {
+                    if (ContasPagar.tablecap.getValueAt(i, 0).equals(true)) {
+                        CAPDAO cd = new CAPDAO();
+                        
+                        //status = ? WHERE id = ?
+                        cd.updatestatus(cbstatus.getSelectedItem().toString(), Integer.parseInt(ContasPagar.tablecap.getValueAt(i, 1).toString()));
+                    }
+                }
+                ContasPagar.readtablecap();
+                dispose();
                 break;
             case "OSLote":
                 for (int i = 0; i < OS.tableos.getRowCount(); i++) {

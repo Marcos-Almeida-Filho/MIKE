@@ -13,6 +13,7 @@ public class BancosBean {
 
     private int id;
     private String banco;
+    private String agencia;
     private String conta;
     private String tipo;
 
@@ -30,6 +31,14 @@ public class BancosBean {
 
     public void setBanco(String banco) {
         this.banco = banco;
+    }
+
+    public String getAgencia() {
+        return agencia;
+    }
+
+    public void setAgencia(String agencia) {
+        this.agencia = agencia;
     }
 
     public String getConta() {

@@ -160,17 +160,18 @@ public class ProcurarFornecedor extends javax.swing.JInternalFrame {
 
     private void tablefornecedoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablefornecedoresMouseClicked
         if (evt.getClickCount() == 2) {
+            String fornecedor = tablefornecedores.getValueAt(tablefornecedores.getSelectedRow(), 1).toString();
             switch (origem) {
                 case "CAP":
-                    AdicionarContasAPagar.txtfornecedor.setText(tablefornecedores.getValueAt(tablefornecedores.getSelectedRow(), 1).toString());
+                    AdicionarContasAPagar.txtemitente.setText(fornecedor);
                     dispose();
                     break;
                 case "ContaPagar":
-                    ContaPagar.txtfornecedor.setText(tablefornecedores.getValueAt(tablefornecedores.getSelectedRow(), 1).toString());
+                    ContaPagar.txtfornecedor.setText(fornecedor);
                     dispose();
                     break;
                 case "Rastreamento":
-                    RastreamentoDocumentos.txtemitente.setText(tablefornecedores.getValueAt(tablefornecedores.getSelectedRow(), 1).toString());
+                    RastreamentoDocumentos.txtemitente.setText(fornecedor);
                     dispose();
                     break;
             }

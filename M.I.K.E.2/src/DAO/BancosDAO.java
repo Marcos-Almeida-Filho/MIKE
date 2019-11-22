@@ -33,11 +33,12 @@ public class BancosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO bancos (banco, conta, tipo) VALUES (?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO bancos (banco, conta, tipo, agencia) VALUES (?,?,?,?)");
 
             stmt.setString(1, bb.getBanco());
             stmt.setString(2, bb.getConta());
             stmt.setString(3, bb.getTipo());
+            stmt.setString(4, bb.getBanco());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -77,7 +78,7 @@ public class BancosDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(BancosDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -111,11 +112,12 @@ public class BancosDAO {
                 cb.setBanco(rs.getString("banco"));
                 cb.setConta(rs.getString("conta"));
                 cb.setTipo(rs.getString("tipo"));
+                cb.setAgencia(rs.getString("agencia"));
 
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(BancosDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -134,12 +136,13 @@ public class BancosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE bancos SET banco = ?, conta = ?, tipo = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE bancos SET banco = ?, conta = ?, tipo = ?, agencia = ? WHERE id = ?");
 
             stmt.setString(1, bb.getBanco());
             stmt.setString(2, bb.getConta());
             stmt.setString(3, bb.getTipo());
-            stmt.setInt(4, bb.getId());
+            stmt.setString(4, bb.getAgencia());
+            stmt.setInt(5, bb.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

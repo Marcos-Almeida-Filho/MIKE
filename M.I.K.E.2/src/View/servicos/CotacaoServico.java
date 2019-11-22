@@ -1537,6 +1537,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableorcamentoservicoMouseClicked
 
+    @SuppressWarnings("unchecked")
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         //Conexão com o banco de dados
         Connection con = ConnectionFactory.getConnection();
@@ -1548,6 +1549,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         InputStream stream = CotacaoServico.class.getResourceAsStream("/Reports/CotacaoServico.jasper");
         //chama fillreport
         try {
+            @SuppressWarnings("unchecked")
             JasperPrint jp = JasperFillManager.fillReport(stream, parametros, con);
             //exibe o relatório com viewReport
             JasperViewer.viewReport(jp, false);
