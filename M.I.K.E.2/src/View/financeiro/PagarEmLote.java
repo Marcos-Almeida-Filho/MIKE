@@ -12,10 +12,6 @@ import DAO.CAPDAO;
 import Methods.Dates;
 import static View.financeiro.ContasPagar.readtablecap;
 import static View.financeiro.ContasPagar.tablecap;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -96,6 +92,8 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
         });
 
         lblcheque.setText("Número do Cheque");
+
+        txtpagamento.setDateFormatString("dd/MM/yyyy");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -208,7 +206,7 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
 
         ContasPagar.cbstatus.setSelectedIndex(0);
         readtablecap();
-        JOptionPane.showMessageDialog(null,"Pago com sucesso!");
+        JOptionPane.showMessageDialog(null, "Pago com sucesso!");
         dispose();
     }//GEN-LAST:event_btnsalvarActionPerformed
 

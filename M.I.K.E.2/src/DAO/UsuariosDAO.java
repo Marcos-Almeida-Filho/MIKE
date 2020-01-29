@@ -164,6 +164,42 @@ public class UsuariosDAO {
         }
         return listu;
     }
+    
+    public List<UsuariosBean> readcreated(String nome) {
+
+        Connection con = ConnectionFactory.getConnectionlogin();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<UsuariosBean> listu = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM usuarios WHERE nome = ?");
+            stmt.setString(1, nome);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                UsuariosBean ub = new UsuariosBean();
+
+                ub.setNome(rs.getString("nome"));
+                ub.setNivel(rs.getString("nivel"));
+
+                listu.add(ub);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listu;
+    }
 
     public List<UsuariosBean> vendedores() {
 

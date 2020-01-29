@@ -8,6 +8,7 @@ package View.financeiro;
 import DAO.CARDAO;
 import DAO.CARDocumentosDAO;
 import Methods.Dates;
+import Methods.Telas;
 import Methods.Valores;
 import View.Geral.MudarStatus;
 import java.awt.Color;
@@ -363,12 +364,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         AdicionarContasAReceber cp = new AdicionarContasAReceber();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(cp);
-        Dimension jif = cp.getSize();
-        Dimension d = desk.getSize();
-        cp.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        cp.setVisible(true);
+        Telas.AparecerTela(cp);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void cbstatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbstatusActionPerformed
@@ -423,12 +419,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         PagarEmLote pel = new PagarEmLote();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(pel);
-        Dimension jif = pel.getSize();
-        Dimension d = desk.getSize();
-        pel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        pel.setVisible(true);
+        Telas.AparecerTela(pel);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed

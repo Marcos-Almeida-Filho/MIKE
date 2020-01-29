@@ -283,6 +283,7 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
                         DefaultTableModel modeldoc = (DefaultTableModel) AdicionarContasAPagar.tabledocumentos.getModel();
 
                         modeldoc.addRow(new Object[]{
+                            "",
                             false,
                             rddb.getDescricao(),
                             "",

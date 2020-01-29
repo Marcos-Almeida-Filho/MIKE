@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class F_UPDAO {
-    
+
     public void create(F_UPBean fb) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -43,7 +43,7 @@ public class F_UPDAO {
             stmt.setString(6, fb.getDatacriacao());
 
             stmt.executeUpdate();
-            
+
             JOptionPane.showMessageDialog(null, "Criado com sucesso!");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar OP no Follow Up!\n" + e);
@@ -94,7 +94,45 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
+    public List<F_UPBean> readtableepesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<F_UPBean> listbb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op LIKE '%" + pesquisa + "%' ORDER BY dataentrega, dav");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setOp(rs.getInt("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+
     public List<F_UPBean> readtableporprocesso(String processo) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -133,7 +171,46 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
+    public List<F_UPBean> readtableporprocessoepesquisa(String processo, String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<F_UPBean> listbb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? AND op LIKE '%" + pesquisa + "%' ORDER BY dataentrega, dav");
+            stmt.setString(1, processo);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setOp(rs.getInt("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+
     public List<F_UPBean> readcreated(String datacriacao) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -172,7 +249,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> click(int id) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -212,7 +289,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public void update(F_UPBean fb) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -220,16 +297,17 @@ public class F_UPDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE f_up SET dav = ?, op = ?, material = ?, dataentrega = ?, processo = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE f_up SET dav = ?, op = ?, material = ?, dataentrega = ? WHERE id = ?");
 
             stmt.setInt(1, fb.getDav());
             stmt.setInt(2, fb.getOp());
             stmt.setString(3, fb.getMaterial());
             stmt.setString(4, fb.getDataentrega());
-            stmt.setString(5, fb.getProcesso());
-            stmt.setInt(6, fb.getId());
+            stmt.setInt(5, fb.getId());
 
             stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
@@ -241,7 +319,7 @@ public class F_UPDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void updateprocesso(F_UPBean fb) {
 
         Connection con = ConnectionFactory.getConnection();

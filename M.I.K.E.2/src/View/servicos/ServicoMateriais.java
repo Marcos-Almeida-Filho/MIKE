@@ -73,6 +73,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         readtablemateriais();
         lbldirectory.setText("");
         lbldirectory.setVisible(false);
+        lblcodigoerro.setVisible(false);
+        lbldescricaoerro.setVisible(false);
     }
 
     public static void readtablemateriais() {
@@ -138,6 +140,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         txtestoque = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        lblcodigoerro = new javax.swing.JLabel();
+        lbldescricaoerro = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         tabopcoes = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
@@ -250,7 +254,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1003, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(160, 160, 160)))
@@ -276,19 +280,34 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Descrição");
 
+        txtcodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtcodigoKeyReleased(evt);
+            }
+        });
+
         txtdesc.setToolTipText("Padrão: Código - Diam x Comprimento");
+        txtdesc.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtdescKeyReleased(evt);
+            }
+        });
 
         jLabel5.setText("ID");
 
         txtid.setEditable(false);
-        txtid.setBackground(new java.awt.Color(255, 255, 255));
 
         txtestoque.setEditable(false);
-        txtestoque.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel8.setText("Estoque");
 
         jLabel9.setText("Exemplo: Código - Diam x Comprimento Canal x Comprimento Total");
+
+        lblcodigoerro.setForeground(new java.awt.Color(255, 51, 51));
+        lblcodigoerro.setText("Código muito longo!");
+
+        lbldescricaoerro.setForeground(new java.awt.Color(255, 51, 51));
+        lbldescricaoerro.setText("Descrição muito longa!");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -304,7 +323,9 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblcodigoerro))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -316,7 +337,11 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(lbldescricaoerro)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel9)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -329,12 +354,14 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                     .addComponent(jLabel5)
                     .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
+                    .addComponent(jLabel8)
+                    .addComponent(lblcodigoerro))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtdesc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9))
+                    .addComponent(jLabel9)
+                    .addComponent(lbldescricaoerro))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -384,7 +411,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 991, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -402,7 +429,6 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         jLabel4.setText("Grupo");
 
         txtgrupo.setEditable(false);
-        txtgrupo.setBackground(new java.awt.Color(255, 255, 255));
 
         jButton2.setText("Pesquisar");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -422,7 +448,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                 .addComponent(txtgrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
-                .addContainerGap(387, Short.MAX_VALUE))
+                .addContainerGap(581, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -504,7 +530,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 991, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(lbldirectory)
@@ -1028,6 +1054,24 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void txtcodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcodigoKeyReleased
+        int length = txtcodigo.getText().length();
+        if (length > 45) {
+            lblcodigoerro.setVisible(true);
+        } else {
+            lblcodigoerro.setVisible(false);
+        }
+    }//GEN-LAST:event_txtcodigoKeyReleased
+
+    private void txtdescKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtdescKeyReleased
+        int length = txtdesc.getText().length();
+        if (length > 120) {
+            lbldescricaoerro.setVisible(true);
+        } else {
+            lbldescricaoerro.setVisible(false);
+        }
+    }//GEN-LAST:event_txtdescKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -1059,6 +1103,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
+    private javax.swing.JLabel lblcodigoerro;
+    private javax.swing.JLabel lbldescricaoerro;
     public static javax.swing.JLabel lbldirectory;
     public static javax.swing.JTable tabledocumentos;
     public static javax.swing.JTable tableestoque;

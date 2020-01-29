@@ -200,6 +200,9 @@
               </AuxValues>
             </Component>
             <Component class="com.toedter.calendar.JDateChooser" name="txtpagamento">
+              <Properties>
+                <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

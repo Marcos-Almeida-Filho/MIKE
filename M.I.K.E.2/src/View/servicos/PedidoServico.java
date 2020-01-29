@@ -31,6 +31,7 @@ import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import DAO.ServicoPedidoItensNFDAO;
 import Methods.InternalFrameProcura;
+import Methods.NumerosInt;
 import Methods.SendEmail;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarCondicaoDePagamento;
@@ -1833,8 +1834,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     ob.setDas(txtnumeropedido.getText());
                     ob.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
                     ob.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
-                    ob.setQtdinicial(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
-                    ob.setQtdok(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
+                    ob.setQtdinicial(NumerosInt.TransformarNumeroEmInt(tableitensorcamento.getValueAt(i, 4).toString()));
+                    ob.setQtdok(NumerosInt.TransformarNumeroEmInt(tableitensorcamento.getValueAt(i, 4).toString()));
                     ob.setQtdnaook(0);
                     ob.setNotes("");
                     ob.setTopo("false");

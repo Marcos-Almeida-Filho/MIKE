@@ -33,6 +33,15 @@ public class Dates {
         return data;
     }
 
+    public static String CriarDataCurta() {
+        Calendar date = Calendar.getInstance();
+        String pattern = "dd/MM/yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        data = simpleDateFormat.format(date.getTime());
+
+        return data;
+    }
+    
     public static String CriarDataCurtaDBSemDataExistente() {
         Calendar date = Calendar.getInstance();
         String pattern = "yyyy-MM-dd";

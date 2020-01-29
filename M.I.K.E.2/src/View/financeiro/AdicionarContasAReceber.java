@@ -11,6 +11,7 @@ import DAO.CARDAO;
 import DAO.CARDocumentosDAO;
 import Methods.Dates;
 import Methods.SendEmail;
+import Methods.Telas;
 import Methods.Valores;
 import View.Geral.ProcuraXML;
 import View.Geral.ProcurarCliente;
@@ -60,12 +61,7 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
 
     public void teladeprocura() {
         ProcuraXML p = new ProcuraXML("CAR");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension jif = p.getSize();
-        Dimension d = desk.getSize();
-        p.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }
 
     /**

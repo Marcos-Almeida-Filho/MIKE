@@ -1085,25 +1085,24 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         } else if (txtnumeroorcamento.getText().equals("")) {
             ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
             ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
+
             String c;
+
             if (radioc.isSelected()) {
                 c = "true";
             } else {
                 c = "false";
             }
             try {
+                Calendar ca = Calendar.getInstance();
+                String patterny = "yy";
+                SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+                String year = simpleDateFormaty.format(ca.getTime());
+                
                 if (sod.readnome() == false) {
-                    Calendar ca = Calendar.getInstance();
-                    String patterny = "yy";
-                    SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-                    String year = simpleDateFormaty.format(ca.getTime());
                     String idtela = "CS" + year + "-0001";
                     sob.setIdtela(idtela);
                 } else {
-                    Calendar ca = Calendar.getInstance();
-                    String patterny = "yy";
-                    SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-                    String year = simpleDateFormaty.format(ca.getTime());
                     String hua = "";
                     for (ServicoOrcamentoBean sob2 : sod.read()) {
                         hua = String.valueOf(sob2.getIdtela());

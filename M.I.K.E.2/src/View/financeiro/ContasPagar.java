@@ -5,6 +5,7 @@
  */
 package View.financeiro;
 
+import Bean.CAPBean;
 import DAO.CAPDAO;
 import Methods.Colors;
 import Methods.Dates;
@@ -13,11 +14,9 @@ import View.Geral.MudarStatus;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import javax.swing.BorderFactory;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -194,6 +193,11 @@ public class ContasPagar extends javax.swing.JInternalFrame {
 
         jButton2.setText("Excluir");
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -499,6 +503,40 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         PagamentoRH prh = new PagamentoRH();
         Telas.AparecerTela(prh);
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int numtrue = 0, numpago = 0;
+        for (int i = 0; i < tablecap.getRowCount(); i++) {
+            if (tablecap.getValueAt(i, 0).equals(true)) {
+                numtrue++;
+            }
+            if (tablecap.getValueAt(i, 8).equals("Pago")) {
+                numpago++;
+            }
+        }
+        if (numtrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum registro selecionado.");
+        } else if (numpago > 0) {
+            JOptionPane.showMessageDialog(null, "Registros pagos selecionados.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir os registros selecionados?", "Excluir Registros", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                CAPDAO cd = new CAPDAO();
+                CAPBean cb = new CAPBean();
+
+                for (int i = 0; i < tablecap.getRowCount(); i++) {
+                    if (tablecap.getValueAt(i, 0).equals(true)) {
+                        cb.setId(Integer.parseInt(tablecap.getValueAt(i, 1).toString()));
+
+                        //id = ?
+                        cd.delete(cb);
+                    }
+                }
+            }
+        }
+        JOptionPane.showMessageDialog(null, "Registro(s) excluído(s) com sucesso!");
+        readtablecap();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -34,6 +34,8 @@ public class Usuarios extends javax.swing.JInternalFrame {
     UsuariosSalarioDAO usd = new UsuariosSalarioDAO();
     UsuariosBean ub = new UsuariosBean();
     UsuariosSalarioBean usb = new UsuariosSalarioBean();
+    
+    int idcriado;
 
     public Usuarios() {
         initComponents();
@@ -748,10 +750,14 @@ public class Usuarios extends javax.swing.JInternalFrame {
 
             //nome, emailpessoal, dataadmissao, telefonefixo, telefonecelular, datanascimento, datademissao, emailfabrica, vendedor, status, login, senha, cargo, cpf, pis, rg, livrofolha, nivel, salario
             ud.create(ub);
+            
+            ud.readcreated(txtnome.getText()).forEach(ub -> {
+                idcriado = ub.getId();
+            });
 
             //Salvar salario
             for (int i = 0; i < tablesalario.getRowCount(); i++) {
-                usb.setIdusuario(Integer.parseInt(txtid.getText()));
+                usb.setIdusuario(idcriado);
                 usb.setData(tablesalario.getValueAt(i, 1).toString());
                 usb.setValor(Valores.TransformarDinheiroEmValorDouble(tablesalario.getValueAt(i, 2).toString()));
                 usb.setMotivo(tablesalario.getValueAt(i, 3).toString());

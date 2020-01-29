@@ -9,6 +9,7 @@ import Bean.CAPBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.awt.AWTException;
+import java.awt.HeadlessException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,7 +70,7 @@ public class CAPDAO {
         List<CAPBean> listcapb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM cap");
+            stmt = con.prepareStatement("SELECT * FROM cap ORDER BY dataparcela");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -358,6 +359,29 @@ public class CAPDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar CAP!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(CAPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void delete(CAPBean cb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM cap WHERE id = ?");
+            stmt.setInt(1, cb.getId());
+
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {

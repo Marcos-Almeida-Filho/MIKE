@@ -20,9 +20,6 @@ import Methods.Dates;
 import Methods.SendEmail;
 import ValoresOriginais.FornecedoresValoresOriginais;
 import View.Geral.HistoricoAlteracao;
-import br.com.correios.EnderecoERP;
-import br.com.correios.SQLException_Exception;
-import br.com.correios.SigepClienteException;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -49,6 +46,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         initComponents();
         readtablefornecedores();
         tabletipo();
+        btncep.setVisible(false);
     }
 
     public void zeracampos() {
@@ -244,6 +242,12 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     public static void orgcont() {
         FornecedoresValoresOriginais.rccont = tablecontatos.getRowCount();
     }
+    
+//    private static EnderecoERP consultaCEP(java.lang.String cep) throws SigepClienteException, SQLException_Exception {
+//        br.com.correios.AtendeClienteService service = new br.com.correios.AtendeClienteService();
+//        br.com.correios.AtendeCliente port = service.getAtendeClientePort();
+//        return port.consultaCEP(cep);
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -266,6 +270,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         txtpesquisa = new javax.swing.JTextField();
         jPanel11 = new javax.swing.JPanel();
         cbstatus = new javax.swing.JComboBox<>();
+        jButton11 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         btnsalvar = new javax.swing.JButton();
@@ -302,7 +307,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         txtcidade = new javax.swing.JTextField();
         txtcep = new javax.swing.JFormattedTextField();
         cbuf = new javax.swing.JComboBox<>();
-        jButton8 = new javax.swing.JButton();
+        btncep = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tabletipo = new javax.swing.JTable();
@@ -316,6 +321,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         tablecontatos = new javax.swing.JTable();
         jButton7 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        jPanel12 = new javax.swing.JPanel();
         jButton10 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -395,6 +401,13 @@ public class Fornecedores extends javax.swing.JInternalFrame {
             .addComponent(cbstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
+        jButton11.setText("jButton11");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -405,6 +418,8 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 906, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -422,7 +437,9 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(jButton11))
                 .addContainerGap())
         );
 
@@ -572,10 +589,10 @@ public class Fornecedores extends javax.swing.JInternalFrame {
 
         cbuf.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO" }));
 
-        jButton8.setText("Procurar CEP");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        btncep.setText("Procurar CEP");
+        btncep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                btncepActionPerformed(evt);
             }
         });
 
@@ -617,7 +634,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtcep, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton8)))
+                        .addComponent(btncep)))
                 .addContainerGap(86, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -636,7 +653,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel13)
                         .addComponent(txtcep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton8))
+                        .addComponent(btncep))
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel10)
                         .addComponent(txtbairro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -882,6 +899,19 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         );
 
         jTabbedPane1.addTab("Contatos", jPanel9);
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 906, Short.MAX_VALUE)
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 333, Short.MAX_VALUE)
+        );
+
+        jTabbedPane1.addTab("Qualidade", jPanel12);
 
         jButton10.setText("Histórico de Alterações");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
@@ -1650,7 +1680,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tablefornecedoresMouseClicked
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void btncepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncepActionPerformed
         //        if (txtcep.getText().equals("")) {
         //            JOptionPane.showMessageDialog(rootPane, "Coloque um CEP!");
         //        } else {
@@ -1665,27 +1695,27 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         //                JOptionPane.showMessageDialog(rootPane, "CEP incorreto!");
         //            }
         //        }
-        if (txtcep.getText().equals("")) {
-            JOptionPane.showMessageDialog(rootPane, "Coloque um CEP!");
-        } else {
-            try {
-                consultaCEP(txtcep.getText());
-                if (!consultaCEP(txtcep.getText()).getEnd().equals("")) {
-                    txtlogradouro.setText(consultaCEP(txtcep.getText()).getEnd());
-                    txtbairro.setText(consultaCEP(txtcep.getText()).getBairro());
-                    txtcidade.setText(consultaCEP(txtcep.getText()).getCidade());
-                    cbuf.setSelectedItem(consultaCEP(txtcep.getText()).getUf());
-                    txtnumero.requestFocus();
-                }
-            } catch (SigepClienteException ex) {
-                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(rootPane, "Erro ao consultar! \n" + ex);
-            } catch (SQLException_Exception ex) {
-                Logger.getLogger(Fornecedores.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(rootPane, "Erro ao consultar! \n" + ex);
-            }
-        }
-    }//GEN-LAST:event_jButton8ActionPerformed
+//        if (txtcep.getText().equals("")) {
+//            JOptionPane.showMessageDialog(rootPane, "Coloque um CEP!");
+//        } else {
+//            try {
+//                consultaCEP(txtcep.getText());
+//                if (!consultaCEP(txtcep.getText()).getEnd().equals("")) {
+//                    txtlogradouro.setText(consultaCEP(txtcep.getText()).getEnd());
+//                    txtbairro.setText(consultaCEP(txtcep.getText()).getBairro());
+//                    txtcidade.setText(consultaCEP(txtcep.getText()).getCidade());
+//                    cbuf.setSelectedItem(consultaCEP(txtcep.getText()).getUf());
+//                    txtnumero.requestFocus();
+//                }
+//            } catch (SigepClienteException ex) {
+//                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+//                JOptionPane.showMessageDialog(rootPane, "Erro ao consultar! \n" + ex);
+//            } catch (SQLException_Exception ex) {
+//                Logger.getLogger(Fornecedores.class.getName()).log(Level.SEVERE, null, ex);
+//                JOptionPane.showMessageDialog(rootPane, "Erro ao consultar! \n" + ex);
+//            }
+//        }
+    }//GEN-LAST:event_btncepActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         DocumentosFornecedores p = new DocumentosFornecedores();
@@ -1744,25 +1774,31 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
     private void cbstatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbstatusActionPerformed
-        JOptionPane.showMessageDialog(null, txtpesquisa.getText().length());
         readtablefornecedores();
     }//GEN-LAST:event_cbstatusActionPerformed
 
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        FornecedoresDAO fd = new FornecedoresDAO();
+        
+        JOptionPane.showMessageDialog(null, fd.readlast());
+    }//GEN-LAST:event_jButton11ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btncep;
     private javax.swing.JButton btnsalvar;
     private javax.swing.ButtonGroup buttonGroup1;
     private static javax.swing.JComboBox<String> cbstatus;
     public static javax.swing.JComboBox<String> cbuf;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1782,6 +1818,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1815,10 +1852,4 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtrazao;
     public static javax.swing.JFormattedTextField txttelefone;
     // End of variables declaration//GEN-END:variables
-    private static EnderecoERP consultaCEP(java.lang.String cep) throws SigepClienteException, SQLException_Exception {
-        br.com.correios.AtendeClienteService service = new br.com.correios.AtendeClienteService();
-        br.com.correios.AtendeCliente port = service.getAtendeClientePort();
-        return port.consultaCEP(cep);
-    }
-
 }

@@ -5,6 +5,20 @@
  */
 package View.compras;
 
+import Bean.InsumosBean;
+import Bean.InsumosDocBean;
+import Bean.InsumosMovBean;
+import Bean.InsumosObsBean;
+import DAO.InsumosDAO;
+import DAO.InsumosDocDAO;
+import DAO.InsumosMovDAO;
+import DAO.InsumosObsDAO;
+import Methods.Dates;
+import Methods.Telas;
+import View.Geral.AdicionarObs;
+import View.Geral.ProcurarDocumento;
+import View.Geral.ProcurarUnidades;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,6 +30,9 @@ public class Insumos extends javax.swing.JInternalFrame {
     /**
      * Creates new form Insumos
      */
+    int idcriado;
+    static InsumosDAO idao = new InsumosDAO();
+
     public Insumos() {
         initComponents();
         readtableinsumos();
@@ -25,25 +42,27 @@ public class Insumos extends javax.swing.JInternalFrame {
         DefaultTableModel modelinsumos = (DefaultTableModel) tableinsumos.getModel();
         modelinsumos.setRowCount(0);
 
-        modelinsumos.addRow(new Object[]{
-            "",
-            false,
-            "",
-            ""
+        idao.read().forEach(ib -> {
+            modelinsumos.addRow(new Object[]{
+                ib.getId(),
+                false,
+                ib.getCodigo(),
+                ib.getDescricao()
+            });
         });
     }
-    
+
     public static void zeracampos() {
         txtid.setText("");
         txtcodigo.setText("");
         txtdescricao.setText("");
         txtstatus.setText("");
         cbtipo.setSelectedIndex(0);
-        
+
         DefaultTableModel modelobs = (DefaultTableModel) tableobs.getModel();
         DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
         DefaultTableModel modelest = (DefaultTableModel) tableestoque.getModel();
-        
+
         modelobs.setRowCount(0);
         modeldoc.setRowCount(0);
         modelest.setRowCount(0);
@@ -58,7 +77,7 @@ public class Insumos extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabinsumos = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableinsumos = new javax.swing.JTable();
@@ -92,6 +111,9 @@ public class Insumos extends javax.swing.JInternalFrame {
         cbtipo = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         txtid = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtun = new javax.swing.JTextField();
+        jButton8 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -99,7 +121,7 @@ public class Insumos extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Cadastro de Insumos");
 
-        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+        tabinsumos.setName("tabinsumos"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
@@ -210,7 +232,7 @@ public class Insumos extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Insumos", jPanel1);
+        tabinsumos.addTab("Insumos", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
@@ -228,7 +250,15 @@ public class Insumos extends javax.swing.JInternalFrame {
             new String [] {
                 "ID", "Data", "Funcionário", "Observação"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tableobs.setName("tableobs"); // NOI18N
         jScrollPane2.setViewportView(tableobs);
         if (tableobs.getColumnModel().getColumnCount() > 0) {
@@ -245,6 +275,11 @@ public class Insumos extends javax.swing.JInternalFrame {
 
         jButton6.setText("Adicionar Observação");
         jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -263,7 +298,7 @@ public class Insumos extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6)
                 .addContainerGap())
@@ -314,6 +349,11 @@ public class Insumos extends javax.swing.JInternalFrame {
 
         jButton4.setText("Adicionar Documento");
         jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setText("Excluir Documento");
         jButton5.setName("jButton5"); // NOI18N
@@ -337,7 +377,7 @@ public class Insumos extends javax.swing.JInternalFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
@@ -375,7 +415,7 @@ public class Insumos extends javax.swing.JInternalFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -417,6 +457,20 @@ public class Insumos extends javax.swing.JInternalFrame {
         txtid.setEnabled(false);
         txtid.setName("txtid"); // NOI18N
 
+        jLabel6.setText("UN");
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        txtun.setEnabled(false);
+        txtun.setName("txtun"); // NOI18N
+
+        jButton8.setText("Procurar Unidade");
+        jButton8.setName("jButton8"); // NOI18N
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -425,25 +479,32 @@ public class Insumos extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtdescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtun, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtcodigo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtdescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -460,11 +521,15 @@ public class Insumos extends javax.swing.JInternalFrame {
                         .addComponent(txtdescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
-                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel4)
-                        .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(1, 1, 1))
+                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton8))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jButton1.setText("Salvar");
@@ -477,9 +542,19 @@ public class Insumos extends javax.swing.JInternalFrame {
 
         jButton2.setText("Novo");
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setText("Desativar Insumo");
         jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -502,7 +577,7 @@ public class Insumos extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -513,29 +588,192 @@ public class Insumos extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Detalhes do Insumo", jPanel2);
+        tabinsumos.addTab("Detalhes do Insumo", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabinsumos)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabinsumos)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void cbtipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbtipoActionPerformed
-        
+
     }//GEN-LAST:event_cbtipoActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+        //DAOs para salvar
+        InsumosDAO id = new InsumosDAO();
+        InsumosDocDAO idd = new InsumosDocDAO();
+        InsumosMovDAO imd = new InsumosMovDAO();
+        InsumosObsDAO iod = new InsumosObsDAO();
+
+        //Beans para salvar
+        InsumosBean ib = new InsumosBean();
+        InsumosDocBean idb = new InsumosDocBean();
+        InsumosMovBean imb = new InsumosMovBean();
+        InsumosObsBean iob = new InsumosObsBean();
+
+        if (txtcodigo.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um código.");
+            txtcodigo.requestFocus();
+        } else if (txtdescricao.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite uma descrição.");
+            txtdescricao.requestFocus();
+        } else if (txtun.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Coloque uma unidade.");
+        } else if (cbtipo.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Escolha um tipo de insumo.");
+            cbtipo.showPopup();
+        } else {//Se tudo estiver correto.
+            String datacriacao = Dates.CriarDataCompletaParaDB();
+            if (txtid.getText().equals("")) {//Se for um item novo
+////////////////Criar Insumo
+                ib.setCodigo(txtcodigo.getText());
+                ib.setDescricao(txtdescricao.getText());
+                ib.setTipo(cbtipo.getSelectedItem().toString());
+                ib.setEstoque(0);
+                ib.setDatacriacao(datacriacao);
+                ib.setStatus("Ativo");
+
+                //codigo, descricao, tipo, estoque, datacriacao, status
+                id.create(ib);
+
+                //Pegar id criado
+                id.readcreated(datacriacao).forEach(ib2 -> {
+                    idcriado = ib2.getId();
+                });
+
+////////////////Criar Documentos do Insumo
+                if (tabledocumentos.getRowCount() > 0) {
+                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                        idb.setIdinsumo(idcriado);
+                        idb.setDescricao(datacriacao);
+                        idb.setLocal(title);
+
+                        //idinsumo, descricao, local
+                        idd.create(idb);
+                    }
+                }
+
+////////////////Criar Observação do Insumo
+                if (tableobs.getRowCount() > 0) {
+                    for (int i = 0; i < tableobs.getRowCount(); i++) {
+                        iob.setIdinsumo(idcriado);
+                        iob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 1).toString()));
+                        iob.setFuncionario(tableobs.getValueAt(i, 2).toString());
+                        iob.setObs(tableobs.getValueAt(i, 3).toString());
+
+                        //idinsumo, data, funcionario, obs
+                        iod.create(iob);
+                    }
+                }
+
+////////////////Criar Movimentação do Insumo
+                imb.setIdinsumo(idcriado);
+                imb.setData(Dates.CriarDataCurtaDBSemDataExistente());
+                imb.setTipomov("Criação");
+                imb.setQtdinicial(0);
+                imb.setQtdmov(0);
+                imb.setQtdfinal(0);
+                imb.setFuncionario(datacriacao);
+
+                //idinsumo, data, tipomov, qtdinicial, qtdmov, qtdfinal, funcionario
+                imd.create(imb);
+
+                JOptionPane.showMessageDialog(null, "Criado com sucesso.");
+            } else {//Se for um item já cadastrado
+////////////////Atualizar Insumo
+                ib.setCodigo(txtcodigo.getText());
+                ib.setDescricao(txtdescricao.getText());
+                ib.setTipo(cbtipo.getSelectedItem().toString());
+                ib.setId(Integer.parseInt(txtid.getText()));
+
+                //codigo = ?, descricao = ?, tipo = ? WHERE id = ?
+                id.update(ib);
+
+////////////////Criar Documentos do Insumo
+                if (tabledocumentos.getRowCount() > 0) {
+                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                        if (tabledocumentos.getValueAt(i, 0).equals("")) {
+                            idb.setIdinsumo(Integer.parseInt(txtid.getText()));
+                            idb.setDescricao(datacriacao);
+                            idb.setLocal(title);
+
+                            //idinsumo, descricao, local
+                            idd.create(idb);
+                        }
+                    }
+                }
+
+////////////////Criar Observação do Insumo
+                if (tableobs.getRowCount() > 0) {
+                    for (int i = 0; i < tableobs.getRowCount(); i++) {
+                        if (tableobs.getValueAt(i, 0).equals("")) {
+                            iob.setIdinsumo(Integer.parseInt(txtid.getText()));
+                            iob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 1).toString()));
+                            iob.setFuncionario(tableobs.getValueAt(i, 2).toString());
+                            iob.setObs(tableobs.getValueAt(i, 3).toString());
+
+                            //idinsumo, data, funcionario, obs
+                            iod.create(iob);
+                        }
+                    }
+                }
+
+                JOptionPane.showMessageDialog(null, "Atualizado com sucesso.");
+            }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        AdicionarObs ao = new AdicionarObs("Insumos");
+        Telas.AparecerTela(ao);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (txtid.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione um insumo.");
+            tabinsumos.setSelectedIndex(0);
+        } else {
+            InsumosDAO id = new InsumosDAO();
+            InsumosBean ib = new InsumosBean();
+
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja desativar o insumo " + txtcodigo.getText() + "?", "Desativar Insumo", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                ib.setStatus("Desativado");
+                ib.setId(Integer.parseInt(txtid.getText()));
+
+                //status = ? WHERE id = ?
+                id.update(ib);
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        ProcurarDocumento pd = new ProcurarDocumento("Insumos");
+        Telas.AparecerTela(pd);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        ProcurarUnidades pu = new ProcurarUnidades(this.getName());
+        Telas.AparecerTela(pu);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja criar um novo insumo?", "Criar novo", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            zeracampos();
+            tabinsumos.setSelectedIndex(1);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -548,11 +786,13 @@ public class Insumos extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton5;
     public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
+    public javax.swing.JButton jButton8;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
+    public javax.swing.JLabel jLabel6;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
@@ -565,8 +805,8 @@ public class Insumos extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JScrollPane jScrollPane4;
-    public javax.swing.JTabbedPane jTabbedPane1;
     public javax.swing.JTabbedPane jTabbedPane2;
+    public static javax.swing.JTabbedPane tabinsumos;
     public static javax.swing.JTable tabledocumentos;
     public static javax.swing.JTable tableestoque;
     public static javax.swing.JTable tableinsumos;
@@ -576,5 +816,6 @@ public class Insumos extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtid;
     public javax.swing.JTextField txtpesquisa;
     public static javax.swing.JTextField txtstatus;
+    public static javax.swing.JTextField txtun;
     // End of variables declaration//GEN-END:variables
 }

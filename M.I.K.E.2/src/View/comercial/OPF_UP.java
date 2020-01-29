@@ -5,6 +5,10 @@
  */
 package View.comercial;
 
+import Bean.F_UPBean;
+import DAO.F_UPDAO;
+import Methods.Dates;
+
 /**
  *
  * @author Marcos Filho
@@ -212,7 +216,17 @@ public class OPF_UP extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        F_UPDAO fud = new F_UPDAO();
+        F_UPBean fub = new F_UPBean();
         
+        fub.setDav(Integer.parseInt(txtdav.getText()));
+        fub.setOp(Integer.parseInt(txtop.getText()));
+        fub.setMaterial(txtmaterial.getText());
+        fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(dateentrega.getDate()));
+        fub.setId(Integer.parseInt(txtid.getText()));
+        
+        //dav = ?, op = ?, material = ?, dataentrega = ? WHERE id = ?
+        fud.update(fub);
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

@@ -13,6 +13,7 @@ import DAO.RastreamentoDocumentosDAO;
 import DAO.RastreamentoDocumentosDocDAO;
 import Methods.Dates;
 import Methods.SendEmail;
+import Methods.Telas;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarFornecedor;
 import static View.TelaPrincipal.jDesktopPane1;
@@ -25,13 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -477,6 +473,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tablehistorico = new javax.swing.JTable();
         btnaprovar = new javax.swing.JButton();
+        btnextornarsempagamento = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tabledocumentos = new javax.swing.JTable();
@@ -526,6 +523,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tabledocs.setShowGrid(true);
         tabledocs.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tabledocsMouseClicked(evt);
@@ -717,6 +715,8 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
         checkpagamento.setText("Documento com pagamento");
 
+        txtemissao.setDateFormatString("dd/MM/yyyy");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -852,6 +852,14 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             }
         });
 
+        btnextornarsempagamento.setText("Extornar \"Sem Pagamento\"");
+        btnextornarsempagamento.setEnabled(false);
+        btnextornarsempagamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnextornarsempagamentoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -859,6 +867,8 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnextornarsempagamento)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnaprovar)
                 .addContainerGap())
         );
@@ -867,7 +877,9 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnaprovar))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnaprovar)
+                    .addComponent(btnextornarsempagamento)))
         );
 
         jTabbedPane2.addTab("Histórico", jPanel7);
@@ -986,7 +998,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                                 .addComponent(jButton2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton1))
-                            .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE))))
+                            .addComponent(jTabbedPane2))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -1012,7 +1024,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabdocs, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+            .addComponent(tabdocs)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1041,11 +1053,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         DocumentosRastreamentoDocumentos p = new DocumentosRastreamentoDocumentos();
-        jDesktopPane1.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1098,15 +1106,23 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         } else if (rdd.readduplicate(txtemitente.getText(), txtnumero.getText()) && txtid.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Documento já lançado anteriormente!");
         } else if (!checkpagamento.isSelected()) {
-            int resp = JOptionPane.showConfirmDialog(null, "O Documento não está marcado para pagamento. Está correto?", "Sem pagamento", JOptionPane.YES_NO_OPTION);
+            int resp = JOptionPane.showConfirmDialog(null, "O Documento não está marcado para pagamento. Está correto?", "Sem pagamento", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (resp == 0) {
                 salvarrastreamento();
             } else {
                 checkpagamento.setSelected(true);
                 salvarrastreamento();
+                
+                JOptionPane.showMessageDialog(null, "Enviando e-mail para aprovação.");
+                
+                SendEmail.EnviarAviso("diretoria@speedcut.com.br", "Documento lançado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi lançado e necessita de aprovação");
             }
         } else {
             salvarrastreamento();
+            
+            JOptionPane.showMessageDialog(null, "Enviando e-mail para aprovação.");
+            
+            SendEmail.EnviarAviso("diretoria@speedcut.com.br", "Documento lançado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi lançado e necessita de aprovação");
         }
         readhist();
         readdocumentosdodocumento();
@@ -1160,37 +1176,39 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             readdocumentosdodocumento();
 
             radios();
+
+            if (Session.nivel.equals("Administrador") && !checkpagamento.isSelected()) {
+                btnextornarsempagamento.setEnabled(true);
+            }
         }
     }//GEN-LAST:event_tabledocsMouseClicked
 
     private void btnpesquisaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnpesquisaActionPerformed
         if (radiocliente.isSelected()) {
             ProcurarCliente p = new ProcurarCliente("Rastreamento");
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(p);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = p.getSize();
-            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            p.setVisible(true);
+            Telas.AparecerTela(p);
         }
         if (radiofornecedor.isSelected()) {
             ProcurarFornecedor p = new ProcurarFornecedor("Rastreamento");
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(p);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = p.getSize();
-            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            p.setVisible(true);
+            Telas.AparecerTela(p);
         }
     }//GEN-LAST:event_btnpesquisaActionPerformed
 
     private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
         if (evt.getClickCount() == 2) {
             Desktop desk = Desktop.getDesktop();
-            try {
-                desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
-            } catch (IOException ex) {
-                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+            if (tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).equals("")) {
+                try {
+                    desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4)));
+                } catch (IOException ex) {
+                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                try {
+                    desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
+                } catch (IOException ex) {
+                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
@@ -1210,6 +1228,10 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             readdocumentosdodocumento();
             readhist();
             readtabledocumentos();
+            
+            JOptionPane.showMessageDialog(null, "Enviando e-mail para o financeiro.");
+            
+            SendEmail.EnviarAviso("financeiro@speedcut.com.br", "Documento aprovado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi aprovado e necessita de lançamento no CAP.");
         }
     }//GEN-LAST:event_btnaprovarActionPerformed
 
@@ -1221,11 +1243,32 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         readtabledocumentos();
     }//GEN-LAST:event_cbstatusActionPerformed
 
+    private void btnextornarsempagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnextornarsempagamentoActionPerformed
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja lançar este documento para pagamento?", "Extornar Sem Pagamento", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            rdb.setCap(true);
+            rdb.setCapuser(null);
+            rdb.setData(null);
+            rdb.setStatus("Ativo");
+            rdb.setId(Integer.parseInt(txtid.getText()));
+
+            //cap = ? , capuser = ?, capdata = ?, status = ? WHERE id = ?
+            rdd.extornarsempagamento(rdb);
+
+            JOptionPane.showMessageDialog(null, "Extornado com sucesso!");
+
+            tabdocs.setSelectedIndex(0);
+
+            zeracampos();
+        }
+    }//GEN-LAST:event_btnextornarsempagamentoActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup GroupEmitente;
     private javax.swing.ButtonGroup GroupTipo;
     public static javax.swing.JButton btnaprovar;
+    public static javax.swing.JButton btnextornarsempagamento;
     public static javax.swing.JButton btnpesquisa;
     public static javax.swing.JButton btnxml;
     private static javax.swing.JComboBox<String> cbstatus;

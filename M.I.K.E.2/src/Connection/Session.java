@@ -15,4 +15,5 @@ public class Session {
     public static String nome;
     public static String nivel;
     public static String db;
+    public static String setor;
 }

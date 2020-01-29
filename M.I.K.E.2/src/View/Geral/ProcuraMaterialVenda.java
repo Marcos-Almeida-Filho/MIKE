@@ -142,8 +142,8 @@ public class ProcuraMaterialVenda extends javax.swing.JInternalFrame {
     private void tablemateriaisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemateriaisMouseClicked
         if (evt.getClickCount() == 2) {
             switch (origem) {
-                case "MaterialVenda":
-                    VendasMateriais.txtoriginal.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
+                case "VendasMaterial":
+                    VendasMateriais.txtmaterialdeorigem.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
                     dispose();
                     break;
             }

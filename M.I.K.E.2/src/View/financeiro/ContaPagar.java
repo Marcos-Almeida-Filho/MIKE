@@ -11,13 +11,12 @@ import DAO.CAPDAO;
 import DAO.CAPDocumentosDAO;
 import Methods.Dates;
 import Methods.Docs;
+import Methods.Telas;
 import View.Geral.ProcurarFornecedor;
 import static View.financeiro.ContasPagar.readtablecap;
-import java.awt.Dimension;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -39,7 +38,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         data();
         readcbbancos();
         travacampos();
-        cheque();
+        camposcbmetodo();
     }
 
     public static void readdados() {
@@ -53,13 +52,13 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             txtdatalancamento.setText(cb.getDatalancamento());
             txtfornecedor.setText(cb.getFornecedor());
             txtnf.setText(cb.getNumero());
-            txtemissao.setText(Dates.TransformarDataCurtaDoDB(cb.getDataemissao()));
+            Dates.SetarDataJDateChooser(dateemissao, cb.getDataemissao());
             txttotal.setText(cb.getTotal());
             txtparcela.setText(cb.getParcela());
             txtvalorparcela.setText(cb.getValorparcela());
-            txtvencimento.setText(Dates.TransformarDataCurtaDoDB(cb.getDataparcela()));
+            Dates.SetarDataJDateChooser(datevencimento, cb.getDataparcela());
             if (cb.getDatapagamento() != null) {
-                txtpagamento.setText(Dates.TransformarDataCurtaDoDB(cb.getDatapagamento()));
+                Dates.SetarDataJDateChooser(datepagamento, cb.getDatapagamento());
             }
             if (cb.getBanco() != null) {
                 cbbanco.addItem(cb.getBanco());
@@ -86,13 +85,51 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         });
     }
 
-    public static void cheque() {
-        if (cbmetodo.getSelectedItem().toString().equals("Cheque")) {
-            lblcheque.setVisible(true);
-            txtcheque.setVisible(true);
-        } else {
-            lblcheque.setVisible(false);
-            txtcheque.setVisible(false);
+    public static void camposcbmetodo() {
+        String metodo = cbmetodo.getSelectedItem().toString();
+        switch (metodo) {
+            case "Selecione":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Boleto":
+                lblbanco.setVisible(true);
+                cbbanco.setVisible(true);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Depósito":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Transferência":
+                lblbanco.setVisible(true);
+                cbbanco.setVisible(true);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Cartão de Crédito":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Cheque":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(true);
+                txtcheque.setVisible(true);
+                break;
+            case "Dinheiro":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
         }
     }
 
@@ -104,27 +141,25 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     }
 
     public static void readcbbancos() {
-        if (cbbanco.getSelectedItem().equals("Selecione")) {
-            BancosDAO bd = new BancosDAO();
+        BancosDAO bd = new BancosDAO();
 
-            bd.read().forEach(bb -> {
-                cbbanco.addItem(bb.getBanco());
-            });
-        }
+        bd.read().forEach(bb -> {
+            cbbanco.addItem(bb.getBanco());
+        });
     }
 
     public static void travacampos() {
-        if (!txtpagamento.getText().equals("")) {
+        if (datepagamento.getCalendar() != null) {
             txtfornecedor.setEditable(false);
             btnprocurar.setEnabled(false);
             jButton1.setEnabled(false);
             txtnf.setEditable(false);
-            txtemissao.setEditable(false);
+            dateemissao.setEnabled(false);
             txttotal.setEditable(false);
             txtparcela.setEditable(false);
             txtvalorparcela.setEditable(false);
-            txtvencimento.setEditable(false);
-            txtpagamento.setEditable(false);
+            datevencimento.setEnabled(false);
+            datepagamento.setEnabled(false);
             cbbanco.setEnabled(false);
             cbmetodo.setEnabled(false);
         }
@@ -134,12 +169,12 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         txtid.setText("");
         txtfornecedor.setText("");
         txtnf.setText("");
-        txtemissao.setText("");
+        dateemissao.setCalendar(null);
         txttotal.setText("");
         txtparcela.setText("");
         txtvalorparcela.setText("");
-        txtvencimento.setText("");
-        txtpagamento.setText("");
+        datevencimento.setCalendar(null);
+        datepagamento.setCalendar(null);
         cbbanco.setSelectedIndex(0);
         cbmetodo.setSelectedIndex(0);
     }
@@ -166,26 +201,26 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         txtfornecedor = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtemissao = new javax.swing.JFormattedTextField();
         jLabel6 = new javax.swing.JLabel();
         txttotal = new javax.swing.JTextField();
         btnprocurar = new javax.swing.JButton();
+        dateemissao = new com.toedter.calendar.JDateChooser();
         jPanel3 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         txtparcela = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtvalorparcela = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        txtvencimento = new javax.swing.JFormattedTextField();
+        datevencimento = new com.toedter.calendar.JDateChooser();
         jPanel4 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        txtpagamento = new javax.swing.JFormattedTextField();
-        jLabel11 = new javax.swing.JLabel();
-        cbbanco = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
         cbmetodo = new javax.swing.JComboBox<>();
         lblcheque = new javax.swing.JLabel();
         txtcheque = new javax.swing.JTextField();
+        datepagamento = new com.toedter.calendar.JDateChooser();
+        lblbanco = new javax.swing.JLabel();
+        cbbanco = new javax.swing.JComboBox<>();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabledocs = new javax.swing.JTable();
@@ -226,11 +261,6 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
         jLabel5.setText("Data de Emissão");
 
-        txtemissao.setEditable(false);
-        txtemissao.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtemissao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtemissao.setToolTipText("dd/mm/aaaa");
-
         jLabel6.setText("Valor Total R$");
 
         txttotal.setEditable(false);
@@ -248,6 +278,8 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             }
         });
 
+        dateemissao.setDateFormatString("dd/MM/yyyy");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -256,23 +288,23 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnprocurar))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtnf, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtemissao, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dateemissao, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnprocurar)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -284,16 +316,14 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                     .addComponent(txtfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnprocurar))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel6)
-                        .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel5)
-                        .addComponent(txtemissao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
-                        .addComponent(txtnf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtnf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel6)
+                        .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dateemissao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -319,9 +349,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
         jLabel9.setText("Data de Vencimento");
 
-        txtvencimento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtvencimento.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtvencimento.setToolTipText("dd/mm/aaaa");
+        datevencimento.setDateFormatString("dd/MM/yyyy");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -341,7 +369,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtvencimento, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(datevencimento, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -353,32 +381,24 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                     .addComponent(txtparcela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(txtvalorparcela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(txtvencimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel9)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(datevencimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Pagamento"));
 
         jLabel10.setText("Data de Pagamento");
 
-        txtpagamento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtpagamento.setToolTipText("dd/mm/aaaa");
-        txtpagamento.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtpagamentoFocusLost(evt);
-            }
-        });
-
-        jLabel11.setText("Banco");
-
-        cbbanco.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
-
         jLabel12.setText("Método");
 
-        cbmetodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Boleto", "Depósito", "Transferência", "Cartão de Crédito", "Cheque" }));
+        cbmetodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Boleto", "Depósito", "Transferência", "Cartão de Crédito", "Cheque", "Dinheiro" }));
         cbmetodo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbmetodoActionPerformed(evt);
@@ -386,6 +406,12 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         });
 
         lblcheque.setText("Número do Cheque");
+
+        datepagamento.setDateFormatString("dd/MM/yyyy");
+
+        lblbanco.setText("Banco");
+
+        cbbanco.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -396,40 +422,40 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtpagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 35, Short.MAX_VALUE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(datepagamento, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(lblbanco)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblcheque)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcheque)))
+                        .addComponent(txtcheque)
+                        .addGap(41, 41, 41)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(datepagamento, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel12)
+                        .addComponent(jLabel10)))
+                .addGap(8, 8, 8)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel11)
+                        .addComponent(lblbanco)
                         .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel10)
-                        .addComponent(txtpagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblcheque)
-                    .addComponent(txtcheque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblcheque)
+                        .addComponent(txtcheque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -501,6 +527,9 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -510,17 +539,17 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                         .addComponent(txtdatalancamento, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButton1))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(19, 19, 19))))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addGap(19, 19, 19))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -534,9 +563,9 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -559,61 +588,65 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtid.getText().equals("")) {
-            CAPBean capb = new CAPBean();
-            CAPDAO capd = new CAPDAO();
+        CAPBean capb = new CAPBean();
+        CAPDAO capd = new CAPDAO();
 
+        if (txtid.getText().equals("")) {
             capb.setDatalancamento(txtdatalancamento.getText());
             capb.setFornecedor(txtfornecedor.getText());
             capb.setNumero(txtnf.getText());
-            capb.setDataemissao(Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()));
+            capb.setDataemissao(Dates.CriarDataCurtaDBJDateChooser(dateemissao.getDate()));
             capb.setTotal(txttotal.getText());
             capb.setParcela(txtparcela.getText());
             capb.setValorparcela(txtvalorparcela.getText());
-            capb.setDataparcela(Dates.CriarDataCurtaDBComDataExistente(txtvencimento.getText()));
-            capb.setDatapagamento(Dates.CriarDataCurtaDBComDataExistente(txtpagamento.getText()));
+            capb.setDataparcela(Dates.CriarDataCurtaDBJDateChooser(datevencimento.getDate()));
+            capb.setDatapagamento(Dates.CriarDataCurtaDBJDateChooser(datepagamento.getDate()));
             capb.setBanco(cbbanco.getSelectedItem().toString());
             capb.setMetodo(cbmetodo.getSelectedItem().toString());
-
-            if (txtpagamento.getText().equals("")) {
+            if (datepagamento.getCalendar() == null) {
                 capb.setStatus("Em aberto");
             } else {
                 capb.setStatus("Pago");
             }
-//            datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, datapagamento, banco, metodo, status
+
+            //datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, datapagamento, banco, metodo, status
             capd.create(capb);
+
             ContasPagar.cbstatus.setSelectedIndex(0);
+
+            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
+
             readtablecap();
         } else {
-            CAPBean capb = new CAPBean();
-            CAPDAO capd = new CAPDAO();
-
             capb.setFornecedor(txtfornecedor.getText());
             capb.setNumero(txtnf.getText());
-            capb.setDataemissao(Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()));
+            capb.setDataemissao(Dates.CriarDataCurtaDBJDateChooser(dateemissao.getDate()));
             capb.setTotal(txttotal.getText());
             capb.setParcela(txtparcela.getText());
             capb.setValorparcela(txtvalorparcela.getText());
-            capb.setDataparcela(Dates.CriarDataCurtaDBComDataExistente(txtvencimento.getText()));
-            if (txtpagamento.getText().equals("")) {
+            capb.setDataparcela(Dates.CriarDataCurtaDBJDateChooser(datevencimento.getDate()));
+            if (datepagamento.getCalendar() == null) {
                 capb.setDatapagamento(null);
             } else {
-                capb.setDatapagamento(Dates.CriarDataCurtaDBComDataExistente(txtpagamento.getText()));
+                capb.setDatapagamento(Dates.CriarDataCurtaDBJDateChooser(datepagamento.getDate()));
             }
             capb.setBanco(cbbanco.getSelectedItem().toString());
             capb.setMetodo(cbmetodo.getSelectedItem().toString());
             capb.setCheque(txtcheque.getText());
-
-            if (txtpagamento.getText().equals("")) {
+            if (datepagamento.getCalendar() == null) {
                 capb.setStatus("Ativo");
             } else {
                 capb.setStatus("Pago");
             }
             capb.setId(Integer.parseInt(txtid.getText()));
+
             //fornecedor = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datapagamento = ?, banco = ?, metodo = ?, cheque = ?, status = ? WHERE id = ?
             capd.update(capb);
+
             ContasPagar.cbstatus.setSelectedIndex(0);
+
             readtablecap();
+
             JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         }
         dispose();
@@ -634,12 +667,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
     private void btnprocurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarActionPerformed
         ProcurarFornecedor pf = new ProcurarFornecedor("ContaPagar");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(pf);
-        Dimension jif = pf.getSize();
-        Dimension d = desk.getSize();
-        pf.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        pf.setVisible(true);
+        Telas.AparecerTela(pf);
     }//GEN-LAST:event_btnprocurarActionPerformed
 
     private void txtparcelaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtparcelaFocusLost
@@ -672,15 +700,8 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtparcelaFocusLost
 
     private void cbmetodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmetodoActionPerformed
-        cheque();
+        camposcbmetodo();
     }//GEN-LAST:event_cbmetodoActionPerformed
-
-    private void txtpagamentoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtpagamentoFocusLost
-        if (!Dates.verificadata(txtpagamento.getText())) {
-            txtpagamento.setText("");
-            txtpagamento.requestFocus();
-        }
-    }//GEN-LAST:event_txtpagamentoFocusLost
 
     private void tabledocsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocsMouseClicked
         if (evt.getClickCount() == 2) {
@@ -694,10 +715,12 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     public javax.swing.ButtonGroup buttonGroup1;
     public static javax.swing.JComboBox<String> cbbanco;
     public static javax.swing.JComboBox<String> cbmetodo;
+    public static com.toedter.calendar.JDateChooser dateemissao;
+    public static com.toedter.calendar.JDateChooser datepagamento;
+    public static com.toedter.calendar.JDateChooser datevencimento;
     public static javax.swing.JButton jButton1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
-    public javax.swing.JLabel jLabel11;
     public javax.swing.JLabel jLabel12;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -713,18 +736,16 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel4;
     public javax.swing.JPanel jPanel5;
     public javax.swing.JScrollPane jScrollPane1;
+    public static javax.swing.JLabel lblbanco;
     public static javax.swing.JLabel lblcheque;
     public static javax.swing.JTable tabledocs;
     public static javax.swing.JTextField txtcheque;
     public static javax.swing.JFormattedTextField txtdatalancamento;
-    public static javax.swing.JFormattedTextField txtemissao;
     public static javax.swing.JTextField txtfornecedor;
     public static javax.swing.JTextField txtid;
     public static javax.swing.JTextField txtnf;
-    public static javax.swing.JFormattedTextField txtpagamento;
     public static javax.swing.JTextField txtparcela;
     public static javax.swing.JTextField txttotal;
     public static javax.swing.JTextField txtvalorparcela;
-    public static javax.swing.JFormattedTextField txtvencimento;
     // End of variables declaration//GEN-END:variables
 }

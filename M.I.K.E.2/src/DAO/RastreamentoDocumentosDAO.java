@@ -164,6 +164,33 @@ public class RastreamentoDocumentosDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    public void extornarsempagamento(RastreamentoDocumentosBean rdb) {
+
+        Connection con = ConnectionFactory.getConnection();
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE rastreamento_doc SET cap = ? , capuser = ?, capdata = ?, status = ? WHERE id = ?");
+            stmt.setBoolean(1, rdb.isCap());
+            stmt.setString(2, rdb.getCapuser());
+            stmt.setString(3, rdb.getCapdata());
+            stmt.setString(4, rdb.getStatus());
+            stmt.setInt(5, rdb.getId());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, "Erro ao criar Histórico de Rastreamento de Documento!\n" + e);
+            try {
+                SendEmail.EnviarErro("Erro ao criar Histórico de Rastreamento de Documento!\n" + e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 
     public List<RastreamentoDocumentosBean> readtable() {
 

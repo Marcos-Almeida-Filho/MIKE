@@ -17,7 +17,6 @@ public class ComprasSolicitacaoBean {
     private String data;
     private String solicitante;
     private String tipo;
-    private String notes;
     private String status;
 
     public int getId() {
@@ -58,14 +57,6 @@ public class ComprasSolicitacaoBean {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
     }
 
     public String getStatus() {

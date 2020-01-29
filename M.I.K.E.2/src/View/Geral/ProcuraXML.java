@@ -12,10 +12,9 @@ import Methods.Dates;
 import Methods.ReadXMLDocumento;
 import Methods.SendEmail;
 import Methods.Valores;
-import View.financeiro.AdicionarContasAPagar;
 import View.financeiro.AdicionarContasAReceber;
+import View.fiscal.NotasFiscais;
 import View.logistica.RastreamentoDocumentos;
-import static View.logistica.RastreamentoDocumentos.txtemissao;
 import java.awt.AWTException;
 import java.io.File;
 import java.io.IOException;
@@ -73,6 +72,7 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Escolha de Documento");
 
+        chooser.setMultiSelectionEnabled(true);
         chooser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooserActionPerformed(evt);
@@ -94,19 +94,24 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void chooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooserActionPerformed
+        //Arquivo(s) selecionado(s)
         File fileoriginal = chooser.getSelectedFile();
+
+        //DocumentBuilder
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = null;
+        Document doc = null;
+
         if (evt.getActionCommand().equals("ApproveSelection")) {
             switch (origem) {
                 case "Rastreamento":
                     try {
-                        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder dBuilder = null;
                         try {
                             dBuilder = dbFactory.newDocumentBuilder();
                         } catch (ParserConfigurationException ex) {
                             Logger.getLogger(ReadXMLDocumento.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        Document doc = null;
+
                         try {
                             doc = dBuilder.parse(fileoriginal);
                         } catch (SAXException | IOException ex) {
@@ -117,30 +122,6 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                         //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
                         doc.getDocumentElement().normalize();
 
-//                System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-//
-//                NodeList nList = doc.getElementsByTagName("staff");
-//
-//                System.out.println("----------------------------");
-//
-//                for (int temp = 0; temp < nList.getLength(); temp++) {
-//
-//                    Node nNode = nList.item(temp);
-//
-//                    System.out.println("\nCurrent Element :" + nNode.getNodeName());
-//
-//                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-//
-//                        Element eElement = (Element) nNode;
-//
-//                        System.out.println("Staff id : " + eElement.getAttribute("id"));
-//                        System.out.println("First Name : " + eElement.getElementsByTagName("firstname").item(0).getTextContent());
-//                        System.out.println("Last Name : " + eElement.getElementsByTagName("lastname").item(0).getTextContent());
-//                        System.out.println("Nick Name : " + eElement.getElementsByTagName("nickname").item(0).getTextContent());
-//                        System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
-//
-//                    }
-//                }
                         //Buscar CNPJ
                         NodeList cnpjlist = doc.getElementsByTagName("CNPJ");
                         Node cnpjnode = cnpjlist.item(0);
@@ -230,14 +211,12 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                     break;
                 case "CAR":
                     try {
-                        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder dBuilder = null;
                         try {
                             dBuilder = dbFactory.newDocumentBuilder();
                         } catch (ParserConfigurationException ex) {
                             Logger.getLogger(ReadXMLDocumento.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        Document doc = null;
+
                         try {
                             doc = dBuilder.parse(fileoriginal);
                         } catch (SAXException | IOException ex) {
@@ -248,30 +227,6 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                         //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
                         doc.getDocumentElement().normalize();
 
-//                System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-//
-//                NodeList nList = doc.getElementsByTagName("staff");
-//
-//                System.out.println("----------------------------");
-//
-//                for (int temp = 0; temp < nList.getLength(); temp++) {
-//
-//                    Node nNode = nList.item(temp);
-//
-//                    System.out.println("\nCurrent Element :" + nNode.getNodeName());
-//
-//                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-//
-//                        Element eElement = (Element) nNode;
-//
-//                        System.out.println("Staff id : " + eElement.getAttribute("id"));
-//                        System.out.println("First Name : " + eElement.getElementsByTagName("firstname").item(0).getTextContent());
-//                        System.out.println("Last Name : " + eElement.getElementsByTagName("lastname").item(0).getTextContent());
-//                        System.out.println("Nick Name : " + eElement.getElementsByTagName("nickname").item(0).getTextContent());
-//                        System.out.println("Salary : " + eElement.getElementsByTagName("salary").item(0).getTextContent());
-//
-//                    }
-//                }
                         //Buscar Destinatário
                         NodeList destlist = doc.getElementsByTagName("dest");
                         Node destnode = destlist.item(0);
@@ -345,6 +300,56 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                         dispose();
                     } catch (ParseException ex) {
                         Logger.getLogger(ProcuraXML.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    dispose();
+                    break;
+                case "NotasFiscais":
+                    for (File selectedFile : chooser.getSelectedFiles()) {
+                        try {
+                            dBuilder = dbFactory.newDocumentBuilder();
+                        } catch (ParserConfigurationException ex) {
+                            Logger.getLogger(ReadXMLDocumento.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        try {
+                            doc = dBuilder.parse(selectedFile);
+                        } catch (SAXException | IOException ex) {
+                            Logger.getLogger(ReadXMLDocumento.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                        //optional, but recommended
+                        //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+                        doc.getDocumentElement().normalize();
+                        
+                        //Buscar Destinatário
+                        NodeList destlist = doc.getElementsByTagName("dest");
+                        Node destnode = destlist.item(0);
+                        Element destelement = (Element) destnode;
+
+                        //Buscar Emissão
+                        NodeList emilist = doc.getElementsByTagName("dhEmi");
+                        Node eminode = emilist.item(0);
+
+                        //Buscar Número
+                        NodeList numlist = doc.getElementsByTagName("nNF");
+                        Node numnode = numlist.item(0);
+                        
+                        //Buscar Natureza de Operação
+                        NodeList natlist = doc.getElementsByTagName("natOp");
+                        Node natnode = natlist.item(0);
+                        
+                        //Status
+                        NodeList statuslist = doc.getElementsByTagName("xMotivo");
+                        Node statusnode = statuslist.item(0);
+                        
+                        DefaultTableModel modelnf = (DefaultTableModel) NotasFiscais.tablenf.getModel();
+                        modelnf.addRow(new Object[]{
+                            "",
+                            numnode.getTextContent(),
+                            destelement.getElementsByTagName("xNome").item(0).getTextContent(),
+                            natnode.getTextContent(),
+                            statusnode.getTextContent()
+                        });
                     }
                     dispose();
                     break;

@@ -372,6 +372,36 @@ public class FornecedoresDAO {
         }
         return listfb;
     }
+    
+    public int readlast() {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        int lastid = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT MAX(id) AS id FROM fornecedores");
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                lastid = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(FornecedoresDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(FornecedoresDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return lastid;
+    }
 
     public List<FornecedoresBean> click(int id) {
 

@@ -14,11 +14,10 @@ public class ComprasSolicitacaoItensBean {
     
     private int id;
     private String idtela;
-    private String data;
-    private String solicitante;
-    private String tipo;
-    private String notes;
-    private String status;
+    private String item;
+    private int qtd;
+    private String obs;
+    private String pedido;
 
     public int getId() {
         return id;
@@ -36,45 +35,36 @@ public class ComprasSolicitacaoItensBean {
         this.idtela = idtela;
     }
 
-    public String getData() {
-        return data;
+    public String getItem() {
+        return item;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setItem(String item) {
+        this.item = item;
     }
 
-    public String getSolicitante() {
-        return solicitante;
+    public int getQtd() {
+        return qtd;
     }
 
-    public void setSolicitante(String solicitante) {
-        this.solicitante = solicitante;
+    public void setQtd(int qtd) {
+        this.qtd = qtd;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getObs() {
+        return obs;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setObs(String obs) {
+        this.obs = obs;
     }
 
-    public String getNotes() {
-        return notes;
+    public String getPedido() {
+        return pedido;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setPedido(String pedido) {
+        this.pedido = pedido;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    
-    
 }

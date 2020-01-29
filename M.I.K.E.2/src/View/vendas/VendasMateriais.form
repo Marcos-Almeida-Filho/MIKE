@@ -69,7 +69,7 @@
                           <Component id="jScrollPane5" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="jPanel18" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="357" max="32767" attributes="0"/>
+                              <EmptySpace pref="363" max="32767" attributes="0"/>
                               <Component id="jPanel19" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -86,8 +86,8 @@
                           <Component id="jPanel19" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane5" pref="506" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jScrollPane5" pref="500" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -273,12 +273,16 @@
                                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="txtdescricao" min="-2" pref="673" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="lbldescricaoerro" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtcodigo" min="-2" pref="228" max="-2" attributes="0"/>
+                                  <Component id="txtcodigo" min="-2" pref="350" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="lblcodigoerro" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                                   <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -297,11 +301,13 @@
                               <Component id="txtcodigo" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtstatus" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblcodigoerro" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="txtdescricao" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lbldescricaoerro" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -323,6 +329,9 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtcodigoKeyReleased"/>
+                  </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>
@@ -331,6 +340,9 @@
                   <Properties>
                     <Property name="editable" type="boolean" value="false"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtdescricaoKeyReleased"/>
+                  </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>
@@ -343,6 +355,22 @@
                 <Component class="javax.swing.JLabel" name="jLabel15">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Status"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="lblcodigoerro">
+                  <Properties>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="33" green="33" red="ff" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="C&#xf3;digo muito longo!"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="lbldescricaoerro">
+                  <Properties>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="33" green="33" red="ff" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Descri&#xe7;&#xe3;o muito longa!"/>
                   </Properties>
                 </Component>
               </SubComponents>
@@ -482,6 +510,10 @@
                                       <Component id="lbltopo" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="cbtopo" min="-2" pref="149" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jLabel19" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="cbcanal" min="-2" pref="104" max="-2" attributes="0"/>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
@@ -491,7 +523,7 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="panelcomp" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <Component id="jPanel5" max="32767" attributes="0"/>
+                                          <Component id="panelorigem" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -527,6 +559,8 @@
                                   <Component id="txtcortes" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="lbltopo" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="cbtopo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cbcanal" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -537,7 +571,7 @@
                                           <Component id="panelcomp" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
+                                      <Component id="panelorigem" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="0" pref="28" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -693,7 +727,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtd1">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fresa-broca-fe-be" noResource="true"/>
                           </Properties>
                           <Events>
@@ -705,7 +738,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtd2">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fresa-broca-fe-be" noResource="true"/>
                           </Properties>
                           <AuxValues>
@@ -714,7 +746,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtd3">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fe-be" noResource="true"/>
                           </Properties>
                           <AuxValues>
@@ -723,7 +754,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtd4">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fe-be" noResource="true"/>
                           </Properties>
                           <AuxValues>
@@ -732,7 +762,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtd5">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fe-be" noResource="true"/>
                           </Properties>
                           <AuxValues>
@@ -845,7 +874,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtl1">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fresa-broca-fe-be" noResource="true"/>
                           </Properties>
                           <Events>
@@ -858,7 +886,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtl2">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fresa-broca-fe-be" noResource="true"/>
                           </Properties>
                           <AuxValues>
@@ -867,7 +894,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtl3">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fe-be" noResource="true"/>
                           </Properties>
                           <AuxValues>
@@ -876,7 +902,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtl4">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fe-be" noResource="true"/>
                           </Properties>
                           <AuxValues>
@@ -885,7 +910,6 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtl5">
                           <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
                             <Property name="name" type="java.lang.String" value="fe-be" noResource="true"/>
                           </Properties>
                           <AuxValues>
@@ -901,6 +925,7 @@
                             <StringItem index="0" value="Selecione"/>
                           </StringArray>
                         </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbfamiliaActionPerformed"/>
@@ -933,6 +958,7 @@
                             <StringItem index="0" value="Selecione"/>
                           </StringArray>
                         </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -965,11 +991,6 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtoriginal" max="32767" attributes="0"/>
-                              </Group>
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
@@ -981,9 +1002,11 @@
                                           <Component id="checkraio" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="txtraio" min="-2" pref="57" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="checkimportado" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
-                                          <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="checkweldon" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="checkri" min="-2" max="-2" attributes="0"/>
                                       </Group>
@@ -1001,20 +1024,16 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtoriginal" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="checkraio" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="txtraio" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="checkimportado" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="jCheckBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="checkweldon" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="checkri" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1082,23 +1101,15 @@
                             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                           </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+                        <Component class="javax.swing.JCheckBox" name="checkweldon">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Weldon"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JLabel" name="jLabel17">
+                        <Component class="javax.swing.JCheckBox" name="checkimportado">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Material Original"/>
+                            <Property name="text" type="java.lang.String" value="Importado"/>
                           </Properties>
-                        </Component>
-                        <Component class="javax.swing.JTextField" name="txtoriginal">
-                          <Properties>
-                            <Property name="enabled" type="boolean" value="false"/>
-                          </Properties>
-                          <Events>
-                            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtoriginalFocusGained"/>
-                          </Events>
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                           </AuxValues>
@@ -1246,7 +1257,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txthelice">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-broca-fe-be" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1259,7 +1269,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtnucleo">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-broca-fe-be" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1277,7 +1286,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtconcavidade">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-fe" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1295,7 +1303,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtaliviotopo1">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-fe" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1313,7 +1320,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtaliviotopo2">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-fe" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1331,7 +1337,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtalivio1">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-fe" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1349,7 +1354,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtalivio2">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-fe" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1367,7 +1371,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtespfilete">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-fe" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1385,7 +1388,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtagressividade">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="fresa-broca-fe-be" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1403,7 +1405,6 @@
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtfrontal">
                                   <Properties>
-                                    <Property name="enabled" type="boolean" value="false"/>
                                     <Property name="name" type="java.lang.String" value="broca-be" noResource="true"/>
                                   </Properties>
                                   <Events>
@@ -1478,6 +1479,7 @@
                             <StringItem index="3" value="Toroidal"/>
                           </StringArray>
                         </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbtopoActionPerformed"/>
@@ -1587,14 +1589,14 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Container class="javax.swing.JPanel" name="jPanel5">
+                    <Container class="javax.swing.JPanel" name="panelorigem">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="ff" green="ff" red="ff" type="rgb"/>
                         </Property>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                            <TitledBorder title="Mat&#xe9;ria Prima"/>
+                            <TitledBorder title="Material de Origem"/>
                           </Border>
                         </Property>
                       </Properties>
@@ -1604,7 +1606,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="txtmp" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="txtmaterialdeorigem" alignment="0" max="32767" attributes="0"/>
                                       <Group type="102" alignment="1" attributes="0">
                                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                           <Component id="jButton8" min="-2" max="-2" attributes="0"/>
@@ -1617,7 +1619,7 @@
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="txtmp" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtmaterialdeorigem" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                                   <Component id="jButton8" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -1626,7 +1628,10 @@
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Component class="javax.swing.JTextField" name="txtmp">
+                        <Component class="javax.swing.JTextField" name="txtmaterialdeorigem">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                           </AuxValues>
@@ -1635,9 +1640,31 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Procurar"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton8ActionPerformed"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Component class="javax.swing.JLabel" name="jLabel19">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Canal"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="cbcanal">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="1">
+                            <StringItem index="0" value="Selecione"/>
+                          </StringArray>
+                        </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                      </AuxValues>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="paneldocs">
@@ -1872,7 +1899,17 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane4" pref="1139" max="32767" attributes="0"/>
+                              <Component id="jScrollPane4" pref="986" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel17" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel18" alignment="1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="txtestoqueminimo" pref="58" max="32767" attributes="0"/>
+                                  <Component id="txtestoque" max="32767" attributes="0"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -1881,7 +1918,21 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane4" pref="418" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="txtestoque" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel17" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="txtestoqueminimo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="jLabel18" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="jScrollPane4" pref="418" max="32767" attributes="0"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -1948,6 +1999,23 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Component class="javax.swing.JTextField" name="txtestoque">
+                      <Properties>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="txtestoqueminimo">
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel17">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Estoque Atual"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="jLabel18">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Estoque M&#xed;nimo"/>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>

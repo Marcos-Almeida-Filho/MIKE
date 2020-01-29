@@ -27,6 +27,7 @@ import DAO.ServicoPedidoItensDAO;
 import Methods.Docs;
 import Methods.SendEmail;
 import Methods.SoNumeros;
+import Methods.Telas;
 import View.Geral.MudarStatus;
 import View.Geral.ProcurarCliente;
 import View.TelaPrincipal;
@@ -35,7 +36,6 @@ import static View.servicos.PedidoServico.txtnumeropedido;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -47,7 +47,6 @@ import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1914,21 +1913,11 @@ public class OS extends javax.swing.JInternalFrame {
         File dir = new File(lbldirectory.getText());
         if (lbldirectory.getText().equals("")) {
             DocumentosOS p = new DocumentosOS();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(p);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = p.getSize();
-            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            p.setVisible(true);
+            Telas.AparecerTela(p);
         } else {
             DocumentosOS p = new DocumentosOS();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(p);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = p.getSize();
-            p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+            Telas.AparecerTela(p);
             DocumentosOS.chooser.setCurrentDirectory(dir);
-            p.setVisible(true);
         }
     }//GEN-LAST:event_btnadddocActionPerformed
 
@@ -2130,12 +2119,15 @@ public class OS extends javax.swing.JInternalFrame {
 
             //Zerar campos
             OS.camposembranco();
+            
+            //Substring de código OS
+            String codigoos = osoriginal.substring(0, 5);
 
             //Transformar na próxima OS
-            int numero = Integer.parseInt(osoriginal.replace("OS19-", "")) + 1;
+            int numero = Integer.parseInt(osoriginal.replace(codigoos, "")) + 1;
 
             //Colocar novo número de OS
-            txtnumeroos.setText("OS19-" + String.format("%04d", numero));
+            txtnumeroos.setText(codigoos + String.format("%04d", numero));
 
             //Pegar dados da OS
             OS.dadosos();
@@ -2166,15 +2158,18 @@ public class OS extends javax.swing.JInternalFrame {
 
             //Zerar campos
             OS.camposembranco();
+            
+            //Substring do código da OS
+            String codigoos = osoriginal.substring(0, 5);
 
             //Transformar na próxima OS
-            int numero = Integer.parseInt(osoriginal.replace("OS19-", "")) - 1;
+            int numero = Integer.parseInt(osoriginal.replace(codigoos, "")) - 1;
 
             //Colocar novo número de OS
-            txtnumeroos.setText("OS19-" + String.format("%04d", numero));
+            txtnumeroos.setText(codigoos + String.format("%04d", numero));
 
             //Pegar dados da OS
-            OS.dadosos();
+            dadosos();
 
             //Pegar documentos
             readdocs();

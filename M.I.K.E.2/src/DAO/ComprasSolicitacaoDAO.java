@@ -37,13 +37,12 @@ public class ComprasSolicitacaoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO solicitacao_compras (idtela, data, solicitante, tipo, notes, status) VALUES (?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO solicitacao_compras (idtela, data, solicitante, tipo, status) VALUES (?,?,?,?,?)");
             stmt.setString(1, csb.getIdtela());
             stmt.setString(2, csb.getData());
             stmt.setString(3, csb.getSolicitante());
             stmt.setString(4, csb.getTipo());
-            stmt.setString(5, csb.getNotes());
-            stmt.setString(6, csb.getStatus());
+            stmt.setString(5, csb.getStatus());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
@@ -79,7 +78,74 @@ public class ComprasSolicitacaoDAO {
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
-                csb.setNotes(rs.getString("notes"));
+                csb.setStatus(rs.getString("status"));
+
+                listso.add(csb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listso;
+    }
+    
+    public String readultimoidtela() {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+        
+        String ultimoidtela = "";
+
+        try {
+            stmt = con.prepareStatement("SELECT MAX(idtela) FROM solicitacao_compras");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ultimoidtela = rs.getString("idtela");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return ultimoidtela;
+    }
+    
+    public List<ComprasSolicitacaoBean> readcreated(String data) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ComprasSolicitacaoBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * from solicitacao_compras WHERE data = " + data);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ComprasSolicitacaoBean csb = new ComprasSolicitacaoBean();
+
+                csb.setIdtela(rs.getString("idtela"));
+                csb.setData(rs.getString("data"));
+                csb.setSolicitante(rs.getString("solicitante"));
+                csb.setTipo(rs.getString("tipo"));
                 csb.setStatus(rs.getString("status"));
 
                 listso.add(csb);
@@ -120,7 +186,6 @@ public class ComprasSolicitacaoDAO {
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
-                csb.setNotes(rs.getString("notes"));
                 csb.setStatus(rs.getString("status"));
 
                 listso.add(csb);
@@ -160,7 +225,6 @@ public class ComprasSolicitacaoDAO {
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
-                csb.setNotes(rs.getString("notes"));
                 csb.setStatus(rs.getString("status"));
 
                 listso.add(csb);
@@ -190,7 +254,7 @@ public class ComprasSolicitacaoDAO {
         String patterny = "yy";
         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
         String year = simpleDateFormaty.format(c.getTime());
-        String idtela = "CS" + year + "-0001";
+        String idtela = "SC" + year + "-0001";
 
         Boolean resp = false;
 
@@ -237,7 +301,6 @@ public class ComprasSolicitacaoDAO {
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
-                csb.setNotes(rs.getString("notes"));
                 csb.setStatus(rs.getString("status"));
 
                 listso.add(csb);
@@ -276,7 +339,6 @@ public class ComprasSolicitacaoDAO {
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
-                csb.setNotes(rs.getString("notes"));
                 csb.setStatus(rs.getString("status"));
 
                 listob.add(csb);
@@ -301,12 +363,10 @@ public class ComprasSolicitacaoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE solicitacao_compras SET solicitante = ?, tipo = ?, notes = ?, status = ? WHERE idtela = ?");
+            stmt = con.prepareStatement("UPDATE solicitacao_compras SET solicitante = ?, tipo = ? WHERE idtela = ?");
             stmt.setString(1, csb.getSolicitante());
             stmt.setString(2, csb.getTipo());
-            stmt.setString(3, csb.getNotes());
-            stmt.setString(4, csb.getStatus());
-            stmt.setString(5, csb.getIdtela());
+            stmt.setString(3, csb.getIdtela());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {

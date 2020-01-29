@@ -7,7 +7,9 @@ package View.Geral;
 
 import View.servicos.*;
 import DAO.UsuariosDAO;
-import Methods.Dates;
+import View.TI.Senhas;
+import View.compras.ComprasSolicitacao;
+import View.compras.TiposInsumo;
 import View.logistica.RastreamentoDocumentos;
 import javax.swing.table.DefaultTableModel;
 
@@ -31,7 +33,7 @@ public class ProcurarUser extends javax.swing.JInternalFrame {
     public static void readtablevendedores() {
         UsuariosDAO ud = new UsuariosDAO();
 
-        DefaultTableModel model = (DefaultTableModel) tablevendedores.getModel();
+        DefaultTableModel model = (DefaultTableModel) tableusers.getModel();
         model.setNumRows(0);
 
         ud.readtabelausuariosativo().forEach((ub) -> {
@@ -53,17 +55,17 @@ public class ProcurarUser extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tablevendedores = new javax.swing.JTable();
+        tableusers = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtpesquisa = new javax.swing.JTextField();
 
         setClosable(true);
         setTitle("Procurar Vendedor");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        tablevendedores.setModel(new javax.swing.table.DefaultTableModel(
+        tableusers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -79,22 +81,28 @@ public class ProcurarUser extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tablevendedores.addMouseListener(new java.awt.event.MouseAdapter() {
+        tableusers.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tablevendedoresMouseClicked(evt);
+                tableusersMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tablevendedores);
-        if (tablevendedores.getColumnModel().getColumnCount() > 0) {
-            tablevendedores.getColumnModel().getColumn(0).setMinWidth(30);
-            tablevendedores.getColumnModel().getColumn(0).setPreferredWidth(30);
-            tablevendedores.getColumnModel().getColumn(0).setMaxWidth(30);
-            tablevendedores.getColumnModel().getColumn(1).setResizable(false);
+        jScrollPane1.setViewportView(tableusers);
+        if (tableusers.getColumnModel().getColumnCount() > 0) {
+            tableusers.getColumnModel().getColumn(0).setMinWidth(30);
+            tableusers.getColumnModel().getColumn(0).setPreferredWidth(30);
+            tableusers.getColumnModel().getColumn(0).setMaxWidth(30);
+            tableusers.getColumnModel().getColumn(1).setResizable(false);
         }
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Vendedor"));
 
         jLabel1.setText("Pesquisa");
+
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -104,7 +112,7 @@ public class ProcurarUser extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1)
+                .addComponent(txtpesquisa)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -113,7 +121,7 @@ public class ProcurarUser extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -152,16 +160,17 @@ public class ProcurarUser extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tablevendedoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablevendedoresMouseClicked
+    private void tableusersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableusersMouseClicked
         if (evt.getClickCount() == 2) {
+            String user = tableusers.getValueAt(tableusers.getSelectedRow(), 1).toString();
             switch (origem) {
                 case "ServiçoCotação":
-                    CotacaoServico.txtvendedor.setText(tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    CotacaoServico.txtvendedor.setText(user);
+                    dispose();
                     break;
                 case "ServiçoPedido":
-                    PedidoServico.txtvendedor.setText(tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    PedidoServico.txtvendedor.setText(user);
+                    dispose();
                     break;
                 case "VendaCotação":
                     break;
@@ -169,15 +178,43 @@ public class ProcurarUser extends javax.swing.JInternalFrame {
                     break;
                 case "Rastreamento":
                     RastreamentoDocumentos rd = new RastreamentoDocumentos();
-                    rd.userentrada = tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString();
+                    rd.userentrada = user;
                     dispose();
-                    
-                    
-                    
+                    break;
+                case "TiposInsumo":
+                    TiposInsumo.txtresponsavel.setText(user);
+                    dispose();
+                    break;
+                case "ComprasSolicitacao":
+                    ComprasSolicitacao.txtsolicitante.setText(user);
+                    dispose();
+                    break;
+                case "Senhas":
+                    DefaultTableModel model = (DefaultTableModel) Senhas.tableacesso.getModel();
+                    model.addRow(new Object[]{
+                        "",
+                        false,
+                        user
+                    });
+                    dispose();
                     break;
             }
         }
-    }//GEN-LAST:event_tablevendedoresMouseClicked
+    }//GEN-LAST:event_tableusersMouseClicked
+
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        DefaultTableModel model = (DefaultTableModel) tableusers.getModel();
+        model.setNumRows(0);
+
+        UsuariosDAO ud = new UsuariosDAO();
+
+        ud.pesquisa(txtpesquisa.getText()).forEach(ub -> {
+            model.addRow(new Object[]{
+                ub.getId(),
+                ub.getNome()
+            });
+        });
+    }//GEN-LAST:event_txtpesquisaKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -185,7 +222,7 @@ public class ProcurarUser extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    public static javax.swing.JTextField jTextField1;
-    public static javax.swing.JTable tablevendedores;
+    public static javax.swing.JTable tableusers;
+    public static javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables
 }

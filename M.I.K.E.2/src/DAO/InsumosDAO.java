@@ -95,6 +95,88 @@ public class InsumosDAO {
         return listbb;
     }
     
+    public List<InsumosBean> readPorTipo(String tipo) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<InsumosBean> listbb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE tipo = ?");
+            stmt.setString(1, tipo);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                InsumosBean ib = new InsumosBean();
+
+                ib.setId(rs.getInt("id"));
+                ib.setCodigo(rs.getString("codigo"));
+                ib.setDescricao(rs.getString("descricao"));
+                ib.setTipo(rs.getString("tipo"));
+                ib.setEstoque(rs.getDouble("estoque"));
+                ib.setDatacriacao(rs.getString("datacriacao"));
+                ib.setStatus(rs.getString("status"));
+
+                listbb.add(ib);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<InsumosBean> readcreated(String datacriacao) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<InsumosBean> listbb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE dataccriacao = ?");
+            stmt.setString(1, datacriacao);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                InsumosBean ib = new InsumosBean();
+
+                ib.setId(rs.getInt("id"));
+                ib.setCodigo(rs.getString("codigo"));
+                ib.setDescricao(rs.getString("descricao"));
+                ib.setTipo(rs.getString("tipo"));
+                ib.setEstoque(rs.getDouble("estoque"));
+                ib.setDatacriacao(rs.getString("datacriacao"));
+                ib.setStatus(rs.getString("status"));
+
+                listbb.add(ib);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
     public List<InsumosBean> click(int id) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -143,13 +225,37 @@ public class InsumosDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE bancos SET codigo = ?, descricao = ?, tipo = ?, estoque = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE insumos SET codigo = ?, descricao = ?, tipo = ? WHERE id = ?");
 
             stmt.setString(1, bb.getCodigo());
             stmt.setString(2, bb.getDescricao());
             stmt.setString(3, bb.getTipo());
-            stmt.setDouble(4, bb.getEstoque());
-            stmt.setInt(5, bb.getId());
+            stmt.setInt(4, bb.getId());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void desativar(InsumosBean bb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE insumos SET status = ? WHERE id = ?");
+
+            stmt.setString(1, bb.getStatus());
+            stmt.setInt(2, bb.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

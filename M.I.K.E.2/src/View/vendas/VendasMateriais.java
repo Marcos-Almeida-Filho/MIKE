@@ -5,20 +5,13 @@
  */
 package View.vendas;
 
+import Methods.Telas;
 import View.Geral.ProcuraMaterialVenda;
-import static View.TelaPrincipal.jDesktopPane1;
-import com.toedter.calendar.JDateChooser;
-import com.toedter.calendar.JTextFieldDateEditor;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.util.Date;
+import View.Geral.ProcurarMateriaPrima;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  *
@@ -29,25 +22,26 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     /**
      * Creates new form Produtos
      */
+    //Variáveis para criar código
+    String codigo, desc, ferr, tipotopo, cortes, revchar, revtipo, raio, importada, richar, ritipo, weldonchar, weldondesc;
+    String[] riarray = new String[2];
+    String[] weldonarray = new String[2];
+
     public VendasMateriais() {
         initComponents();
-        invisible();
+        lblcodigoerro.setVisible(false);
+        lbldescricaoerro.setVisible(false);
     }
 
-    public static void invisible() {
-        lblfamilia.setVisible(false);
-        cbfamilia.setVisible(false);
-        lbltamanho.setVisible(false);
-        cbtamanho.setVisible(false);
-        lblcortes.setVisible(false);
-        txtcortes.setVisible(false);
-        lbltopo.setVisible(false);
-        cbtopo.setVisible(false);
-    }
-
-    public static void cbfamiliaexcluir() {
+    public static void cbexcluir() {
         cbfamilia.removeAllItems();
         cbfamilia.addItem("Selecione");
+
+        cbtamanho.removeAllItems();
+        cbtamanho.addItem("Selecione");
+
+        cbcanal.removeAllItems();
+        cbcanal.addItem("Selecione");
     }
 
     public static void cbfamiliaincluir() {
@@ -134,25 +128,10 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void cbtamanhoexcluir() {
-        cbtamanho.removeAllItems();
-        cbtamanho.addItem("Selecione");
-    }
-
-    public static void gerarcodigofresa() {
-        //Variáveis para criar código
-        String codigo;
-        String desc;
-        String ferr = "";
-        String tipotopo = "";
-        String cortes = "";
-        String revchar = "";
-        String revtipo = "";
-        String raio = "";
-
+    public String checarrevestimento() {
         //Identificar se tem revestimento e qual é
         if (checkrevestimento.isSelected()) {
-            revtipo = " Com Revestimento " + cbrevestimento.getSelectedItem().toString();
+            revtipo = " Com Revestimento "/* + cbrevestimento.getSelectedItem().toString()*/;
             int selection = cbrevestimento.getSelectedIndex();
             switch (selection) {
                 case 1:
@@ -167,12 +146,77 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 default:
                     break;
             }
+        } else {
+            revtipo = "";
+            revchar = "";
         }
 
+        return revtipo;
+    }
+
+    public String checarraio() {
         //Identificar se tem raio e qual medida
         if (checkraio.isSelected()) {
             raio = " R" + txtraio.getText();
+        } else {
+            raio = "";
         }
+
+        return raio;
+    }
+
+    public String checarimportada() {
+        //Identificar se é importada
+        if (checkimportado.isSelected()) {
+            importada = " I";
+        } else {
+            importada = "";
+        }
+
+        return importada;
+    }
+
+    public String[] checarri() {
+        //Identificar se tem refrigeração interna
+        if (checkri.isSelected()) {
+            richar = " RI";
+            ritipo = " Com Refrigeração Interna";
+        } else {
+            richar = "";
+            ritipo = "";
+        }
+
+        riarray[0] = richar;
+        riarray[1] = ritipo;
+
+        return riarray;
+    }
+
+    public String[] checarweldon() {
+        if (checkweldon.isSelected()) {
+            weldonchar = " W";
+            weldondesc = " Com Weldon";
+        } else {
+            weldonchar = "";
+            weldondesc = "";
+        }
+
+        weldonarray[0] = weldonchar;
+        weldonarray[1] = weldondesc;
+
+        return weldonarray;
+    }
+
+    public void gerarcodigofresa() {
+        checarrevestimento();
+
+        checarraio();
+
+        checarimportada();
+
+        checarri();
+
+        checarweldon();
 
         //Identificar família da fresa e criar descrição
         int selection = cbfamilia.getSelectedIndex();
@@ -212,48 +256,24 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         }
 
         //Criar código/descrição
-        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + cbtamanho.getSelectedItem().toString() + raio + revchar;
-        desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo;
+        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + cbtamanho.getSelectedItem().toString() + raio + revchar + riarray[0] + weldonarray[0] + importada;
+        desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
         txtdescricao.setText(desc);
     }
 
-    public static void gerarcodigofresaespecial() {
-        //Variáveis para criar código
-        String codigo;
-        String desc;
-        String ferr = "";
-        String tipotopo = "";
-        String cortes = "";
-        String revchar = "";
-        String revtipo = "";
-        String raio = "";
+    public void gerarcodigofresaespecial() {
+        checarrevestimento();
 
-        //Identificar se tem revestimento e qual é
-        if (checkrevestimento.isSelected()) {
-            revtipo = " Com Revestimento " + cbrevestimento.getSelectedItem().toString();
-            int selection = cbrevestimento.getSelectedIndex();
-            switch (selection) {
-                case 1:
-                    revchar = " T";
-                    break;
-                case 2:
-                    revchar = " A";
-                    break;
-                case 3:
-                    revchar = " AC";
-                    break;
-                default:
-                    break;
-            }
-        }
+        checarraio();
 
-        //Identificar se tem raio e qual medida
-        if (checkraio.isSelected()) {
-            raio = " R" + txtraio.getText();
-        }
+        checarimportada();
+
+        checarri();
+
+        checarweldon();
 
         //Identificar se a fresa tem família ou número de cortes e criar descrição
         if (cbfamilia.getSelectedIndex() != 0) {
@@ -300,11 +320,11 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         if (!txtcortes.getText().equals("")) {
-            codigo = cbtipo.getSelectedItem().toString() + " " + txtcortes.getText() + "C " + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revchar;
-            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo;
+            codigo = cbtipo.getSelectedItem().toString() + " " + txtcortes.getText() + "C " + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revchar + riarray[0] + weldonarray[0] + importada;
+            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1];
         } else {
-            codigo = cbtipo.getSelectedItem().toString() + " " + cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revchar;
-            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo;
+            codigo = cbtipo.getSelectedItem().toString() + " " + cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revchar + riarray[0] + weldonarray[0] + importada;
+            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1];
         }
 
         //Colocar código e descrição nos txt's
@@ -312,238 +332,209 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         txtdescricao.setText(desc);
     }
 
-    public static void gerarcodigobroca() {
-        //Variáveis para criar código
-        String codigo;
-        String desc;
-        String ferr = "Broca ";
-        String tipoferr = "";
-        String revchar = "";
-        String revtipo = "";
-        String raio = "";
-        String richar = "";
-        String ritipo = "";
+    public void gerarcodigobroca() {
+        checarrevestimento();
 
-        //Identificar se tem revestimento e qual é
-        if (checkrevestimento.isSelected()) {
-            revtipo = " Com Revestimento " + cbrevestimento.getSelectedItem().toString();
-            int selection = cbrevestimento.getSelectedIndex();
-            switch (selection) {
-                case 1:
-                    revchar = " T";
-                    break;
-                case 2:
-                    revchar = " A";
-                    break;
-                case 3:
-                    revchar = " AC";
-                    break;
-                default:
-                    break;
-            }
-        }
+        checarraio();
 
-        //Identificar se tem raio e qual medida
-        if (checkraio.isSelected()) {
-            raio = " R" + txtraio.getText();
-        }
+        checarimportada();
 
-        //Identificar se tem refrigeração interna
-        if (checkri.isSelected()) {
-            richar = " RI";
-            ritipo = " Com Refrigeração Interna";
-        }
+        checarri();
 
-        //Identificar família da fresa e criar descrição
+        checarweldon();
+
+        //Identificar família da broca e criar descrição
         int selection = cbfamilia.getSelectedIndex();
         switch (selection) {
             case 1:
-                tipoferr = "6539 Diam. ";
+                ferr = "6539 Diam. ";
                 break;
             case 2:
-                tipoferr = "338N Diam. ";
+                ferr = "338N Diam. ";
                 break;
             case 3:
-                tipoferr = "340N Diam. ";
+                ferr = "340N Diam. ";
                 break;
             case 4:
-                tipoferr = "6537KRE Diam. ";
+                ferr = "6537KRE Diam. ";
                 break;
             case 5:
-                tipoferr = "6537KRI Diam. ";
+                ferr = "6537KRI Diam. ";
                 break;
             case 6:
-                tipoferr = "6537LRE Diam. ";
+                ferr = "6537LRE Diam. ";
                 break;
             case 7:
-                tipoferr = "6537LRI Diam. ";
+                ferr = "6537LRI Diam. ";
                 break;
             default:
                 break;
         }
 
         //Criar código/descrição
-        codigo = cbfamilia.getSelectedItem().toString() + " Diam. " + txtd1.getText() + richar + raio + revchar;
-        desc = ferr + tipoferr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + ritipo + raio + revtipo;
+        codigo = cbfamilia.getSelectedItem().toString() + " Diam. " + txtd1.getText() + riarray[0] + raio + revchar + weldonarray[0] + importada;
+        desc = ferr + ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + riarray[1] + raio + revtipo + weldonarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
         txtdescricao.setText(desc);
     }
 
-    public static void travartxtdados() {
-        //Travar campos do paneldiam
-        for (int i = 0; i < paneldiam.getComponentCount(); i++) {
-            Component c = paneldiam.getComponent(i);
-            if (c instanceof JTextField) {
-                c.setEnabled(false);
-            }
-        }
+    public void gerarcodigobrocaespecial() {
 
-        //Travar campos do panelcomp
-        for (int i = 0; i < panelcomp.getComponentCount(); i++) {
-            Component c = panelcomp.getComponent(i);
-            if (c instanceof JTextField) {
-                c.setEnabled(false);
-            }
-        }
-
-        //Travar campos do paneldadostxt
-        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
-            Component c = paneldadostxt.getComponent(i);
-            if (c instanceof JTextField) {
-                c.setEnabled(false);
-            }
-        }
     }
 
-    public static void txtfresa() {
-        //String para procura de texto no nome
-        String nome = "fresa";
+    public void gerarcodigoalargador() {
 
-        //Abrir campos do paneldiam
-        for (int i = 0; i < 10; i++) {
-            Component c = paneldiam.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
-
-        //Abrir campos do panelcomp
-        for (int i = 0; i < 10; i++) {
-            Component c = panelcomp.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
-
-        //Abrir campos do paneltxtdados
-        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
-            Component c = paneldadostxt.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
     }
 
-    public static void txtfresaespecial() {
-        //String para procura de texto no nome
-        String nome = "fe";
+    public void gerarcodigoalargadorespecial() {
 
-        //Abrir campos do paneldiam
-        for (int i = 0; i < 10; i++) {
-            Component c = paneldiam.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
-
-        //Abrir campos do panelcomp
-        for (int i = 0; i < 10; i++) {
-            Component c = panelcomp.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
-
-        //Abrir campos do paneltxtdados
-        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
-            Component c = paneldadostxt.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
     }
 
-    public static void txtbroca() {
-        //String para procura de texto no nome
-        String nome = "broca";
+    public void gerarcodigolima() {
 
-        //Abrir campos do paneldiam
-        for (int i = 0; i < 10; i++) {
-            Component c = paneldiam.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
-
-        //Abrir campos do panelcomp
-        for (int i = 0; i < 10; i++) {
-            Component c = panelcomp.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
-
-        //Abrir campos do paneltxtdados
-        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
-            Component c = paneldadostxt.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
     }
 
-    public static void txtbrocaespecial() {
-        //String para procura de texto no nome
-        String nome = "be";
+    public void gerarcodigolimaespecial() {
 
-        //Abrir campos do paneldiam
-        for (int i = 0; i < 10; i++) {
-            Component c = paneldiam.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
-
-        //Abrir campos do panelcomp
-        for (int i = 0; i < 10; i++) {
-            Component c = panelcomp.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
-
-        //Abrir campos do paneltxtdados
-        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
-            Component c = paneldadostxt.getComponent(i);
-            String name = c.getName();
-            if (name != null && name.contains(nome)) {
-                c.setEnabled(true);
-            }
-        }
     }
+//    public static void travartxt() {
+//        for (int i = 0; i < paneldiam.getComponentCount(); i++) {
+//            Component c = paneldiam.getComponent(i);
+//            if (c instanceof JTextField) {
+//                c.setEnabled(false);
+//            }
+//        }
+//    }
+//
+//    public static void txtfresa() {
+//        //String para procura de texto no nome
+//        String nome = "fresa";
+//
+//        //Abrir campos do paneldiam
+//        for (int i = 0; i < 10; i++) {
+//            Component c = paneldiam.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//
+//        //Abrir campos do panelcomp
+//        for (int i = 0; i < 10; i++) {
+//            Component c = panelcomp.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//
+//        //Abrir campos do paneltxtdados
+//        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
+//            Component c = paneldadostxt.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//    }
+//
+//    public static void txtfresaespecial() {
+//        //String para procura de texto no nome
+//        String nome = "fe";
+//
+//        //Abrir campos do paneldiam
+//        for (int i = 0; i < 10; i++) {
+//            Component c = paneldiam.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//
+//        //Abrir campos do panelcomp
+//        for (int i = 0; i < 10; i++) {
+//            Component c = panelcomp.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//
+//        //Abrir campos do paneltxtdados
+//        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
+//            Component c = paneldadostxt.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//    }
+//
+//    public static void txtbroca() {
+//        //String para procura de texto no nome
+//        String nome = "broca";
+//
+//        //Abrir campos do paneldiam
+//        for (int i = 0; i < 10; i++) {
+//            Component c = paneldiam.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//
+//        //Abrir campos do panelcomp
+//        for (int i = 0; i < 10; i++) {
+//            Component c = panelcomp.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//
+//        //Abrir campos do paneltxtdados
+//        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
+//            Component c = paneldadostxt.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//    }
+//
+//    public static void txtbrocaespecial() {
+//        //String para procura de texto no nome
+//        String nome = "be";
+//
+//        //Abrir campos do paneldiam
+//        for (int i = 0; i < 10; i++) {
+//            Component c = paneldiam.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//
+//        //Abrir campos do panelcomp
+//        for (int i = 0; i < 10; i++) {
+//            Component c = panelcomp.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//
+//        //Abrir campos do paneltxtdados
+//        for (int i = 0; i < paneldadostxt.getComponentCount(); i++) {
+//            Component c = paneldadostxt.getComponent(i);
+//            String name = c.getName();
+//            if (name != null && name.contains(nome)) {
+//                c.setEnabled(true);
+//            }
+//        }
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -572,6 +563,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         txtdescricao = new javax.swing.JTextField();
         txtstatus = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
+        lblcodigoerro = new javax.swing.JLabel();
+        lbldescricaoerro = new javax.swing.JLabel();
         tabmaterialinfo = new javax.swing.JTabbedPane();
         panelobs = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -613,9 +606,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         checkraio = new javax.swing.JCheckBox();
         txtraio = new javax.swing.JTextField();
         checkri = new javax.swing.JCheckBox();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jLabel17 = new javax.swing.JLabel();
-        txtoriginal = new javax.swing.JTextField();
+        checkweldon = new javax.swing.JCheckBox();
+        checkimportado = new javax.swing.JCheckBox();
         jPanel12 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         paneldadostxt = new javax.swing.JPanel();
@@ -650,9 +642,11 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         tablecategoria = new javax.swing.JTable();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
-        txtmp = new javax.swing.JTextField();
+        panelorigem = new javax.swing.JPanel();
+        txtmaterialdeorigem = new javax.swing.JTextField();
         jButton8 = new javax.swing.JButton();
+        jLabel19 = new javax.swing.JLabel();
+        cbcanal = new javax.swing.JComboBox<>();
         paneldocs = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabledocumentos = new javax.swing.JTable();
@@ -666,6 +660,10 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         panelmov = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        txtestoque = new javax.swing.JTextField();
+        txtestoqueminimo = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
 
         setClosable(true);
         setTitle("Materiais de Venda");
@@ -744,7 +742,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane5)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 357, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 363, Short.MAX_VALUE)
                         .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -756,8 +754,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
         );
 
         tabmateriais.addTab("Materiais Cadastrados", jPanel1);
@@ -771,12 +769,28 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         jLabel2.setText("Descrição");
 
         txtcodigo.setEditable(false);
+        txtcodigo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtcodigoKeyReleased(evt);
+            }
+        });
 
         txtdescricao.setEditable(false);
+        txtdescricao.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtdescricaoKeyReleased(evt);
+            }
+        });
 
         txtstatus.setEditable(false);
 
         jLabel15.setText("Status");
+
+        lblcodigoerro.setForeground(new java.awt.Color(255, 51, 51));
+        lblcodigoerro.setText("Código muito longo!");
+
+        lbldescricaoerro.setForeground(new java.awt.Color(255, 51, 51));
+        lbldescricaoerro.setText("Descrição muito longa!");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -789,11 +803,15 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtdescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbldescricaoerro)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblcodigoerro)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -807,11 +825,13 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15))
+                    .addComponent(jLabel15)
+                    .addComponent(lblcodigoerro))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtdescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtdescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbldescricaoerro))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -893,7 +913,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel8.setText("D5");
 
-        txtd1.setEnabled(false);
         txtd1.setName("fresa-broca-fe-be"); // NOI18N
         txtd1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -901,16 +920,12 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             }
         });
 
-        txtd2.setEnabled(false);
         txtd2.setName("fresa-broca-fe-be"); // NOI18N
 
-        txtd3.setEnabled(false);
         txtd3.setName("fe-be"); // NOI18N
 
-        txtd4.setEnabled(false);
         txtd4.setName("fe-be"); // NOI18N
 
-        txtd5.setEnabled(false);
         txtd5.setName("fe-be"); // NOI18N
 
         javax.swing.GroupLayout paneldiamLayout = new javax.swing.GroupLayout(paneldiam);
@@ -978,7 +993,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel13.setText("L5");
 
-        txtl1.setEnabled(false);
         txtl1.setName("fresa-broca-fe-be"); // NOI18N
         txtl1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -989,16 +1003,12 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             }
         });
 
-        txtl2.setEnabled(false);
         txtl2.setName("fresa-broca-fe-be"); // NOI18N
 
-        txtl3.setEnabled(false);
         txtl3.setName("fe-be"); // NOI18N
 
-        txtl4.setEnabled(false);
         txtl4.setName("fe-be"); // NOI18N
 
-        txtl5.setEnabled(false);
         txtl5.setName("fe-be"); // NOI18N
 
         javax.swing.GroupLayout panelcompLayout = new javax.swing.GroupLayout(panelcomp);
@@ -1051,6 +1061,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         );
 
         cbfamilia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
+        cbfamilia.setEnabled(false);
         cbfamilia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbfamiliaActionPerformed(evt);
@@ -1062,6 +1073,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         lbltamanho.setText("Tamanho");
 
         cbtamanho.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
+        cbtamanho.setEnabled(false);
 
         btngerarcodigo.setText("Gerar Código/Descrição");
         btngerarcodigo.addActionListener(new java.awt.event.ActionListener() {
@@ -1103,25 +1115,14 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         checkri.setText("Refrigeração Interna");
 
-        jCheckBox1.setText("Weldon");
+        checkweldon.setText("Weldon");
 
-        jLabel17.setText("Material Original");
-
-        txtoriginal.setEnabled(false);
-        txtoriginal.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtoriginalFocusGained(evt);
-            }
-        });
+        checkimportado.setText("Importado");
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel11Layout.createSequentialGroup()
-                .addComponent(jLabel17)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtoriginal))
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createSequentialGroup()
@@ -1131,9 +1132,11 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addGroup(jPanel11Layout.createSequentialGroup()
                         .addComponent(checkraio)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(checkimportado))
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
+                        .addComponent(checkweldon)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(checkri)))
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -1146,17 +1149,14 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(cbrevestimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel17)
-                    .addComponent(txtoriginal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(checkraio)
-                    .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkimportado))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox1)
+                    .addComponent(checkweldon)
                     .addComponent(checkri))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel12.setBackground(new java.awt.Color(255, 255, 255));
@@ -1164,7 +1164,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel14.setText("Hélice");
 
-        txthelice.setEnabled(false);
         txthelice.setName("fresa-broca-fe-be"); // NOI18N
         txthelice.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1175,7 +1174,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             }
         });
 
-        txtnucleo.setEnabled(false);
         txtnucleo.setName("fresa-broca-fe-be"); // NOI18N
         txtnucleo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1188,7 +1186,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel25.setText("Núcleo");
 
-        txtconcavidade.setEnabled(false);
         txtconcavidade.setName("fresa-fe"); // NOI18N
         txtconcavidade.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1201,7 +1198,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel36.setText("Concavidade");
 
-        txtaliviotopo1.setEnabled(false);
         txtaliviotopo1.setName("fresa-fe"); // NOI18N
         txtaliviotopo1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1214,7 +1210,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel37.setText("Alívio de Topo Primário");
 
-        txtaliviotopo2.setEnabled(false);
         txtaliviotopo2.setName("fresa-fe"); // NOI18N
         txtaliviotopo2.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1227,7 +1222,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel38.setText("Alívio de Topo Secundário");
 
-        txtalivio1.setEnabled(false);
         txtalivio1.setName("fresa-fe"); // NOI18N
         txtalivio1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1240,7 +1234,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel39.setText("Alívio Primário");
 
-        txtalivio2.setEnabled(false);
         txtalivio2.setName("fresa-fe"); // NOI18N
         txtalivio2.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1253,7 +1246,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel40.setText("Alívio Secundário");
 
-        txtespfilete.setEnabled(false);
         txtespfilete.setName("fresa-fe"); // NOI18N
         txtespfilete.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1266,7 +1258,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel41.setText("Espessura de Filete");
 
-        txtagressividade.setEnabled(false);
         txtagressividade.setName("fresa-broca-fe-be"); // NOI18N
         txtagressividade.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1279,7 +1270,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel42.setText("Agressividade");
 
-        txtfrontal.setEnabled(false);
         txtfrontal.setName("broca-be"); // NOI18N
         txtfrontal.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1408,6 +1398,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         lbltopo.setText("Topo");
 
         cbtopo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Reto", "Esférico", "Toroidal" }));
+        cbtopo.setEnabled(false);
         cbtopo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbtopoActionPerformed(evt);
@@ -1479,31 +1470,43 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(jButton7)))
         );
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Matéria Prima"));
+        panelorigem.setBackground(new java.awt.Color(255, 255, 255));
+        panelorigem.setBorder(javax.swing.BorderFactory.createTitledBorder("Material de Origem"));
+
+        txtmaterialdeorigem.setEnabled(false);
 
         jButton8.setText("Procurar");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtmp)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout panelorigemLayout = new javax.swing.GroupLayout(panelorigem);
+        panelorigem.setLayout(panelorigemLayout);
+        panelorigemLayout.setHorizontalGroup(
+            panelorigemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelorigemLayout.createSequentialGroup()
+                .addGroup(panelorigemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtmaterialdeorigem)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelorigemLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton8)))
                 .addContainerGap())
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(txtmp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        panelorigemLayout.setVerticalGroup(
+            panelorigemLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelorigemLayout.createSequentialGroup()
+                .addComponent(txtmaterialdeorigem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton8)
                 .addContainerGap())
         );
+
+        jLabel19.setText("Canal");
+
+        cbcanal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
+        cbcanal.setEnabled(false);
 
         javax.swing.GroupLayout paneldadosLayout = new javax.swing.GroupLayout(paneldados);
         paneldados.setLayout(paneldadosLayout);
@@ -1532,6 +1535,10 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                         .addComponent(lbltopo)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbtopo, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel19)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbcanal, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(paneldadosLayout.createSequentialGroup()
                         .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1539,7 +1546,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                                 .addComponent(paneldiam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(panelcomp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(panelorigem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1566,7 +1573,9 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(lblcortes)
                     .addComponent(txtcortes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbltopo)
-                    .addComponent(cbtopo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbtopo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19)
+                    .addComponent(cbcanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1575,7 +1584,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                             .addComponent(paneldiam, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelcomp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelorigem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 28, Short.MAX_VALUE))
                     .addGroup(paneldadosLayout.createSequentialGroup()
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1747,20 +1756,44 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         });
         jScrollPane4.setViewportView(jTable1);
 
+        txtestoque.setEnabled(false);
+
+        jLabel17.setText("Estoque Atual");
+
+        jLabel18.setText("Estoque Mínimo");
+
         javax.swing.GroupLayout panelmovLayout = new javax.swing.GroupLayout(panelmov);
         panelmov.setLayout(panelmovLayout);
         panelmovLayout.setHorizontalGroup(
             panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelmovLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1139, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 986, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtestoqueminimo, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                    .addComponent(txtestoque))
                 .addContainerGap())
         );
         panelmovLayout.setVerticalGroup(
             panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelmovLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelmovLayout.createSequentialGroup()
+                        .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtestoqueminimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel18))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1806,125 +1839,177 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     private void cbtipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbtipoActionPerformed
         int selection = cbtipo.getSelectedIndex();
         switch (selection) {
-            case 1:
-                lblfamilia.setVisible(true);
-                cbfamilia.setVisible(true);
-                lbltamanho.setVisible(true);
-                cbtamanho.setVisible(true);
-                lblcortes.setVisible(false);
-                txtcortes.setVisible(false);
-                lbltopo.setVisible(false);
-                cbtopo.setVisible(false);
-                cbfamiliaexcluir();
+            case 1://Fresa
+                cbexcluir();
                 cbfamiliaincluir();
-                cbtamanhoexcluir();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(true);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(false);
+                txtcortes.setEnabled(false);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+
                 cbtamanho.addItem("C");
                 cbtamanho.addItem("S");
                 cbtamanho.addItem("L");
                 cbtamanho.addItem("X");
-                travartxtdados();
-                txtfresa();
+                btngerarcodigo.setEnabled(true);
                 break;
-            case 2:
-                lblfamilia.setVisible(true);
-                cbfamilia.setVisible(true);
-                lbltamanho.setVisible(false);
-                cbtamanho.setVisible(false);
-                lblcortes.setVisible(true);
-                txtcortes.setVisible(true);
-                lbltopo.setVisible(true);
-                cbtopo.setVisible(true);
-                cbfamiliaexcluir();
+            case 2://Fresa Especial
+                cbexcluir();
                 cbfamiliaincluir();
-                travartxtdados();
-                txtfresaespecial();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(true);
+                cbtopo.setEnabled(true);
+                cbcanal.setEnabled(true);
+                txtcortes.setEnabled(true);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+
+                cbtamanho.addItem("C");
+                cbtamanho.addItem("S");
+                cbtamanho.addItem("L");
+                cbtamanho.addItem("X");
+                cbcanal.addItem("À Esquerda");
+                cbcanal.addItem("Reto");
+
+                btngerarcodigo.setEnabled(true);
                 break;
-            case 3:
-                lblfamilia.setVisible(true);
-                cbfamilia.setVisible(true);
-                lbltamanho.setVisible(false);
-                cbtamanho.setVisible(false);
-                lblcortes.setVisible(false);
-                txtcortes.setVisible(false);
-                lbltopo.setVisible(false);
-                cbtopo.setVisible(false);
-                cbfamiliaexcluir();
+            case 3://Broca
+                cbexcluir();
                 cbfamiliaincluir();
-                travartxtdados();
-                txtbroca();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(false);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(false);
+                txtcortes.setEnabled(false);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+
+                btngerarcodigo.setEnabled(true);
                 break;
-            case 4:
-                lblfamilia.setVisible(true);
-                cbfamilia.setVisible(true);
-                lbltamanho.setVisible(false);
-                cbtamanho.setVisible(false);
-                lblcortes.setVisible(false);
-                txtcortes.setVisible(false);
-                lbltopo.setVisible(false);
-                cbtopo.setVisible(false);
-                cbfamiliaexcluir();
+            case 4://Broca Especial
+                cbexcluir();
                 cbfamiliaincluir();
-                travartxtdados();
-                txtbrocaespecial();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(false);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(true);
+                txtcortes.setEnabled(true);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+
+                cbcanal.addItem("À Esquerda");
+                cbcanal.addItem("Reto");
+
+                btngerarcodigo.setEnabled(true);
                 break;
-            case 5:
-                lblfamilia.setVisible(true);
-                cbfamilia.setVisible(true);
-                lbltamanho.setVisible(false);
-                cbtamanho.setVisible(false);
-                lblcortes.setVisible(false);
-                txtcortes.setVisible(false);
-                lbltopo.setVisible(false);
-                cbtopo.setVisible(false);
-                cbfamiliaexcluir();
+            case 5://Alargador
+                cbexcluir();
                 cbfamiliaincluir();
-                travartxtdados();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(false);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(true);
+                txtcortes.setEnabled(false);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+
+                cbcanal.addItem("À Esquerda");
+                cbcanal.addItem("Reto");
+
+                btngerarcodigo.setEnabled(true);
                 break;
-            case 6:
-                lblfamilia.setVisible(true);
-                cbfamilia.setVisible(true);
-                lbltamanho.setVisible(false);
-                cbtamanho.setVisible(false);
-                lblcortes.setVisible(false);
-                txtcortes.setVisible(false);
-                lbltopo.setVisible(false);
-                cbtopo.setVisible(false);
-                cbfamiliaexcluir();
+            case 6://Alargador Especial
+                cbexcluir();
                 cbfamiliaincluir();
-                travartxtdados();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(false);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(true);
+                txtcortes.setEnabled(true);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+
+                cbcanal.addItem("À Esquerda");
+                cbcanal.addItem("Reto");
+
+                btngerarcodigo.setEnabled(true);
                 break;
-            case 7:
-                lblfamilia.setVisible(true);
-                cbfamilia.setVisible(true);
-                lbltamanho.setVisible(false);
-                cbtamanho.setVisible(false);
-                lblcortes.setVisible(false);
-                txtcortes.setVisible(false);
-                lbltopo.setVisible(false);
-                cbtopo.setVisible(false);
-                cbfamiliaexcluir();
+            case 7://Lima
+                cbexcluir();
                 cbfamiliaincluir();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(true);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(true);
+                txtcortes.setEnabled(false);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+
+                cbtamanho.addItem("L3");
+                cbtamanho.addItem("L6");
+                cbcanal.addItem("DC");
+                cbcanal.addItem("FC");
+
+                btngerarcodigo.setEnabled(true);
                 break;
-            case 8:
-                lblfamilia.setVisible(true);
-                cbfamilia.setVisible(true);
-                lbltamanho.setVisible(false);
-                cbtamanho.setVisible(false);
-                lblcortes.setVisible(false);
-                txtcortes.setVisible(false);
-                lbltopo.setVisible(false);
-                cbtopo.setVisible(false);
-                cbfamiliaexcluir();
+            case 8://Lima Especial
+                cbexcluir();
                 cbfamiliaincluir();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(false);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(true);
+                txtcortes.setEnabled(false);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+
+                cbtamanho.addItem("L3");
+                cbtamanho.addItem("L6");
+                cbcanal.addItem("DC");
+                cbcanal.addItem("FC");
+
+                btngerarcodigo.setEnabled(true);
                 break;
-            case 9:
+            case 9://Ferramenta Especial
+                cbexcluir();
+                cbfamiliaincluir();
+
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(true);
+                cbtamanho.setEnabled(false);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(true);
+                txtcortes.setEnabled(false);
                 txtcodigo.setEditable(true);
-                txtcodigo.requestFocus();
                 txtdescricao.setEditable(true);
+
+                txtcodigo.requestFocus();
+
+                cbcanal.addItem("À Esquerda");
+                cbcanal.addItem("Reto");
+
+                btngerarcodigo.setEnabled(false);
                 break;
             default:
-                travartxtdados();
-                invisible();
                 break;
         }
     }//GEN-LAST:event_cbtipoActionPerformed
@@ -1958,40 +2043,39 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 }
                 break;
             case 4:
-//                tabtipo();
-//                tabtipo.setVisible(true);
-//                tabtipo.setSelectedIndex(selection - 1);
-//                tabtipo.setEnabledAt(selection - 1, true);
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigobrocaespecial();
+                }
                 break;
             case 5:
-//                tabtipo();
-//                tabtipo.setVisible(true);
-//                tabtipo.setSelectedIndex(selection - 1);
-//                tabtipo.setEnabledAt(selection - 1, true);
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigoalargador();
+                }
                 break;
             case 6:
-//                tabtipo();
-//                tabtipo.setVisible(true);
-//                tabtipo.setSelectedIndex(selection - 1);
-//                tabtipo.setEnabledAt(selection - 1, true);
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigoalargadorespecial();
+                }
                 break;
             case 7:
-//                tabtipo();
-//                tabtipo.setVisible(true);
-//                tabtipo.setSelectedIndex(selection - 1);
-//                tabtipo.setEnabledAt(selection - 1, true);
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigolima();
+                }
                 break;
             case 8:
-//                tabtipo();
-//                tabtipo.setVisible(true);
-//                tabtipo.setSelectedIndex(selection - 1);
-//                tabtipo.setEnabledAt(selection - 1, true);
-                break;
-            case 9:
-//                tabtipo();
-//                tabtipo.setVisible(true);
-//                tabtipo.setSelectedIndex(selection - 1);
-//                tabtipo.setEnabledAt(selection - 1, true);
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigolimaespecial();
+                }
                 break;
             default:
                 JOptionPane.showMessageDialog(null, "Escolha um tipo de ferramenta primeiro!");
@@ -2002,11 +2086,9 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     private void checkrevestimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkrevestimentoActionPerformed
         if (checkrevestimento.isSelected()) {
             cbrevestimento.setEnabled(true);
-            txtoriginal.setEnabled(true);
         } else {
             cbrevestimento.setEnabled(false);
             cbrevestimento.setSelectedIndex(0);
-            txtoriginal.setEnabled(false);
         }
     }//GEN-LAST:event_checkrevestimentoActionPerformed
 
@@ -2179,42 +2261,50 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         lblicon.setIcon(null);
     }//GEN-LAST:event_txtfrontalFocusLost
 
-    private void txtoriginalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtoriginalFocusGained
-        if (txtoriginal.getText().equals("")) {
-            ProcuraMaterialVenda pmv = new ProcuraMaterialVenda("MaterialVenda");
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(pmv);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = pmv.getSize();
-            pmv.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            pmv.setVisible(true);
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        if (checkrevestimento.isSelected() || checkraio.isSelected()) {
+            ProcuraMaterialVenda pmv = new ProcuraMaterialVenda(this.getClass().getSimpleName());
+            Telas.AparecerTela(pmv);
         } else {
-            int resp = JOptionPane.showConfirmDialog(null, "Material já selecionado.\nDeseja modificar?", "Modificar Material Original", JOptionPane.YES_NO_OPTION);
-            if (resp == 0) {
-                ProcuraMaterialVenda pmv = new ProcuraMaterialVenda("MaterialVenda");
-                JDesktopPane desk = this.getDesktopPane();
-                desk.add(pmv);
-                Dimension desktopsize = jDesktopPane1.getSize();
-                Dimension jinternalframesize = pmv.getSize();
-                pmv.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-                pmv.setVisible(true);
-            }
+            ProcurarMateriaPrima pmp = new ProcurarMateriaPrima(this.getClass().getSimpleName());
+            Telas.AparecerTela(pmp);
         }
-    }//GEN-LAST:event_txtoriginalFocusGained
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void txtcodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcodigoKeyReleased
+        int length = txtcodigo.getText().length();
+        if (length > 45) {
+            lblcodigoerro.setVisible(true);
+        } else {
+            lblcodigoerro.setVisible(false);
+        }
+    }//GEN-LAST:event_txtcodigoKeyReleased
+
+    private void txtdescricaoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtdescricaoKeyReleased
+        int length = txtdescricao.getText().length();
+        if (length > 110) {
+            lbldescricaoerro.setVisible(true);
+        } else {
+            lbldescricaoerro.setVisible(false);
+        }
+    }//GEN-LAST:event_txtdescricaoKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.ButtonGroup GroupRevestimento;
     public javax.swing.ButtonGroup GroupTamanho;
     public static javax.swing.JButton btngerarcodigo;
+    public static javax.swing.JComboBox<String> cbcanal;
     public static javax.swing.JComboBox<String> cbfamilia;
     public static javax.swing.JComboBox<String> cbrevestimento;
     public static javax.swing.JComboBox<String> cbtamanho;
     public static javax.swing.JComboBox<String> cbtipo;
     public static javax.swing.JComboBox<String> cbtopo;
+    public static javax.swing.JCheckBox checkimportado;
     public static javax.swing.JCheckBox checkraio;
     public static javax.swing.JCheckBox checkrevestimento;
     public static javax.swing.JCheckBox checkri;
+    public javax.swing.JCheckBox checkweldon;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
@@ -2223,7 +2313,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
     public javax.swing.JButton jButton8;
-    public javax.swing.JCheckBox jCheckBox1;
     public javax.swing.JComboBox<String> jComboBox1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
@@ -2234,6 +2323,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel15;
     public javax.swing.JLabel jLabel16;
     public javax.swing.JLabel jLabel17;
+    public javax.swing.JLabel jLabel18;
+    public javax.swing.JLabel jLabel19;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel25;
     public javax.swing.JLabel jLabel3;
@@ -2258,7 +2349,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
     public javax.swing.JPanel jPanel4;
-    public javax.swing.JPanel jPanel5;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
@@ -2268,7 +2358,9 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane7;
     public javax.swing.JScrollPane jScrollPane8;
     public javax.swing.JTable jTable1;
+    public javax.swing.JLabel lblcodigoerro;
     public static javax.swing.JLabel lblcortes;
+    public javax.swing.JLabel lbldescricaoerro;
     public static javax.swing.JLabel lblfamilia;
     public javax.swing.JLabel lblicon;
     public static javax.swing.JLabel lbltamanho;
@@ -2281,6 +2373,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JPanel paneldocs;
     public javax.swing.JPanel panelmov;
     public javax.swing.JPanel panelobs;
+    public javax.swing.JPanel panelorigem;
     public static javax.swing.JTable tablecategoria;
     public javax.swing.JTable tabledesccli;
     public javax.swing.JTable tabledocumentos;
@@ -2303,6 +2396,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtd5;
     public static javax.swing.JTextField txtdescricao;
     public static javax.swing.JTextField txtespfilete;
+    public javax.swing.JTextField txtestoque;
+    public javax.swing.JTextField txtestoqueminimo;
     public static javax.swing.JTextField txtfrontal;
     public static javax.swing.JTextField txthelice;
     public static javax.swing.JTextField txtl1;
@@ -2310,9 +2405,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtl3;
     public static javax.swing.JTextField txtl4;
     public static javax.swing.JTextField txtl5;
-    public static javax.swing.JTextField txtmp;
+    public static javax.swing.JTextField txtmaterialdeorigem;
     public static javax.swing.JTextField txtnucleo;
-    public static javax.swing.JTextField txtoriginal;
     public javax.swing.JTextField txtpesquisa;
     public static javax.swing.JTextField txtraio;
     public javax.swing.JTextField txtstatus;

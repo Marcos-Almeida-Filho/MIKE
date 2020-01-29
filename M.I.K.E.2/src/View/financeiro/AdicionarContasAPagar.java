@@ -17,11 +17,11 @@ import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
 import View.Geral.ProcurarCliente;
+import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarFornecedor;
 import View.Geral.ProcurarRastreamentoDocumento;
 import java.awt.AWTException;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +31,6 @@ import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -68,12 +67,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
     public void teladeprocura() {
         ProcurarRastreamentoDocumento pf = new ProcurarRastreamentoDocumento("CAP");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(pf);
-        Dimension jif = pf.getSize();
-        Dimension d = desk.getSize();
-        pf.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        pf.setVisible(true);
+        Telas.AparecerTela(pf);
     }
 
     public static void radios() {
@@ -205,6 +199,8 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                 radiooutrosActionPerformed(evt);
             }
         });
+
+        dateemissao.setDateFormatString("dd/MM/yyyy");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -378,14 +374,14 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "Descrição", "Local", "Local Original"
+                "ID", "", "Descrição", "Local", "Local Original"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false
+                false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -403,15 +399,18 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tabledocumentos);
         if (tabledocumentos.getColumnModel().getColumnCount() > 0) {
-            tabledocumentos.getColumnModel().getColumn(0).setMinWidth(30);
-            tabledocumentos.getColumnModel().getColumn(0).setPreferredWidth(30);
-            tabledocumentos.getColumnModel().getColumn(0).setMaxWidth(30);
-            tabledocumentos.getColumnModel().getColumn(1).setMinWidth(250);
-            tabledocumentos.getColumnModel().getColumn(1).setPreferredWidth(250);
-            tabledocumentos.getColumnModel().getColumn(1).setMaxWidth(250);
-            tabledocumentos.getColumnModel().getColumn(3).setMinWidth(0);
-            tabledocumentos.getColumnModel().getColumn(3).setPreferredWidth(0);
-            tabledocumentos.getColumnModel().getColumn(3).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(0).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(0).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(1).setMinWidth(30);
+            tabledocumentos.getColumnModel().getColumn(1).setPreferredWidth(30);
+            tabledocumentos.getColumnModel().getColumn(1).setMaxWidth(30);
+            tabledocumentos.getColumnModel().getColumn(2).setMinWidth(250);
+            tabledocumentos.getColumnModel().getColumn(2).setPreferredWidth(250);
+            tabledocumentos.getColumnModel().getColumn(2).setMaxWidth(250);
+            tabledocumentos.getColumnModel().getColumn(4).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(4).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(4).setMaxWidth(0);
         }
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -521,12 +520,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         if (txtemitente.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Selecione um fornecedor.");
             ProcurarFornecedor pf = new ProcurarFornecedor("CAP");
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(pf);
-            Dimension jif = pf.getSize();
-            Dimension d = desk.getSize();
-            pf.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-            pf.setVisible(true);
+            Telas.AparecerTela(pf);
         } else if (txtnumero.getText().equals("")) {//Verifica se tem número de nota fiscal
             JOptionPane.showMessageDialog(rootPane, "Coloque o número da nota fiscal.");
             txtnumero.requestFocus();
@@ -605,7 +599,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
                 //Criar Documentos para o ID
                 for (int j = 0; j < tabledocumentos.getRowCount(); j++) {
-                    File fileoriginal = new File(tabledocumentos.getValueAt(j, 3).toString());
+                    File fileoriginal = new File(tabledocumentos.getValueAt(j, 4).toString());
                     File folder = new File("Q:/MIKE_ERP/cap_arq/" + id);
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
@@ -627,7 +621,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                     }
 
                     cdb.setIdcap(id);
-                    cdb.setDescricao(tabledocumentos.getValueAt(j, 1).toString());
+                    cdb.setDescricao(tabledocumentos.getValueAt(j, 2).toString());
                     cdb.setLocal(filecopy.toString());
 
                     //idcap, descricao, local
@@ -704,13 +698,8 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        DocumentosCAP dcap = new DocumentosCAP();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(dcap);
-        Dimension jif = dcap.getSize();
-        Dimension d = desk.getSize();
-        dcap.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        dcap.setVisible(true);
+        ProcurarDocumento pd = new ProcurarDocumento("AdicionarContasAPagar");
+        Telas.AparecerTela(pd);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void btnemitenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnemitenteActionPerformed
