@@ -5,13 +5,14 @@
  */
 package View.vendas;
 
+import Methods.Numeros;
 import Methods.Telas;
+import View.Geral.AdicionarObs;
 import View.Geral.ProcuraMaterialVenda;
 import View.Geral.ProcurarMateriaPrima;
 import javax.swing.ImageIcon;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -23,7 +24,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
      * Creates new form Produtos
      */
     //Variáveis para criar código
-    String codigo, desc, ferr, tipotopo, cortes, revchar, revtipo, raio, importada, richar, ritipo, weldonchar, weldondesc;
+    String codigo, desc, ferr, tipotopo, cortes, cortesdesc, revchar, revtipo, raio, importada, richar, ritipo, weldonchar, weldondesc, extra, comptotal, diamfinal, tipocanal;
+    
     String[] riarray = new String[2];
     String[] weldonarray = new String[2];
 
@@ -131,7 +133,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public String checarrevestimento() {
         //Identificar se tem revestimento e qual é
         if (checkrevestimento.isSelected()) {
-            revtipo = " Com Revestimento "/* + cbrevestimento.getSelectedItem().toString()*/;
+            revtipo = " Com Revestimento"/* + cbrevestimento.getSelectedItem().toString()*/;
             int selection = cbrevestimento.getSelectedIndex();
             switch (selection) {
                 case 1:
@@ -207,6 +209,38 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         return weldonarray;
     }
 
+    public void checarextra() {
+        if (!txtextra.getText().equals("")) {
+            extra = " - " + txtextra.getText();
+        } else {
+            extra = "";
+        }
+    }
+
+    public void checarComprimentoTotal() {
+        if (!txtl5.getText().equals("")) {
+            comptotal = txtl5.getText();
+        } else if (!txtl4.getText().equals("")) {
+            comptotal = txtl4.getText();
+        } else if (!txtl3.getText().equals("")) {
+            comptotal = txtl3.getText();
+        } else {
+            comptotal = txtl2.getText();
+        }
+    }
+
+    public void checarDiamFinal() {
+        if (!txtd5.getText().equals("")) {
+            diamfinal = txtd5.getText();
+        } else if (!txtd4.getText().equals("")) {
+            diamfinal = txtd4.getText();
+        } else if (!txtd3.getText().equals("")) {
+            diamfinal = txtd3.getText();
+        } else {
+            diamfinal = txtd2.getText();
+        }
+    }
+
     public void gerarcodigofresa() {
         checarrevestimento();
 
@@ -256,7 +290,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         }
 
         //Criar código/descrição
-        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + cbtamanho.getSelectedItem().toString() + raio + revchar + riarray[0] + weldonarray[0] + importada;
+        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText().substring(0, txtd1.getText().indexOf(",")) + cbtamanho.getSelectedItem().toString() + raio + revchar + riarray[0] + weldonarray[0] + importada;
         desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1];
 
         //Colocar código e descrição nos txt's
@@ -274,6 +308,12 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         checarri();
 
         checarweldon();
+
+        checarextra();
+
+        checarComprimentoTotal();
+
+        checarDiamFinal();
 
         //Identificar se a fresa tem família ou número de cortes e criar descrição
         if (cbfamilia.getSelectedIndex() != 0) {
@@ -320,11 +360,11 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         if (!txtcortes.getText().equals("")) {
-            codigo = cbtipo.getSelectedItem().toString() + " " + txtcortes.getText() + "C " + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revchar + riarray[0] + weldonarray[0] + importada;
-            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1];
+            codigo = cbtipo.getSelectedItem().toString() + " " + txtcortes.getText() + "C " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revchar + riarray[0] + weldonarray[0] + importada + extra;
+            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revtipo + riarray[1] + weldonarray[1] + extra;
         } else {
-            codigo = cbtipo.getSelectedItem().toString() + " " + cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revchar + riarray[0] + weldonarray[0] + importada;
-            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1];
+            codigo = cbtipo.getSelectedItem().toString() + " " + cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revchar + riarray[0] + weldonarray[0] + importada + extra;
+            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revtipo + riarray[1] + weldonarray[1] + extra;
         }
 
         //Colocar código e descrição nos txt's
@@ -372,32 +412,137 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         }
 
         //Criar código/descrição
-        codigo = cbfamilia.getSelectedItem().toString() + " Diam. " + txtd1.getText() + riarray[0] + raio + revchar + weldonarray[0] + importada;
-        desc = ferr + ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + riarray[1] + raio + revtipo + weldonarray[1];
+        codigo = ferr + txtd1.getText() + riarray[0] + raio + revchar + weldonarray[0] + importada;
+        desc = ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + riarray[1] + raio + revtipo + weldonarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
         txtdescricao.setText(desc);
     }
 
-    public void gerarcodigobrocaespecial() {
+    public void gerarCodigoBrocaEspecial() {
+        checarrevestimento();
 
+        checarraio();
+
+        checarimportada();
+
+        checarri();
+
+        checarweldon();
+
+        checarextra();
+
+        checarComprimentoTotal();
+
+        checarDiamFinal();
+
+        if (!txtcortes.getText().equals("")) {
+            cortes = txtcortes.getText() + "C";
+            cortesdesc = txtcortes.getText() + " Cortes ";
+        } else {
+            cortes = "";
+            cortesdesc = "";
+        }
+        
+        if (cbcanal.getSelectedItem().toString().equals("Selecione")) {
+            tipocanal = "";
+        } else {
+            tipocanal = cbcanal.getSelectedItem().toString();
+        }
+        
+        //Criar código/descrição
+        codigo = "BMD Diam. " + txtd1.getText() + " " + cortes + riarray[0] + raio + revchar + weldonarray[0] + importada + extra;
+        desc = "Broca Metal Duro Diam. " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + " " + cortesdesc + tipocanal + riarray[1] + raio + revtipo + weldonarray[1] + extra;
+
+        //Colocar código e descrição nos txt's
+        txtcodigo.setText(codigo);
+        txtdescricao.setText(desc);
     }
 
     public void gerarcodigoalargador() {
+        checarrevestimento();
 
+        checarraio();
+
+        checarimportada();
+
+        checarri();
+
+        checarweldon();
     }
 
     public void gerarcodigoalargadorespecial() {
+        checarrevestimento();
 
+        checarraio();
+
+        checarimportada();
+
+        checarri();
+
+        checarweldon();
+
+        checarextra();
+
+        checarComprimentoTotal();
+
+        checarDiamFinal();
     }
 
     public void gerarcodigolima() {
+        checarrevestimento();
 
+        checarraio();
+
+        checarimportada();
+
+        checarri();
+
+        checarweldon();
     }
 
     public void gerarcodigolimaespecial() {
+        checarrevestimento();
 
+        checarraio();
+
+        checarimportada();
+
+        checarri();
+
+        checarweldon();
+
+        checarextra();
+
+        checarComprimentoTotal();
+
+        checarDiamFinal();
+    }
+
+    public static void transformarDiam(String diam, JTextField txt) {
+        if (!diam.equals("")) {
+            if (!diam.contains(",")) {
+                Numeros.SetarTextoNumeroEmFloat(diam, txt);
+            }
+        }
+    }
+    
+    public static void checarCaracteres() {
+        int codigo = txtcodigo.getText().length();
+        int descricao = txtdescricao.getText().length();
+        
+        if (codigo > 60) {
+            lblcodigoerro.setVisible(true);
+        } else {
+            lblcodigoerro.setVisible(false);
+        }
+        
+        if (descricao > 120) {
+            lbldescricaoerro.setVisible(true);
+        } else {
+            lbldescricaoerro.setVisible(false);
+        }
     }
 //    public static void travartxt() {
 //        for (int i = 0; i < paneldiam.getComponentCount(); i++) {
@@ -647,6 +792,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         jButton8 = new javax.swing.JButton();
         jLabel19 = new javax.swing.JLabel();
         cbcanal = new javax.swing.JComboBox<>();
+        lblextra = new javax.swing.JLabel();
+        txtextra = new javax.swing.JTextField();
         paneldocs = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabledocumentos = new javax.swing.JTable();
@@ -660,10 +807,12 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         panelmov = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        txtestoque = new javax.swing.JTextField();
-        txtestoqueminimo = new javax.swing.JTextField();
+        jPanel5 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
+        txtestoque = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
+        txtestoqueminimo = new javax.swing.JTextField();
+        jButton9 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Materiais de Venda");
@@ -742,7 +891,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane5)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel18, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 363, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 503, Short.MAX_VALUE)
                         .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -802,14 +951,14 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtdescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtdescricao, javax.swing.GroupLayout.PREFERRED_SIZE, 724, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbldescricaoerro)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 376, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblcodigoerro)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -840,7 +989,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Usuário", "Data", "Observação"
+                "ID", "Data", "Usuário", "Observação"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -856,15 +1005,20 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             tableobs.getColumnModel().getColumn(0).setMinWidth(0);
             tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableobs.getColumnModel().getColumn(1).setMinWidth(200);
-            tableobs.getColumnModel().getColumn(1).setPreferredWidth(200);
-            tableobs.getColumnModel().getColumn(1).setMaxWidth(200);
-            tableobs.getColumnModel().getColumn(2).setMinWidth(150);
-            tableobs.getColumnModel().getColumn(2).setPreferredWidth(150);
-            tableobs.getColumnModel().getColumn(2).setMaxWidth(150);
+            tableobs.getColumnModel().getColumn(1).setMinWidth(100);
+            tableobs.getColumnModel().getColumn(1).setPreferredWidth(100);
+            tableobs.getColumnModel().getColumn(1).setMaxWidth(100);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(200);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(200);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(200);
         }
 
         jButton1.setText("Adicionar Observação");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelobsLayout = new javax.swing.GroupLayout(panelobs);
         panelobs.setLayout(panelobsLayout);
@@ -873,7 +1027,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             .addGroup(panelobsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelobsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1139, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1285, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelobsLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)))
@@ -883,7 +1037,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             panelobsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelobsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -913,20 +1067,45 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel8.setText("D5");
 
+        txtd1.setEnabled(false);
         txtd1.setName("fresa-broca-fe-be"); // NOI18N
-        txtd1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtd1KeyReleased(evt);
+        txtd1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtd1FocusLost(evt);
             }
         });
 
+        txtd2.setEnabled(false);
         txtd2.setName("fresa-broca-fe-be"); // NOI18N
+        txtd2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtd2FocusLost(evt);
+            }
+        });
 
+        txtd3.setEnabled(false);
         txtd3.setName("fe-be"); // NOI18N
+        txtd3.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtd3FocusLost(evt);
+            }
+        });
 
+        txtd4.setEnabled(false);
         txtd4.setName("fe-be"); // NOI18N
+        txtd4.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtd4FocusLost(evt);
+            }
+        });
 
+        txtd5.setEnabled(false);
         txtd5.setName("fe-be"); // NOI18N
+        txtd5.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtd5FocusLost(evt);
+            }
+        });
 
         javax.swing.GroupLayout paneldiamLayout = new javax.swing.GroupLayout(paneldiam);
         paneldiam.setLayout(paneldiamLayout);
@@ -993,6 +1172,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         jLabel13.setText("L5");
 
+        txtl1.setEnabled(false);
         txtl1.setName("fresa-broca-fe-be"); // NOI18N
         txtl1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1003,12 +1183,16 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             }
         });
 
+        txtl2.setEnabled(false);
         txtl2.setName("fresa-broca-fe-be"); // NOI18N
 
+        txtl3.setEnabled(false);
         txtl3.setName("fe-be"); // NOI18N
 
+        txtl4.setEnabled(false);
         txtl4.setName("fe-be"); // NOI18N
 
+        txtl5.setEnabled(false);
         txtl5.setName("fe-be"); // NOI18N
 
         javax.swing.GroupLayout panelcompLayout = new javax.swing.GroupLayout(panelcomp);
@@ -1076,6 +1260,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         cbtamanho.setEnabled(false);
 
         btngerarcodigo.setText("Gerar Código/Descrição");
+        btngerarcodigo.setEnabled(false);
         btngerarcodigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btngerarcodigoActionPerformed(evt);
@@ -1374,7 +1559,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel12Layout.setVerticalGroup(
@@ -1508,6 +1693,10 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         cbcanal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
         cbcanal.setEnabled(false);
 
+        lblextra.setText("Identificação Extra");
+
+        txtextra.setEnabled(false);
+
         javax.swing.GroupLayout paneldadosLayout = new javax.swing.GroupLayout(paneldados);
         paneldados.setLayout(paneldadosLayout);
         paneldadosLayout.setHorizontalGroup(
@@ -1539,6 +1728,10 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                         .addComponent(jLabel19)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbcanal, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblextra)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtextra, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(paneldadosLayout.createSequentialGroup()
                         .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1575,7 +1768,9 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     .addComponent(lbltopo)
                     .addComponent(cbtopo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel19)
-                    .addComponent(cbcanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbcanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblextra)
+                    .addComponent(txtextra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1585,7 +1780,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                             .addComponent(panelcomp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(panelorigem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 28, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(paneldadosLayout.createSequentialGroup()
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1644,7 +1839,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             .addGroup(paneldocsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(paneldocsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1139, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1285, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneldocsLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton3)
@@ -1656,7 +1851,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             paneldocsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneldocsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneldocsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
@@ -1716,7 +1911,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             .addGroup(paneldescLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(paneldescLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1139, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1285, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneldescLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton5)
@@ -1728,7 +1923,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             paneldescLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paneldescLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneldescLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
@@ -1737,6 +1932,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         );
 
         tabmaterialinfo.addTab("Descrição Por Cliente", paneldesc);
+
+        panelmov.setBackground(new java.awt.Color(255, 255, 255));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -1756,11 +1953,41 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         });
         jScrollPane4.setViewportView(jTable1);
 
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Estoque"));
+
+        jLabel17.setText("Atual");
+
         txtestoque.setEnabled(false);
 
-        jLabel17.setText("Estoque Atual");
+        jLabel18.setText("Mínimo");
 
-        jLabel18.setText("Estoque Mínimo");
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtestoqueminimo)
+                    .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtestoqueminimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout panelmovLayout = new javax.swing.GroupLayout(panelmov);
         panelmov.setLayout(panelmovLayout);
@@ -1768,15 +1995,9 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelmovLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 986, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1135, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtestoqueminimo, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
-                    .addComponent(txtestoque))
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         panelmovLayout.setVerticalGroup(
@@ -1785,19 +2006,15 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelmovLayout.createSequentialGroup()
-                        .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtestoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel17))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtestoqueminimo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel18))
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         tabmaterialinfo.addTab("Movimentação", panelmov);
+
+        jButton9.setText("Salvar");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -1807,7 +2024,10 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(tabmaterialinfo, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(tabmaterialinfo, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton9)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -1816,7 +2036,9 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabmaterialinfo)
+                .addComponent(tabmaterialinfo, javax.swing.GroupLayout.PREFERRED_SIZE, 426, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton9)
                 .addContainerGap())
         );
 
@@ -1838,10 +2060,12 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
     private void cbtipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbtipoActionPerformed
         int selection = cbtipo.getSelectedIndex();
+
+        cbexcluir();
+        cbfamiliaincluir();
+
         switch (selection) {
             case 1://Fresa
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
                 cbfamilia.setEnabled(true);
@@ -1851,6 +2075,21 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 txtcortes.setEnabled(false);
                 txtcodigo.setEditable(false);
                 txtdescricao.setEditable(false);
+                txtextra.setEnabled(false);
+
+                //Habilitar/desabilitar diam.
+                txtd1.setEnabled(true);
+                txtd2.setEnabled(true);
+                txtd3.setEnabled(false);
+                txtd4.setEnabled(false);
+                txtd5.setEnabled(false);
+
+                //habilitar/desabilitar comp.
+                txtl1.setEnabled(true);
+                txtl2.setEnabled(true);
+                txtl3.setEnabled(false);
+                txtl4.setEnabled(false);
+                txtl5.setEnabled(false);
 
                 cbtamanho.addItem("C");
                 cbtamanho.addItem("S");
@@ -1859,17 +2098,24 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 btngerarcodigo.setEnabled(true);
                 break;
             case 2://Fresa Especial
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
                 cbfamilia.setEnabled(true);
-                cbtamanho.setEnabled(true);
+                cbtamanho.setEnabled(false);
                 cbtopo.setEnabled(true);
                 cbcanal.setEnabled(true);
                 txtcortes.setEnabled(true);
                 txtcodigo.setEditable(false);
                 txtdescricao.setEditable(false);
+                txtextra.setEnabled(true);
+
+                //Habilitar txts diam/comp
+                for (int i = 0; i < paneldiam.getComponentCount(); i++) {
+                    paneldiam.getComponent(i).setEnabled(true);
+                }
+                for (int i = 0; i < panelcomp.getComponentCount(); i++) {
+                    panelcomp.getComponent(i).setEnabled(true);
+                }
 
                 cbtamanho.addItem("C");
                 cbtamanho.addItem("S");
@@ -1881,8 +2127,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 btngerarcodigo.setEnabled(true);
                 break;
             case 3://Broca
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
                 cbfamilia.setEnabled(true);
@@ -1892,21 +2136,43 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 txtcortes.setEnabled(false);
                 txtcodigo.setEditable(false);
                 txtdescricao.setEditable(false);
+                txtextra.setEnabled(false);
+
+                //Habilitar/desabilitar diam.
+                txtd1.setEnabled(true);
+                txtd2.setEnabled(true);
+                txtd3.setEnabled(false);
+                txtd4.setEnabled(false);
+                txtd5.setEnabled(false);
+
+                //habilitar/desabilitar comp.
+                txtl1.setEnabled(true);
+                txtl2.setEnabled(true);
+                txtl3.setEnabled(false);
+                txtl4.setEnabled(false);
+                txtl5.setEnabled(false);
 
                 btngerarcodigo.setEnabled(true);
                 break;
             case 4://Broca Especial
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
-                cbfamilia.setEnabled(true);
+                cbfamilia.setEnabled(false);
                 cbtamanho.setEnabled(false);
                 cbtopo.setEnabled(false);
                 cbcanal.setEnabled(true);
                 txtcortes.setEnabled(true);
                 txtcodigo.setEditable(false);
                 txtdescricao.setEditable(false);
+                txtextra.setEnabled(true);
+
+                //Habilitar txts diam/comp
+                for (int i = 0; i < paneldiam.getComponentCount(); i++) {
+                    paneldiam.getComponent(i).setEnabled(true);
+                }
+                for (int i = 0; i < panelcomp.getComponentCount(); i++) {
+                    panelcomp.getComponent(i).setEnabled(true);
+                }
 
                 cbcanal.addItem("À Esquerda");
                 cbcanal.addItem("Reto");
@@ -1914,8 +2180,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 btngerarcodigo.setEnabled(true);
                 break;
             case 5://Alargador
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
                 cbfamilia.setEnabled(true);
@@ -1925,6 +2189,21 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 txtcortes.setEnabled(false);
                 txtcodigo.setEditable(false);
                 txtdescricao.setEditable(false);
+                txtextra.setEnabled(false);
+
+                //Habilitar/desabilitar diam.
+                txtd1.setEnabled(true);
+                txtd2.setEnabled(true);
+                txtd3.setEnabled(false);
+                txtd4.setEnabled(false);
+                txtd5.setEnabled(false);
+
+                //habilitar/desabilitar comp.
+                txtl1.setEnabled(true);
+                txtl2.setEnabled(true);
+                txtl3.setEnabled(false);
+                txtl4.setEnabled(false);
+                txtl5.setEnabled(false);
 
                 cbcanal.addItem("À Esquerda");
                 cbcanal.addItem("Reto");
@@ -1932,8 +2211,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 btngerarcodigo.setEnabled(true);
                 break;
             case 6://Alargador Especial
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
                 cbfamilia.setEnabled(true);
@@ -1943,6 +2220,15 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 txtcortes.setEnabled(true);
                 txtcodigo.setEditable(false);
                 txtdescricao.setEditable(false);
+                txtextra.setEnabled(true);
+
+                //Habilitar txts diam/comp
+                for (int i = 0; i < paneldiam.getComponentCount(); i++) {
+                    paneldiam.getComponent(i).setEnabled(true);
+                }
+                for (int i = 0; i < panelcomp.getComponentCount(); i++) {
+                    panelcomp.getComponent(i).setEnabled(true);
+                }
 
                 cbcanal.addItem("À Esquerda");
                 cbcanal.addItem("Reto");
@@ -1950,8 +2236,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 btngerarcodigo.setEnabled(true);
                 break;
             case 7://Lima
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
                 cbfamilia.setEnabled(true);
@@ -1961,6 +2245,21 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 txtcortes.setEnabled(false);
                 txtcodigo.setEditable(false);
                 txtdescricao.setEditable(false);
+                txtextra.setEnabled(false);
+
+                //Habilitar/desabilitar diam.
+                txtd1.setEnabled(true);
+                txtd2.setEnabled(true);
+                txtd3.setEnabled(false);
+                txtd4.setEnabled(false);
+                txtd5.setEnabled(false);
+
+                //habilitar/desabilitar comp.
+                txtl1.setEnabled(true);
+                txtl2.setEnabled(true);
+                txtl3.setEnabled(false);
+                txtl4.setEnabled(false);
+                txtl5.setEnabled(false);
 
                 cbtamanho.addItem("L3");
                 cbtamanho.addItem("L6");
@@ -1970,8 +2269,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 btngerarcodigo.setEnabled(true);
                 break;
             case 8://Lima Especial
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
                 cbfamilia.setEnabled(true);
@@ -1981,6 +2278,15 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 txtcortes.setEnabled(false);
                 txtcodigo.setEditable(false);
                 txtdescricao.setEditable(false);
+                txtextra.setEnabled(true);
+
+                //Habilitar txts diam/comp
+                for (int i = 0; i < paneldiam.getComponentCount(); i++) {
+                    paneldiam.getComponent(i).setEnabled(true);
+                }
+                for (int i = 0; i < panelcomp.getComponentCount(); i++) {
+                    panelcomp.getComponent(i).setEnabled(true);
+                }
 
                 cbtamanho.addItem("L3");
                 cbtamanho.addItem("L6");
@@ -1990,8 +2296,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 btngerarcodigo.setEnabled(true);
                 break;
             case 9://Ferramenta Especial
-                cbexcluir();
-                cbfamiliaincluir();
 
                 //Itens para habilitar/desabilitar
                 cbfamilia.setEnabled(true);
@@ -2001,6 +2305,15 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 txtcortes.setEnabled(false);
                 txtcodigo.setEditable(true);
                 txtdescricao.setEditable(true);
+                txtextra.setEnabled(true);
+
+                //Habilitar txts diam/comp
+                for (int i = 0; i < paneldiam.getComponentCount(); i++) {
+                    paneldiam.getComponent(i).setEnabled(true);
+                }
+                for (int i = 0; i < panelcomp.getComponentCount(); i++) {
+                    panelcomp.getComponent(i).setEnabled(true);
+                }
 
                 txtcodigo.requestFocus();
 
@@ -2010,14 +2323,34 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 btngerarcodigo.setEnabled(false);
                 break;
             default:
+                //Itens para habilitar/desabilitar
+                cbfamilia.setEnabled(false);
+                cbtamanho.setEnabled(false);
+                cbtopo.setEnabled(false);
+                cbcanal.setEnabled(false);
+                txtcortes.setEnabled(false);
+                txtcodigo.setEditable(false);
+                txtdescricao.setEditable(false);
+                txtextra.setEnabled(false);
+
+                //Habilitar txts diam/comp
+                for (int i = 0; i < paneldiam.getComponentCount(); i++) {
+                    paneldiam.getComponent(i).setEnabled(false);
+                }
+                for (int i = 0; i < panelcomp.getComponentCount(); i++) {
+                    panelcomp.getComponent(i).setEnabled(false);
+                }
+
+                btngerarcodigo.setEnabled(false);
                 break;
         }
     }//GEN-LAST:event_cbtipoActionPerformed
 
     private void btngerarcodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btngerarcodigoActionPerformed
         int selection = cbtipo.getSelectedIndex();
+
         switch (selection) {
-            case 1:
+            case 1://Fresa
                 if (cbfamilia.getSelectedIndex() == 0) {
                     JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
                 } else if (cbtamanho.getSelectedIndex() == 0) {
@@ -2026,7 +2359,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     gerarcodigofresa();
                 }
                 break;
-            case 2:
+            case 2://Fresa Especial
                 if (cbfamilia.getSelectedIndex() == 0 & txtcortes.getText().equals("")) {
                     JOptionPane.showMessageDialog(null, "Escolha uma família ou número de cortes primeiro!");
                 } else if (!txtcortes.getText().equals("") && cbtopo.getSelectedIndex() == 0) {
@@ -2035,42 +2368,38 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                     gerarcodigofresaespecial();
                 }
                 break;
-            case 3:
+            case 3://Broca
                 if (cbfamilia.getSelectedIndex() == 0) {
                     JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
                 } else {
                     gerarcodigobroca();
                 }
                 break;
-            case 4:
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigobrocaespecial();
-                }
+            case 4://Broca Especial
+                gerarCodigoBrocaEspecial();
                 break;
-            case 5:
+            case 5://Alargador
                 if (cbfamilia.getSelectedIndex() == 0) {
                     JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
                 } else {
                     gerarcodigoalargador();
                 }
                 break;
-            case 6:
+            case 6://Alargador Especial
                 if (cbfamilia.getSelectedIndex() == 0) {
                     JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
                 } else {
                     gerarcodigoalargadorespecial();
                 }
                 break;
-            case 7:
+            case 7://Lima
                 if (cbfamilia.getSelectedIndex() == 0) {
                     JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
                 } else {
                     gerarcodigolima();
                 }
                 break;
-            case 8:
+            case 8://Lima Especial
                 if (cbfamilia.getSelectedIndex() == 0) {
                     JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
                 } else {
@@ -2081,6 +2410,8 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Escolha um tipo de ferramenta primeiro!");
                 break;
         }
+        
+        checarCaracteres();
     }//GEN-LAST:event_btngerarcodigoActionPerformed
 
     private void checkrevestimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkrevestimentoActionPerformed
@@ -2106,6 +2437,10 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             txtcortes.setEnabled(false);
             txtcortes.setText("");
             cbtopo.setSelectedIndex(0);
+            cbtopo.setEnabled(false);
+        } else {
+            txtcortes.setEnabled(true);
+            cbtopo.setEnabled(true);
         }
     }//GEN-LAST:event_cbfamiliaActionPerformed
 
@@ -2134,15 +2469,6 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
         ImageIcon i = new ImageIcon(getClass().getResource("/Images/aliviotopo2.png"));
         lblicon.setIcon(i);
     }//GEN-LAST:event_txtaliviotopo2FocusGained
-
-    private void txtd1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtd1KeyReleased
-        JDesktopPane desk = this.getDesktopPane();
-        JPanel pane = new JPanel();
-        pane.setSize(50, 50);
-        desk.add(pane);
-        pane.setLocation(txtd1.getX(), txtd1.getY());
-        pane.setVisible(true);
-    }//GEN-LAST:event_txtd1KeyReleased
 
     private void txtaliviotopo1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo1FocusLost
         lblicon.setIcon(null);
@@ -2222,6 +2548,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
     private void txtraioFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtraioFocusLost
         lblicon.setIcon(null);
+        Numeros.SetarTextoNumeroEmFloat(txtraio.getText(), txtraio);
     }//GEN-LAST:event_txtraioFocusLost
 
     private void txtl1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtl1FocusGained
@@ -2272,22 +2599,37 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void txtcodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcodigoKeyReleased
-        int length = txtcodigo.getText().length();
-        if (length > 45) {
-            lblcodigoerro.setVisible(true);
-        } else {
-            lblcodigoerro.setVisible(false);
-        }
+        checarCaracteres();
     }//GEN-LAST:event_txtcodigoKeyReleased
 
     private void txtdescricaoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtdescricaoKeyReleased
-        int length = txtdescricao.getText().length();
-        if (length > 110) {
-            lbldescricaoerro.setVisible(true);
-        } else {
-            lbldescricaoerro.setVisible(false);
-        }
+        checarCaracteres();
     }//GEN-LAST:event_txtdescricaoKeyReleased
+
+    private void txtd1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtd1FocusLost
+        transformarDiam(txtd1.getText(), txtd1);
+    }//GEN-LAST:event_txtd1FocusLost
+
+    private void txtd2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtd2FocusLost
+        transformarDiam(txtd2.getText(), txtd2);
+    }//GEN-LAST:event_txtd2FocusLost
+
+    private void txtd3FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtd3FocusLost
+        transformarDiam(txtd3.getText(), txtd3);
+    }//GEN-LAST:event_txtd3FocusLost
+
+    private void txtd4FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtd4FocusLost
+        transformarDiam(txtd4.getText(), txtd4);
+    }//GEN-LAST:event_txtd4FocusLost
+
+    private void txtd5FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtd5FocusLost
+        transformarDiam(txtd5.getText(), txtd5);
+    }//GEN-LAST:event_txtd5FocusLost
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        AdicionarObs ao = new AdicionarObs(this.getClass().getSimpleName());
+        Telas.AparecerTela(ao);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2313,6 +2655,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
     public javax.swing.JButton jButton8;
+    public javax.swing.JButton jButton9;
     public javax.swing.JComboBox<String> jComboBox1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
@@ -2349,6 +2692,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
     public javax.swing.JPanel jPanel4;
+    public javax.swing.JPanel jPanel5;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
@@ -2358,9 +2702,10 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane7;
     public javax.swing.JScrollPane jScrollPane8;
     public javax.swing.JTable jTable1;
-    public javax.swing.JLabel lblcodigoerro;
+    public static javax.swing.JLabel lblcodigoerro;
     public static javax.swing.JLabel lblcortes;
-    public javax.swing.JLabel lbldescricaoerro;
+    public static javax.swing.JLabel lbldescricaoerro;
+    public javax.swing.JLabel lblextra;
     public static javax.swing.JLabel lblfamilia;
     public javax.swing.JLabel lblicon;
     public static javax.swing.JLabel lbltamanho;
@@ -2378,7 +2723,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public javax.swing.JTable tabledesccli;
     public javax.swing.JTable tabledocumentos;
     public javax.swing.JTable tablemateriaisvendas;
-    public javax.swing.JTable tableobs;
+    public static javax.swing.JTable tableobs;
     public static javax.swing.JTabbedPane tabmateriais;
     public static javax.swing.JTabbedPane tabmaterialinfo;
     public static javax.swing.JTextField txtagressividade;
@@ -2398,6 +2743,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtespfilete;
     public javax.swing.JTextField txtestoque;
     public javax.swing.JTextField txtestoqueminimo;
+    public javax.swing.JTextField txtextra;
     public static javax.swing.JTextField txtfrontal;
     public static javax.swing.JTextField txthelice;
     public static javax.swing.JTextField txtl1;

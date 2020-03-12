@@ -16,17 +16,30 @@ import javax.swing.JTextField;
 public class Valores {
 
     public static String TransformarValorFloatEmDinheiro(String valor) {
-        BigDecimal valortotal = new BigDecimal(valor);
-
         DecimalFormat formatter = new DecimalFormat("#,###.00");
-        String valorf = formatter.format(valortotal);
-
+        String valorf;
+        
+        if (valor.equals("0.0")) {
+            valorf = "0,00";
+        } else {
+            BigDecimal valortotal = new BigDecimal(valor);
+            valorf = formatter.format(valortotal);
+        }
+        
         return valorf;
     }
 
     public static double TransformarDinheiroEmValorDouble(String valor) {
-        String v = valor.replace(".", "");
-        String valor2 = v.replace(",", ".");
+        String v;
+        String valor2;
+
+        if (valor.contains(".")) {
+            v = valor.replace(".", "");
+            valor2 = v.replace(",", ".");
+        } else {
+            valor2 = valor.replace(",", ".");
+        }
+
         double vp = Float.parseFloat(valor2);
 
         return vp;
@@ -38,20 +51,20 @@ public class Valores {
 
         return replace2;
     }
-    
+
     public static void SetarTxtNumeroEmDinheiro(JTextField text) {
         DecimalFormat formatter = new DecimalFormat("#,###.00");
         String vv = text.getText().replace(".", "");
         String v = formatter.format(Float.parseFloat(vv.replace(",", ".")));
         text.setText(v);
     }
-    
-    public static String TransformarDoubleDBemString (double valordb) {
+
+    public static String TransformarDoubleDBemString(double valordb) {
         String valor;
-        
+
         DecimalFormat formatter = new DecimalFormat("#,###.00");
         valor = formatter.format(valordb);
-        
+
         return valor;
     }
 }

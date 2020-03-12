@@ -9,6 +9,7 @@ import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
 import Methods.Dates;
 import Methods.Telas;
+import Methods.Valores;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,11 +22,67 @@ public class F_UP extends javax.swing.JInternalFrame {
      * Creates new form F_UP
      */
     static F_UPDAO fud = new F_UPDAO();
-    F_UP_HistDAO fhd = new F_UP_HistDAO();
+    static F_UP_HistDAO fhd = new F_UP_HistDAO();
 
     public F_UP() {
         initComponents();
         readops();
+    }
+
+    public static void tableHist() {
+        DefaultTableModel modelhist = (DefaultTableModel) OPF_UP.tablehist.getModel();
+        modelhist.setNumRows(0);
+        
+        fhd.click(Integer.parseInt(OPF_UP.txtid.getText())).forEach(fhb -> {
+            String funcionario = "", data = "";
+            if (fhb.getFuncionario() != null) {
+                funcionario = fhb.getFuncionario();
+            }
+            if (fhb.getData() != null) {
+                data = Dates.TransformarDataCurtaDoDB(fhb.getData());
+            }
+            modelhist.addRow(new Object[]{
+                fhb.getProcesso(),
+                funcionario,
+                data
+            });
+        });
+    }
+    
+    public static void click() {
+        OPF_UP of = new OPF_UP();
+        Telas.AparecerTela(of);
+
+        OPF_UP.txtid.setText(tablefup.getValueAt(tablefup.getSelectedRow(), 0).toString());
+
+        fud.click(Integer.parseInt(OPF_UP.txtid.getText())).forEach(fb -> {
+            OPF_UP.txtdav.setText(String.valueOf(fb.getDav()));
+            OPF_UP.txtop.setText(String.valueOf(fb.getOp()));
+            OPF_UP.txtmaterial.setText(fb.getMaterial());
+            Dates.SetarDataJDateChooser(OPF_UP.dateentrega, fb.getDataentrega());
+            OPF_UP.txtcliente.setText(fb.getCliente());
+            OPF_UP.cbnivel.setSelectedIndex(fb.getNivel());
+            OPF_UP.txtvalor.setText(Valores.TransformarValorFloatEmDinheiro(String.valueOf(fb.getValor())));
+            OPF_UP.txtobs.setText(fb.getObservacao());
+        });
+
+        DefaultTableModel modelhist = (DefaultTableModel) OPF_UP.tablehist.getModel();
+        modelhist.setNumRows(0);
+
+        fhd.click(Integer.parseInt(OPF_UP.txtid.getText())).forEach(fhb -> {
+            String funcionario = "", data = "";
+            if (fhb.getFuncionario() != null) {
+                funcionario = fhb.getFuncionario();
+            }
+            if (fhb.getData() != null) {
+                data = Dates.TransformarDataCurtaDoDB(fhb.getData());
+            }
+            modelhist.addRow(new Object[]{
+                fhb.getProcesso(),
+                funcionario,
+                data
+            });
+        });
     }
 
     public static void readprocesso() {
@@ -38,10 +95,13 @@ public class F_UP extends javax.swing.JInternalFrame {
         fud.readtableporprocesso(processo).forEach(fub -> {
             model.addRow(new Object[]{
                 fub.getId(),
+                fub.getDav(),
                 fub.getMaterial(),
                 Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                 fub.getOp(),
-                fub.getProcesso()
+                fub.getNivel(),
+                fub.getProcesso(),
+                fub.getObservacao()
             });
         });
     }
@@ -56,10 +116,13 @@ public class F_UP extends javax.swing.JInternalFrame {
         fud.readtableporprocessoepesquisa(processo, txtpesquisa.getText()).forEach(fub -> {
             model.addRow(new Object[]{
                 fub.getId(),
+                fub.getDav(),
                 fub.getMaterial(),
                 Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                 fub.getOp(),
-                fub.getProcesso()
+                fub.getNivel(),
+                fub.getProcesso(),
+                fub.getObservacao()
             });
         });
     }
@@ -77,10 +140,13 @@ public class F_UP extends javax.swing.JInternalFrame {
                     fud.readtable().forEach(fub -> {
                         model.addRow(new Object[]{
                             fub.getId(),
+                            fub.getDav(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
-                            fub.getProcesso()
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
                         });
                     });
                     break;
@@ -96,10 +162,13 @@ public class F_UP extends javax.swing.JInternalFrame {
                     fud.readtableepesquisa(txtpesquisa.getText()).forEach(fub -> {
                         model.addRow(new Object[]{
                             fub.getId(),
+                            fub.getDav(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
-                            fub.getProcesso()
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
                         });
                     });
                     break;
@@ -138,7 +207,7 @@ public class F_UP extends javax.swing.JInternalFrame {
         jPanel2.setName("jPanel2"); // NOI18N
 
         cbfiltro.setMaximumRowCount(10);
-        cbfiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Rascunho", "Corte", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC", "Gravação" }));
+        cbfiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Rascunho", "Corte", "Para Canulação", "Em Canulação", "Para Retífica", "Em Retífica", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC", "Para Revestimento", "Em Revestimento", "Terceiros", "Gravação", "Etiquetagem", "Faturamento", "Encerrado" }));
         cbfiltro.setName("cbfiltro"); // NOI18N
         cbfiltro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -164,11 +233,11 @@ public class F_UP extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Material", "Data de Entrega", "OP", "Processo Atual"
+                "ID", "DAV", "Material", "Data de Entrega", "OP", "Nível", "Processo Atual", "Observação"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -186,12 +255,18 @@ public class F_UP extends javax.swing.JInternalFrame {
             tablefup.getColumnModel().getColumn(0).setMinWidth(0);
             tablefup.getColumnModel().getColumn(0).setPreferredWidth(0);
             tablefup.getColumnModel().getColumn(0).setMaxWidth(0);
-            tablefup.getColumnModel().getColumn(2).setMinWidth(100);
-            tablefup.getColumnModel().getColumn(2).setPreferredWidth(100);
-            tablefup.getColumnModel().getColumn(2).setMaxWidth(100);
-            tablefup.getColumnModel().getColumn(3).setMinWidth(60);
-            tablefup.getColumnModel().getColumn(3).setPreferredWidth(60);
-            tablefup.getColumnModel().getColumn(3).setMaxWidth(60);
+            tablefup.getColumnModel().getColumn(1).setMinWidth(70);
+            tablefup.getColumnModel().getColumn(1).setPreferredWidth(70);
+            tablefup.getColumnModel().getColumn(1).setMaxWidth(70);
+            tablefup.getColumnModel().getColumn(3).setMinWidth(100);
+            tablefup.getColumnModel().getColumn(3).setPreferredWidth(100);
+            tablefup.getColumnModel().getColumn(3).setMaxWidth(100);
+            tablefup.getColumnModel().getColumn(4).setMinWidth(60);
+            tablefup.getColumnModel().getColumn(4).setPreferredWidth(60);
+            tablefup.getColumnModel().getColumn(4).setMaxWidth(60);
+            tablefup.getColumnModel().getColumn(5).setMinWidth(45);
+            tablefup.getColumnModel().getColumn(5).setPreferredWidth(45);
+            tablefup.getColumnModel().getColumn(5).setMaxWidth(45);
         }
 
         jButton1.setText("Adicionar OP");
@@ -275,35 +350,7 @@ public class F_UP extends javax.swing.JInternalFrame {
 
     private void tablefupMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablefupMouseClicked
         if (evt.getClickCount() == 2) {
-            OPF_UP of = new OPF_UP();
-            Telas.AparecerTela(of);
-
-            OPF_UP.txtid.setText(tablefup.getValueAt(tablefup.getSelectedRow(), 0).toString());
-
-            fud.click(Integer.parseInt(OPF_UP.txtid.getText())).forEach(fb -> {
-                OPF_UP.txtdav.setText(String.valueOf(fb.getDav()));
-                OPF_UP.txtop.setText(String.valueOf(fb.getOp()));
-                OPF_UP.txtmaterial.setText(fb.getMaterial());
-                Dates.SetarDataJDateChooser(OPF_UP.dateentrega, fb.getDataentrega());
-            });
-
-            DefaultTableModel modelhist = (DefaultTableModel) OPF_UP.tablehist.getModel();
-            modelhist.setNumRows(0);
-
-            fhd.click(Integer.parseInt(OPF_UP.txtid.getText())).forEach(fhb -> {
-                String funcionario = "", data = "";
-                if (fhb.getFuncionario() != null) {
-                    funcionario = fhb.getFuncionario();
-                }
-                if (fhb.getData() != null) {
-                    data = Dates.TransformarDataCurtaDoDB(fhb.getData());
-                }
-                modelhist.addRow(new Object[]{
-                    fhb.getProcesso(),
-                    funcionario,
-                    data
-                });
-            });
+            click();
         }
     }//GEN-LAST:event_tablefupMouseClicked
 
@@ -323,6 +370,7 @@ public class F_UP extends javax.swing.JInternalFrame {
             fud.readtableepesquisa(pesquisa).forEach(fub -> {
                 model.addRow(new Object[]{
                     fub.getId(),
+                    fub.getDav(),
                     fub.getMaterial(),
                     Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                     fub.getOp(),

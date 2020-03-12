@@ -9,6 +9,7 @@ import Bean.RastreamentoDocumentosBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.awt.AWTException;
+import java.awt.HeadlessException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -164,7 +165,7 @@ public class RastreamentoDocumentosDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void extornarsempagamento(RastreamentoDocumentosBean rdb) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -226,7 +227,7 @@ public class RastreamentoDocumentosDAO {
 
         return listrdb;
     }
-    
+
     public List<RastreamentoDocumentosBean> readtablestatus(String status) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -505,6 +506,31 @@ public class RastreamentoDocumentosDAO {
                 SendEmail.EnviarErro("Erro ao lançar xml do Documento!\n" + e.toString());
             } catch (AWTException | IOException ex) {
                 Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void delete(RastreamentoDocumentosBean rdb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM rastreamento_doc WHERE id = ?");
+            stmt.setInt(1, rdb.getId());
+
+            stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "Documento excluído com sucesso!");
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(CAPDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);

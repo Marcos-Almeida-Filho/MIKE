@@ -10,6 +10,10 @@ import Bean.F_UP_HistBean;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
 import Methods.Dates;
+import Methods.Numeros;
+import Methods.Telas;
+import Methods.Valores;
+import View.Geral.ProcurarCliente;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,9 +25,8 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
     /**
      * Creates new form AdicionarOPFUP
      */
-    
     int idcriado;
-    
+
     public AdicionarOPFUP() {
         initComponents();
     }
@@ -49,6 +52,15 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
         cbprocesso = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
         dateentrega = new com.toedter.calendar.JDateChooser();
+        cbnivel = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        txtvalor = new javax.swing.JTextField();
+        txtObs = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        txtcliente = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
         setClosable(true);
@@ -78,13 +90,49 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
 
         txtmaterial.setName("txtmaterial"); // NOI18N
 
-        cbprocesso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Rascunho", "Corte", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC" }));
+        cbprocesso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Rascunho", "Corte", "Para Canulação", "Em Canulação", "Para Retífica", "Em Retífica", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC", "Para Revestimento", "Em Revestimento", "Terceiros" }));
         cbprocesso.setName("cbprocesso"); // NOI18N
 
         jLabel5.setText("Primeiro Processo");
         jLabel5.setName("jLabel5"); // NOI18N
 
+        dateentrega.setDateFormatString("dd/MM/yyyy");
         dateentrega.setName("dateentrega"); // NOI18N
+
+        cbnivel.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "1 (Muito Urgente)", "2 (Urgente)", "3 (Normal)", "4 (Não Urgente)", "5 (Nada Urgente)" }));
+        cbnivel.setName("cbnivel"); // NOI18N
+
+        jLabel6.setText("Nível");
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        jLabel7.setText("Valor R$");
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        txtvalor.setName("txtvalor"); // NOI18N
+        txtvalor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtvalorFocusLost(evt);
+            }
+        });
+
+        txtObs.setName("txtObs"); // NOI18N
+
+        jLabel8.setText("Observação");
+        jLabel8.setName("jLabel8"); // NOI18N
+
+        jLabel9.setText("Cliente");
+        jLabel9.setName("jLabel9"); // NOI18N
+
+        txtcliente.setEnabled(false);
+        txtcliente.setName("txtcliente"); // NOI18N
+
+        jButton2.setText("Procurar");
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -108,19 +156,44 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtop, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(dateentrega, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cbnivel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel7)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtvalor))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel3)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(dateentrega, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel5)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(cbprocesso, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtObs))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtcliente)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtcliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtdav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -137,7 +210,16 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3)
                         .addComponent(jLabel5))
                     .addComponent(dateentrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbnivel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel7)
+                    .addComponent(txtvalor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtObs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)))
         );
 
         jButton1.setText("Salvar");
@@ -165,7 +247,7 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -186,7 +268,12 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtdav.getText().equals("")) {
+        if (txtcliente.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, Numeros.TransformarNumeroEmDouble(txtvalor.getText()));
+            JOptionPane.showMessageDialog(null, "Adicione um cliente.");
+            ProcurarCliente pc = new ProcurarCliente(this.getClass().getSimpleName());
+            Telas.AparecerTela(pc);
+        } else if (txtdav.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Digite um número de DAV.");
             txtdav.requestFocus();
         } else if (txtop.getText().equals("")) {
@@ -199,57 +286,85 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Selecione uma data.");
         } else if (cbprocesso.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Selecione o primeiro processo.");
+        } else if (cbnivel.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Selecione um nível.");
+            cbnivel.showPopup();
+        } else if (txtvalor.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um valor primeiro.");
+            txtvalor.requestFocus();
         } else {
             String datacriacao = Dates.CriarDataCompletaParaDB();
-            
+
             F_UPDAO fd = new F_UPDAO();
             F_UPBean fb2 = new F_UPBean();
-            
+
             fb2.setDav(Integer.parseInt(txtdav.getText()));
             fb2.setOp(Integer.parseInt(txtop.getText()));
             fb2.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(dateentrega.getDate()));
             fb2.setMaterial(txtmaterial.getText());
             fb2.setProcesso(cbprocesso.getSelectedItem().toString());
             fb2.setDatacriacao(datacriacao);
-            
-            //dav, op, dataentrega, material, processo, datacriacao
+            fb2.setNivel(cbnivel.getSelectedIndex());
+            fb2.setValor(Numeros.TransformarNumeroEmDouble(txtvalor.getText()));
+            fb2.setObservacao(txtObs.getText());
+            fb2.setCliente(txtcliente.getText());
+
+            //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
             fd.create(fb2);
-            
+
             fd.readcreated(datacriacao).forEach(fb -> {
                 idcriado = fb.getId();
             });
-            
+
             F_UP_HistDAO fhd = new F_UP_HistDAO();
             F_UP_HistBean fhb = new F_UP_HistBean();
-            
+
             fhb.setIdfup(idcriado);
             fhb.setProcesso(cbprocesso.getSelectedItem().toString());
             fhb.setFuncionario(null);
             fhb.setData(null);
-            
+
             //idfup, processo, funcionario, data
             fhd.create(fhb);
-            
+
             F_UP.readops();
-            
+
             dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        ProcurarCliente pc = new ProcurarCliente(this.getClass().getSimpleName());
+        Telas.AparecerTela(pc);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void txtvalorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtvalorFocusLost
+        Valores.SetarTxtNumeroEmDinheiro(txtvalor);
+    }//GEN-LAST:event_txtvalorFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JComboBox<String> cbnivel;
     public javax.swing.JComboBox<String> cbprocesso;
     public com.toedter.calendar.JDateChooser dateentrega;
     public javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton2;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
     public javax.swing.JLabel jLabel5;
+    public javax.swing.JLabel jLabel6;
+    public javax.swing.JLabel jLabel7;
+    public javax.swing.JLabel jLabel8;
+    public javax.swing.JLabel jLabel9;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
+    public javax.swing.JTextField txtObs;
+    public static javax.swing.JTextField txtcliente;
     public javax.swing.JTextField txtdav;
     public javax.swing.JTextField txtmaterial;
     public javax.swing.JTextField txtop;
+    public static javax.swing.JTextField txtvalor;
     // End of variables declaration//GEN-END:variables
 }

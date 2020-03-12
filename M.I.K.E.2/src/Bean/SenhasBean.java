@@ -17,14 +17,13 @@ import javax.persistence.GenerationType;
  *
  * @author Marcos Filho
  */
-
 @Entity
 @Table(name = "senhas")
 public class SenhasBean implements Serializable {
-    
+
     @Id
     @Column
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @Column
     private String nome;
@@ -74,5 +73,5 @@ public class SenhasBean implements Serializable {
     public void setSite(String site) {
         this.site = site;
     }
-    
+
 }

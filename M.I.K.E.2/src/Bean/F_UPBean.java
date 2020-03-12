@@ -10,14 +10,18 @@ package Bean;
  * @author Marcos Filho
  */
 public class F_UPBean {
-    
+
     private int id;
     private int dav;
     private int op;
+    private String cliente;
     private String dataentrega;
     private String material;
     private String processo;
     private String datacriacao;
+    private double valor;
+    private int nivel;
+    private String observacao;
 
     public int getId() {
         return id;
@@ -41,6 +45,14 @@ public class F_UPBean {
 
     public void setOp(int op) {
         this.op = op;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
     }
 
     public String getDataentrega() {
@@ -74,5 +86,29 @@ public class F_UPBean {
     public void setDatacriacao(String datacriacao) {
         this.datacriacao = datacriacao;
     }
-    
+
+    public double getValor() {
+        return valor;
+    }
+
+    public void setValor(double valor) {
+        this.valor = valor;
+    }
+
+    public int getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(int nivel) {
+        this.nivel = nivel;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
+    }
+
 }

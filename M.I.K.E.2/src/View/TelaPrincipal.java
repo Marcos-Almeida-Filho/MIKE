@@ -40,8 +40,11 @@ import View.servicos.PedidoServico;
 import View.servicos.ProcessosServico;
 import View.vendas.VendasMateriais;
 import View.TI.Senhas;
+import View.comercial.PlanejamentoFaturamento;
+import View.financeiro.Cartoes;
 import View.financeiro.Extratos;
 import View.fiscal.NotasFiscais;
+import View.vendas.ProcessosVendas;
 import java.awt.Toolkit;
 import java.net.URL;
 import javax.swing.JOptionPane;
@@ -55,6 +58,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form TelaPrincipal
      */
+    
+    
     public TelaPrincipal() {
         initComponents();
         this.setExtendedState(TelaPrincipal.MAXIMIZED_BOTH);
@@ -153,6 +158,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemfornecedores = new javax.swing.JMenuItem();
         menuitemcategoriapreco = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
         menufinanceiro = new javax.swing.JMenu();
         menuitemcontasareceber = new javax.swing.JMenuItem();
         menuitemcontasapagar = new javax.swing.JMenuItem();
@@ -160,6 +166,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitembancos = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem14 = new javax.swing.JMenuItem();
         menucompras = new javax.swing.JMenu();
         menuitemsolicitacaodecompras = new javax.swing.JMenuItem();
         menuitemorcamentodecompras = new javax.swing.JMenuItem();
@@ -216,6 +223,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         setTitle("M.I.K.E.");
 
         jDesktopPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jDesktopPane1.setName("TelaPrincipal"); // NOI18N
 
         lblnome.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         lblnome.setForeground(new java.awt.Color(255, 255, 255));
@@ -238,7 +246,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 1160, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(540, Short.MAX_VALUE)
                 .addComponent(btntestemenus)
                 .addGap(522, 522, 522))
         );
@@ -400,6 +408,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menucomercial.add(jMenuItem2);
 
+        jMenuItem15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/calendar_edit.png"))); // NOI18N
+        jMenuItem15.setText("Planejamento De Faturamento");
+        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem15ActionPerformed(evt);
+            }
+        });
+        menucomercial.add(jMenuItem15);
+
         jMenuBar1.add(menucomercial);
 
         menufinanceiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money.png"))); // NOI18N
@@ -458,6 +475,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_code.png"))); // NOI18N
         jMenuItem13.setText("Conciliação Bancária");
         menufinanceiro.add(jMenuItem13);
+
+        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/creditcards.png"))); // NOI18N
+        jMenuItem14.setText("Cartões");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
+        menufinanceiro.add(jMenuItem14);
 
         jMenuBar1.add(menufinanceiro);
 
@@ -574,6 +600,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/chart_bar.png"))); // NOI18N
         jMenuItem4.setText("Medições");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         menuqualidade.add(jMenuItem4);
 
         jMenuBar1.add(menuqualidade);
@@ -648,6 +679,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemvendasprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench.png"))); // NOI18N
         menuitemvendasprocessos.setText("Processos");
         menuitemvendasprocessos.setName("menuitemvendasprocessos"); // NOI18N
+        menuitemvendasprocessos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuitemvendasprocessosActionPerformed(evt);
+            }
+        });
         menuvendas.add(menuitemvendasprocessos);
 
         jMenuBar1.add(menuvendas);
@@ -991,6 +1027,25 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         Telas.AparecerTelaAumentada(e);
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
+    private void menuitemvendasprocessosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasprocessosActionPerformed
+        ProcessosVendas pv = new ProcessosVendas();
+        Telas.AparecerTela(pv);
+    }//GEN-LAST:event_menuitemvendasprocessosActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+        Cartoes c = new Cartoes();
+        Telas.AparecerTela(c);
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
+
+    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+        PlanejamentoFaturamento pf = new PlanejamentoFaturamento();
+        Telas.AparecerTelaAumentada(pf);
+    }//GEN-LAST:event_jMenuItem15ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1007,22 +1062,16 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        
+        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaPrincipal().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new TelaPrincipal().setVisible(true);
         });
     }
 
@@ -1039,6 +1088,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

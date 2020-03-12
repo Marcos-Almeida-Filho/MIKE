@@ -33,7 +33,7 @@ public class ClientesDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO clientes (nome, razaosocial, cnpj, ie, telefone, grupo, vendedor, idrepresentante, representante,condicaodepagamento, logradouro, numero, complemento, bairro, cidade, uf, cep) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO clientes (nome, razaosocial, cnpj, ie, telefone, grupo, vendedor, idrepresentante, representante,condicaodepagamento, logradouro, numero, complemento, bairro, cidade, uf, cep, im) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, cb.getNome());
             stmt.setString(2, cb.getRazaosocial());
@@ -52,6 +52,7 @@ public class ClientesDAO {
             stmt.setString(15, cb.getCidade());
             stmt.setString(16, cb.getUf());
             stmt.setString(17, cb.getCep());
+            stmt.setString(18, cb.getIm());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -101,6 +102,7 @@ public class ClientesDAO {
                 cb.setCidade(rs.getString("cidade"));
                 cb.setUf(rs.getString("uf"));
                 cb.setCep(rs.getString("cep"));
+                cb.setIm(rs.getString("im"));
 
                 listcb.add(cb);
             }
@@ -179,6 +181,7 @@ public class ClientesDAO {
                 cb.setCidade(rs.getString("cidade"));
                 cb.setUf(rs.getString("uf"));
                 cb.setCep(rs.getString("cep"));
+                cb.setIm(rs.getString("im"));
 
                 listfb.add(cb);
             }
@@ -303,6 +306,7 @@ public class ClientesDAO {
                 cb.setCidade(rs.getString("cidade"));
                 cb.setUf(rs.getString("uf"));
                 cb.setCep(rs.getString("cep"));
+                cb.setIm(rs.getString("im"));
 
                 listcb.add(cb);
             }
@@ -362,7 +366,7 @@ public class ClientesDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE clientes SET nome = ?, razaosocial = ?, cnpj = ?, ie = ?, telefone = ?, grupo = ?, vendedor = ?, idrepresentante = ?, representante = ?,condicaodepagamento = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE clientes SET nome = ?, razaosocial = ?, cnpj = ?, ie = ?, telefone = ?, grupo = ?, vendedor = ?, idrepresentante = ?, representante = ?,condicaodepagamento = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, im = ? WHERE id = ?");
 
             stmt.setString(1, cb.getNome());
             stmt.setString(2, cb.getRazaosocial());
@@ -381,7 +385,8 @@ public class ClientesDAO {
             stmt.setString(15, cb.getCidade());
             stmt.setString(16, cb.getUf());
             stmt.setString(17, cb.getCep());
-            stmt.setInt(18, cb.getId());
+            stmt.setString(18, cb.getIm());
+            stmt.setInt(19, cb.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

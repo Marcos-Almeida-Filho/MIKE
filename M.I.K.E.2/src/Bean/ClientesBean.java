@@ -16,6 +16,7 @@ public class ClientesBean {
     private String razaosocial;
     private String cnpj;
     private String ie;
+    private String im;
     private String telefone;
     private String grupo;
     private String vendedor;
@@ -69,6 +70,14 @@ public class ClientesBean {
 
     public void setIe(String ie) {
         this.ie = ie;
+    }
+
+    public String getIm() {
+        return im;
+    }
+
+    public void setIm(String im) {
+        this.im = im;
     }
 
     public String getTelefone() {

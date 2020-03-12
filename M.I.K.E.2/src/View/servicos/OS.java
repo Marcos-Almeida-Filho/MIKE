@@ -290,6 +290,7 @@ public class OS extends javax.swing.JInternalFrame {
             btnprocurarcliente.setEnabled(false);
             btnprocurarmaterial.setEnabled(false);
             btnmudarprocesso.setEnabled(false);
+            btnalterarstatus.setEnabled(true);
 
             //Desabilitar txts
             txtinicial.setEditable(false);

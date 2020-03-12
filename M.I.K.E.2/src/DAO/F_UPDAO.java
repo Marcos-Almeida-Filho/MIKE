@@ -33,7 +33,7 @@ public class F_UPDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO f_up (dav, op, dataentrega, material, processo, datacriacao) VALUES (?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO f_up (dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente) VALUES (?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setInt(1, fb.getDav());
             stmt.setInt(2, fb.getOp());
@@ -41,6 +41,10 @@ public class F_UPDAO {
             stmt.setString(4, fb.getMaterial());
             stmt.setString(5, fb.getProcesso());
             stmt.setString(6, fb.getDatacriacao());
+            stmt.setInt(7, fb.getNivel());
+            stmt.setDouble(8, fb.getValor());
+            stmt.setString(9, fb.getObservacao());
+            stmt.setString(10, fb.getCliente());
 
             stmt.executeUpdate();
 
@@ -68,7 +72,7 @@ public class F_UPDAO {
         List<F_UPBean> listbb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up ORDER BY dataentrega, dav");
+            stmt = con.prepareStatement("SELECT * FROM f_up ORDER BY nivel, dataentrega, dav");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -76,9 +80,57 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getInt("dav"));
                 cb.setOp(rs.getInt("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readtableplanejamento() {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<F_UPBean> listbb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' ORDER BY nivel, dataentrega");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getInt("dav"));
+                cb.setOp(rs.getInt("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
 
                 listbb.add(cb);
             }
@@ -106,7 +158,7 @@ public class F_UPDAO {
         List<F_UPBean> listbb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op LIKE '%" + pesquisa + "%' ORDER BY dataentrega, dav");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op LIKE '%" + pesquisa + "%' OR dav LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega, dav");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -114,9 +166,14 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getInt("dav"));
                 cb.setOp(rs.getInt("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
 
                 listbb.add(cb);
             }
@@ -144,7 +201,7 @@ public class F_UPDAO {
         List<F_UPBean> listbb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? ORDER BY dataentrega, dav");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? ORDER BY nivel, dataentrega, dav");
             stmt.setString(1, processo);
             rs = stmt.executeQuery();
 
@@ -153,9 +210,14 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getInt("dav"));
                 cb.setOp(rs.getInt("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
 
                 listbb.add(cb);
             }
@@ -183,7 +245,7 @@ public class F_UPDAO {
         List<F_UPBean> listbb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? AND op LIKE '%" + pesquisa + "%' ORDER BY dataentrega, dav");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? AND op LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega, dav");
             stmt.setString(1, processo);
             rs = stmt.executeQuery();
 
@@ -193,8 +255,13 @@ public class F_UPDAO {
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
                 cb.setOp(rs.getInt("op"));
+                cb.setDav(rs.getInt("dav"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
 
                 listbb.add(cb);
             }
@@ -232,8 +299,13 @@ public class F_UPDAO {
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
                 cb.setOp(rs.getInt("op"));
+                cb.setDav(rs.getInt("dav"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
 
                 listbb.add(cb);
             }
@@ -274,6 +346,10 @@ public class F_UPDAO {
                 cb.setOp(rs.getInt("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
 
                 listbb.add(cb);
             }
@@ -297,13 +373,17 @@ public class F_UPDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE f_up SET dav = ?, op = ?, material = ?, dataentrega = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE f_up SET dav = ?, op = ?, material = ?, dataentrega = ?, cliente = ?, nivel = ?, valor = ?, observacao = ? WHERE id = ?");
 
             stmt.setInt(1, fb.getDav());
             stmt.setInt(2, fb.getOp());
             stmt.setString(3, fb.getMaterial());
             stmt.setString(4, fb.getDataentrega());
-            stmt.setInt(5, fb.getId());
+            stmt.setString(5, fb.getCliente());
+            stmt.setInt(6, fb.getNivel());
+            stmt.setDouble(7, fb.getValor());
+            stmt.setString(8, fb.getObservacao());
+            stmt.setInt(9, fb.getId());
 
             stmt.executeUpdate();
 

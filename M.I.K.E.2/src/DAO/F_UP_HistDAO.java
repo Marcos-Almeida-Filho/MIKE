@@ -98,12 +98,12 @@ public class F_UP_HistDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE f_up_hist SET funcionario = ?, data = ? WHERE idfup = ?, processo = ?");
+            stmt = con.prepareStatement("UPDATE f_up_hist SET funcionario = ?, data = ? WHERE idfup = ? AND processo = ?");
 
             stmt.setString(1, fb.getFuncionario());
             stmt.setString(2, fb.getData());
-            stmt.setInt(3, fb.getIdfup());
-            stmt.setString(4, fb.getProcesso());
+            stmt.setInt(3, idfup);
+            stmt.setString(4, processo);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

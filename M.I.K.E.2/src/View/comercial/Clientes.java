@@ -7,10 +7,19 @@ package View.comercial;
 
 import Bean.ClientesBean;
 import DAO.ClientesDAO;
+import Methods.SendEmail;
+import Methods.Telas;
+import java.awt.AWTException;
 import java.awt.Dimension;
+import java.io.IOException;
+import java.net.URI;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import java.net.http.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.*;
 
 /**
  *
@@ -21,11 +30,75 @@ public class Clientes extends javax.swing.JInternalFrame {
     /**
      * Creates new form TelaCadastroCliente
      */
+    private final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+
     public Clientes() {
         initComponents();
         readtableclientes();
         lblidrepresentante.setVisible(false);
-        btncep.setVisible(false);
+//        btncep.setVisible(false);
+    }
+
+    private void procuraCep() {
+        String cep = txtcep.getText().replace("-", "");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("https://viacep.com.br/ws/" + cep + "/json/")).build();
+
+        HttpResponse<String> response;
+        try {
+            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            
+            JOptionPane.showMessageDialog(null, response.body());
+
+            JSONObject obj = new JSONObject(response.body());
+            txtlogradouro.setText(obj.getString("logradouro"));
+            txtcomplemento.setText(obj.getString("complemento"));
+            txtbairro.setText(obj.getString("bairro"));
+            txtcidade.setText(obj.getString("localidade"));
+            cbuf.setSelectedItem(obj.getString("uf"));
+            txtnumero.requestFocus();
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro!\n" + ex);
+            try {
+                SendEmail.EnviarErro(ex.toString());
+            } catch (AWTException | IOException ex1) {
+                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+
+    }
+    
+    private void procuraCnpj() {
+        String cnpj = txtcnpj.getText().replace("-", "");
+        cnpj = cnpj.replace("/", "");
+        cnpj = cnpj.replace(".", "");
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("https://www.receitaws.com.br/v1/cnpj/" + cnpj)).build();
+
+        try {
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+//            String jsonValido = response.body().replace(":", ": ");
+//            jsonValido = jsonValido.replace(",", ",\n");
+//            JOptionPane.showMessageDialog(null, response);
+//            JOptionPane.showMessageDialog(null, response.body());
+//            JOptionPane.showMessageDialog(null, jsonValido);
+            
+//            JSONObject obj = new JSONObject(response);
+//            JOptionPane.showMessageDialog(null, obj.getString("nome"));
+            JSONObject obj2 = new JSONObject(response.body());
+            //JOptionPane.showMessageDialog(null, obj2.getString("nome"));
+            txtrazao.setText(obj2.getString("nome"));
+            txtlogradouro.setText(obj2.getString("logradouro"));
+            txtnumero.setText(obj2.getString("numero"));
+            txtcidade.setText(obj2.getString("municipio"));
+            txtbairro.setText(obj2.getString("bairro"));
+            txtcep.setText(obj2.getString("cep").replace(".", ""));
+            cbuf.setSelectedItem(obj2.getString("uf"));
+            txttelefone.setText(obj2.getString("telefone").replace(" ", ""));
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+
     }
 
     public void zeracampos() {
@@ -55,13 +128,13 @@ public class Clientes extends javax.swing.JInternalFrame {
         model.setNumRows(0);
         ClientesDAO cd = new ClientesDAO();
 
-        for (ClientesBean cb : cd.preenchertabelaclientes()) {
+        cd.preenchertabelaclientes().forEach((cb) -> {
             model.addRow(new Object[]{
                 cb.getId(),
                 cb.getNome(),
                 cb.getRazaosocial()
             });
-        }
+        });
     }
 
     /**
@@ -98,6 +171,9 @@ public class Clientes extends javax.swing.JInternalFrame {
         txttelefone = new javax.swing.JFormattedTextField();
         jLabel17 = new javax.swing.JLabel();
         cbgrupo = new javax.swing.JComboBox<>();
+        jButton8 = new javax.swing.JButton();
+        jLabel19 = new javax.swing.JLabel();
+        txtim = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -176,7 +252,7 @@ public class Clientes extends javax.swing.JInternalFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1062, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1261, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,43 +299,55 @@ public class Clientes extends javax.swing.JInternalFrame {
 
         cbgrupo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Consumidor Final", "Revenda" }));
 
+        jButton8.setText("Procurar CNPJ");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        jLabel19.setText("Ins. Mun.");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txttelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtnomecliente, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel17)
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbgrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(txtrazao, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txttelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbgrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtcnpj))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtnomecliente, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel2)
+                                .addComponent(jButton8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtrazao))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtie, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 180, Short.MAX_VALUE)))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel19)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtim, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -276,7 +364,10 @@ public class Clientes extends javax.swing.JInternalFrame {
                     .addComponent(jLabel3)
                     .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(txtie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton8)
+                    .addComponent(jLabel19)
+                    .addComponent(txtim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -568,7 +659,7 @@ public class Clientes extends javax.swing.JInternalFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1099, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1243, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton9)
@@ -628,7 +719,7 @@ public class Clientes extends javax.swing.JInternalFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1099, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1243, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton11)
@@ -704,6 +795,22 @@ public class Clientes extends javax.swing.JInternalFrame {
 
         if (cbuf.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Coloque o endereço completo do Cliente!");
+            cbuf.showPopup();
+        } else if (txtnomecliente.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um nome para o cliente.");
+            txtnomecliente.requestFocus();
+        } else if (txtvendedor.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione um vendedor para o cliente.");
+            ProcurarVendedorClientes pvc = new ProcurarVendedorClientes();
+            Telas.AparecerTela(pvc);
+        } else if (txtrepresentante.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione um representante para o cliente.");
+            ProcurarRepresentanteClientes prc = new ProcurarRepresentanteClientes();
+            Telas.AparecerTela(prc);
+        } else if (txtcondicao.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione uma condição de pagamento para o cliente.");
+            ProcurarCondicaoDePagamentoClientes pcp = new ProcurarCondicaoDePagamentoClientes();
+            Telas.AparecerTela(pcp);
         } else if (txtidcliente.getText().equals("")) {
 ////////////Criar Cliente
             cb.setNome(txtnomecliente.getText());
@@ -723,20 +830,22 @@ public class Clientes extends javax.swing.JInternalFrame {
             cb.setCidade(txtcidade.getText());
             cb.setUf(cbuf.getSelectedItem().toString());
             cb.setCep(txtcep.getText());
-//            nome, razaosocial, cnpj, ie, telefone, grupo, vendedor, representante,condicaodepagamento, logradouro, numero, complemento, bairro, cidade, uf, cep
-            cd.create(cb);
+            cb.setIm(txtim.getText());
             
+            //nome, razaosocial, cnpj, ie, telefone, grupo, vendedor, idrepresentante, representante,condicaodepagamento, logradouro, numero, complemento, bairro, cidade, uf, cep, im
+            cd.create(cb);
+
 ////////////Criar Documentos
             for (int i = 0; i < tabledocs.getRowCount(); i++) {
-                
+
             }
-            
+
             //Zerar Campos
             zeracampos();
-            
+
             //Mudar para a primeira tab
             tabclientes.setSelectedIndex(0);
-            
+
             //Atualizar table de clientes
             readtableclientes();
         } else {
@@ -757,18 +866,17 @@ public class Clientes extends javax.swing.JInternalFrame {
             cb.setCidade(txtcidade.getText());
             cb.setUf(cbuf.getSelectedItem().toString());
             cb.setCep(txtcep.getText());
+            cb.setIm(txtim.getText());
             cb.setId(Integer.parseInt(txtidcliente.getText()));
-//            nome, razaosocial, cnpj, ie, telefone, grupo, vendedor, representante,condicaodepagamento, logradouro, numero, complemento, bairro, cidade, uf, cep
+            //nome = ?, razaosocial = ?, cnpj = ?, ie = ?, telefone = ?, grupo = ?, vendedor = ?, idrepresentante = ?, representante = ?,condicaodepagamento = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, im = ? WHERE id = ?
             cd.update(cb);
-            
-            
-            
+
             //Zerar Campos
             zeracampos();
-            
+
             //Mudar para a primeira tab
             tabclientes.setSelectedIndex(0);
-            
+
             //Atualizar table de clientes
             readtableclientes();
         }
@@ -788,7 +896,7 @@ public class Clientes extends javax.swing.JInternalFrame {
 
             ClientesDAO cd = new ClientesDAO();
 
-            for (ClientesBean cb : cd.click(Integer.parseInt(txtidcliente.getText()))) {
+            cd.click(Integer.parseInt(txtidcliente.getText())).forEach((ClientesBean cb) -> {
                 txtnomecliente.setText(cb.getNome());
                 txtrazao.setText(cb.getRazaosocial());
                 txtcnpj.setText(cb.getCnpj());
@@ -806,7 +914,8 @@ public class Clientes extends javax.swing.JInternalFrame {
                 txtcidade.setText(cb.getCidade());
                 cbuf.setSelectedItem(cb.getUf());
                 txtcep.setText(cb.getCep());
-            }
+                txtim.setText(cb.getIm());
+            });
         }
     }//GEN-LAST:event_tableclientesMouseClicked
 
@@ -877,7 +986,30 @@ public class Clientes extends javax.swing.JInternalFrame {
 //                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
 //            }
 //        }
+        if (txtcep.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um CEP primeiro.");
+            txtcep.requestFocus();
+        } else {
+            try {
+                procuraCep();
+            } catch (Exception ex) {
+                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_btncepActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        if (txtcnpj.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um CNPJ primeiro.");
+            txtcnpj.requestFocus();
+        } else {
+            try {
+                procuraCnpj();
+            } catch (Exception ex) {
+                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -894,6 +1026,7 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -905,6 +1038,7 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -932,13 +1066,14 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JTable tablecontatos;
     private javax.swing.JTable tabledocs;
     private javax.swing.JTextField txtbairro;
-    private javax.swing.JFormattedTextField txtcep;
+    private static javax.swing.JFormattedTextField txtcep;
     private javax.swing.JTextField txtcidade;
     private javax.swing.JFormattedTextField txtcnpj;
     private javax.swing.JTextField txtcomplemento;
     public static javax.swing.JTextField txtcondicao;
     private javax.swing.JTextField txtidcliente;
     private javax.swing.JTextField txtie;
+    private static javax.swing.JTextField txtim;
     private javax.swing.JTextField txtlogradouro;
     private javax.swing.JTextField txtnomecliente;
     private javax.swing.JTextField txtnumero;

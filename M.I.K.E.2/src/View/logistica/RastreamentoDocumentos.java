@@ -467,7 +467,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        btnxml = new javax.swing.JButton();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -481,7 +480,9 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jButton6 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         txtxml = new javax.swing.JTextField();
+        btnxml = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Rastreamento de Documentos - FOR-95");
@@ -805,14 +806,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             }
         });
 
-        btnxml.setText("Arquivo XML");
-        btnxml.setEnabled(false);
-        btnxml.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnxmlActionPerformed(evt);
-            }
-        });
-
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Histórico"));
 
         tablehistorico.setModel(new javax.swing.table.DefaultTableModel(
@@ -938,6 +931,14 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
         txtxml.setEditable(false);
 
+        btnxml.setText("Arquivo XML");
+        btnxml.setEnabled(false);
+        btnxml.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxmlActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -948,6 +949,8 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnxml)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5))
@@ -969,13 +972,21 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton5)
-                    .addComponent(jButton6))
+                    .addComponent(jButton6)
+                    .addComponent(btnxml))
                 .addContainerGap())
         );
 
         jTabbedPane2.addTab("Documentos", jPanel8);
 
         jButton4.setText("Histórico de Alterações");
+
+        jButton7.setText("Excluir");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -991,7 +1002,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jButton4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnxml)
+                                .addComponent(jButton7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1013,8 +1024,8 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
-                    .addComponent(btnxml)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(jButton7))
                 .addContainerGap())
         );
 
@@ -1112,17 +1123,21 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             } else {
                 checkpagamento.setSelected(true);
                 salvarrastreamento();
-                
-                JOptionPane.showMessageDialog(null, "Enviando e-mail para aprovação.");
-                
-                SendEmail.EnviarAviso("diretoria@speedcut.com.br", "Documento lançado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi lançado e necessita de aprovação");
+
+                if (txtid.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Enviando e-mail para aprovação.");
+
+                    SendEmail.EnviarAviso("diretoria@speedcut.com.br", "Documento lançado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi lançado por " + Session.nome + " e necessita de aprovação");
+                }
             }
         } else {
             salvarrastreamento();
-            
-            JOptionPane.showMessageDialog(null, "Enviando e-mail para aprovação.");
-            
-            SendEmail.EnviarAviso("diretoria@speedcut.com.br", "Documento lançado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi lançado e necessita de aprovação");
+
+            if (txtid.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Enviando e-mail para aprovação.");
+
+                SendEmail.EnviarAviso("diretoria@speedcut.com.br", "Documento lançado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi lançado por " + Session.nome + " e necessita de aprovação");
+            }
         }
         readhist();
         readdocumentosdodocumento();
@@ -1202,6 +1217,12 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4)));
                 } catch (IOException ex) {
                     Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo!\n" + ex);
+                    try {
+                        SendEmail.EnviarErro(ex.toString());
+                    } catch (AWTException | IOException ex1) {
+                        Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
                 }
             } else {
                 try {
@@ -1228,9 +1249,9 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             readdocumentosdodocumento();
             readhist();
             readtabledocumentos();
-            
+
             JOptionPane.showMessageDialog(null, "Enviando e-mail para o financeiro.");
-            
+
             SendEmail.EnviarAviso("financeiro@speedcut.com.br", "Documento aprovado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi aprovado e necessita de lançamento no CAP.");
         }
     }//GEN-LAST:event_btnaprovarActionPerformed
@@ -1263,6 +1284,24 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnextornarsempagamentoActionPerformed
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        if (txtid.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Não existe documento selecionado para excluir.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir o documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + "?", "Excluir documento", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                rdb.setId(Integer.parseInt(txtid.getText()));
+
+                //DELETE FROM rastreamento_doc WHERE id = ?
+                rdd.delete(rdb);
+
+                zeracampos();
+                tabdocs.setSelectedIndex(0);
+                readtabledocumentos();
+            }
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup GroupEmitente;
@@ -1279,6 +1318,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

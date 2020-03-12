@@ -8,6 +8,8 @@ package View.Geral;
 import View.servicos.*;
 import Bean.ClientesBean;
 import DAO.ClientesDAO;
+import View.comercial.AdicionarOPFUP;
+import View.comercial.OPF_UP;
 import View.financeiro.AdicionarContasAPagar;
 import View.financeiro.AdicionarContasAReceber;
 import View.logistica.RastreamentoDocumentos;
@@ -194,6 +196,14 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                     break;
                 case "CAP":
                     AdicionarContasAPagar.txtemitente.setText(cliente);
+                    dispose();
+                    break;
+                case "AdicionarOPFUP":
+                    AdicionarOPFUP.txtcliente.setText(cliente);
+                    dispose();
+                    break;
+                case "OPF_UP":
+                    OPF_UP.txtcliente.setText(cliente);
                     dispose();
                     break;
             }

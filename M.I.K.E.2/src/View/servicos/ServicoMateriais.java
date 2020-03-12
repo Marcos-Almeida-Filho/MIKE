@@ -1056,7 +1056,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
     private void txtcodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcodigoKeyReleased
         int length = txtcodigo.getText().length();
-        if (length > 45) {
+        if (length > 60) {
             lblcodigoerro.setVisible(true);
         } else {
             lblcodigoerro.setVisible(false);
