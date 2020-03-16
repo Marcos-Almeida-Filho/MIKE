@@ -58,8 +58,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form TelaPrincipal
      */
-    
-    
     public TelaPrincipal() {
         initComponents();
         this.setExtendedState(TelaPrincipal.MAXIMIZED_BOTH);
@@ -78,10 +76,10 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         UsuariosDAO ud = new UsuariosDAO();
 
         //Retornar nível do acesso
-        for (UsuariosBean ub : ud.checknivel(Session.login)) {
+        ud.checknivel(Session.login).forEach((UsuariosBean ub) -> {
             //Setar nível do acesso
             Session.nivel = ub.getNivel();
-        }
+        });
         GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
 //        TelaPrincipal.menuarquivo.setVisible(false);
         gud.getmenus(Session.nivel).forEach(gub -> {
@@ -1033,7 +1031,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_menuitemvendasprocessosActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        
+
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
@@ -1066,7 +1064,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
+
         //</editor-fold>
 
         /* Create and display the form */

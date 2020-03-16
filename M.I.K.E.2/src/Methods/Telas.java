@@ -6,8 +6,10 @@
 package Methods;
 
 import View.TelaPrincipal;
+import java.awt.AWTException;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
@@ -38,6 +40,11 @@ public class Telas {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Erro: " + ex);
+            try {
+                SendEmail.EnviarErro(ex.toString());
+            } catch (AWTException | IOException ex1) {
+                Logger.getLogger(Telas.class.getName()).log(Level.SEVERE, null, ex1);
+            }
         }
     }
 }

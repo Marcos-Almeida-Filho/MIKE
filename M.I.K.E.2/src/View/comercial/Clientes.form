@@ -301,7 +301,7 @@
                                                       <EmptySpace max="-2" attributes="0"/>
                                                       <Component id="txtcnpj" min="-2" pref="165" max="-2" attributes="0"/>
                                                       <EmptySpace max="-2" attributes="0"/>
-                                                      <Component id="jButton8" min="-2" max="-2" attributes="0"/>
+                                                      <Component id="btncnpj" min="-2" max="-2" attributes="0"/>
                                                       <EmptySpace max="-2" attributes="0"/>
                                                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                                                       <EmptySpace max="-2" attributes="0"/>
@@ -335,7 +335,7 @@
                                           <Component id="txtcnpj" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtie" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          <Component id="jButton8" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="btncnpj" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtim" alignment="3" min="-2" max="-2" attributes="0"/>
                                       </Group>
@@ -416,12 +416,12 @@
                                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                               </AuxValues>
                             </Component>
-                            <Component class="javax.swing.JButton" name="jButton8">
+                            <Component class="javax.swing.JButton" name="btncnpj">
                               <Properties>
                                 <Property name="text" type="java.lang.String" value="Procurar CNPJ"/>
                               </Properties>
                               <Events>
-                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton8ActionPerformed"/>
+                                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btncnpjActionPerformed"/>
                               </Events>
                             </Component>
                             <Component class="javax.swing.JLabel" name="jLabel19">

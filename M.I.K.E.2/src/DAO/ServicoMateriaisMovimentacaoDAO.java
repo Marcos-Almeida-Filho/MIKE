@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
  */
 public class ServicoMateriaisMovimentacaoDAO {
 
-    public void create(ServicoMateriaisMovimentacaoBean smb) {
+    public void create(ServicoMateriaisMovimentacaoBean smmb) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -35,13 +35,13 @@ public class ServicoMateriaisMovimentacaoDAO {
 
         try {
             stmt = con.prepareStatement("INSERT INTO servicos_materiais_movimentacao (idmaterial, inicial, movimentada, tipo, saldo, data, usuario) VALUES (?,?,?,?,?,?,?)");
-            stmt.setInt(1, smb.getIdmaterial());
-            stmt.setInt(2, smb.getInicial());
-            stmt.setInt(3, smb.getMovimentada());
-            stmt.setString(4, smb.getTipo());
-            stmt.setInt(5, smb.getSaldo());
-            stmt.setString(6, smb.getData());
-            stmt.setString(7, smb.getUsuario());
+            stmt.setInt(1, smmb.getIdmaterial());
+            stmt.setInt(2, smmb.getInicial());
+            stmt.setInt(3, smmb.getMovimentada());
+            stmt.setString(4, smmb.getTipo());
+            stmt.setInt(5, smmb.getSaldo());
+            stmt.setString(6, smmb.getData());
+            stmt.setString(7, smmb.getUsuario());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {

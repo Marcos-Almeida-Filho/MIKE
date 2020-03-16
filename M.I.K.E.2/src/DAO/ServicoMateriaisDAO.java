@@ -238,6 +238,43 @@ public class ServicoMateriaisDAO {
         return listso;
 
     }
+    
+    public List<ServicoMateriaisBean> readEstoquePorCodigo(String codigo) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoMateriaisBean> listso = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT estoque FROM servicos_materiais WHERE codigo = ?");
+            stmt.setString(1, codigo);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoMateriaisBean sob = new ServicoMateriaisBean();
+
+                sob.setEstoque(rs.getInt("estoque"));
+
+                listso.add(sob);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listso;
+
+    }
 
     public List<ServicoMateriaisBean> click(int id) {
 
@@ -341,7 +378,7 @@ public class ServicoMateriaisDAO {
         }
     }
 
-    public void updateestoque(ServicoMateriaisBean sob) {
+    public void updateestoque(ServicoMateriaisBean smb) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -349,8 +386,32 @@ public class ServicoMateriaisDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE servicos_materiais SET estoque = ? WHERE id = ?");
-            stmt.setInt(1, sob.getEstoque());
-            stmt.setInt(2, sob.getId());
+            stmt.setInt(1, smb.getEstoque());
+            stmt.setInt(2, smb.getId());
+
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updateEstoquePorCodigo(ServicoMateriaisBean smb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE servicos_materiais SET estoque = ? WHERE codigo = ?");
+            stmt.setInt(1, smb.getEstoque());
+            stmt.setString(2, smb.getCodigo());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {

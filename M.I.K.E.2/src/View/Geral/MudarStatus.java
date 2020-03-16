@@ -5,10 +5,14 @@
  */
 package View.Geral;
 
-import Bean.CAPBean;
 import Bean.OSBean;
+import Bean.ServicoMateriaisBean;
+import Bean.ServicoMateriaisMovimentacaoBean;
 import DAO.CAPDAO;
 import DAO.OSDAO;
+import DAO.ServicoMateriaisDAO;
+import DAO.ServicoMateriaisMovimentacaoDAO;
+import Methods.Dates;
 import View.financeiro.ContasPagar;
 import View.servicos.OS;
 
@@ -21,9 +25,15 @@ public class MudarStatus extends javax.swing.JInternalFrame {
     /**
      * Creates new form StatusEmLote
      *
-     * @param ops
-     * @param title
      */
+    ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+    ServicoMateriaisBean smb = new ServicoMateriaisBean();
+    ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+    ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+
+    int est = 0;
+    int idmaterial;
+
     public String origem;
 
     public MudarStatus(String[] ops, String title, String origin) {
@@ -97,7 +107,7 @@ public class MudarStatus extends javax.swing.JInternalFrame {
                 for (int i = 0; i < ContasPagar.tablecap.getRowCount(); i++) {
                     if (ContasPagar.tablecap.getValueAt(i, 0).equals(true)) {
                         CAPDAO cd = new CAPDAO();
-                        
+
                         //status = ? WHERE id = ?
                         cd.updatestatus(cbstatus.getSelectedItem().toString(), Integer.parseInt(ContasPagar.tablecap.getValueAt(i, 1).toString()));
                     }
@@ -124,6 +134,39 @@ public class MudarStatus extends javax.swing.JInternalFrame {
 
                 //SET status = ? WHERE idtela = ?
                 od.updatestatus(ob);
+
+                if (cbstatus.getSelectedItem().toString().equals("Fechado")) {
+////////////////////Descobrir ID do material
+                    String codigo = OS.txtcodigo.getText();
+                    
+                    smd.readid(codigo).forEach(smb -> {
+                        idmaterial = smb.getId();
+                    });
+                    
+////////////////////Criar estoque novo
+                    int qtdfinal = Integer.parseInt(OS.txtfinal.getText());
+                    smd.readestoque(idmaterial).forEach(smb -> {
+                        est = smb.getEstoque();
+                    });
+                    
+                    smb.setEstoque(est + qtdfinal);
+                    smb.setId(idmaterial);
+                    
+                    //estoque = ? WHERE id = ?
+                    smd.updateestoque(smb);
+                    
+////////////////////Criar Movimentação
+                    smmb.setIdmaterial(idmaterial);
+                    smmb.setInicial(est);
+                    smmb.setMovimentada(qtdfinal);
+                    smmb.setTipo("OS");
+                    smmb.setSaldo(est + qtdfinal);
+                    smmb.setData(Dates.CriarDataCompletaParaDB());
+                    smmb.setUsuario(codigo);
+
+                    //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
+                    smmd.create(smmb);
+                }
                 this.dispose();
                 break;
             default:

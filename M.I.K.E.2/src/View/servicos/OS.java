@@ -2074,11 +2074,11 @@ public class OS extends javax.swing.JInternalFrame {
                 ops[1] = "Ativo";
                 ops[2] = "Fechado";
                 break;
-            case "Fechado":
-                ops = new String[2];
-                ops[0] = "Selecione";
-                ops[1] = "Ativo";
-                break;
+//            case "Fechado":
+//                ops = new String[2];
+//                ops[0] = "Selecione";
+//                ops[1] = "Ativo";
+//                break;
         }
         MudarStatus p = new MudarStatus(ops, "Mudar status da OP", "OSnormal");
         JDesktopPane desk = this.getDesktopPane();

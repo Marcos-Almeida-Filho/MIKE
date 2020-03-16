@@ -13,13 +13,13 @@ import java.awt.AWTException;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.*;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.net.http.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.*;
+import org.json.JSONObject;
 
 /**
  *
@@ -30,23 +30,26 @@ public class Clientes extends javax.swing.JInternalFrame {
     /**
      * Creates new form TelaCadastroCliente
      */
-    private final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+//    private final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
 
     public Clientes() {
         initComponents();
         readtableclientes();
         lblidrepresentante.setVisible(false);
 //        btncep.setVisible(false);
+//        btncnpj.setVisible(false);
     }
 
     private void procuraCep() {
+        final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+        
         String cep = txtcep.getText().replace("-", "");
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("https://viacep.com.br/ws/" + cep + "/json/")).build();
 
         HttpResponse<String> response;
         try {
             response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            
+
             JOptionPane.showMessageDialog(null, response.body());
 
             JSONObject obj = new JSONObject(response.body());
@@ -57,18 +60,22 @@ public class Clientes extends javax.swing.JInternalFrame {
             cbuf.setSelectedItem(obj.getString("uf"));
             txtnumero.requestFocus();
         } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Clientes.class
+                    .getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Erro!\n" + ex);
             try {
                 SendEmail.EnviarErro(ex.toString());
             } catch (AWTException | IOException ex1) {
-                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex1);
+                Logger.getLogger(Clientes.class
+                        .getName()).log(Level.SEVERE, null, ex1);
             }
         }
 
     }
-    
+
     private void procuraCnpj() {
+        final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+        
         String cnpj = txtcnpj.getText().replace("-", "");
         cnpj = cnpj.replace("/", "");
         cnpj = cnpj.replace(".", "");
@@ -81,7 +88,7 @@ public class Clientes extends javax.swing.JInternalFrame {
 //            JOptionPane.showMessageDialog(null, response);
 //            JOptionPane.showMessageDialog(null, response.body());
 //            JOptionPane.showMessageDialog(null, jsonValido);
-            
+
 //            JSONObject obj = new JSONObject(response);
 //            JOptionPane.showMessageDialog(null, obj.getString("nome"));
             JSONObject obj2 = new JSONObject(response.body());
@@ -95,10 +102,9 @@ public class Clientes extends javax.swing.JInternalFrame {
             cbuf.setSelectedItem(obj2.getString("uf"));
             txttelefone.setText(obj2.getString("telefone").replace(" ", ""));
         } catch (IOException | InterruptedException ex) {
-            Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Clientes.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
-        
-
     }
 
     public void zeracampos() {
@@ -171,7 +177,7 @@ public class Clientes extends javax.swing.JInternalFrame {
         txttelefone = new javax.swing.JFormattedTextField();
         jLabel17 = new javax.swing.JLabel();
         cbgrupo = new javax.swing.JComboBox<>();
-        jButton8 = new javax.swing.JButton();
+        btncnpj = new javax.swing.JButton();
         jLabel19 = new javax.swing.JLabel();
         txtim = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
@@ -299,10 +305,10 @@ public class Clientes extends javax.swing.JInternalFrame {
 
         cbgrupo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Consumidor Final", "Revenda" }));
 
-        jButton8.setText("Procurar CNPJ");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        btncnpj.setText("Procurar CNPJ");
+        btncnpj.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                btncnpjActionPerformed(evt);
             }
         });
 
@@ -338,7 +344,7 @@ public class Clientes extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton8)
+                                .addComponent(btncnpj)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -365,7 +371,7 @@ public class Clientes extends javax.swing.JInternalFrame {
                     .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(txtie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8)
+                    .addComponent(btncnpj)
                     .addComponent(jLabel19)
                     .addComponent(txtim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -831,7 +837,7 @@ public class Clientes extends javax.swing.JInternalFrame {
             cb.setUf(cbuf.getSelectedItem().toString());
             cb.setCep(txtcep.getText());
             cb.setIm(txtim.getText());
-            
+
             //nome, razaosocial, cnpj, ie, telefone, grupo, vendedor, idrepresentante, representante,condicaodepagamento, logradouro, numero, complemento, bairro, cidade, uf, cep, im
             cd.create(cb);
 
@@ -993,12 +999,13 @@ public class Clientes extends javax.swing.JInternalFrame {
             try {
                 procuraCep();
             } catch (Exception ex) {
-                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Clientes.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_btncepActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void btncnpjActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncnpjActionPerformed
         if (txtcnpj.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Digite um CNPJ primeiro.");
             txtcnpj.requestFocus();
@@ -1006,14 +1013,16 @@ public class Clientes extends javax.swing.JInternalFrame {
             try {
                 procuraCnpj();
             } catch (Exception ex) {
-                Logger.getLogger(Clientes.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Clientes.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_btncnpjActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btncep;
+    private javax.swing.JButton btncnpj;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cbgrupo;
     private javax.swing.JComboBox<String> cbuf;
@@ -1026,7 +1035,6 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
