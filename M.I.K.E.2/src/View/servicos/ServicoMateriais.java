@@ -19,6 +19,7 @@ import DAO.ServicoMateriaisMovimentacaoDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import Methods.SendEmail;
+import Methods.Telas;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.OS.radioreconstrucao;
@@ -610,12 +611,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         ProcurarGrupoDeProcessosServico p = new ProcurarGrupoDeProcessosServico();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -623,102 +619,60 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
         String pattern = "dd/MM/yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String data = simpleDateFormat.format(c.getTime());
-        if (txtid.getText().equals("")) {
-            //Criar material
-            ServicoMateriaisBean smb = new ServicoMateriaisBean();
-            ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
 
-            smb.setCodigo(txtcodigo.getText());
-            smb.setDescricao(txtdesc.getText());
-            smb.setEstoque(0);
-            smb.setGrupo_de_processos(txtgrupo.getText());
-            smb.setData(data);
-            //codigo, descricao, estoque, grupo_de_processos
-            smd.create(smb);
-
-            //Ler id do material criado
-            int idcriado = 0;
-
-            for (ServicoMateriaisBean smb2 : smd.readcreated(txtcodigo.getText(), data)) {
-                idcriado = smb2.getId();
-            }
-
-            //Criar movimentação inicial
-            ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
-            ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
-
-            smmb.setIdmaterial(idcriado);
-            smmb.setInicial(0);
-            smmb.setMovimentada(0);
-            smmb.setTipo("Criação");
-            smmb.setSaldo(0);
-            smmb.setData(data);
-            smmb.setUsuario(Session.nome);
-
-            //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
-            smmd.create(smmb);
-
-            //Criar documentos do material
-            ServicoMateriaisDocumentosBean smdb = new ServicoMateriaisDocumentosBean();
-            ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
-
-            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                File fileoriginal = new File(tabledocumentos.getValueAt(i, 5).toString());
-                File folder = new File("Q:/MIKE_ERP/mat_ser_arq/" + idcriado);
-                File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                folder.mkdirs();
-                try {
-                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-
-                } catch (IOException ex) {
-                    Logger.getLogger(DocumentosOrcamentoServico.class
-                            .getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-                    try {
-                        SendEmail.EnviarErro(ex.toString());
-                        JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                    } catch (HeadlessException hex) {
-                        JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
-
-                    } catch (AWTException | IOException ex1) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class
-                                .getName()).log(Level.SEVERE, null, ex1);
-                    }
-                }
-                smdb.setIdmaterial(idcriado);
-                smdb.setDescricao(tabledocumentos.getValueAt(i, 3).toString());
-                smdb.setLocal(filecopy.toString());
-
-                //idmaterial, descricao, local
-                smdd.create(smdb);
-            }
-
-            //Ações extras para deixar tela limpa e organizada
-            zeracampos();
-            tabmateriaisservico.setSelectedIndex(0);
-            readtablemateriais();
-            JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
+        if (txtcodigo.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um código.");
+            txtcodigo.requestFocus();
+        } else if (txtdesc.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite uma descrição.");
+            txtdesc.requestFocus();
+        } else if (txtgrupo.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione um grupo de processos.");
+            ProcurarGrupoDeProcessosServico p = new ProcurarGrupoDeProcessosServico();
+            Telas.AparecerTela(p);
         } else {
-            ServicoMateriaisBean smb = new ServicoMateriaisBean();
-            ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+            if (txtid.getText().equals("")) {
+                //Criar material
+                ServicoMateriaisBean smb = new ServicoMateriaisBean();
+                ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
 
-            smb.setCodigo(txtcodigo.getText());
-            smb.setDescricao(txtdesc.getText());
-            smb.setEstoque(Integer.parseInt(txtestoque.getText()));
-            smb.setGrupo_de_processos(txtgrupo.getText());
-            smb.setId(Integer.parseInt(txtid.getText()));
-            //codigo, descricao, estoque, grupo_de_processos
-            smd.update(smb);
+                smb.setCodigo(txtcodigo.getText());
+                smb.setDescricao(txtdesc.getText());
+                smb.setEstoque(0);
+                smb.setGrupo_de_processos(txtgrupo.getText());
+                smb.setData(data);
+                //codigo, descricao, estoque, grupo_de_processos
+                smd.create(smb);
 
-            //Criar documentos do material que não estavam antes no cadastro
-            ServicoMateriaisDocumentosBean smdb = new ServicoMateriaisDocumentosBean();
-            ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
+                //Ler id do material criado
+                int idcriado = 0;
 
-            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                if (tabledocumentos.getValueAt(i, 1).equals("")) {
+                for (ServicoMateriaisBean smb2 : smd.readcreated(txtcodigo.getText(), data)) {
+                    idcriado = smb2.getId();
+                }
+
+                //Criar movimentação inicial
+                ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+                ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+
+                smmb.setIdmaterial(idcriado);
+                smmb.setInicial(0);
+                smmb.setMovimentada(0);
+                smmb.setTipo("Criação");
+                smmb.setSaldo(0);
+                smmb.setData(data);
+                smmb.setUsuario(Session.nome);
+
+                //idmaterial, inicial, movimentada, tipo, saldo, data, usuario
+                smmd.create(smmb);
+
+                //Criar documentos do material
+                ServicoMateriaisDocumentosBean smdb = new ServicoMateriaisDocumentosBean();
+                ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
+
+                for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
                     File fileoriginal = new File(tabledocumentos.getValueAt(i, 5).toString());
-                    File folder = new File("Q:/MIKE_ERP/mat_ser_arq/" + txtid.getText());
+                    File folder = new File("Q:/MIKE_ERP/mat_ser_arq/" + idcriado);
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                     folder.mkdirs();
@@ -740,16 +694,72 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
                                     .getName()).log(Level.SEVERE, null, ex1);
                         }
                     }
-                    smdb.setIdmaterial(Integer.parseInt(txtid.getText()));
+                    smdb.setIdmaterial(idcriado);
                     smdb.setDescricao(tabledocumentos.getValueAt(i, 3).toString());
                     smdb.setLocal(filecopy.toString());
 
                     //idmaterial, descricao, local
                     smdd.create(smdb);
                 }
+
+                //Ações extras para deixar tela limpa e organizada
+                zeracampos();
+                tabmateriaisservico.setSelectedIndex(0);
+                readtablemateriais();
+                JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
+            } else {
+                ServicoMateriaisBean smb = new ServicoMateriaisBean();
+                ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+
+                smb.setCodigo(txtcodigo.getText());
+                smb.setDescricao(txtdesc.getText());
+                smb.setEstoque(Integer.parseInt(txtestoque.getText()));
+                smb.setGrupo_de_processos(txtgrupo.getText());
+                smb.setId(Integer.parseInt(txtid.getText()));
+                //codigo, descricao, estoque, grupo_de_processos
+                smd.update(smb);
+
+                //Criar documentos do material que não estavam antes no cadastro
+                ServicoMateriaisDocumentosBean smdb = new ServicoMateriaisDocumentosBean();
+                ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
+
+                for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                    if (tabledocumentos.getValueAt(i, 1).equals("")) {
+                        File fileoriginal = new File(tabledocumentos.getValueAt(i, 5).toString());
+                        File folder = new File("Q:/MIKE_ERP/mat_ser_arq/" + txtid.getText());
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                        folder.mkdirs();
+                        try {
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+
+                        } catch (IOException ex) {
+                            Logger.getLogger(DocumentosOrcamentoServico.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                            try {
+                                SendEmail.EnviarErro(ex.toString());
+                                JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                            } catch (HeadlessException hex) {
+                                JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+
+                            } catch (AWTException | IOException ex1) {
+                                Logger.getLogger(DocumentosOrcamentoServico.class
+                                        .getName()).log(Level.SEVERE, null, ex1);
+                            }
+                        }
+                        smdb.setIdmaterial(Integer.parseInt(txtid.getText()));
+                        smdb.setDescricao(tabledocumentos.getValueAt(i, 3).toString());
+                        smdb.setLocal(filecopy.toString());
+
+                        //idmaterial, descricao, local
+                        smdd.create(smdb);
+                    }
+                }
+                JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
             }
-            JOptionPane.showMessageDialog(rootPane, "Atualizado com sucesso!");
         }
+
         readtablemateriais();
     }//GEN-LAST:event_jButton1ActionPerformed
 

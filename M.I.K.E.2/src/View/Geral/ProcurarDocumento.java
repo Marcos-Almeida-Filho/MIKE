@@ -5,12 +5,13 @@
  */
 package View.Geral;
 
-import Methods.Files;
+import Methods.Arquivos;
 import View.compras.Insumos;
 import View.financeiro.AdicionarContasAPagar;
 import View.servicos.*;
 import java.io.File;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileSystemView;
 
 /**
  *
@@ -26,6 +27,8 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
     public ProcurarDocumento(String origin) {
         initComponents();
         origem = origin;
+        File home = FileSystemView.getFileSystemView().getHomeDirectory();
+        chooser.setCurrentDirectory(home.getAbsoluteFile());
     }
 
     /**
@@ -110,13 +113,16 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                 String filestring = fileoriginal.toString();
                 switch (origem) {
                     case "Insumos":
-                        Files.AdicionarArquivoEmTable(Insumos.tabledocumentos, filestring, this);
+                        Arquivos.AdicionarArquivoEmTable(Insumos.tabledocumentos, filestring, this);
                         break;
                     case "OS":
                         OS.lbldirectory.setText(String.valueOf(chooser.getCurrentDirectory()));
                         break;
                     case "AdicionarContasAPagar":
-                        Files.AdicionarArquivoEmTable(AdicionarContasAPagar.tabledocumentos, filestring, this);
+                        Arquivos.AdicionarArquivoEmTable(AdicionarContasAPagar.tabledocumentos, filestring, this);
+                        break;
+                    case "CotacaoServico":
+                        Arquivos.AdicionarArquivoEmTable(CotacaoServico.tabledocumentos, filestring, this);
                         break;
                     default:
                         throw new AssertionError();

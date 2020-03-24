@@ -12,8 +12,8 @@ package Bean;
 public class F_UPBean {
 
     private int id;
-    private int dav;
-    private int op;
+    private String dav;
+    private String op;
     private String cliente;
     private String dataentrega;
     private String material;
@@ -31,19 +31,19 @@ public class F_UPBean {
         this.id = id;
     }
 
-    public int getDav() {
+    public String getDav() {
         return dav;
     }
 
-    public void setDav(int dav) {
+    public void setDav(String dav) {
         this.dav = dav;
     }
 
-    public int getOp() {
+    public String getOp() {
         return op;
     }
 
-    public void setOp(int op) {
+    public void setOp(String op) {
         this.op = op;
     }
 

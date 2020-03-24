@@ -34,7 +34,7 @@ public class CAPDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO cap (datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, status) VALUES (?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO cap (datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, status, obs) VALUES (?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, capb.getDatalancamento());
             stmt.setString(2, capb.getFornecedor());
@@ -45,6 +45,7 @@ public class CAPDAO {
             stmt.setString(7, capb.getValorparcela());
             stmt.setString(8, capb.getDataparcela());
             stmt.setString(9, capb.getStatus());
+            stmt.setBoolean(10, capb.isObs());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -59,7 +60,7 @@ public class CAPDAO {
         }
     }
 
-    public List<CAPBean> readtodos() {
+    public List<CAPBean> readtodos(String dataInicio, String dataFim) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -70,7 +71,7 @@ public class CAPDAO {
         List<CAPBean> listcapb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM cap ORDER BY dataparcela");
+            stmt = con.prepareStatement("SELECT * FROM cap WHERE dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' ORDER BY dataparcela");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -89,6 +90,7 @@ public class CAPDAO {
                 capb.setBanco(rs.getString("banco"));
                 capb.setMetodo(rs.getString("metodo"));
                 capb.setStatus(rs.getString("status"));
+                capb.setObs(rs.getBoolean("obs"));
 
                 listcapb.add(capb);
             }
@@ -105,7 +107,7 @@ public class CAPDAO {
         return listcapb;
     }
     
-    public List<CAPBean> readaberto() {
+    public List<CAPBean> readTodosPesquisa(String dataInicio, String dataFim, String pesquisa) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -116,7 +118,7 @@ public class CAPDAO {
         List<CAPBean> listcapb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM cap WHERE datapagamento IS NULL ORDER BY dataparcela, fornecedor");
+            stmt = con.prepareStatement("SELECT * FROM cap WHERE dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' AND fornecedor LIKE '%" + pesquisa + "%' OR dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' AND notafiscal LIKE '%" + pesquisa + "%' ORDER BY dataparcela");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -135,6 +137,103 @@ public class CAPDAO {
                 capb.setBanco(rs.getString("banco"));
                 capb.setMetodo(rs.getString("metodo"));
                 capb.setStatus(rs.getString("status"));
+                capb.setObs(rs.getBoolean("obs"));
+
+                listcapb.add(capb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(CAPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listcapb;
+    }
+    
+    public List<CAPBean> readaberto(String dataInicio, String dataFim) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<CAPBean> listcapb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM cap WHERE dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' AND datapagamento IS NULL ORDER BY dataparcela, fornecedor");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                CAPBean capb = new CAPBean();
+
+                capb.setId(rs.getInt("id"));
+                capb.setDatalancamento(rs.getString("datalancamento"));
+                capb.setFornecedor(rs.getString("fornecedor"));
+                capb.setNumero(rs.getString("notafiscal"));
+                capb.setDataemissao(rs.getString("dataemissao"));
+                capb.setTotal(rs.getString("total"));
+                capb.setParcela(rs.getString("parcela"));
+                capb.setValorparcela(rs.getString("valorparcela"));
+                capb.setDataparcela(rs.getString("dataparcela"));
+                capb.setDatapagamento(rs.getString("datapagamento"));
+                capb.setBanco(rs.getString("banco"));
+                capb.setMetodo(rs.getString("metodo"));
+                capb.setStatus(rs.getString("status"));
+                capb.setObs(rs.getBoolean("obs"));
+
+                listcapb.add(capb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(CAPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listcapb;
+    }
+    
+    public List<CAPBean> readAbertoPesquisa(String dataInicio, String dataFim, String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<CAPBean> listcapb = new ArrayList<>();
+        
+//        SELECT * FROM `cap` WHERE fornecedor LIKE '%cap%' OR notafiscal LIKE '%cap%' AND dataparcela BETWEEN '2020-03-01' AND '2020-03-31'
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM `cap` WHERE dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' AND datapagamento IS NULL AND fornecedor LIKE '%" + pesquisa + "%' OR dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' AND datapagamento IS NULL AND notafiscal LIKE '%" + pesquisa + "%' ORDER BY dataparcela, fornecedor");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                CAPBean capb = new CAPBean();
+
+                capb.setId(rs.getInt("id"));
+                capb.setDatalancamento(rs.getString("datalancamento"));
+                capb.setFornecedor(rs.getString("fornecedor"));
+                capb.setNumero(rs.getString("notafiscal"));
+                capb.setDataemissao(rs.getString("dataemissao"));
+                capb.setTotal(rs.getString("total"));
+                capb.setParcela(rs.getString("parcela"));
+                capb.setValorparcela(rs.getString("valorparcela"));
+                capb.setDataparcela(rs.getString("dataparcela"));
+                capb.setDatapagamento(rs.getString("datapagamento"));
+                capb.setBanco(rs.getString("banco"));
+                capb.setMetodo(rs.getString("metodo"));
+                capb.setStatus(rs.getString("status"));
+                capb.setObs(rs.getBoolean("obs"));
 
                 listcapb.add(capb);
             }
@@ -186,7 +285,7 @@ public class CAPDAO {
         return listcapb;
     }
 
-    public List<CAPBean> readstatus(String status) {
+    public List<CAPBean> readstatus(String status, String dataInicio, String dataFim) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -197,7 +296,7 @@ public class CAPDAO {
         List<CAPBean> listcapb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM cap WHERE status = ?");
+            stmt = con.prepareStatement("SELECT * FROM cap WHERE status = ? AND dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' ORDER BY dataparcela, fornecedor");
             stmt.setString(1, status);
             rs = stmt.executeQuery();
 
@@ -217,6 +316,56 @@ public class CAPDAO {
                 capb.setBanco(rs.getString("banco"));
                 capb.setMetodo(rs.getString("metodo"));
                 capb.setStatus(rs.getString("status"));
+                capb.setObs(rs.getBoolean("obs"));
+
+                listcapb.add(capb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(CAPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listcapb;
+    }
+    
+    public List<CAPBean> readStatusPesquisa(String status, String dataInicio, String dataFim, String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<CAPBean> listcapb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM cap WHERE status = ? AND dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' AND fornecedor LIKE '%" + pesquisa + "%' OR status = ? AND dataparcela BETWEEN '" + dataInicio + "' AND '" + dataFim + "' AND notafiscal LIKE '%" + pesquisa + "%' ORDER BY dataparcela, fornecedor");
+            stmt.setString(1, status);
+            stmt.setString(2, status);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                CAPBean capb = new CAPBean();
+
+                capb.setId(rs.getInt("id"));
+                capb.setDatalancamento(rs.getString("datalancamento"));
+                capb.setFornecedor(rs.getString("fornecedor"));
+                capb.setNumero(rs.getString("notafiscal"));
+                capb.setDataemissao(rs.getString("dataemissao"));
+                capb.setTotal(rs.getString("total"));
+                capb.setParcela(rs.getString("parcela"));
+                capb.setValorparcela(rs.getString("valorparcela"));
+                capb.setDataparcela(rs.getString("dataparcela"));
+                capb.setDatapagamento(rs.getString("datapagamento"));
+                capb.setBanco(rs.getString("banco"));
+                capb.setMetodo(rs.getString("metodo"));
+                capb.setStatus(rs.getString("status"));
+                capb.setObs(rs.getBoolean("obs"));
 
                 listcapb.add(capb);
             }
@@ -264,6 +413,7 @@ public class CAPDAO {
                 capb.setBanco(rs.getString("banco"));
                 capb.setMetodo(rs.getString("metodo"));
                 capb.setCheque(rs.getString("cheque"));
+                capb.setObs(rs.getBoolean("obs"));
 
                 listcapb.add(capb);
             }

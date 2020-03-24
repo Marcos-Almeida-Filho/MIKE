@@ -33,10 +33,11 @@ public class RastreamentoDocumentosDocDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO rastreamento_doc_doc (iddoc, descricao, local) VALUES (?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO rastreamento_doc_doc (iddoc, descricao, local, localremoto) VALUES (?,?,?,?)");
             stmt.setInt(1, rddb.getIddoc());
             stmt.setString(2, rddb.getDescricao());
             stmt.setString(3, rddb.getLocal());
+            stmt.setString(4, rddb.getLocalremoto());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -74,6 +75,7 @@ public class RastreamentoDocumentosDocDAO {
                 rddb.setId(rs.getInt("id"));
                 rddb.setDescricao(rs.getString("descricao"));
                 rddb.setLocal(rs.getString("local"));
+                rddb.setLocalremoto(rs.getString("localremoto"));
 
                 listrddb.add(rddb);
             }

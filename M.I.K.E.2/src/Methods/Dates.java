@@ -9,6 +9,7 @@ import View.logistica.RastreamentoDocumentos;
 import com.toedter.calendar.JDateChooser;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -23,9 +24,9 @@ public class Dates {
 
     static String data = "";
     static String datanormal = "";
+    static Calendar date = Calendar.getInstance();
 
     public static String CriarDataCompletaParaDB() {
-        Calendar date = Calendar.getInstance();
         String pattern = "yyyy-MM-dd HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
@@ -34,16 +35,14 @@ public class Dates {
     }
 
     public static String CriarDataCurta() {
-        Calendar date = Calendar.getInstance();
         String pattern = "dd/MM/yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
 
         return data;
     }
-    
+
     public static String CriarDataCurtaDBSemDataExistente() {
-        Calendar date = Calendar.getInstance();
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
@@ -803,5 +802,25 @@ public class Dates {
                 Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    public static String primeiroDiaDoMes() {
+        String primeiroDia;
+
+        LocalDate today = LocalDate.now();
+
+        primeiroDia = today.withDayOfMonth(1).toString();
+
+        return primeiroDia;
+    }
+
+    public static String ultimoDiaDoMes() {
+        String primeiroDia;
+
+        LocalDate today = LocalDate.now();
+
+        primeiroDia = today.withDayOfMonth(today.lengthOfMonth()).toString();
+
+        return primeiroDia;
     }
 }

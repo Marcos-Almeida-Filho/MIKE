@@ -5,15 +5,18 @@
  */
 package View.logistica;
 
-import View.Geral.ProcuraXML;
 import Bean.RastreamentoDocumentosBean;
+import Bean.RastreamentoDocumentosObsBean;
 import Bean.RastreamentoDocumentosDocBean;
 import Connection.Session;
+import DAO.RastreamentoDocumentosObsDAO;
 import DAO.RastreamentoDocumentosDAO;
 import DAO.RastreamentoDocumentosDocDAO;
+import Methods.Arquivos;
 import Methods.Dates;
 import Methods.SendEmail;
 import Methods.Telas;
+import View.Geral.ProcuraXML;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarFornecedor;
 import static View.TelaPrincipal.jDesktopPane1;
@@ -43,10 +46,12 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     //DAOs
     static RastreamentoDocumentosDAO rdd = new RastreamentoDocumentosDAO();
     static RastreamentoDocumentosDocDAO rddd = new RastreamentoDocumentosDocDAO();
+    static RastreamentoDocumentosObsDAO rdcd = new RastreamentoDocumentosObsDAO();
 
     //Beans
     static RastreamentoDocumentosBean rdb = new RastreamentoDocumentosBean();
     static RastreamentoDocumentosDocBean rddb = new RastreamentoDocumentosDocBean();
+    static RastreamentoDocumentosObsBean rdcb = new RastreamentoDocumentosObsBean();
 
     public String userentrada;
     public int idcriado;
@@ -62,7 +67,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         String datacompleta = Dates.CriarDataCompletaParaDB();
         String datacurta = Dates.CriarDataCurtaDBSemDataExistente();
 
-        if (txtid.getText().equals("")) {
+        if (txtid.getText().equals("")) {//Se não tem ID, cria documento
 //////////////Criar documento
             //Itens Bean
             rdb.setCliente(radiocliente.isSelected());
@@ -135,6 +140,8 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             if (!txtxml.getText().equals("")) {
                 File fileoriginal = new File(txtxml.getText());
                 File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + idcriado);
+                String folderFtp = "MIKE/ras_doc_arq/" + idcriado;
+                String fileFtp = folderFtp + "/" + fileoriginal.getName();
                 File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                 folder.mkdirs();
@@ -157,11 +164,19 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
                 //xml = ? WHERE id = ?
                 rdd.updatexml(rdb);
+
+                try {
+                    Arquivos.subirArquivoFTP(fileoriginal.getAbsolutePath(), fileFtp, folderFtp);
+                } catch (IOException ex) {
+                    Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             //Loop para número de itens na tabledocumentos
             for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
                 File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
                 File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + idcriado);
+                String folderFtp = "MIKE/ras_doc_arq/" + idcriado;
+                String fileFtp = folderFtp + "/" + fileoriginal.getName();
                 File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                 folder.mkdirs();
@@ -182,12 +197,31 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 rddb.setIddoc(idcriado);
                 rddb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
                 rddb.setLocal(filecopy.toString());
+                rddb.setLocalremoto("speedcut.com.br/" + folderFtp);
 
-                //iddoc, descricao, local
+                //iddoc, descricao, local, localremoto
                 rddd.create(rddb);
+
+                try {
+                    Arquivos.subirArquivoFTP(fileoriginal.getAbsolutePath(), fileFtp, folderFtp);
+                } catch (IOException ex) {
+                    Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+
+            //Loop para comentários
+            for (int i = 0; i < tablecomentarios.getRowCount(); i++) {
+                rdcb.setIdrastreamento(idcriado);
+                rdcb.setUsuario(tablecomentarios.getValueAt(i, 1).toString());
+                rdcb.setData(Dates.CriarDataCurtaDBComDataExistente(tablecomentarios.getValueAt(i, 2).toString()));
+                rdcb.setObs(tablecomentarios.getValueAt(i, 3).toString());
+
+                //idrastreamento, funcionario, data, comentario
+                rdcd.create(rdcb);
+            }
+
             JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
-        } else {//Se o item já tem ID
+        } else {//Se o item já tem ID, atualiza
             //Variável ID
             int id = Integer.parseInt(txtid.getText());
 
@@ -225,6 +259,8 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 if (tabledocumentos.getValueAt(i, 0).equals("")) {
                     File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
                     File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + id);
+                    String folderFtp = "MIKE/ras_doc_arq/" + idcriado;
+                    String fileFtp = folderFtp + "/" + fileoriginal.getName();
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                     folder.mkdirs();
@@ -245,11 +281,32 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     rddb.setIddoc(id);
                     rddb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
                     rddb.setLocal(filecopy.toString());
+                    rddb.setLocalremoto("speedcut.com.br/" + folderFtp);
 
-                    //iddoc, descricao, local
+                    //iddoc, descricao, local, localremoto
                     rddd.create(rddb);
+
+                    try {
+                        Arquivos.subirArquivoFTP(fileoriginal.getAbsolutePath(), fileFtp, folderFtp);
+                    } catch (IOException ex) {
+                        Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
+
+            //Loop para comentários
+            for (int i = 0; i < tablecomentarios.getRowCount(); i++) {
+                if (tablecomentarios.getValueAt(i, 0).equals("")) {
+                    rdcb.setIdrastreamento(id);
+                    rdcb.setUsuario(tablecomentarios.getValueAt(i, 1).toString());
+                    rdcb.setData(Dates.CriarDataCurtaDBComDataExistente(tablecomentarios.getValueAt(i, 2).toString()));
+                    rdcb.setObs(tablecomentarios.getValueAt(i, 3).toString());
+
+                    //idrastreamento, funcionario, data, comentario
+                    rdcd.create(rdcb);
+                }
+            }
+
             JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         }
     }
@@ -377,8 +434,23 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 false,
                 rddb.getDescricao(),
                 rddb.getLocal(),
-                ""
+                "",
+                rddb.getLocalremoto()
             });
+        });
+    }
+
+    public static void readComentariosDoDocumento() {
+        DefaultTableModel modeldoc = (DefaultTableModel) tablecomentarios.getModel();
+
+        modeldoc.setNumRows(0);
+
+        rdcd.read(Integer.parseInt(txtid.getText())).forEach((RastreamentoDocumentosObsBean rdcb) -> {
+            modeldoc.addRow(new Object[]{
+                rdcb.getId(),
+                rdcb.getUsuario(),
+                Dates.TransformarDataCurtaDoDB(rdcb.getData()),
+                rdcb.getObs(),});
         });
     }
 
@@ -481,6 +553,10 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         txtxml = new javax.swing.JTextField();
         btnxml = new javax.swing.JButton();
+        jPanel10 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tablecomentarios = new javax.swing.JTable();
+        jButton8 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
 
@@ -882,14 +958,14 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Descrição", "Local", "Local Original"
+                "ID", "", "Descrição", "Local", "Local Original", "Local Remoto"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -916,6 +992,9 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             tabledocumentos.getColumnModel().getColumn(4).setMinWidth(0);
             tabledocumentos.getColumnModel().getColumn(4).setPreferredWidth(0);
             tabledocumentos.getColumnModel().getColumn(4).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(5).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(5).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(5).setMaxWidth(0);
         }
 
         jButton5.setText("Adicionar Documento");
@@ -978,6 +1057,63 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         );
 
         jTabbedPane2.addTab("Documentos", jPanel8);
+
+        tablecomentarios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Funcionário", "Data", "Comentário"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(tablecomentarios);
+        if (tablecomentarios.getColumnModel().getColumnCount() > 0) {
+            tablecomentarios.getColumnModel().getColumn(0).setMinWidth(0);
+            tablecomentarios.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tablecomentarios.getColumnModel().getColumn(0).setMaxWidth(0);
+            tablecomentarios.getColumnModel().getColumn(1).setMinWidth(100);
+            tablecomentarios.getColumnModel().getColumn(1).setPreferredWidth(100);
+            tablecomentarios.getColumnModel().getColumn(1).setMaxWidth(100);
+            tablecomentarios.getColumnModel().getColumn(2).setMinWidth(75);
+            tablecomentarios.getColumnModel().getColumn(2).setPreferredWidth(75);
+            tablecomentarios.getColumnModel().getColumn(2).setMaxWidth(75);
+        }
+
+        jButton8.setText("Adicionar Comentário");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton8)
+                .addContainerGap())
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton8)
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab("Observações", jPanel10);
 
         jButton4.setText("Histórico de Alterações");
 
@@ -1105,35 +1241,35 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtemitente.getText().equals("")) {
+        if (txtemitente.getText().equals("")) {//Se não tem emitente selecionado
             JOptionPane.showMessageDialog(null, "Escolha ou digite um emitente!");
-        } else if (txtemissao.getCalendar() == null) {
+        } else if (txtemissao.getCalendar() == null) {//Se não tem data de emissão
             JOptionPane.showMessageDialog(null, "Coloque uma data de emissão!");
             txtemissao.requestFocus();
-        } else if (!radionf.isSelected() && !radioconta.isSelected() && !radiooutrostipo.isSelected()) {
+        } else if (!radionf.isSelected() && !radioconta.isSelected() && !radiooutrostipo.isSelected()) {//Se nenhum radio está selecionado
             JOptionPane.showMessageDialog(null, "Selecione pelo menos um tipo de documento!");
-        } else if (tabledocumentos.getRowCount() == 0) {
+        } else if (tabledocumentos.getRowCount() == 0) {//Se não existem documentos
             JOptionPane.showMessageDialog(null, "Inclua o PDF do Documento!");
-        } else if (rdd.readduplicate(txtemitente.getText(), txtnumero.getText()) && txtid.getText().equals("")) {
+        } else if (rdd.readduplicate(txtemitente.getText(), txtnumero.getText()) && txtid.getText().equals("")) {//Se existe um documento para o emitente com o mesmo número
             JOptionPane.showMessageDialog(null, "Documento já lançado anteriormente!");
-        } else if (!checkpagamento.isSelected()) {
+        } else if (!checkpagamento.isSelected()) {//Se não está selecionado para pagamento
             int resp = JOptionPane.showConfirmDialog(null, "O Documento não está marcado para pagamento. Está correto?", "Sem pagamento", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            if (resp == 0) {
+            if (resp == 0) {//Se realmente não tem pagamento
                 salvarrastreamento();
-            } else {
+            } else {//Se tem pagamento e não foi selecionado anteriormente
                 checkpagamento.setSelected(true);
                 salvarrastreamento();
 
-                if (txtid.getText().equals("")) {
+                if (txtid.getText().equals("")) {//Se não tem ID, envia e-mail
                     JOptionPane.showMessageDialog(null, "Enviando e-mail para aprovação.");
 
                     SendEmail.EnviarAviso("diretoria@speedcut.com.br", "Documento lançado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi lançado por " + Session.nome + " e necessita de aprovação");
                 }
             }
-        } else {
+        } else {//Se está selecionado para pagamento
             salvarrastreamento();
 
-            if (txtid.getText().equals("")) {
+            if (txtid.getText().equals("")) {//Se não tem ID, envia e-mail
                 JOptionPane.showMessageDialog(null, "Enviando e-mail para aprovação.");
 
                 SendEmail.EnviarAviso("diretoria@speedcut.com.br", "Documento lançado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi lançado por " + Session.nome + " e necessita de aprovação");
@@ -1190,6 +1326,9 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             //Buscar Documentos do Documento
             readdocumentosdodocumento();
 
+            //Buscar comentários do Documento
+            readComentariosDoDocumento();
+
             radios();
 
             if (Session.nivel.equals("Administrador") && !checkpagamento.isSelected()) {
@@ -1212,23 +1351,34 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
         if (evt.getClickCount() == 2) {
             Desktop desk = Desktop.getDesktop();
+
             if (tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).equals("")) {
                 try {
                     desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4)));
                 } catch (IOException ex) {
                     Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo!\n" + ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
                     try {
                         SendEmail.EnviarErro(ex.toString());
                     } catch (AWTException | IOException ex1) {
                         Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
                     }
+                    JOptionPane.showMessageDialog(null, "Tentando abrir arquivo remotamente.");
+                    Arquivos.abrirArquivoFTP(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 5).toString());
                 }
             } else {
                 try {
                     desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
                 } catch (IOException ex) {
                     Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
+                    try {
+                        SendEmail.EnviarErro(ex.toString());
+                    } catch (AWTException | IOException ex1) {
+                        Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+                    JOptionPane.showMessageDialog(null, "Tentando abrir arquivo remotamente.");
+                    Arquivos.abrirArquivoFTP(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 5).toString());
                 }
             }
         }
@@ -1302,6 +1452,19 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        String comment = JOptionPane.showInputDialog(null, "Digite seu comentário", "Adicionar Comentário", JOptionPane.YES_NO_OPTION);
+        if (comment.length() > 0) {
+            DefaultTableModel modelcomment = (DefaultTableModel) tablecomentarios.getModel();
+            modelcomment.addRow(new Object[]{
+                "",
+                Session.nome,
+                Dates.CriarDataCurta(),
+                comment
+            });
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup GroupEmitente;
@@ -1319,12 +1482,14 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1336,6 +1501,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane2;
     public static javax.swing.JRadioButton radiocliente;
     public static javax.swing.JRadioButton radioconta;
@@ -1345,6 +1511,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     public static javax.swing.JRadioButton radiooutrostipo;
     private static javax.swing.JRadioButton radiovazio;
     private javax.swing.JTabbedPane tabdocs;
+    private static javax.swing.JTable tablecomentarios;
     public static javax.swing.JTable tabledocs;
     public static javax.swing.JTable tabledocumentos;
     public static javax.swing.JTable tablehistorico;

@@ -7,10 +7,12 @@ package View.financeiro;
 
 import Bean.CAPBean;
 import Bean.CAPDocumentosBean;
+import Bean.CAPObsBean;
 import Bean.RastreamentoDocumentosBean;
 import Connection.Session;
 import DAO.CAPDAO;
 import DAO.CAPDocumentosDAO;
+import DAO.CAPObsDAO;
 import DAO.RastreamentoDocumentosDAO;
 import Methods.Dates;
 import Methods.SendEmail;
@@ -44,6 +46,25 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
      * Creates new form AdicionarContasPagar
      */
     public static int idrastreamento = 0;
+
+    //DAO e Bean para salvar
+    CAPDAO cd = new CAPDAO();
+    CAPBean cb = new CAPBean();
+
+    //DAO e Bean para salvar documentos
+    CAPDocumentosDAO cdd = new CAPDocumentosDAO();
+    CAPDocumentosBean cdb = new CAPDocumentosBean();
+
+    //DAO e Bean para salvar obs
+    CAPObsDAO cod = new CAPObsDAO();
+    CAPObsBean cob = new CAPObsBean();
+
+    //DAO e Bean para atualizar Rastreio de Documento
+    RastreamentoDocumentosDAO rdd = new RastreamentoDocumentosDAO();
+    RastreamentoDocumentosBean rdb = new RastreamentoDocumentosBean();
+
+    //Variável para o ID
+    int id = 0;
 
     public AdicionarContasAPagar() {
         initComponents();
@@ -322,7 +343,15 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
             new String [] {
                 "Usuário", "Data", "Observação"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane3.setViewportView(tableobs);
         if (tableobs.getColumnModel().getColumnCount() > 0) {
             tableobs.getColumnModel().getColumn(0).setMinWidth(200);
@@ -503,6 +532,8 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         //Total das parcelas
         BigDecimal parcelatotal = new BigDecimal("0");
         parcelatotal = parcelatotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        
+        boolean obs = false;
 
         //Verificar se os campos tem valores e então somar para comparar depois
         if (!txttotal.getText().equals("") && tableparcelas.getRowCount() > 0) {
@@ -547,18 +578,6 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                 txttotal.selectAll();
             }
         } else {//Caso tudo esteja correto, procede para salvar
-            //DAO e Bean para salvar
-            CAPDAO cd = new CAPDAO();
-            CAPBean cb = new CAPBean();
-
-            //DAO e Bean para salvar documento
-            CAPDocumentosDAO cdd = new CAPDocumentosDAO();
-            CAPDocumentosBean cdb = new CAPDocumentosBean();
-
-            //DAO e Bean para atualizar Rastreio de Documento
-            RastreamentoDocumentosDAO rdd = new RastreamentoDocumentosDAO();
-            RastreamentoDocumentosBean rdb = new RastreamentoDocumentosBean();
-
             //Criar data de lançamento
             String data = Dates.CriarDataCompletaParaDB();
 
@@ -585,17 +604,18 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                 cb.setValorparcela(tableparcelas.getValueAt(i, 2).toString());
                 cb.setDataparcela(Dates.CriarDataCurtaDBComDataExistente(tableparcelas.getValueAt(i, 1).toString()));
                 cb.setStatus("Ativo");
+                if (tableobs.getRowCount() > 0) {
+                    obs = true;
+                }
+                cb.setObs(obs);
 
-                //datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, status
+                //datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, status, obs
                 cd.create(cb);
 
-                //Variável para o ID
-                int id = 0;
-
                 //Colocar valor na variável ID
-                for (CAPBean cb2 : cd.readcreated(data)) {
-                    id = cb2.getId();
-                }
+                cd.readcreated(data).forEach(cb -> {
+                    id = cb.getId();
+                });
 
                 //Criar Documentos para o ID
                 for (int j = 0; j < tabledocumentos.getRowCount(); j++) {
@@ -626,6 +646,17 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
                     //idcap, descricao, local
                     cdd.create(cdb);
+                }
+
+                //Criar Obs para o ID
+                for (int j = 0; j < tableobs.getRowCount(); j++) {
+                    cob.setIdcap(id);
+                    cob.setUsuario(tableobs.getValueAt(j, 0).toString());
+                    cob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(j, 1).toString()));
+                    cob.setObs(tableobs.getValueAt(j, 2).toString());
+                    
+                    //idcap, usuario, data, obs
+                    cod.create(cob);
                 }
             }
 

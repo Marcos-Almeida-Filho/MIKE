@@ -5,14 +5,7 @@
  */
 package View.servicos;
 
-import Bean.OSProcessosBean;
-import Bean.ServicoGrupoDeProcessosBean;
-import Bean.ServicoGrupoDeProcessosItensBean;
 import Bean.ServicoMateriaisBean;
-import Bean.ServicoMateriaisDocumentosBean;
-import DAO.OSProcessosDAO;
-import DAO.ServicoGrupoDeProcessosDAO;
-import DAO.ServicoGrupoDeProcessosItensDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.ServicoMateriaisDocumentosDAO;
 import javax.swing.table.DefaultTableModel;
@@ -180,10 +173,10 @@ public class ProcuraItemOS extends javax.swing.JInternalFrame {
 
             //Colocar documentos do material selecionado na OS
             ServicoMateriaisDocumentosDAO smdd = new ServicoMateriaisDocumentosDAO();
-            
+
             DefaultTableModel modeld = (DefaultTableModel) OS.tabledocumentos.getModel();
             modeld.setNumRows(0);
-            for(ServicoMateriaisDocumentosBean smdb : smdd.read(Integer.parseInt(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 0).toString()))) {
+            smdd.read(Integer.parseInt(tableitemservico.getValueAt(tableitemservico.getSelectedRow(), 0).toString())).forEach((smdb) -> {
                 modeld.addRow(new Object[]{
                     false,
                     "",
@@ -191,62 +184,62 @@ public class ProcuraItemOS extends javax.swing.JInternalFrame {
                     "",
                     smdb.getLocal()
                 });
-            }
-            
-            //Excluir antigos processos
-            //DAO e Bean para excluir processos
-            OSProcessosDAO opd = new OSProcessosDAO();
-            OSProcessosBean opb = new OSProcessosBean();
-            
-            //Loop para excluir os processos
-            for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
-                opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
-                
-                //id = ?
-                opd.delete(opb);
-            }
-            
-            //Descobrir grupo e colocar processos do grupo na OS
-            ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+            });
 
-            String grupo = "";
-            for (ServicoMateriaisBean smb : smd.readgrupo(codigo)) {
-                grupo = smb.getGrupo_de_processos();
-            }
-            
-            ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
-            
-            int idgrupo = 0;
-            for(ServicoGrupoDeProcessosBean sgpb : sgpd.readidgrupo(grupo)){
-                idgrupo = sgpb.getId();
-            }
-            
+//            //Excluir antigos processos
+//            //DAO e Bean para excluir processos
+//            OSProcessosDAO opd = new OSProcessosDAO();
+//            OSProcessosBean opb = new OSProcessosBean();
+//            
+//            //Loop para excluir os processos
+//            for (int i = 0; i < OS.tableprocessos.getRowCount(); i++) {
+//                opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
+//                
+//                //id = ?
+//                opd.delete(opb);
+//            }
+//            
+//            //Descobrir grupo e colocar processos do grupo na OS
+//            ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+//
+//            String grupo = "";
+//            for (ServicoMateriaisBean smb : smd.readgrupo(codigo)) {
+//                grupo = smb.getGrupo_de_processos();
+//            }
+//            
+//            ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
+//            
+//            int idgrupo = 0;
+//            for(ServicoGrupoDeProcessosBean sgpb : sgpd.readidgrupo(grupo)){
+//                idgrupo = sgpb.getId();
+//            }
+//            
             DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
             model.setNumRows(0);
-            
-            ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
-            
-            int ordem = 0;
-            
-            for(ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(idgrupo)) {
-                model.addRow(new Object[]{
-                    false,
-                    "",
-                    sgpib.getProcesso(),
-                    "",
-                    "",
-                    0,
-                    0,
-                    "",
-                    ordem,
-                    0
-                });
-                ordem++;
-            }
-            
+//            
+//            ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
+//            
+//            int ordem = 0;
+//            
+//            for(ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(idgrupo)) {
+            model.addRow(new Object[]{
+                false,
+                "",
+                "Separação de Material",
+                "",
+                "",
+                0,
+                0,
+                "",
+                0,
+                0
+            });
+//                ordem++;
+//            }
+
             //Colocar foco na quantidade
             OS.txtinicial.requestFocus();
-            
+
             //Fechar tela
             dispose();
         }

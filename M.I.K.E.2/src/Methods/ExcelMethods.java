@@ -7,10 +7,14 @@ package Methods;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -23,7 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author Marcos Filho
  */
-public class Excel {
+public class ExcelMethods {
 
     String cellAdress;
 
@@ -143,5 +147,32 @@ public class Excel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void exportTable(JTable table, File file, int col) throws IOException {
+        File home = FileSystemView.getFileSystemView().getHomeDirectory();
+        File filePronto = new File(home + file.toString());
+        
+        TableModel model = table.getModel();
+        FileWriter out = new FileWriter(filePronto);
+
+        for (int i = col; i < model.getColumnCount(); i++) {
+            out.write(model.getColumnName(i) + "\t");
+        }
+        out.write("\n");
+        
+        for (int i = 0; i < model.getRowCount(); i++) {
+            for (int j = col; j < model.getColumnCount(); j++) {
+                if (model.getValueAt(i, j) != null) {
+                    out.write(model.getValueAt(i, j).toString() + "\t");
+                } else {
+                    out.write(" \t");
+                }
+            }
+            out.write("\n");
+        }
+        out.close();
+        JOptionPane.showMessageDialog(null, "Arquivo salvo em " + filePronto);
+//        System.out.println("write out to: " + file);
     }
 }

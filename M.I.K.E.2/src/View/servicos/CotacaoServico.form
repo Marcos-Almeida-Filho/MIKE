@@ -1010,8 +1010,8 @@
                               <Properties>
                                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                                   <Table columnCount="5" rowCount="0">
-                                    <Column editable="true" title="" type="java.lang.Boolean"/>
                                     <Column editable="false" title="Id" type="java.lang.Object"/>
+                                    <Column editable="true" title="" type="java.lang.Boolean"/>
                                     <Column editable="false" title="Descri&#xe7;&#xe3;o" type="java.lang.Object"/>
                                     <Column editable="false" title="Local" type="java.lang.Object"/>
                                     <Column editable="false" title="Local Original" type="java.lang.Object"/>
@@ -1019,12 +1019,12 @@
                                 </Property>
                                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                                   <TableColumnModel selectionModel="0">
-                                    <Column maxWidth="40" minWidth="40" prefWidth="-1" resizable="true">
+                                    <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
                                       <Title/>
                                       <Editor/>
                                       <Renderer/>
                                     </Column>
-                                    <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
+                                    <Column maxWidth="40" minWidth="40" prefWidth="-1" resizable="true">
                                       <Title/>
                                       <Editor/>
                                       <Renderer/>

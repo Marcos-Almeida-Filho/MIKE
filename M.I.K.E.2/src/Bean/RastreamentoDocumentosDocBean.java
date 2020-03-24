@@ -16,6 +16,7 @@ public class RastreamentoDocumentosDocBean {
     private int iddoc;
     private String descricao;
     private String local;
+    private String localremoto;
 
     public int getId() {
         return id;
@@ -48,6 +49,13 @@ public class RastreamentoDocumentosDocBean {
     public void setLocal(String local) {
         this.local = local;
     }
-    
+
+    public String getLocalremoto() {
+        return localremoto;
+    }
+
+    public void setLocalremoto(String localremoto) {
+        this.localremoto = localremoto;
+    }
     
 }

@@ -5,11 +5,10 @@
  */
 package View.servicos;
 
+import Bean.F_UPBean;
 import Bean.OSBean;
 import Bean.OSDocumentosBean;
 import Bean.OSProcessosBean;
-import Bean.ServicoGrupoDeProcessosBean;
-import Bean.ServicoGrupoDeProcessosItensBean;
 import Bean.ServicoMateriaisBean;
 import Bean.ServicoMateriaisDocumentosBean;
 import Bean.ServicoMateriaisMovimentacaoBean;
@@ -18,11 +17,10 @@ import Bean.ServicoPedidoDocumentosBean;
 import Bean.ServicoPedidoItensBean;
 import Bean.ServicoPedidoItensNFBean;
 import Connection.Session;
+import DAO.F_UPDAO;
 import DAO.OSDAO;
 import DAO.OSDocumentosDAO;
 import DAO.OSProcessosDAO;
-import DAO.ServicoGrupoDeProcessosDAO;
-import DAO.ServicoGrupoDeProcessosItensDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.ServicoMateriaisDocumentosDAO;
 import DAO.ServicoMateriaisMovimentacaoDAO;
@@ -30,15 +28,16 @@ import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import DAO.ServicoPedidoItensNFDAO;
-import Methods.InternalFrameProcura;
 import Methods.Numeros;
 import Methods.SendEmail;
+import Methods.Telas;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarCondicaoDePagamento;
 import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
+import View.servicos.OS;
 import static View.servicos.OS.radioreconstrucao;
 import static View.servicos.OS.radiotopo;
 import static View.servicos.OS.txtcodigo;
@@ -1033,52 +1032,27 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
     private void BtnProcurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnProcurarActionPerformed
         ProcurarCliente p = new ProcurarCliente("ServiçoPedido");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_BtnProcurarActionPerformed
 
     private void BtnCondicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCondicaoActionPerformed
         ProcurarCondicaoDePagamento p = new ProcurarCondicaoDePagamento("ServiçoPedido");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_BtnCondicaoActionPerformed
 
     private void BtnRepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRepresentanteActionPerformed
         ProcurarRepresentante p = new ProcurarRepresentante("ServiçoPedido");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_BtnRepresentanteActionPerformed
 
     private void BtnVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVendedorActionPerformed
         ProcurarVendedor p = new ProcurarVendedor("ServiçoPedido");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_BtnVendedorActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         ItemPedidoServico p = new ItemPedidoServico();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
@@ -1094,12 +1068,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         DocumentosPedidoServico d = new DocumentosPedidoServico();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(d);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = d.getSize();
-        d.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        d.setVisible(true);
+        Telas.AparecerTela(d);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -1918,43 +1887,62 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         odd.create(odb);
                     }
 
-                    //Descobrir grupo e colocar processos do grupo na OS
-                    String grupo = "";
-                    for (ServicoMateriaisBean smb : smd.readgrupo(tableitensorcamento.getValueAt(i, 2).toString())) {
-                        grupo = smb.getGrupo_de_processos();
-                    }
-
-                    ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
-
-                    int idgrupo = 0;
-                    for (ServicoGrupoDeProcessosBean sgpb : sgpd.readidgrupo(grupo)) {
-                        idgrupo = sgpb.getId();
-                    }
-
-                    ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
-
-                    int ordem = 0;
-
+//                    //Descobrir grupo e colocar processos do grupo na OS
+//                    String grupo = "";
+//                    for (ServicoMateriaisBean smb : smd.readgrupo(tableitensorcamento.getValueAt(i, 2).toString())) {
+//                        grupo = smb.getGrupo_de_processos();
+//                    }
+//
+//                    ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
+//
+//                    int idgrupo = 0;
+//                    for (ServicoGrupoDeProcessosBean sgpb : sgpd.readidgrupo(grupo)) {
+//                        idgrupo = sgpb.getId();
+//                    }
+//
+//                    ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
+//
+//                    int ordem = 0;
+//
                     OSProcessosDAO opd = new OSProcessosDAO();
                     OSProcessosBean opb = new OSProcessosBean();
+//
+//                    for (ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(idgrupo)) {
+//
+                    String processo = "Separação de material";
 
-                    for (ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(idgrupo)) {
+                    opb.setIdos(oscriada);
+                    opb.setProcesso(processo);
+                    opb.setInicio("");
+                    opb.setTermino("");
+                    opb.setQtdok(0);
+                    opb.setQtdnaook(0);
+                    opb.setUsuario("");
+                    opb.setOrdem(0);
+                    opb.setDisponivel(tableitensorcamento.getValueAt(i, 4).toString());
 
-                        opb.setIdos(oscriada);
-                        opb.setProcesso(sgpib.getProcesso());
-                        opb.setInicio("");
-                        opb.setTermino("");
-                        opb.setQtdok(0);
-                        opb.setQtdnaook(0);
-                        opb.setUsuario("");
-                        opb.setOrdem(ordem);
-                        opb.setDisponivel(tableitensorcamento.getValueAt(i, 4).toString());
+                    //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
+                    opd.create(opb);
+//
+//                        ordem++;
+//                    }
 
-                        //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
-                        opd.create(opb);
+                    F_UPDAO fd = new F_UPDAO();
+                    F_UPBean fb = new F_UPBean();
 
-                        ordem++;
-                    }
+                    fb.setDav(txtnumeropedido.getText());
+                    fb.setOp(oscriada);
+                    fb.setDataentrega(data);
+                    fb.setMaterial(tableitensorcamento.getValueAt(i, 2).toString());
+                    fb.setProcesso(processo);
+                    fb.setDatacriacao(oscriada);
+                    fb.setNivel(3);
+                    fb.setValor(Double.parseDouble(tableitensorcamento.getValueAt(i, 6).toString()));
+                    fb.setObservacao("");
+                    fb.setCliente(txtclientepedido.getText());
+
+                    //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
+                    fd.create(fb);
                 }
             }
             readitenscobranca();
@@ -2030,7 +2018,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void txtclientepedidoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtclientepedidoKeyReleased
-        InternalFrameProcura.procuraCliente(txtclientepedido, "ServiçoPedido");
+        //InternalFrameProcura.procuraCliente(txtclientepedido, "ServiçoPedido");
     }//GEN-LAST:event_txtclientepedidoKeyReleased
 
 

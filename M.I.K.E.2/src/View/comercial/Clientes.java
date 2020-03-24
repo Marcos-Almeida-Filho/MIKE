@@ -31,6 +31,9 @@ public class Clientes extends javax.swing.JInternalFrame {
      * Creates new form TelaCadastroCliente
      */
 //    private final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+    //DAO e Bean para criar
+    static ClientesBean cb = new ClientesBean();
+    static ClientesDAO cd = new ClientesDAO();
 
     public Clientes() {
         initComponents();
@@ -42,7 +45,7 @@ public class Clientes extends javax.swing.JInternalFrame {
 
     private void procuraCep() {
         final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-        
+
         String cep = txtcep.getText().replace("-", "");
         HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create("https://viacep.com.br/ws/" + cep + "/json/")).build();
 
@@ -70,12 +73,11 @@ public class Clientes extends javax.swing.JInternalFrame {
                         .getName()).log(Level.SEVERE, null, ex1);
             }
         }
-
     }
 
     private void procuraCnpj() {
         final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
-        
+
         String cnpj = txtcnpj.getText().replace("-", "");
         cnpj = cnpj.replace("/", "");
         cnpj = cnpj.replace(".", "");
@@ -132,7 +134,6 @@ public class Clientes extends javax.swing.JInternalFrame {
     public static void readtableclientes() {
         DefaultTableModel model = (DefaultTableModel) tableclientes.getModel();
         model.setNumRows(0);
-        ClientesDAO cd = new ClientesDAO();
 
         cd.preenchertabelaclientes().forEach((cb) -> {
             model.addRow(new Object[]{
@@ -159,6 +160,8 @@ public class Clientes extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableclientes = new javax.swing.JTable();
+        jPanel10 = new javax.swing.JPanel();
+        txtpesquisa = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
@@ -226,6 +229,10 @@ public class Clientes extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Cadastro de Clientes");
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
         tableclientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -254,15 +261,42 @@ public class Clientes extends javax.swing.JInternalFrame {
             tableclientes.getColumnModel().getColumn(0).setMaxWidth(40);
         }
 
+        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
+
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtpesquisa, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1261, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE))
         );
 
         tabclientes.addTab("Clientes", jPanel2);
@@ -795,10 +829,6 @@ public class Clientes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        //DAO e Bean para criar
-        ClientesBean cb = new ClientesBean();
-        ClientesDAO cd = new ClientesDAO();
-
         if (cbuf.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Coloque o endereço completo do Cliente!");
             cbuf.showPopup();
@@ -899,8 +929,6 @@ public class Clientes extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             txtidcliente.setText(tableclientes.getValueAt(tableclientes.getSelectedRow(), 0).toString());
             tabclientes.setSelectedIndex(1);
-
-            ClientesDAO cd = new ClientesDAO();
 
             cd.click(Integer.parseInt(txtidcliente.getText())).forEach((ClientesBean cb) -> {
                 txtnomecliente.setText(cb.getNome());
@@ -1019,6 +1047,19 @@ public class Clientes extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btncnpjActionPerformed
 
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        DefaultTableModel model = (DefaultTableModel) tableclientes.getModel();
+        model.setNumRows(0);
+        
+        cd.pesquisa(txtpesquisa.getText()).forEach(cb -> {
+            model.addRow(new Object[]{
+                cb.getId(),
+                cb.getNome(),
+                cb.getRazaosocial()
+            });
+        });
+    }//GEN-LAST:event_txtpesquisaKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btncep;
@@ -1056,6 +1097,7 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1085,6 +1127,7 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtlogradouro;
     private javax.swing.JTextField txtnomecliente;
     private javax.swing.JTextField txtnumero;
+    private javax.swing.JTextField txtpesquisa;
     private javax.swing.JTextField txtrazao;
     public static javax.swing.JTextField txtrepresentante;
     private javax.swing.JFormattedTextField txttelefone;

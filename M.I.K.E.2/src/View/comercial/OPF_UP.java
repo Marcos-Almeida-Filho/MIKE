@@ -314,8 +314,8 @@ public class OPF_UP extends javax.swing.JInternalFrame {
         F_UPDAO fud = new F_UPDAO();
         F_UPBean fub = new F_UPBean();
         
-        fub.setDav(Integer.parseInt(txtdav.getText()));
-        fub.setOp(Integer.parseInt(txtop.getText()));
+        fub.setDav(txtdav.getText());
+        fub.setOp(txtop.getText());
         fub.setMaterial(txtmaterial.getText());
         fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(dateentrega.getDate()));
         fub.setCliente(txtcliente.getText());

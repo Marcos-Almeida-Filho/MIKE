@@ -5,7 +5,7 @@
  */
 package View.Geral;
 
-import Methods.Excel;
+import Methods.ExcelMethods;
 import View.financeiro.Extratos;
 import java.io.File;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -72,7 +72,7 @@ public class ProcurarExtrato extends javax.swing.JInternalFrame {
             String filestring = fileoriginal.toString();
             switch (origem) {
                 case "Extratos":
-                    Excel excel = new Excel();
+                    ExcelMethods excel = new ExcelMethods();
                     switch (Extratos.txtbanco.getText()) {
                         case "Bradesco":
                             excel.readExtrato(filestring, Extratos.tableextratobradesco);

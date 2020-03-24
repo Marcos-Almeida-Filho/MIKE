@@ -25,6 +25,7 @@ public class CAPBean {
     private String metodo;
     private String status;
     private String cheque;
+    private boolean obs;
 
     public int getId() {
         return id;
@@ -136,6 +137,14 @@ public class CAPBean {
 
     public void setCheque(String cheque) {
         this.cheque = cheque;
+    }
+
+    public boolean isObs() {
+        return obs;
+    }
+
+    public void setObs(boolean obs) {
+        this.obs = obs;
     }
 
 }

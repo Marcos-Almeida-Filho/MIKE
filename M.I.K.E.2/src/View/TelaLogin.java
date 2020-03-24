@@ -8,17 +8,22 @@ package View;
 import Bean.UsuariosBean;
 import Connection.Session;
 import DAO.UsuariosDAO;
+import Methods.SendEmail;
 import static View.TelaPrincipal.lblnome;
+import View.comercial.Clientes;
+import java.awt.AWTException;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.json.JSONObject;
 
 /**
  *
@@ -61,7 +66,7 @@ public class TelaLogin extends javax.swing.JFrame {
             TelaPrincipal tela = new TelaPrincipal();
 
             //Setar título da TelaPrincipal
-            tela.setTitle("M.I.K.E. version 1.0.0 - Usuário: " + Session.nome + " - Nível de Acesso: " + Session.nivel);
+            tela.setTitle("M.I.K.E. version 1.6.0 - Usuário: " + Session.nome + " - Nível de Acesso: " + Session.nivel);
 
             //Mensagem de boas-vindas
             lblnome.setText("Bem vindo(a) " + Session.nome + "!");
@@ -246,21 +251,50 @@ public class TelaLogin extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 //        GrupoDeUsuariosBean.getNumberMethodsBoolean();
-        Date today = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        Date venc = null;
+////        Date today = new Date();
+////        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+////        Date venc = null;
+////        try {
+////            venc = dateFormat.parse("2019/11/02");
+////        } catch (ParseException ex) {
+////            Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
+////        }
+////        if (today.compareTo(venc) > 0) {
+////            JOptionPane.showMessageDialog(null, "Hoje " + today + "é maior que " + venc);
+////        } else if (today.compareTo(venc) == 0) {
+////            JOptionPane.showMessageDialog(null, "As datas são iguais");
+////        } else {
+////            JOptionPane.showMessageDialog(null, "Hoje " + today + "é menor que " + venc);
+////        }
+        String url = "/repos/Marcos-Almeida-Filho/MIKE/releases/latest";
+        String version = "version";
+        
+        final HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+
+        HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
+
+        HttpResponse<String> response;
         try {
-            venc = dateFormat.parse("2019/11/02");
-        } catch (ParseException ex) {
-            Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
+            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            JOptionPane.showMessageDialog(null, response.body());
+
+            JSONObject obj = new JSONObject(response.body());
+            version = obj.getString("tag_name");
+            
+        } catch (IOException | InterruptedException ex) {
+            Logger.getLogger(Clientes.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "Erro!\n" + ex);
+            try {
+                SendEmail.EnviarErro(ex.toString());
+            } catch (AWTException | IOException ex1) {
+                Logger.getLogger(Clientes.class
+                        .getName()).log(Level.SEVERE, null, ex1);
+            }
         }
-        if (today.compareTo(venc) > 0) {
-            JOptionPane.showMessageDialog(null, "Hoje " + today + "é maior que " + venc);
-        } else if (today.compareTo(venc) == 0) {
-            JOptionPane.showMessageDialog(null, "As datas são iguais");
-        } else {
-            JOptionPane.showMessageDialog(null, "Hoje " + today + "é menor que " + venc);
-        }
+        
+        JOptionPane.showMessageDialog(null, version);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

@@ -269,7 +269,6 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (txtcliente.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, Numeros.TransformarNumeroEmDouble(txtvalor.getText()));
             JOptionPane.showMessageDialog(null, "Adicione um cliente.");
             ProcurarCliente pc = new ProcurarCliente(this.getClass().getSimpleName());
             Telas.AparecerTela(pc);
@@ -286,6 +285,7 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Selecione uma data.");
         } else if (cbprocesso.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Selecione o primeiro processo.");
+            cbprocesso.showPopup();
         } else if (cbnivel.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Selecione um nível.");
             cbnivel.showPopup();
@@ -298,8 +298,8 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
             F_UPDAO fd = new F_UPDAO();
             F_UPBean fb2 = new F_UPBean();
 
-            fb2.setDav(Integer.parseInt(txtdav.getText()));
-            fb2.setOp(Integer.parseInt(txtop.getText()));
+            fb2.setDav(txtdav.getText());
+            fb2.setOp(txtop.getText());
             fb2.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(dateentrega.getDate()));
             fb2.setMaterial(txtmaterial.getText());
             fb2.setProcesso(cbprocesso.getSelectedItem().toString());

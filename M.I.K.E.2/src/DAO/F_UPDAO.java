@@ -35,8 +35,8 @@ public class F_UPDAO {
         try {
             stmt = con.prepareStatement("INSERT INTO f_up (dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente) VALUES (?,?,?,?,?,?,?,?,?,?)");
 
-            stmt.setInt(1, fb.getDav());
-            stmt.setInt(2, fb.getOp());
+            stmt.setString(1, fb.getDav());
+            stmt.setString(2, fb.getOp());
             stmt.setString(3, fb.getDataentrega());
             stmt.setString(4, fb.getMaterial());
             stmt.setString(5, fb.getProcesso());
@@ -80,8 +80,8 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
-                cb.setDav(rs.getInt("dav"));
-                cb.setOp(rs.getInt("op"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
                 cb.setNivel(rs.getInt("nivel"));
@@ -123,8 +123,8 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
-                cb.setDav(rs.getInt("dav"));
-                cb.setOp(rs.getInt("op"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
                 cb.setNivel(rs.getInt("nivel"));
@@ -166,8 +166,8 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
-                cb.setDav(rs.getInt("dav"));
-                cb.setOp(rs.getInt("op"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
                 cb.setNivel(rs.getInt("nivel"));
@@ -210,8 +210,8 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
-                cb.setDav(rs.getInt("dav"));
-                cb.setOp(rs.getInt("op"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
                 cb.setNivel(rs.getInt("nivel"));
@@ -254,8 +254,8 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
-                cb.setOp(rs.getInt("op"));
-                cb.setDav(rs.getInt("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDav(rs.getString("dav"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
                 cb.setNivel(rs.getInt("nivel"));
@@ -298,8 +298,8 @@ public class F_UPDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setMaterial(rs.getString("material"));
-                cb.setOp(rs.getInt("op"));
-                cb.setDav(rs.getInt("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDav(rs.getString("dav"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
                 cb.setNivel(rs.getInt("nivel"));
@@ -341,9 +341,9 @@ public class F_UPDAO {
                 F_UPBean cb = new F_UPBean();
 
                 cb.setId(rs.getInt("id"));
-                cb.setDav(rs.getInt("dav"));
+                cb.setDav(rs.getString("dav"));
                 cb.setMaterial(rs.getString("material"));
-                cb.setOp(rs.getInt("op"));
+                cb.setOp(rs.getString("op"));
                 cb.setDataentrega(rs.getString("dataentrega"));
                 cb.setProcesso(rs.getString("processo"));
                 cb.setNivel(rs.getInt("nivel"));
@@ -375,8 +375,8 @@ public class F_UPDAO {
         try {
             stmt = con.prepareStatement("UPDATE f_up SET dav = ?, op = ?, material = ?, dataentrega = ?, cliente = ?, nivel = ?, valor = ?, observacao = ? WHERE id = ?");
 
-            stmt.setInt(1, fb.getDav());
-            stmt.setInt(2, fb.getOp());
+            stmt.setString(1, fb.getDav());
+            stmt.setString(2, fb.getOp());
             stmt.setString(3, fb.getMaterial());
             stmt.setString(4, fb.getDataentrega());
             stmt.setString(5, fb.getCliente());

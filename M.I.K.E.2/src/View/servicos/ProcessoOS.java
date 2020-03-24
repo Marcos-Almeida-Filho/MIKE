@@ -11,6 +11,8 @@ import Connection.Session;
 import DAO.OSInspecaoDAO;
 import DAO.OSProcessosDAO;
 import Methods.SoNumeros;
+import Methods.Telas;
+import View.Geral.EscolherProximoProcesso;
 import static View.TelaPrincipal.jDesktopPane1;
 import java.awt.Dimension;
 import java.text.SimpleDateFormat;
@@ -28,6 +30,13 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
     /**
      * Creates new form ProcessoOS
      */
+    //Criar DAO e Bean para alterar registros no DB
+    static OSProcessosDAO opd = new OSProcessosDAO();
+    static OSProcessosBean opb = new OSProcessosBean();
+
+    static OSInspecaoDAO oid = new OSInspecaoDAO();
+    static OSInspecaoBean oib = new OSInspecaoBean();
+
     public ProcessoOS() {
         initComponents();
         camposnumeros();
@@ -36,35 +45,31 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
     }
 
     public static void readprocesso() {
-        OSProcessosDAO opd = new OSProcessosDAO();
-
-        for (OSProcessosBean opb : opd.readprocesso(Integer.parseInt(txtidprocesso.getText()))) {
-            txtprocesso.setText(opb.getProcesso());
-            txtinicio.setText(opb.getInicio());
-            txttermino.setText(opb.getTermino());
-            txtok.setText(String.valueOf(opb.getQtdok()));
-            txtnaook.setText(String.valueOf(opb.getQtdnaook()));
-            txtusuario.setText(opb.getUsuario());
-            txtobservacao.setText(opb.getObservacao());
-            txtmotivo.setText(opb.getMotivo());
-        }
+        opd.readprocesso(Integer.parseInt(txtidprocesso.getText())).forEach((OSProcessosBean opb2) -> {
+            txtprocesso.setText(opb2.getProcesso());
+            txtinicio.setText(opb2.getInicio());
+            txttermino.setText(opb2.getTermino());
+            txtok.setText(String.valueOf(opb2.getQtdok()));
+            txtnaook.setText(String.valueOf(opb2.getQtdnaook()));
+            txtusuario.setText(opb2.getUsuario());
+            txtobservacao.setText(opb2.getObservacao());
+            txtmotivo.setText(opb2.getMotivo());
+        });
     }
 
     public static void readinspecao() {
         DefaultTableModel model = (DefaultTableModel) tableinspecao.getModel();
         model.setNumRows(0);
 
-        OSInspecaoDAO oid = new OSInspecaoDAO();
-
-        for (OSInspecaoBean oib : oid.read(txtidprocesso.getText())) {
+        oid.read(txtidprocesso.getText()).forEach((OSInspecaoBean oib2) -> {
             model.addRow(new Object[]{
-                oib.getId(),
-                oib.getMedida(),
-                oib.getMedidamaior(),
-                oib.getMedidamenor(),
-                oib.getInstrumento()
+                oib2.getId(),
+                oib2.getMedida(),
+                oib2.getMedidamaior(),
+                oib2.getMedidamenor(),
+                oib2.getInstrumento()
             });
-        }
+        });
     }
 
     public static void camposnumeros() {
@@ -489,10 +494,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
             if (resp == 0) {
                 if (ok + naook < inicial) {
                     if (okprocesso + naookprocesso + ok + naook == dispprocesso) { //Se as quantidades finalizam o processo
-                        //Criar DAO e Bean para alterar registros no DB
-                        OSProcessosDAO opd = new OSProcessosDAO();
-                        OSProcessosBean opb = new OSProcessosBean();
-
                         //Criar data para término do processo
                         Calendar c = Calendar.getInstance();
                         String pattern = "dd/MM/yyyy HH:mm:ss";
@@ -568,12 +569,10 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
                         //Fechar a tela
                         dispose();
+
+                        EscolherProximoProcesso epp = new EscolherProximoProcesso(this.getClass().getSimpleName());
+                        Telas.AparecerTela(epp);
                     } else { //Se as quantidades não finalizam o processo
-
-                        //Criar DAO e Bean para alterar registros no DB
-                        OSProcessosDAO opd = new OSProcessosDAO();
-                        OSProcessosBean opb = new OSProcessosBean();
-
                         //Criar data para término do processo
                         Calendar c = Calendar.getInstance();
                         String pattern = "dd/MM/yyyy HH:mm:ss";
@@ -666,10 +665,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         dispose();
                     }
                 } else { //Se a quantidade de ok + naook == total
-                    //Criar DAO e Bean para alterar registros no DB
-                    OSProcessosDAO opd = new OSProcessosDAO();
-                    OSProcessosBean opb = new OSProcessosBean();
-
                     //Criar data para término do processo
                     Calendar c = Calendar.getInstance();
                     String pattern = "dd/MM/yyyy HH:mm:ss";
@@ -750,10 +745,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         } else { //Se houver inspeção
             if (ok + naook < inicial) {
                 if (okprocesso + naookprocesso + ok + naook == dispprocesso) { //Se as quantidades finalizam o processo
-                    //Criar DAO e Bean para alterar registros no DB
-                    OSProcessosDAO opd = new OSProcessosDAO();
-                    OSProcessosBean opb = new OSProcessosBean();
-
                     //Criar data para término do processo
                     Calendar c = Calendar.getInstance();
                     String pattern = "dd/MM/yyyy HH:mm:ss";
@@ -817,10 +808,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         }
                     }
 
-                    //Criar DAO e Bean das inspeções
-                    OSInspecaoDAO oid = new OSInspecaoDAO();
-                    OSInspecaoBean oib = new OSInspecaoBean();
-
                     //Dados para método DAO
                     for (int i = 0; i < tableinspecao.getRowCount(); i++) { //Fazer por todas as linhas da table
                         if (tableinspecao.getValueAt(i, 0).equals("")) { //Se não tem ID, criar
@@ -855,11 +842,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                     //Fechar a tela
                     dispose();
                 } else { //Se as quantidades não finalizam o processo
-
-                    //Criar DAO e Bean para alterar registros no DB
-                    OSProcessosDAO opd = new OSProcessosDAO();
-                    OSProcessosBean opb = new OSProcessosBean();
-
                     //Criar data para término do processo
                     Calendar c = Calendar.getInstance();
                     String pattern = "dd/MM/yyyy HH:mm:ss";
@@ -938,10 +920,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         }
                     }
 
-                    //Criar DAO e Bean das inspeções
-                    OSInspecaoDAO oid = new OSInspecaoDAO();
-                    OSInspecaoBean oib = new OSInspecaoBean();
-
                     //Dados para método DAO
                     for (int i = 0; i < tableinspecao.getRowCount(); i++) { //Fazer por todas as linhas da table
                         if (tableinspecao.getValueAt(i, 0).equals("")) { //Se não tem ID, criar
@@ -977,10 +955,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                     dispose();
                 }
             } else { //Se a quantidade de ok + naook == total
-                //Criar DAO e Bean para alterar registros no DB
-                OSProcessosDAO opd = new OSProcessosDAO();
-                OSProcessosBean opb = new OSProcessosBean();
-
                 //Criar data para término do processo
                 Calendar c = Calendar.getInstance();
                 String pattern = "dd/MM/yyyy HH:mm:ss";
@@ -1043,10 +1017,6 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         opd.updatetotal(opb);
                     }
                 }
-
-                //Criar DAO e Bean das inspeções
-                OSInspecaoDAO oid = new OSInspecaoDAO();
-                OSInspecaoBean oib = new OSInspecaoBean();
 
                 //Dados para método DAO
                 for (int i = 0; i < tableinspecao.getRowCount(); i++) { //Fazer por todas as linhas da table

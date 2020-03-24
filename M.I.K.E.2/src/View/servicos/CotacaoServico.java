@@ -18,10 +18,11 @@ import DAO.ServicoOrcamentoDocumentosDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
-import Methods.InternalFrameProcura;
 import Methods.SendEmail;
+import Methods.Telas;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarCondicaoDePagamento;
+import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
 import View.TelaPrincipal;
@@ -194,7 +195,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             txtvendedor.setEnabled(false);
             btnvendedor.setEnabled(false);
             txtnotes.setEnabled(false);
-            tabledocumentos.setEnabled(false);
+//            tabledocumentos.setEnabled(false);
             btnincluirdoc.setEnabled(false);
             btnexcluirdoc.setEnabled(false);
             btnincluiritem.setEnabled(false);
@@ -832,14 +833,14 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "Id", "Descrição", "Local", "Local Original"
+                "Id", "", "Descrição", "Local", "Local Original"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false
+                false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -857,11 +858,11 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         });
         jScrollPane6.setViewportView(tabledocumentos);
         if (tabledocumentos.getColumnModel().getColumnCount() > 0) {
-            tabledocumentos.getColumnModel().getColumn(0).setMinWidth(40);
-            tabledocumentos.getColumnModel().getColumn(0).setMaxWidth(40);
-            tabledocumentos.getColumnModel().getColumn(1).setMinWidth(0);
-            tabledocumentos.getColumnModel().getColumn(1).setPreferredWidth(0);
-            tabledocumentos.getColumnModel().getColumn(1).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(0).setMinWidth(0);
+            tabledocumentos.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tabledocumentos.getColumnModel().getColumn(0).setMaxWidth(0);
+            tabledocumentos.getColumnModel().getColumn(1).setMinWidth(40);
+            tabledocumentos.getColumnModel().getColumn(1).setMaxWidth(40);
             tabledocumentos.getColumnModel().getColumn(2).setMinWidth(500);
             tabledocumentos.getColumnModel().getColumn(2).setPreferredWidth(500);
             tabledocumentos.getColumnModel().getColumn(2).setMaxWidth(500);
@@ -1023,12 +1024,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
     private void btnclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnclienteActionPerformed
         ProcurarCliente p = new ProcurarCliente("ServiçoCotação");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_btnclienteActionPerformed
 
     private void btnincluiritemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnincluiritemActionPerformed
@@ -1098,7 +1094,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 String patterny = "yy";
                 SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
                 String year = simpleDateFormaty.format(ca.getTime());
-                
+
                 if (sod.readnome() == false) {
                     String idtela = "CS" + year + "-0001";
                     sob.setIdtela(idtela);
@@ -1126,8 +1122,10 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             String pattern = "dd/MM/yyyy HH:mm:ss";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             sob.setData(simpleDateFormat.format(date.getTime()));
+
             //idtela, cliente, condicao, representante, vendedor, notes, status, clientecadastro, data
             sod.create(sob);
+
             for (ServicoOrcamentoBean sob2 : sod.read()) {
                 txtnumeroorcamento.setText(String.valueOf(sob2.getIdtela()));
                 txtstatus.setText(String.valueOf(sob2.getStatus()));
@@ -1249,7 +1247,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             int rctd = tabledocumentos.getRowCount();
             if (rctd != 0) {
                 for (int i = 0; i < rctd; i++) {
-                    if (tabledocumentos.getValueAt(i, 1).equals("")) {
+                    if (tabledocumentos.getValueAt(i, 0).equals("")) {
                         File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
                         File folder = new File("Q:/MIKE_ERP/orc_ser_arq/" + txtnumeroorcamento.getText());
                         File filecopy = new File(folder + "/" + fileoriginal.getName());
@@ -1285,7 +1283,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         sodb.setIdorcamento(txtnumeroorcamento.getText());
                         sodb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
                         sodb.setLocal(tabledocumentos.getValueAt(i, 3).toString());
-                        sodb.setId(Integer.parseInt(tabledocumentos.getValueAt(i, 1).toString()));
+                        sodb.setId(Integer.parseInt(tabledocumentos.getValueAt(i, 0).toString()));
                         //idorcamento, descricao, local, id
 
                         sodd.update(sodb);
@@ -1348,17 +1346,10 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnexcluiritemActionPerformed
 
     private void btnincluirdocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnincluirdocActionPerformed
-//        if (txtnumeroorcamento.getText().equals("")) {
-//            JOptionPane.showMessageDialog(rootPane, "Selecione um orçamento antes!");
-//        } else {
-        DocumentosOrcamentoServico d = new DocumentosOrcamentoServico();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(d);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = d.getSize();
-        d.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        d.setVisible(true);
-//        }
+//        DocumentosOrcamentoServico d = new DocumentosOrcamentoServico();
+//        Telas.AparecerTela(d);
+        ProcurarDocumento pd = new ProcurarDocumento(this.getClass().getSimpleName());
+        Telas.AparecerTela(pd);
     }//GEN-LAST:event_btnincluirdocActionPerformed
 
     private void tableitensMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableitensMouseClicked
@@ -1527,8 +1518,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
             for (ServicoOrcamentoDocumentosBean sodb : sodd.readitens(txtnumeroorcamento.getText())) {
                 modeldoc.addRow(new Object[]{
-                    false,
                     sodb.getId(),
+                    false,
                     sodb.getDescricao(),
                     sodb.getLocal(),});
             }
@@ -1574,9 +1565,19 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             Desktop desk = Desktop.getDesktop();
             try {
-                desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
+                if (tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).equals("")) {
+                    desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4)));
+                } else {
+                    desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
+                }
             } catch (IOException ex) {
                 Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo.\n" + ex);
+                try {
+                    SendEmail.EnviarErro(ex.toString());
+                } catch (AWTException | IOException ex1) {
+                    Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                }
             }
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
@@ -1905,9 +1906,9 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbstatusActionPerformed
 
     private void txtnomeclienteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtnomeclienteKeyReleased
-        if (radioc.isSelected()) {
+        /*if (radioc.isSelected()) {
             InternalFrameProcura.procuraCliente(txtnomecliente, "ServiçoCotação");
-        }
+        }*/
     }//GEN-LAST:event_txtnomeclienteKeyReleased
 
 

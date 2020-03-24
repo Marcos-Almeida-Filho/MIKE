@@ -5,6 +5,7 @@
  */
 package View.Geral;
 
+import DAO.RastreamentoDocumentosObsDAO;
 import DAO.RastreamentoDocumentosDAO;
 import DAO.RastreamentoDocumentosDocDAO;
 import Methods.Dates;
@@ -42,6 +43,11 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
     //File para arquivo xml
     File xml;
 
+    //DAOs para pesquisa
+    static RastreamentoDocumentosDAO rdd = new RastreamentoDocumentosDAO();
+    RastreamentoDocumentosDocDAO rddd = new RastreamentoDocumentosDocDAO();
+    RastreamentoDocumentosObsDAO rdod = new RastreamentoDocumentosObsDAO();
+
     public ProcurarRastreamentoDocumento(String origin) {
         initComponents();
         readtablevendedores();
@@ -49,8 +55,6 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
     }
 
     public static void readtablevendedores() {
-        RastreamentoDocumentosDAO rdd = new RastreamentoDocumentosDAO();
-
         //DefaultTable para modificar tabledocs
         DefaultTableModel model = (DefaultTableModel) tabledocs.getModel();
 
@@ -64,8 +68,6 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
     }
 
     public static void filtertablevendedores() {
-        RastreamentoDocumentosDAO rdd = new RastreamentoDocumentosDAO();
-
         //DefaultTable para modificar tabledocs
         DefaultTableModel model = (DefaultTableModel) tabledocs.getModel();
         model.setRowCount(0);
@@ -200,10 +202,6 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             switch (origem) {
                 case "CAP":
-                    //DAOs para pesquisa
-                    RastreamentoDocumentosDAO rdd = new RastreamentoDocumentosDAO();
-                    RastreamentoDocumentosDocDAO rddd = new RastreamentoDocumentosDocDAO();
-
                     //ID em int
                     int id = Integer.parseInt(tabledocs.getValueAt(tabledocs.getSelectedRow(), 0).toString());
 
@@ -281,6 +279,7 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
                     //Pegar documentos do Documento
                     rddd.read(id).forEach(rddb -> {
                         DefaultTableModel modeldoc = (DefaultTableModel) AdicionarContasAPagar.tabledocumentos.getModel();
+                        modeldoc.setNumRows(0);
 
                         modeldoc.addRow(new Object[]{
                             "",
@@ -291,6 +290,17 @@ public class ProcurarRastreamentoDocumento extends javax.swing.JInternalFrame {
                         });
                     });
 
+                    //Pegar observações do Documento
+                    rdod.read(id).forEach(rdob -> {
+                        DefaultTableModel modelobs = (DefaultTableModel) AdicionarContasAPagar.tableobs.getModel();
+                        
+                        modelobs.addRow(new Object[]{
+                            rdob.getUsuario(),
+                            Dates.TransformarDataCurtaDoDB(rdob.getData()),
+                            rdob.getObs()
+                        });
+                    });
+                    
                     dispose();
                     break;
 
