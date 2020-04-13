@@ -28,6 +28,7 @@ import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.text.DecimalFormat;
@@ -531,20 +532,20 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
         //Total das parcelas
         BigDecimal parcelatotal = new BigDecimal("0");
-        parcelatotal = parcelatotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        parcelatotal = parcelatotal.setScale(2, RoundingMode.HALF_EVEN);
         
         boolean obs = false;
 
         //Verificar se os campos tem valores e então somar para comparar depois
         if (!txttotal.getText().equals("") && tableparcelas.getRowCount() > 0) {
             total = new BigDecimal(Valores.TransformarDinheiroEmValorDouble(txttotal.getText()));
-            total = total.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+            total = total.setScale(2, RoundingMode.HALF_EVEN);
 
             for (int i = 0; i < tableparcelas.getRowCount(); i++) {
                 BigDecimal parcela = new BigDecimal(Valores.TransformarDinheiroEmValorDouble(tableparcelas.getValueAt(i, 2).toString()));
-                parcela = parcela.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                parcela = parcela.setScale(2, RoundingMode.HALF_EVEN);
                 parcelatotal = parcelatotal.add(parcela);
-                parcelatotal = parcelatotal.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                parcelatotal = parcelatotal.setScale(2, RoundingMode.HALF_EVEN);
             }
         }
         //Verifica se existe fornecedor selecionado, caso não, abre a tela de fornecedor

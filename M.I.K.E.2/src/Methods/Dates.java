@@ -5,8 +5,13 @@
  */
 package Methods;
 
+import Bean.OSBean;
+import DAO.OSDAO;
 import View.logistica.RastreamentoDocumentos;
 import com.toedter.calendar.JDateChooser;
+import java.awt.AWTException;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -48,6 +53,48 @@ public class Dates {
         data = simpleDateFormat.format(date.getTime());
 
         return data;
+    }
+
+    public static String CriarDataCurtaDBSemDataExistenteComPrazo(int days) {
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        date.add(Calendar.DAY_OF_MONTH, days);
+        data = simpleDateFormat.format(date.getTime());
+
+        return data;
+    }
+
+    public static String CriarIdOS() {
+        OSDAO od = new OSDAO();
+
+        Calendar ca = Calendar.getInstance();
+        String patterny = "yy";
+        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+        String year = simpleDateFormaty.format(ca.getTime());
+
+        String idos = "OS" + year + "-0001S";
+        
+        try { //Tentar achar primeira OS do ano para poder dar nome
+            if (od.readnome()) {
+                String hua = "";
+                for (OSBean sob2 : od.read()) {
+                    hua = String.valueOf(sob2.getIdtela());
+                }
+                int yearint = Integer.parseInt(hua.replace("OS" + year + "-", ""));
+                int yearnovo = yearint + 1;
+                String idtela = "OS" + year + "-" + String.format("%04d", yearnovo);
+                idos = idtela;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                SendEmail.EnviarErro(ex.toString());
+            } catch (AWTException | IOException ex1) {
+                Logger.getLogger(Dates.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+
+        return idos;
     }
 
     public static String CriarDataCurtaDBComDataExistente(String data) {

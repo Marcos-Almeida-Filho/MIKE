@@ -536,7 +536,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                                 opb.setQtdnaook(0);
                                 opb.setUsuario("");
                                 opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                                opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
 
                                 //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                                 opd.create(opb);
@@ -549,7 +549,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                                 opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
                                 opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
                                 opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                                opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
                                 opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
 
                                 //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
@@ -630,7 +630,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                                 opb.setQtdnaook(0);
                                 opb.setUsuario("");
                                 opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                                opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
 
                                 //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                                 opd.create(opb);
@@ -643,7 +643,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                                 opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
                                 opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
                                 opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                                opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                                opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
                                 opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
 
                                 //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
@@ -707,7 +707,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                             opb.setQtdnaook(0);
                             opb.setUsuario("");
                             opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
 
                             //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                             opd.create(opb);
@@ -720,7 +720,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                             opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
                             opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
                             opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
                             opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
 
                             //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
@@ -787,7 +787,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                             opb.setQtdnaook(0);
                             opb.setUsuario("");
                             opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
 
                             //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                             opd.create(opb);
@@ -800,7 +800,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                             opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
                             opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
                             opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
                             opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
 
                             //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
@@ -899,7 +899,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                             opb.setQtdnaook(0);
                             opb.setUsuario("");
                             opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
 
                             //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                             opd.create(opb);
@@ -912,7 +912,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                             opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
                             opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
                             opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                            opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                            opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
                             opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
 
                             //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
@@ -997,7 +997,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         opb.setQtdnaook(0);
                         opb.setUsuario("");
                         opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                        opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                        opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
 
                         //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                         opd.create(opb);
@@ -1010,7 +1010,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                         opb.setQtdnaook(Integer.parseInt(OS.tableprocessos.getValueAt(i, 6).toString()));
                         opb.setUsuario(OS.tableprocessos.getValueAt(i, 7).toString());
                         opb.setOrdem(Integer.parseInt(OS.tableprocessos.getValueAt(i, 8).toString()));
-                        opb.setDisponivel(OS.tableprocessos.getValueAt(i, 9).toString());
+                        opb.setDisponivel(Integer.parseInt(OS.tableprocessos.getValueAt(i, 9).toString()));
                         opb.setId(Integer.parseInt(OS.tableprocessos.getValueAt(i, 1).toString()));
 
                         //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?

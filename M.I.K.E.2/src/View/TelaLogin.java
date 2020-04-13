@@ -5,7 +5,6 @@
  */
 package View;
 
-import Bean.UsuariosBean;
 import Connection.Session;
 import DAO.UsuariosDAO;
 import Methods.SendEmail;
@@ -52,10 +51,14 @@ public class TelaLogin extends javax.swing.JFrame {
         UsuariosDAO ud = new UsuariosDAO();
 
         //Pegar nome e nível de quem está logando
-        for (UsuariosBean ub : ud.readapelido(TxtLogin.getText())) {
+        ud.readapelido(TxtLogin.getText()).forEach(ub -> {
             Session.nome = ub.getNome();
             Session.nivel = ub.getNivel();
-        }
+        });
+//        for (UsuariosBean ub : ud.readapelido(TxtLogin.getText())) {
+//            Session.nome = ub.getNome();
+//            Session.nivel = ub.getNivel();
+//        }
 
         //Transformar campo password em String
         String senha = new String(TxtSenha.getPassword());
@@ -66,7 +69,7 @@ public class TelaLogin extends javax.swing.JFrame {
             TelaPrincipal tela = new TelaPrincipal();
 
             //Setar título da TelaPrincipal
-            tela.setTitle("M.I.K.E. version 1.6.0 - Usuário: " + Session.nome + " - Nível de Acesso: " + Session.nivel);
+            tela.setTitle("M.I.K.E. version 1.8.0 - Usuário: " + Session.nome + " - Nível de Acesso: " + Session.nivel);
 
             //Mensagem de boas-vindas
             lblnome.setText("Bem vindo(a) " + Session.nome + "!");

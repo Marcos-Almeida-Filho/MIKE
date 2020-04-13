@@ -44,6 +44,7 @@ import View.comercial.PlanejamentoFaturamento;
 import View.financeiro.Cartoes;
 import View.financeiro.Extratos;
 import View.fiscal.NotasFiscais;
+import View.servicos.OS1;
 import View.vendas.ProcessosVendas;
 import java.awt.Toolkit;
 import java.net.URL;
@@ -198,6 +199,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuitemservicosprodutos = new javax.swing.JMenuItem();
         menuitemservicosproccessos = new javax.swing.JMenuItem();
         menuitemservicosgrupodeprocessos = new javax.swing.JMenuItem();
+        jMenuItem16 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
         menuconfiguracoes = new javax.swing.JMenu();
@@ -750,6 +752,14 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menuservicos.add(menuitemservicosgrupodeprocessos);
 
+        jMenuItem16.setText("jMenuItem16");
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem16ActionPerformed(evt);
+            }
+        });
+        menuservicos.add(jMenuItem16);
+
         jMenuBar1.add(menuservicos);
 
         jMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/link.png"))); // NOI18N
@@ -1044,6 +1054,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         Telas.AparecerTelaAumentada(pf);
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 
+    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
+        if (Session.nivel.equals("Administrador")) {
+            OS1 os1 = new OS1();
+            Telas.AparecerTelaAumentada(os1);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
+    }//GEN-LAST:event_jMenuItem16ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1088,6 +1107,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
+    private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

@@ -28,18 +28,18 @@ import javax.swing.JOptionPane;
  */
 public class OSDAO {
 
+//    OSBean ob = new OSBean();
     public void create(OSBean osb) {
-
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO os (idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, desenho, raio, frontal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO os (idtela, dateabertura, dateprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topob, reconstrucaob, completab, desenhob, raio, frontal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, osb.getIdtela());
-            stmt.setString(2, osb.getDataabertura());
-            stmt.setString(3, osb.getDataprevisao());
+            stmt.setString(2, osb.getDateabertura());
+            stmt.setString(3, osb.getDateprevisao());
             stmt.setString(4, osb.getStatus());
             stmt.setString(5, osb.getCliente());
             stmt.setString(6, osb.getDas());
@@ -49,10 +49,10 @@ public class OSDAO {
             stmt.setInt(10, osb.getQtdok());
             stmt.setInt(11, osb.getQtdnaook());
             stmt.setString(12, osb.getNotes());
-            stmt.setString(13, osb.getTopo());
-            stmt.setString(14, osb.getReconstrucao());
-            stmt.setString(15, osb.getCompleta());
-            stmt.setString(16, osb.getDesenho());
+            stmt.setBoolean(13, osb.isTopob());
+            stmt.setBoolean(14, osb.isReconstrucaob());
+            stmt.setBoolean(15, osb.isCompletab());
+            stmt.setBoolean(16, osb.isDesenhob());
             stmt.setString(17, osb.getRaio());
             stmt.setString(18, osb.getFrontal());
 
@@ -70,7 +70,6 @@ public class OSDAO {
     }
 
     public List<OSBean> read() {
-
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
@@ -84,30 +83,36 @@ public class OSDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                OSBean cb = new OSBean();
+                OSBean ob = new OSBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setIdtela(rs.getString("idtela"));
-                cb.setDataabertura(rs.getString("dataabertura"));
-                cb.setDataprevisao(rs.getString("dataprevisao"));
-                cb.setStatus(rs.getString("status"));
-                cb.setCliente(rs.getString("cliente"));
-                cb.setDas(rs.getString("das"));
-                cb.setCodigo(rs.getString("codigo"));
-                cb.setDescricao(rs.getString("descricao"));
-                cb.setQtdinicial(rs.getInt("qtdinicial"));
-                cb.setQtdok(rs.getInt("qtdok"));
-                cb.setQtdnaook(rs.getInt("qtdnaook"));
-                cb.setNotes(rs.getString("notes"));
-                cb.setTopo(rs.getString("topo"));
-                cb.setReconstrucao(rs.getString("reconstrucao"));
-                cb.setCompleta(rs.getString("completa"));
-                cb.setDesenho(rs.getString("desenho"));
-                cb.setRaio(rs.getString("raio"));
-                cb.setFrontal(rs.getString("frontal"));
+                ob.setId(rs.getInt("id"));
+                ob.setIdtela(rs.getString("idtela"));
+                ob.setDataabertura(rs.getString("dataabertura"));
+                ob.setDataprevisao(rs.getString("dataprevisao"));
+                ob.setDateabertura(rs.getString("dateabertura"));
+                ob.setDateprevisao(rs.getString("dateprevisao"));
+                ob.setStatus(rs.getString("status"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setDas(rs.getString("das"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
+                ob.setQtdinicial(rs.getInt("qtdinicial"));
+                ob.setQtdok(rs.getInt("qtdok"));
+                ob.setQtdnaook(rs.getInt("qtdnaook"));
+                ob.setNotes(rs.getString("notes"));
+                ob.setTopo(rs.getString("topo"));
+                ob.setReconstrucao(rs.getString("reconstrucao"));
+                ob.setCompleta(rs.getString("completa"));
+                ob.setDesenho(rs.getString("desenho"));
+                ob.setRaio(rs.getString("raio"));
+                ob.setFrontal(rs.getString("frontal"));
+                ob.setTopob(rs.getBoolean("topob"));
+                ob.setReconstrucaob(rs.getBoolean("reconstrucaob"));
+                ob.setCompletab(rs.getBoolean("completab"));
+                ob.setDesenhob(rs.getBoolean("desenhob"));
 
                 //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
-                listbb.add(cb);
+                listbb.add(ob);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -121,9 +126,8 @@ public class OSDAO {
         }
         return listbb;
     }
-    
-    public List<OSBean> reademaberto() {
 
+    public List<OSBean> reademaberto() {
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
@@ -137,30 +141,36 @@ public class OSDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                OSBean cb = new OSBean();
+                OSBean ob = new OSBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setIdtela(rs.getString("idtela"));
-                cb.setDataabertura(rs.getString("dataabertura"));
-                cb.setDataprevisao(rs.getString("dataprevisao"));
-                cb.setStatus(rs.getString("status"));
-                cb.setCliente(rs.getString("cliente"));
-                cb.setDas(rs.getString("das"));
-                cb.setCodigo(rs.getString("codigo"));
-                cb.setDescricao(rs.getString("descricao"));
-                cb.setQtdinicial(rs.getInt("qtdinicial"));
-                cb.setQtdok(rs.getInt("qtdok"));
-                cb.setQtdnaook(rs.getInt("qtdnaook"));
-                cb.setNotes(rs.getString("notes"));
-                cb.setTopo(rs.getString("topo"));
-                cb.setReconstrucao(rs.getString("reconstrucao"));
-                cb.setCompleta(rs.getString("completa"));
-                cb.setDesenho(rs.getString("desenho"));
-                cb.setRaio(rs.getString("raio"));
-                cb.setFrontal(rs.getString("frontal"));
+                ob.setId(rs.getInt("id"));
+                ob.setIdtela(rs.getString("idtela"));
+                ob.setDataabertura(rs.getString("dataabertura"));
+                ob.setDataprevisao(rs.getString("dataprevisao"));
+                ob.setDateabertura(rs.getString("dateabertura"));
+                ob.setDateprevisao(rs.getString("dateprevisao"));
+                ob.setStatus(rs.getString("status"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setDas(rs.getString("das"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
+                ob.setQtdinicial(rs.getInt("qtdinicial"));
+                ob.setQtdok(rs.getInt("qtdok"));
+                ob.setQtdnaook(rs.getInt("qtdnaook"));
+                ob.setNotes(rs.getString("notes"));
+                ob.setTopo(rs.getString("topo"));
+                ob.setReconstrucao(rs.getString("reconstrucao"));
+                ob.setCompleta(rs.getString("completa"));
+                ob.setDesenho(rs.getString("desenho"));
+                ob.setRaio(rs.getString("raio"));
+                ob.setFrontal(rs.getString("frontal"));
+                ob.setTopob(rs.getBoolean("topob"));
+                ob.setReconstrucaob(rs.getBoolean("reconstrucaob"));
+                ob.setCompletab(rs.getBoolean("completab"));
+                ob.setDesenhob(rs.getBoolean("desenhob"));
 
                 //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
-                listbb.add(cb);
+                listbb.add(ob);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -174,9 +184,8 @@ public class OSDAO {
         }
         return listbb;
     }
-    
-    public List<OSBean> readstatus(String status) {
 
+    public List<OSBean> readstatus(String status) {
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
@@ -191,29 +200,35 @@ public class OSDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                OSBean cb = new OSBean();
+                OSBean ob = new OSBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setIdtela(rs.getString("idtela"));
-                cb.setDataabertura(rs.getString("dataabertura"));
-                cb.setDataprevisao(rs.getString("dataprevisao"));
-                cb.setStatus(rs.getString("status"));
-                cb.setCliente(rs.getString("cliente"));
-                cb.setDas(rs.getString("das"));
-                cb.setCodigo(rs.getString("codigo"));
-                cb.setDescricao(rs.getString("descricao"));
-                cb.setQtdinicial(rs.getInt("qtdinicial"));
-                cb.setQtdok(rs.getInt("qtdok"));
-                cb.setQtdnaook(rs.getInt("qtdnaook"));
-                cb.setNotes(rs.getString("notes"));
-                cb.setTopo(rs.getString("topo"));
-                cb.setReconstrucao(rs.getString("reconstrucao"));
-                cb.setCompleta(rs.getString("completa"));
-                cb.setRaio(rs.getString("raio"));
-                cb.setFrontal(rs.getString("frontal"));
+                ob.setId(rs.getInt("id"));
+                ob.setIdtela(rs.getString("idtela"));
+                ob.setDataabertura(rs.getString("dataabertura"));
+                ob.setDataprevisao(rs.getString("dataprevisao"));
+                ob.setDateabertura(rs.getString("dateabertura"));
+                ob.setDateprevisao(rs.getString("dateprevisao"));
+                ob.setStatus(rs.getString("status"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setDas(rs.getString("das"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
+                ob.setQtdinicial(rs.getInt("qtdinicial"));
+                ob.setQtdok(rs.getInt("qtdok"));
+                ob.setQtdnaook(rs.getInt("qtdnaook"));
+                ob.setNotes(rs.getString("notes"));
+                ob.setTopo(rs.getString("topo"));
+                ob.setReconstrucao(rs.getString("reconstrucao"));
+                ob.setCompleta(rs.getString("completa"));
+                ob.setRaio(rs.getString("raio"));
+                ob.setFrontal(rs.getString("frontal"));
+                ob.setTopob(rs.getBoolean("topob"));
+                ob.setReconstrucaob(rs.getBoolean("reconstrucaob"));
+                ob.setCompletab(rs.getBoolean("completab"));
+                ob.setDesenhob(rs.getBoolean("desenhob"));
 
                 //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
-                listbb.add(cb);
+                listbb.add(ob);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -227,16 +242,15 @@ public class OSDAO {
         }
         return listbb;
     }
-    
-    public List<OSBean> readcreated(String codigo, String dataabertura) {
 
+    public List<OSBean> readcreated(String codigo, String dataabertura) {
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
 
         ResultSet rs = null;
 
-        List<OSBean> listsp = new ArrayList<>();
+        List<OSBean> listbb = new ArrayList<>();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM os WHERE codigo = ? AND dataabertura = ?");
@@ -245,11 +259,11 @@ public class OSDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                OSBean spb = new OSBean();
+                OSBean ob = new OSBean();
 
-                spb.setIdtela(rs.getString("idtela"));
+                ob.setIdtela(rs.getString("idtela"));
 
-                listsp.add(spb);
+                listbb.add(ob);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -262,12 +276,11 @@ public class OSDAO {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
 
-        return listsp;
+        return listbb;
 
     }
 
     public Boolean readnome() throws SQLException {
-
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
@@ -304,7 +317,6 @@ public class OSDAO {
     }
 
     public List<OSBean> click(String idtela) {
-
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
@@ -319,28 +331,34 @@ public class OSDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                OSBean cb = new OSBean();
+                OSBean ob = new OSBean();
 
-                cb.setDataabertura(rs.getString("dataabertura"));
-                cb.setDataprevisao(rs.getString("dataprevisao"));
-                cb.setStatus(rs.getString("status"));
-                cb.setCliente(rs.getString("cliente"));
-                cb.setDas(rs.getString("das"));
-                cb.setCodigo(rs.getString("codigo"));
-                cb.setDescricao(rs.getString("descricao"));
-                cb.setQtdinicial(rs.getInt("qtdinicial"));
-                cb.setQtdok(rs.getInt("qtdok"));
-                cb.setQtdnaook(rs.getInt("qtdnaook"));
-                cb.setNotes(rs.getString("notes"));
-                cb.setTopo(rs.getString("topo"));
-                cb.setReconstrucao(rs.getString("reconstrucao"));
-                cb.setCompleta(rs.getString("completa"));
-                cb.setDesenho(rs.getString("desenho"));
-                cb.setRaio(rs.getString("raio"));
-                cb.setFrontal(rs.getString("frontal"));
+                ob.setDataabertura(rs.getString("dataabertura"));
+                ob.setDataprevisao(rs.getString("dataprevisao"));
+                ob.setDateabertura(rs.getString("dateabertura"));
+                ob.setDateprevisao(rs.getString("dateprevisao"));
+                ob.setStatus(rs.getString("status"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setDas(rs.getString("das"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
+                ob.setQtdinicial(rs.getInt("qtdinicial"));
+                ob.setQtdok(rs.getInt("qtdok"));
+                ob.setQtdnaook(rs.getInt("qtdnaook"));
+                ob.setNotes(rs.getString("notes"));
+                ob.setTopo(rs.getString("topo"));
+                ob.setReconstrucao(rs.getString("reconstrucao"));
+                ob.setCompleta(rs.getString("completa"));
+                ob.setDesenho(rs.getString("desenho"));
+                ob.setRaio(rs.getString("raio"));
+                ob.setFrontal(rs.getString("frontal"));
+                ob.setTopob(rs.getBoolean("topob"));
+                ob.setReconstrucaob(rs.getBoolean("reconstrucaob"));
+                ob.setCompletab(rs.getBoolean("completab"));
+                ob.setDesenhob(rs.getBoolean("desenhob"));
 
                 //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, desc, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
-                listbb.add(cb);
+                listbb.add(ob);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -354,9 +372,8 @@ public class OSDAO {
         }
         return listbb;
     }
-    
-    public List<OSBean> pesquisa(String pesquisa, String status) {
 
+    public List<OSBean> pesquisa(String pesquisa, String status) {
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
@@ -371,29 +388,35 @@ public class OSDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                OSBean cb = new OSBean();
+                OSBean ob = new OSBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setIdtela(rs.getString("idtela"));
-                cb.setDataabertura(rs.getString("dataabertura"));
-                cb.setDataprevisao(rs.getString("dataprevisao"));
-                cb.setStatus(rs.getString("status"));
-                cb.setCliente(rs.getString("cliente"));
-                cb.setDas(rs.getString("das"));
-                cb.setCodigo(rs.getString("codigo"));
-                cb.setDescricao(rs.getString("descricao"));
-                cb.setQtdinicial(rs.getInt("qtdinicial"));
-                cb.setQtdok(rs.getInt("qtdok"));
-                cb.setQtdnaook(rs.getInt("qtdnaook"));
-                cb.setNotes(rs.getString("notes"));
-                cb.setTopo(rs.getString("topo"));
-                cb.setReconstrucao(rs.getString("reconstrucao"));
-                cb.setCompleta(rs.getString("completa"));
-                cb.setRaio(rs.getString("raio"));
-                cb.setFrontal(rs.getString("frontal"));
+                ob.setId(rs.getInt("id"));
+                ob.setIdtela(rs.getString("idtela"));
+                ob.setDataabertura(rs.getString("dataabertura"));
+                ob.setDataprevisao(rs.getString("dataprevisao"));
+                ob.setDateabertura(rs.getString("dateabertura"));
+                ob.setDateprevisao(rs.getString("dateprevisao"));
+                ob.setStatus(rs.getString("status"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setDas(rs.getString("das"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
+                ob.setQtdinicial(rs.getInt("qtdinicial"));
+                ob.setQtdok(rs.getInt("qtdok"));
+                ob.setQtdnaook(rs.getInt("qtdnaook"));
+                ob.setNotes(rs.getString("notes"));
+                ob.setTopo(rs.getString("topo"));
+                ob.setReconstrucao(rs.getString("reconstrucao"));
+                ob.setCompleta(rs.getString("completa"));
+                ob.setRaio(rs.getString("raio"));
+                ob.setFrontal(rs.getString("frontal"));
+                ob.setTopob(rs.getBoolean("topob"));
+                ob.setReconstrucaob(rs.getBoolean("reconstrucaob"));
+                ob.setCompletab(rs.getBoolean("completab"));
+                ob.setDesenhob(rs.getBoolean("desenhob"));
 
                 //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
-                listbb.add(cb);
+                listbb.add(ob);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -407,11 +430,8 @@ public class OSDAO {
         }
         return listbb;
     }
-    
+
     public int osaberta() {
-        
-        int qtd;
-        
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
@@ -420,35 +440,43 @@ public class OSDAO {
 
         List<OSBean> listbb = new ArrayList<>();
 
+        int qtd;
+
         try {
             stmt = con.prepareStatement("SELECT * FROM os WHERE status = ?");
             stmt.setString(1, "Ativo");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                OSBean cb = new OSBean();
+                OSBean ob = new OSBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setIdtela(rs.getString("idtela"));
-                cb.setDataabertura(rs.getString("dataabertura"));
-                cb.setDataprevisao(rs.getString("dataprevisao"));
-                cb.setStatus(rs.getString("status"));
-                cb.setCliente(rs.getString("cliente"));
-                cb.setDas(rs.getString("das"));
-                cb.setCodigo(rs.getString("codigo"));
-                cb.setDescricao(rs.getString("descricao"));
-                cb.setQtdinicial(rs.getInt("qtdinicial"));
-                cb.setQtdok(rs.getInt("qtdok"));
-                cb.setQtdnaook(rs.getInt("qtdnaook"));
-                cb.setNotes(rs.getString("notes"));
-                cb.setTopo(rs.getString("topo"));
-                cb.setReconstrucao(rs.getString("reconstrucao"));
-                cb.setCompleta(rs.getString("completa"));
-                cb.setRaio(rs.getString("raio"));
-                cb.setFrontal(rs.getString("frontal"));
+                ob.setId(rs.getInt("id"));
+                ob.setIdtela(rs.getString("idtela"));
+                ob.setDataabertura(rs.getString("dataabertura"));
+                ob.setDataprevisao(rs.getString("dataprevisao"));
+                ob.setDateabertura(rs.getString("dateabertura"));
+                ob.setDateprevisao(rs.getString("dateprevisao"));
+                ob.setStatus(rs.getString("status"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setDas(rs.getString("das"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
+                ob.setQtdinicial(rs.getInt("qtdinicial"));
+                ob.setQtdok(rs.getInt("qtdok"));
+                ob.setQtdnaook(rs.getInt("qtdnaook"));
+                ob.setNotes(rs.getString("notes"));
+                ob.setTopo(rs.getString("topo"));
+                ob.setReconstrucao(rs.getString("reconstrucao"));
+                ob.setCompleta(rs.getString("completa"));
+                ob.setRaio(rs.getString("raio"));
+                ob.setFrontal(rs.getString("frontal"));
+                ob.setTopob(rs.getBoolean("topob"));
+                ob.setReconstrucaob(rs.getBoolean("reconstrucaob"));
+                ob.setCompletab(rs.getBoolean("completab"));
+                ob.setDesenhob(rs.getBoolean("desenhob"));
 
                 //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
-                listbb.add(cb);
+                listbb.add(ob);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -460,24 +488,20 @@ public class OSDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        
+
         qtd = listbb.size();
-        
+
         return qtd;
     }
 
     public void update(OSBean bb) {
-
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE os SET dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, completa = ?, desenho = ?, raio = ?, frontal = ? WHERE idtela = ?");
+            stmt = con.prepareStatement("UPDATE os SET cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topob = ?, reconstrucaob = ?, completab = ?, desenhob = ?, raio = ?, frontal = ? WHERE idtela = ?");
 
-            stmt.setString(1, bb.getDataabertura());
-            stmt.setString(2, bb.getDataprevisao());
-            stmt.setString(3, bb.getStatus());
             stmt.setString(4, bb.getCliente());
             stmt.setString(5, bb.getDas());
             stmt.setString(6, bb.getCodigo());
@@ -486,10 +510,10 @@ public class OSDAO {
             stmt.setInt(9, bb.getQtdok());
             stmt.setInt(10, bb.getQtdnaook());
             stmt.setString(11, bb.getNotes());
-            stmt.setString(12, bb.getTopo());
-            stmt.setString(13, bb.getReconstrucao());
-            stmt.setString(14, bb.getCompleta());
-            stmt.setString(15, bb.getDesenho());
+            stmt.setBoolean(12, bb.isTopob());
+            stmt.setBoolean(13, bb.isReconstrucaob());
+            stmt.setBoolean(14, bb.isCompletab());
+            stmt.setBoolean(15, bb.isDesenhob());
             stmt.setString(16, bb.getRaio());
             stmt.setString(17, bb.getFrontal());
             stmt.setString(18, bb.getIdtela());
@@ -507,9 +531,8 @@ public class OSDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
-    public void updatestatus(OSBean bb) {
 
+    public void updatestatus(OSBean bb) {
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
@@ -533,9 +556,8 @@ public class OSDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
-    public void updateqtd(OSBean bb) {
 
+    public void updateqtd(OSBean bb) {
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;

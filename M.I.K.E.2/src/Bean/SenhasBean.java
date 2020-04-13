@@ -5,33 +5,33 @@
  */
 package Bean;
 
-import java.io.Serializable;
-import javax.persistence.Id;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+//import java.io.Serializable;
+//import javax.persistence.Id;
+//import javax.persistence.Entity;
+//import javax.persistence.Table;
+//import javax.persistence.Column;
+//import javax.persistence.GeneratedValue;
+//import javax.persistence.GenerationType;
 
 /**
  *
  * @author Marcos Filho
  */
-@Entity
-@Table(name = "senhas")
-public class SenhasBean implements Serializable {
+//@Entity
+//@Table(name = "senhas")
+public class SenhasBean /*implements Serializable*/ {
 
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Id
+//    @Column
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column
+//    @Column
     private String nome;
-    @Column
+//    @Column
     private String login;
-    @Column
+//    @Column
     private String senha;
-    @Column
+//    @Column
     private String site;
 
     public int getId() {

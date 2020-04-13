@@ -7,6 +7,8 @@ package View.TI;
 
 import Bean.SenhasAcessoBean;
 import Bean.SenhasBean;
+import Connection.Session;
+import DAO.SenhasAcessoDAO;
 import DAO.SenhasDAO;
 import Methods.Telas;
 import View.Geral.ProcurarUser;
@@ -22,7 +24,13 @@ public class Senhas extends javax.swing.JInternalFrame {
     /**
      * Creates new form Senhas
      */
-    
+    static SenhasDAO sd = new SenhasDAO();
+    static SenhasBean sb = new SenhasBean();
+    static SenhasAcessoBean sab = new SenhasAcessoBean();
+    static SenhasAcessoDAO sad = new SenhasAcessoDAO();
+
+    String[] acesso;
+
     public Senhas() {
         initComponents();
         readsenhas();
@@ -34,11 +42,24 @@ public class Senhas extends javax.swing.JInternalFrame {
 
         SenhasDAO sd = new SenhasDAO();
 
-        sd.findAll().forEach(sb -> {
+        sd.read().forEach(sb -> {
             model.addRow(new Object[]{
                 sb.getId(),
                 false,
                 sb.getNome()
+            });
+        });
+    }
+
+    public static void readAcessos() {
+        DefaultTableModel modelacesso = (DefaultTableModel) tableacesso.getModel();
+        modelacesso.setNumRows(0);
+
+        sad.click(Integer.parseInt(txtid.getText())).forEach(sab -> {
+            modelacesso.addRow(new Object[]{
+                sab.getId(),
+                false,
+                sab.getNome()
             });
         });
     }
@@ -49,7 +70,7 @@ public class Senhas extends javax.swing.JInternalFrame {
         txtlogin.setText("");
         txtsenha.setText("");
         txtsite.setText("");
-        
+
         DefaultTableModel model = (DefaultTableModel) tableacesso.getModel();
         model.setNumRows(0);
     }
@@ -63,7 +84,7 @@ public class Senhas extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabsenhas = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablesenhas = new javax.swing.JTable();
@@ -87,12 +108,11 @@ public class Senhas extends javax.swing.JInternalFrame {
         tableacesso = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Senhas");
 
-        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+        tabsenhas.setName("tabsenhas"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
@@ -175,7 +195,7 @@ public class Senhas extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Cadastro de Senhas", jPanel1);
+        tabsenhas.addTab("Cadastro de Senhas", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
@@ -353,14 +373,6 @@ public class Senhas extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jButton4.setText("jButton4");
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -372,8 +384,6 @@ public class Senhas extends javax.swing.JInternalFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -385,34 +395,27 @@ public class Senhas extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton4))
+                .addComponent(jButton1)
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Detalhes da Senha", jPanel2);
+        tabsenhas.addTab("Detalhes da Senha", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabsenhas)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabsenhas)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-//        SenhasDAO sd = new SenhasDAO();
-        SenhasBean sb = new SenhasBean();
-        SenhasAcessoBean sab = new SenhasAcessoBean();
-//        HibernateDAO hd = new HibernateDAO();
-
         if (txtnome.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Digite um nome.");
             txtnome.requestFocus();
@@ -427,52 +430,97 @@ public class Senhas extends javax.swing.JInternalFrame {
             ProcurarUser pu = new ProcurarUser("Senhas");
             Telas.AparecerTela(pu);
         } else if (txtid.getText().equals("")) {
+            //Se não tem ID, cria Senha
             sb.setNome(txtnome.getText());
             sb.setLogin(txtlogin.getText());
             sb.setSenha(txtsenha.getText());
             sb.setSite(txtsite.getText());
 
-//////////            hd.persist(SenhasBean.class);
+            //login, nome, senha, site
+            sd.create(sb);
 
-//            for (int i = 0; i < tableacesso.getRowCount(); i++) {
-//                sab.setNome(tableacesso.getValueAt(i, 2).toString());
-//                
-//                hd.persist(SenhasAcessoBean.class.getClass());
-//            }
-            
+            for (int i = 0; i < tableacesso.getRowCount(); i++) {
+                sab.setNome(tableacesso.getValueAt(i, 2).toString());
+                sab.setIdsenha(Integer.parseInt(txtid.getText()));
+
+                //idsenha, nome
+                sad.create(sab);
+            }
             JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
 
         } else {
+            //Se tem ID, atualiza Senha
             sb.setId(Integer.parseInt(txtid.getText()));
             sb.setNome(txtnome.getText());
             sb.setLogin(txtlogin.getText());
             sb.setSenha(txtsenha.getText());
             sb.setSite(txtsite.getText());
 
-//////////            hd.merge(sb.getClass());
+            //login = ?, senha = ?, nome = ?, site = ? WHERE id = ?
+            sd.update(sb);
+
+            for (int i = 0; i < tableacesso.getRowCount(); i++) {
+                if (tableacesso.getValueAt(i, 0).equals("")) {
+                    sab.setIdsenha(Integer.parseInt(txtid.getText()));
+                    sab.setNome(tableacesso.getValueAt(i, 2).toString());
+
+                    //idsenha, nome
+                    sad.create(sab);
+                }
+            }
 
             JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         }
         readsenhas();
-        jTabbedPane1.setSelectedIndex(0);
+        tabsenhas.setSelectedIndex(0);
         zeracampos();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void tablesenhasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablesenhasMouseClicked
         if (evt.getClickCount() == 2) {
-            SenhasBean sb = SenhasDAO.getInstance().getById(Integer.parseInt(tablesenhas.getValueAt(tablesenhas.getSelectedRow(), 0).toString()));
-            jTabbedPane1.setSelectedIndex(1);
-            txtid.setText(String.valueOf(sb.getId()));
-            txtnome.setText(sb.getNome());
-            txtlogin.setText(sb.getLogin());
-            txtsenha.setText(sb.getSenha());
-            txtsite.setText(sb.getSite());
-            
+//            SenhasBean sb = SenhasDAO.getInstance().getById(Integer.parseInt(tablesenhas.getValueAt(tablesenhas.getSelectedRow(), 0).toString()));
+//            jTabbedPane1.setSelectedIndex(1);
+//            txtid.setText(String.valueOf(sb.getId()));
+//            txtnome.setText(sb.getNome());
+//            txtlogin.setText(sb.getLogin());
+//            txtsenha.setText(sb.getSenha());
+//            txtsite.setText(sb.getSite());
+            int id = Integer.parseInt(tablesenhas.getValueAt(tablesenhas.getSelectedRow(), 0).toString());
+
+            acesso = new String[sad.click(id).size()];
+
+            int index = 0;
+
+            for (SenhasAcessoBean sab : sad.click(id)) {
+                acesso[index] = sab.getNome();
+                index += 1;
+            }
+
+            for (int i = 0; i < acesso.length; i++) {
+                if (Session.nome.equals(acesso[i])) {
+                    tabsenhas.setSelectedIndex(1);
+
+                    sd.click(id).forEach(sb -> {
+                        txtid.setText(String.valueOf(sb.getId()));
+                        txtnome.setText(sb.getNome());
+                        txtlogin.setText(sb.getLogin());
+                        txtsenha.setText(sb.getSenha());
+                        txtsite.setText(sb.getSite());
+                    });
+
+                    readAcessos();
+                    break;
+                } else {
+                    if (i == acesso.length - 1) {
+                        JOptionPane.showMessageDialog(null, "Você não possui acesso a esta senha.");
+                    }
+                }
+            }
         }
     }//GEN-LAST:event_tablesenhasMouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        ProcurarUser pu = new ProcurarUser("Senhas");
+        ProcurarUser pu = new ProcurarUser(this.getClass().getSimpleName());
         Telas.AparecerTela(pu);
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -489,23 +537,27 @@ public class Senhas extends javax.swing.JInternalFrame {
         } else if (txtid.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Salve a senha primeiro.");
         } else {
-            for (int i = 0; i < rc; i++) {
-                
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja retirar o acesso deste(s) usuário(s)?", "Excluir acesso", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                for (int i = 0; i < rc; i++) {
+                    if (tableacesso.getValueAt(i, 1).equals(true)) {
+                        sab.setId(rc);
+
+                        //id = ?
+                        sad.delete(sab);
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "Excluído com sucesso!");
+                readAcessos();
             }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        SenhasBean sb = new SenhasBean();
-        
-    }//GEN-LAST:event_jButton4ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
-    public javax.swing.JButton jButton4;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -518,9 +570,9 @@ public class Senhas extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel5;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
-    public javax.swing.JTabbedPane jTabbedPane1;
     public static javax.swing.JTable tableacesso;
     public static javax.swing.JTable tablesenhas;
+    public javax.swing.JTabbedPane tabsenhas;
     public static javax.swing.JTextField txtid;
     public static javax.swing.JTextField txtlogin;
     public static javax.swing.JTextField txtnome;

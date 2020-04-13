@@ -40,7 +40,6 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
         
         ud.readtabelausuariosativo().forEach(ub -> {
             model.addRow(new Object[]{
-                false,
                 ub.getNome(),
                 ""
             });
@@ -91,19 +90,12 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "Nome", "Valor"
+                "Nome", "Valor"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
-            };
             boolean[] canEdit = new boolean [] {
-                true, false, true
+                false, true
             };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -112,12 +104,9 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
         tablepagamento.setName("tablepagamento"); // NOI18N
         jScrollPane1.setViewportView(tablepagamento);
         if (tablepagamento.getColumnModel().getColumnCount() > 0) {
-            tablepagamento.getColumnModel().getColumn(0).setMinWidth(35);
-            tablepagamento.getColumnModel().getColumn(0).setPreferredWidth(35);
-            tablepagamento.getColumnModel().getColumn(0).setMaxWidth(35);
-            tablepagamento.getColumnModel().getColumn(2).setMinWidth(130);
-            tablepagamento.getColumnModel().getColumn(2).setPreferredWidth(130);
-            tablepagamento.getColumnModel().getColumn(2).setMaxWidth(130);
+            tablepagamento.getColumnModel().getColumn(1).setMinWidth(130);
+            tablepagamento.getColumnModel().getColumn(1).setPreferredWidth(130);
+            tablepagamento.getColumnModel().getColumn(1).setMaxWidth(130);
         }
 
         cbtipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Salário", "Adiantamento", "Férias", "Outros" }));
@@ -147,6 +136,7 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
 
         txtparcela.setName("txtparcela"); // NOI18N
 
+        datevencimento.setDateFormatString("dd/MM/yyyy");
         datevencimento.setName("datevencimento"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -254,18 +244,19 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbtipoActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int numtrue = 0;
+        int numVazio = 0;
         
         for (int i = 0; i < tablepagamento.getRowCount(); i++) {
-            if (tablepagamento.getValueAt(i, 0).equals(true)) {
-                numtrue++;
+            if (tablepagamento.getValueAt(i, 1).equals("")) {
+                numVazio++;
             }
         }
         
-        if (numtrue == 0) {
-            JOptionPane.showMessageDialog(null, "Não foram selecionados funcionários.");
+        if (numVazio == tablepagamento.getRowCount()) {
+            JOptionPane.showMessageDialog(null, "Não foi digitado valor algum.");
         } else if (cbtipo.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Selecione um tipo de pagamento.");
+            cbtipo.showPopup();
         } else if (cbtipo.getSelectedItem().equals("Outros") && txtoutros.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Descreva o tipo.");
             txtoutros.requestFocus();
@@ -292,14 +283,14 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
             }
             
             for (int i = 0; i < tablepagamento.getRowCount(); i++) {
-                if (tablepagamento.getValueAt(i, 0).equals(true)) {
+                if (!tablepagamento.getValueAt(i, 1).equals("")) {
                     cb.setDatalancamento(Dates.CriarDataCurtaDBJDateChooser(dia));
                     cb.setFornecedor(tipo + " - " + tablepagamento.getValueAt(i, 1).toString());
                     cb.setNumero(txtnumero.getText());
                     cb.setDataemissao(Dates.CriarDataCurtaDBJDateChooser(dia));
-                    cb.setTotal(tablepagamento.getValueAt(i, 2).toString());
+                    cb.setTotal(tablepagamento.getValueAt(i, 1).toString());
                     cb.setParcela(txtparcela.getText());
-                    cb.setValorparcela(tablepagamento.getValueAt(i, 2).toString());
+                    cb.setValorparcela(tablepagamento.getValueAt(i, 1).toString());
                     cb.setDataparcela(Dates.CriarDataCurtaDBJDateChooser(datevencimento.getDate()));
                     cb.setStatus("Ativo");
 

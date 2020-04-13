@@ -382,7 +382,7 @@ public class FornecedoresDAO {
         ResultSet rs = null;
 
         int lastid = 0;
-
+        
         try {
             stmt = con.prepareStatement("SELECT MAX(id) AS id FROM fornecedores");
             rs = stmt.executeQuery();

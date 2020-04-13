@@ -83,7 +83,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         modelf.setNumRows(0);
 
         int qtd = txtpesquisa.getText().length();
-        
+
         if (qtd > 0) {
             switch (cbstatus.getSelectedIndex()) {
                 case 2:
@@ -242,13 +242,12 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     public static void orgcont() {
         FornecedoresValoresOriginais.rccont = tablecontatos.getRowCount();
     }
-    
+
 //    private static EnderecoERP consultaCEP(java.lang.String cep) throws SigepClienteException, SQLException_Exception {
 //        br.com.correios.AtendeClienteService service = new br.com.correios.AtendeClienteService();
 //        br.com.correios.AtendeCliente port = service.getAtendeClientePort();
 //        return port.consultaCEP(cep);
 //    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -1021,7 +1020,28 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         //Criar data para criação/alteração
         String data = Dates.CriarDataCompletaParaDB();
 
-        if (txtidfornecedor.getText().equals("")) {//Se o ID está vazio
+        if (txtnomefornecedor.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um nome para o fornecedor.");
+            txtnomefornecedor.requestFocus();
+        } else if (txtlogradouro.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um endereço.");
+            txtlogradouro.requestFocus();
+        } else if (txtnumero.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um número.");
+            txtnumero.requestFocus();
+        } else if (txtbairro.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um bairro.");
+            txtbairro.requestFocus();
+        } else if (txtcidade.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite uma cidade.");
+            txtcidade.requestFocus();
+        } else if (cbuf.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Selecione um estado.");
+            cbuf.showPopup();
+        } else if (txtcep.getText().equals("     -   ")) {
+            JOptionPane.showMessageDialog(null, "Digite um CEP.");
+            txtcep.requestFocus();
+        } else if (txtidfornecedor.getText().equals("")) {//Se o ID está vazio
             //Dados para criar novo Fornecedor
             fb.setNome(txtnomefornecedor.getText());
             fb.setRazaosocial(txtrazao.getText());
@@ -1132,7 +1152,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
 
             //Zerar campos
             zeracampos();
-            
+
             JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
 
             //Voltar para primeira tela de Fornecedores
@@ -1779,7 +1799,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         FornecedoresDAO fd = new FornecedoresDAO();
-        
+
         JOptionPane.showMessageDialog(null, fd.readlast());
     }//GEN-LAST:event_jButton11ActionPerformed
 

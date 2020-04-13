@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Bean;
 
 /**
@@ -11,11 +10,13 @@ package Bean;
  * @author Marcos Filho
  */
 public class OSBean {
-    
+
     private int id;
     private String idtela;
     private String dataabertura;
     private String dataprevisao;
+    private String dateabertura;
+    private String dateprevisao;
     private String status;
     private String cliente;
     private String das;
@@ -31,6 +32,10 @@ public class OSBean {
     private String desenho;
     private String raio;
     private String frontal;
+    private boolean topob;
+    private boolean reconstrucaob;
+    private boolean completab;
+    private boolean desenhob;
 
     public int getId() {
         return id;
@@ -62,6 +67,22 @@ public class OSBean {
 
     public void setDataprevisao(String dataprevisao) {
         this.dataprevisao = dataprevisao;
+    }
+
+    public String getDateabertura() {
+        return dateabertura;
+    }
+
+    public void setDateabertura(String dateabertura) {
+        this.dateabertura = dateabertura;
+    }
+
+    public String getDateprevisao() {
+        return dateprevisao;
+    }
+
+    public void setDateprevisao(String dateprevisao) {
+        this.dateprevisao = dateprevisao;
     }
 
     public String getStatus() {
@@ -183,6 +204,37 @@ public class OSBean {
     public void setFrontal(String frontal) {
         this.frontal = frontal;
     }
-    
-    
+
+    public boolean isTopob() {
+        return topob;
+    }
+
+    public void setTopob(boolean topob) {
+        this.topob = topob;
+    }
+
+    public boolean isReconstrucaob() {
+        return reconstrucaob;
+    }
+
+    public void setReconstrucaob(boolean reconstrucaob) {
+        this.reconstrucaob = reconstrucaob;
+    }
+
+    public boolean isCompletab() {
+        return completab;
+    }
+
+    public void setCompletab(boolean completab) {
+        this.completab = completab;
+    }
+
+    public boolean isDesenhob() {
+        return desenhob;
+    }
+
+    public void setDesenhob(boolean desenhob) {
+        this.desenhob = desenhob;
+    }
+
 }

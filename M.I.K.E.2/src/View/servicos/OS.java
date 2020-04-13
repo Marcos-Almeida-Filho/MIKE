@@ -176,33 +176,17 @@ public class OS extends javax.swing.JInternalFrame {
                 ob.setQtdok(Integer.parseInt(txtinicial.getText()));
                 ob.setQtdnaook(0);
                 ob.setNotes(txtnotes.getText());
-                String topo = "false";
-                String rec = "false";
-                String com = "false";
-                String des = "false";
-                if (radiotopo.isSelected()) {
-                    topo = "true";
-                }
-                if (radioreconstrucao.isSelected()) {
-                    rec = "true";
-                }
-                if (radiocompleta.isSelected()) {
-                    com = "true";
-                }
-                if (radiodesenho.isSelected()) {
-                    des = "true";
-                }
-                ob.setTopo(topo);
-                ob.setReconstrucao(rec);
-                ob.setCompleta(com);
-                ob.setDesenho(des);
+                ob.setTopob(radiotopo.isSelected());
+                ob.setReconstrucaob(radioreconstrucao.isSelected());
+                ob.setCompletab(radiocompleta.isSelected());
+                ob.setDesenhob(radiodesenho.isSelected());
                 ob.setRaio(txtraio.getText());
                 txtraio.setEditable(false);
                 checkraio.setEnabled(false);
                 ob.setFrontal(txtfrontal.getText());
                 txtfrontal.setEditable(false);
                 checkfrontal.setEnabled(false);
-                //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, desenho, raio, frontal
+                //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topob, reconstrucaob, completab, desenhob, raio, frontal
                 od.create(ob);
 
                 int rcproc = tableprocessos.getRowCount();
@@ -215,7 +199,7 @@ public class OS extends javax.swing.JInternalFrame {
                     opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
                     opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
                     opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                    opb.setDisponivel(txtinicial.getText());
+                    opb.setDisponivel(Integer.parseInt(txtinicial.getText()));
 
                     //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                     opd.create(opb);
@@ -348,7 +332,7 @@ public class OS extends javax.swing.JInternalFrame {
                 opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
                 opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
                 opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
+                opb.setDisponivel(Integer.parseInt(tableprocessos.getValueAt(i, 9).toString()));
                 opb.setId(Integer.parseInt(tableprocessos.getValueAt(i, 1).toString()));
 
                 //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
@@ -1871,12 +1855,12 @@ public class OS extends javax.swing.JInternalFrame {
                     int naookos = 0;
                     for (int i = 0; i < tableprocessos.getRowCount(); i++) {
                         if (tableprocessos.getValueAt(i, 2).equals(processo)) {
-                            naookprocesso = naookprocesso + Integer.parseInt(tableprocessos.getValueAt(i, 6).toString());
+                            naookprocesso += Integer.parseInt(tableprocessos.getValueAt(i, 6).toString());
                         }
                         if (tableprocessos.getValueAt(i, 2).equals(processo)) {
-                            okprocesso = okprocesso + Integer.parseInt(tableprocessos.getValueAt(i, 5).toString());
+                            okprocesso += Integer.parseInt(tableprocessos.getValueAt(i, 5).toString());
                         }
-                        naookos = naookos + Integer.parseInt(tableprocessos.getValueAt(i, 6).toString());
+                        naookos += Integer.parseInt(tableprocessos.getValueAt(i, 6).toString());
                     }
                     ProcessoOS p = new ProcessoOS();
                     Telas.AparecerTela(p);

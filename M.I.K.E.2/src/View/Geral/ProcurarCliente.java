@@ -13,6 +13,7 @@ import View.comercial.OPF_UP;
 import View.financeiro.AdicionarContasAPagar;
 import View.financeiro.AdicionarContasAReceber;
 import View.logistica.RastreamentoDocumentos;
+import View.vendas.CodigoPorCliente;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -204,6 +205,10 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                     break;
                 case "OPF_UP":
                     OPF_UP.txtcliente.setText(cliente);
+                    dispose();
+                    break;
+                case "CodigoPorCliente":
+                    CodigoPorCliente.txtcliente.setText(cliente);
                     dispose();
                     break;
             }

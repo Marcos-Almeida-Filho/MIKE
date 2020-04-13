@@ -5,16 +5,15 @@
  */
 package View.servicos;
 
+import Bean.F_UPBean;
 import Bean.OSBean;
 import Bean.OSDocumentosBean;
-import Bean.OSInspecaoBean;
 import Bean.OSProcessosBean;
 import Bean.ServicoMateriaisBean;
 import Bean.ServicoMateriaisMovimentacaoBean;
-import Bean.ServicoPedidoBean;
 import Bean.ServicoPedidoDocumentosBean;
-import Bean.ServicoPedidoItensBean;
 import Connection.Session;
+import DAO.F_UPDAO;
 import DAO.OSDAO;
 import DAO.OSDocumentosDAO;
 import DAO.OSInspecaoDAO;
@@ -24,12 +23,16 @@ import DAO.ServicoMateriaisMovimentacaoDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
+import Methods.Arquivos;
+import Methods.Dates;
 import Methods.Docs;
 import Methods.SendEmail;
 import Methods.SoNumeros;
 import Methods.Telas;
 import View.Geral.MudarStatus;
+import View.Geral.ProcuraMaterial;
 import View.Geral.ProcurarCliente;
+import View.Geral.ProcurarDocumento;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.PedidoServico.txtnumeropedido;
@@ -45,7 +48,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -67,6 +69,30 @@ public class OS1 extends javax.swing.JInternalFrame {
     /**
      * Creates new form OS
      */
+    //DAOs
+    static OSDAO od = new OSDAO();
+    static OSDocumentosDAO odd = new OSDocumentosDAO();
+    static OSProcessosDAO opd = new OSProcessosDAO();
+    static OSInspecaoDAO oid = new OSInspecaoDAO();
+    static ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+    static ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+    static ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+    static ServicoPedidoDAO spd = new ServicoPedidoDAO();
+    static ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+    static F_UPDAO fd = new F_UPDAO();
+
+    //Beans
+    static OSBean ob = new OSBean();
+    static ServicoMateriaisBean smb = new ServicoMateriaisBean();
+    static ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+    static OSProcessosBean opb = new OSProcessosBean();
+    static OSDocumentosBean odb = new OSDocumentosBean();
+    static ServicoPedidoDocumentosBean spdb = new ServicoPedidoDocumentosBean();
+    static F_UPBean fb = new F_UPBean();
+
+    //Pegar id do material
+    int idmaterial = 0;
+
     private static JTable getNewRenderedTable(final JTable table, int coluna) {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -95,18 +121,18 @@ public class OS1 extends javax.swing.JInternalFrame {
 //        jButton2.addActionListener(new PrintOS());
         lbldirectory.setVisible(false);
         getNewRenderedTable(tableos, 4);
+        btnmudarprocesso.setVisible(false);
     }
 
     public static void reados() {
         DefaultTableModel model = (DefaultTableModel) tableos.getModel();
         model.setNumRows(0);
-        OSDAO od = new OSDAO();
 
         int index = cbstatus.getSelectedIndex();
 
         switch (index) {
             case 1:
-                for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
+                od.readstatus(cbstatus.getSelectedItem().toString()).forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -114,10 +140,10 @@ public class OS1 extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
             case 2:
-                for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
+                od.readstatus(cbstatus.getSelectedItem().toString()).forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -125,10 +151,10 @@ public class OS1 extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
             case 3:
-                for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
+                od.readstatus(cbstatus.getSelectedItem().toString()).forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -136,10 +162,10 @@ public class OS1 extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
             case 4:
-                for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
+                od.readstatus(cbstatus.getSelectedItem().toString()).forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -147,10 +173,10 @@ public class OS1 extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
             case 5:
-                for (OSBean ob : od.read()) {
+                od.read().forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -158,10 +184,10 @@ public class OS1 extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
             default:
-                for (OSBean ob : od.reademaberto()) {
+                od.reademaberto().forEach(ob -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -169,10 +195,9 @@ public class OS1 extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
         }
-
     }
 
     public static void camposembranco() {
@@ -202,9 +227,7 @@ public class OS1 extends javax.swing.JInternalFrame {
     }
 
     public static void dadosos() {
-        OSDAO od = new OSDAO();
-
-        for (OSBean ob : od.click(txtnumeroos.getText())) {
+        od.click(txtnumeroos.getText()).forEach(ob -> {
             txtabertura.setText(ob.getDataabertura());
             txtprevisao.setText(ob.getDataprevisao());
             txtstatus.setText(ob.getStatus());
@@ -216,13 +239,13 @@ public class OS1 extends javax.swing.JInternalFrame {
             txtfinal.setText(String.valueOf(ob.getQtdok()));
             txtmortas.setText(String.valueOf(ob.getQtdnaook()));
             txtnotes.setText(ob.getNotes());
-            if (ob.getTopo().equals("true")) {
+            if (ob.isTopob()) {
                 radiotopo.setSelected(true);
-            } else if (ob.getReconstrucao().equals("true")) {
+            } else if (ob.isReconstrucaob()) {
                 radioreconstrucao.setSelected(true);
-            } else if (ob.getCompleta().equals("true")) {
+            } else if (ob.isCompletab()) {
                 radiocompleta.setSelected(true);
-            } else if (ob.getDesenho().equals("true")) {
+            } else if (ob.isDesenhob()) {
                 radiodesenho.setSelected(true);
             } else {
                 radiovazio.setSelected(true);
@@ -239,30 +262,28 @@ public class OS1 extends javax.swing.JInternalFrame {
             } else {
                 checkfrontal.setSelected(false);
             }
-        }
+        });
     }
 
     public static void readdocs() {
         DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
         model.setNumRows(0);
-        OSDocumentosDAO odd = new OSDocumentosDAO();
 
-        for (OSDocumentosBean odb : odd.readitens(txtnumeroos.getText())) {
+        odd.readitens(txtnumeroos.getText()).forEach((odb) -> {
             model.addRow(new Object[]{
                 false,
                 odb.getId(),
                 odb.getDesc(),
                 odb.getLocal()
             });
-        }
+        });
     }
 
     public static void readprocessos() {
         DefaultTableModel model = (DefaultTableModel) tableprocessos.getModel();
         model.setNumRows(0);
-        OSProcessosDAO opd = new OSProcessosDAO();
 
-        for (OSProcessosBean opb : opd.read(txtnumeroos.getText())) {
+        opd.read(txtnumeroos.getText()).forEach((opb) -> {
             model.addRow(new Object[]{
                 false,
                 opb.getId(),
@@ -275,7 +296,7 @@ public class OS1 extends javax.swing.JInternalFrame {
                 opb.getOrdem(),
                 opb.getDisponivel()
             });
-        }
+        });
     }
 
     public static void camposnumeros() {
@@ -285,114 +306,169 @@ public class OS1 extends javax.swing.JInternalFrame {
     }
 
     public static void travarcampos() {
-        if (txtstatus.getText().equals("Ativo")) {
-            //Desabilitar botões
-            btnprocurarcliente.setEnabled(false);
-            btnprocurarmaterial.setEnabled(false);
-            btnmudarprocesso.setEnabled(false);
-            btnalterarstatus.setEnabled(true);
+        String status = txtstatus.getText();
+        switch (status) {
+            case "Ativo":
+                //Desabilitar botões
+                btnprocurarcliente.setEnabled(false);
+                btnprocurarmaterial.setEnabled(false);
+                btnmudarprocesso.setEnabled(false);
+                btnalterarstatus.setEnabled(true);
 
-            //Desabilitar txts
-            txtinicial.setEditable(false);
+                //Desabilitar txts
+                txtinicial.setEditable(false);
 
-            //Desabilitar checks
-            checkraio.setEnabled(false);
-            checkfrontal.setEnabled(false);
+                //Desabilitar checks
+                checkraio.setEnabled(false);
+                checkfrontal.setEnabled(false);
 
-            //Desabilitar radios
-            if (radiotopo.isSelected()) {
-                radiotopo.setSelected(true);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setEnabled(false);
-            }
-            if (radioreconstrucao.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setSelected(true);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setEnabled(false);
-            }
-            if (radiocompleta.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setSelected(true);
-                radiodesenho.setEnabled(false);
-            }
-            if (radiodesenho.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setSelected(true);
-            }
-        } else if (txtstatus.getText().equals("Cancelado") || txtstatus.getText().equals("Fechado")) {
-            //Desabilitar botões
-            btnprocurarcliente.setEnabled(false);
-            btnprocurarmaterial.setEnabled(false);
-            btnmudarprocesso.setEnabled(false);
-            btnadddoc.setEnabled(false);
-            btndeldoc.setEnabled(false);
-            btnalterarstatus.setEnabled(false);
-            btnsalvaros.setEnabled(false);
+                //Desabilitar radios
+                if (radiotopo.isSelected()) {
+                    radiotopo.setSelected(true);
+                    radiotopo.setEnabled(true);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                } else if (radioreconstrucao.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setSelected(true);
+                    radioreconstrucao.setEnabled(true);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                } else if (radiocompleta.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(true);
+                    radiocompleta.setSelected(true);
+                    radiodesenho.setEnabled(false);
+                } else if (radiodesenho.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(true);
+                    radiodesenho.setSelected(true);
+                }
+                break;
+            case "Cancelado":
+                //Desabilitar botões
+                btnprocurarcliente.setEnabled(false);
+                btnprocurarmaterial.setEnabled(false);
+                btnmudarprocesso.setEnabled(false);
+                btnadddoc.setEnabled(false);
+                btndeldoc.setEnabled(false);
+                btnalterarstatus.setEnabled(false);
+                btnsalvaros.setEnabled(false);
 
-            //Desabilitar txts
-            txtinicial.setEditable(false);
-            txtnotes.setEditable(false);
+                //Desabilitar txts
+                txtinicial.setEditable(false);
+                txtnotes.setEditable(false);
 
-            //Desabilitar checks
-            checkraio.setEnabled(false);
-            checkfrontal.setEnabled(false);
+                //Desabilitar checks
+                checkraio.setEnabled(false);
+                checkfrontal.setEnabled(false);
 
-            //Desabilitar radios
-            if (radiotopo.isSelected()) {
-                radiotopo.setSelected(true);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setEnabled(false);
-            }
-            if (radioreconstrucao.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setSelected(true);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setEnabled(false);
-            }
-            if (radiocompleta.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setSelected(true);
-                radiodesenho.setEnabled(false);
-            }
-            if (radiodesenho.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setSelected(true);
-            }
-        } else {
-            //Habilitar botões
-            btnprocurarcliente.setEnabled(true);
-            btnprocurarmaterial.setEnabled(true);
-            btnmudarprocesso.setEnabled(true);
-            btnalterarstatus.setEnabled(true);
+                //Desabilitar radios
+                if (radiotopo.isSelected()) {
+                    radiotopo.setSelected(true);
+                    radiotopo.setEnabled(true);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                } else if (radioreconstrucao.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setSelected(true);
+                    radioreconstrucao.setEnabled(true);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                } else if (radiocompleta.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(true);
+                    radiocompleta.setSelected(true);
+                    radiodesenho.setEnabled(false);
+                } else if (radiodesenho.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(true);
+                    radiodesenho.setSelected(true);
+                }
+                break;
+            case "Fechado":
+                //Desabilitar botões
+                btnprocurarcliente.setEnabled(false);
+                btnprocurarmaterial.setEnabled(false);
+                btnmudarprocesso.setEnabled(false);
+                btnadddoc.setEnabled(false);
+                btndeldoc.setEnabled(false);
+                btnalterarstatus.setEnabled(false);
+                btnsalvaros.setEnabled(false);
 
-            //Habilitar txts
-            txtinicial.setEditable(true);
+                //Desabilitar txts
+                txtinicial.setEditable(false);
+                txtnotes.setEditable(false);
 
-            //Habilitar checks
-            checkraio.setEnabled(true);
-            checkfrontal.setEnabled(true);
+                //Desabilitar checks
+                checkraio.setEnabled(false);
+                checkfrontal.setEnabled(false);
 
-            //Habilitar radios
-            radioreconstrucao.setEnabled(true);
-            radiotopo.setEnabled(true);
+                //Desabilitar radios
+                if (radiotopo.isSelected()) {
+                    radiotopo.setSelected(true);
+                    radiotopo.setEnabled(true);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                } else if (radioreconstrucao.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setSelected(true);
+                    radioreconstrucao.setEnabled(true);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                } else if (radiocompleta.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(true);
+                    radiocompleta.setSelected(true);
+                    radiodesenho.setEnabled(false);
+                } else if (radiodesenho.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(true);
+                    radiodesenho.setSelected(true);
+                }
+                break;
+            default:
+                //Habilitar botões
+                btnprocurarcliente.setEnabled(true);
+                btnprocurarmaterial.setEnabled(true);
+                btnmudarprocesso.setEnabled(true);
+                btnalterarstatus.setEnabled(true);
 
-            if (!txtraio.getText().equals("")) {
-                checkraio.setSelected(true);
-                txtraio.setEditable(true);
-            }
-            if (!txtfrontal.getText().equals("")) {
-                checkfrontal.setSelected(true);
-                txtfrontal.setEditable(true);
-            }
+                //Habilitar txts
+                txtinicial.setEditable(true);
+
+                //Habilitar checks
+                checkraio.setEnabled(true);
+                checkfrontal.setEnabled(true);
+
+                //Habilitar radios
+                radioreconstrucao.setEnabled(true);
+                radiotopo.setEnabled(true);
+                radiocompleta.setEnabled(true);
+                radiodesenho.setEnabled(true);
+                radiovazio.setSelected(true);
+
+                if (!txtraio.getText().equals("")) {
+                    checkraio.setSelected(true);
+                    txtraio.setEditable(true);
+                }
+                if (!txtfrontal.getText().equals("")) {
+                    checkfrontal.setSelected(true);
+                    txtfrontal.setEditable(true);
+                }
+                break;
         }
     }
 
@@ -400,8 +476,7 @@ public class OS1 extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tableinspecoes.getModel();
         model.setNumRows(0);
 
-        OSInspecaoDAO oid = new OSInspecaoDAO();
-        for (OSInspecaoBean oib : oid.reados(txtnumeroos.getText())) {
+        oid.reados(txtnumeroos.getText()).forEach((oib) -> {
             model.addRow(new Object[]{
                 oib.getId(),
                 oib.getProcesso(),
@@ -411,7 +486,7 @@ public class OS1 extends javax.swing.JInternalFrame {
                 oib.getFuncionario(),
                 oib.getInstrumento()
             });
-        }
+        });
     }
 
     public static void qtdok() {
@@ -421,10 +496,8 @@ public class OS1 extends javax.swing.JInternalFrame {
             qtdnaook = qtdnaook + Integer.parseInt(tableprocessos.getValueAt(i, 6).toString());
         }
 
-        OS1.txtmortas.setText(String.valueOf(qtdnaook));
-        OS1.txtfinal.setText(String.valueOf(qtdinicial - qtdnaook));
-        OSDAO od = new OSDAO();
-        OSBean ob = new OSBean();
+        txtmortas.setText(String.valueOf(qtdnaook));
+        txtfinal.setText(String.valueOf(qtdinicial - qtdnaook));
 
         ob.setQtdok(qtdinicial - qtdnaook);
         ob.setQtdnaook(qtdnaook);
@@ -437,36 +510,42 @@ public class OS1 extends javax.swing.JInternalFrame {
     public static void radios() {
         if (!txtstatus.getText().equals("Rascunho")) {
             if (radiotopo.isSelected()) {
+                radiotopo.setSelected(true);
+                radiotopo.setEnabled(true);
                 radioreconstrucao.setEnabled(false);
-            } else {
+                radiocompleta.setEnabled(false);
+                radiodesenho.setEnabled(false);
+            } else if (radioreconstrucao.isSelected()) {
                 radiotopo.setEnabled(false);
+                radioreconstrucao.setSelected(true);
+                radioreconstrucao.setEnabled(true);
+                radiocompleta.setEnabled(false);
+                radiodesenho.setEnabled(false);
+            } else if (radiocompleta.isSelected()) {
+                radiotopo.setEnabled(false);
+                radioreconstrucao.setEnabled(false);
+                radiocompleta.setEnabled(true);
+                radiocompleta.setSelected(true);
+                radiodesenho.setEnabled(false);
+            } else if (radiodesenho.isSelected()) {
+                radiotopo.setEnabled(false);
+                radioreconstrucao.setEnabled(false);
+                radiocompleta.setEnabled(false);
+                radiodesenho.setEnabled(true);
+                radiodesenho.setSelected(true);
             }
         }
     }
 
-    public static void encerraop() {
-        //DAO e Bean para alteração da OS
-        OSDAO od = new OSDAO();
-        OSBean ob = new OSBean();
-
-        //DAO para id do material
-        ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
-        ServicoMateriaisBean smb = new ServicoMateriaisBean();
-
-        //DAO e Bean para movimentação do produto
-        ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
-        ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
-
+    public void encerraop() {
         //Pegar data para gravar
         Calendar c = Calendar.getInstance();
         String pattern = "dd/MM/yyyy HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-        //Pegar id do material
-        int idmaterial = 0;
-        for (ServicoMateriaisBean smb2 : smd.readid(txtcodigo.getText())) {
+        smd.readid(txtcodigo.getText()).forEach(smb2 -> {
             idmaterial = smb2.getId();
-        }
+        });
 
         //Número de processos encerrados e rowcount da table de processos
         int procencerrado = 0;
@@ -547,6 +626,7 @@ public class OS1 extends javax.swing.JInternalFrame {
         jLabel9 = new javax.swing.JLabel();
         cbstatus = new javax.swing.JComboBox<>();
         jButton12 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -757,6 +837,13 @@ public class OS1 extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -767,6 +854,8 @@ public class OS1 extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1078, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
@@ -788,7 +877,8 @@ public class OS1 extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton12))
+                    .addComponent(jButton12)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -809,10 +899,12 @@ public class OS1 extends javax.swing.JInternalFrame {
         jLabel2.setText("Status");
 
         txtprevisao.setEditable(false);
+        txtprevisao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel10.setText("Data de Previsão");
 
         txtabertura.setEditable(false);
+        txtabertura.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel11.setText("Data de Abertura");
 
@@ -850,7 +942,7 @@ public class OS1 extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtprevisao, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtprevisao, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -953,14 +1045,13 @@ public class OS1 extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtcodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtcodigo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtdesc, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnprocurarmaterial)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnprocurarmaterial))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1380,20 +1471,20 @@ public class OS1 extends javax.swing.JInternalFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(tabadp, javax.swing.GroupLayout.DEFAULT_SIZE, 911, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnalterarstatus)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnsalvaros))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(tabadp)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -1459,6 +1550,7 @@ public class OS1 extends javax.swing.JInternalFrame {
             JMenuItem das = new JMenuItem("Abrir DAS");
 
             das.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent ae) {
                     String DAS = txtdas.getText();
                     if (DAS.equals("")) {
@@ -1475,9 +1567,7 @@ public class OS1 extends javax.swing.JInternalFrame {
                         PedidoServico.txtnumeropedido.setText(DAS);
                         PedidoServico.tabpedidos.setSelectedIndex(1);
 
-                        ServicoPedidoDAO spd = new ServicoPedidoDAO();
-
-                        for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
+                        spd.click(txtnumeropedido.getText()).forEach(spb -> {
                             PedidoServico.txtclientepedido.setText(spb.getCliente());
                             PedidoServico.txtcondicao.setText(spb.getCondicao());
                             PedidoServico.txtrepresentante.setText(spb.getRepresentante());
@@ -1485,13 +1575,12 @@ public class OS1 extends javax.swing.JInternalFrame {
                             PedidoServico.txtstatusretorno.setText(spb.getStatus_retorno());
                             PedidoServico.txtnotes.setText(spb.getNotes());
                             PedidoServico.txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
-                        }
+                        });
 
                         DefaultTableModel model = (DefaultTableModel) PedidoServico.tableitensorcamento.getModel();
                         model.setNumRows(0);
-                        ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
 
-                        for (ServicoPedidoItensBean spib : spid.readitens(txtnumeropedido.getText())) {
+                        spid.readitens(txtnumeropedido.getText()).forEach((spib) -> {
                             model.addRow(new Object[]{
                                 false,
                                 spib.getId(),
@@ -1505,19 +1594,18 @@ public class OS1 extends javax.swing.JInternalFrame {
                                 spib.getOs(),
                                 spib.getNf()
                             });
-                        }
+                        });
 
                         DefaultTableModel modeldoc = (DefaultTableModel) PedidoServico.tabledocumentos.getModel();
                         modeldoc.setNumRows(0);
-                        ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
 
-                        for (ServicoPedidoDocumentosBean spdb : spdd.readitens(PedidoServico.txtnumeropedido.getText())) {
+                        spdd.readitens(PedidoServico.txtnumeropedido.getText()).forEach((spdb) -> {
                             modeldoc.addRow(new Object[]{
                                 false,
                                 spdb.getId(),
                                 spdb.getDescricao(),
                                 spdb.getLocal()});
-                        }
+                        });
                         PedidoServico.txtvalorcobranca();
                     }
                 }
@@ -1531,108 +1619,74 @@ public class OS1 extends javax.swing.JInternalFrame {
 
     private void btnsalvarosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsalvarosActionPerformed
         if (txtnumeroos.getText().equals("")) {
+            //Caso a OS não tenha número ainda
             if (txtcliente.getText().equals("")) {
+                //Caso não tenha sido selecionado cliente
                 JOptionPane.showMessageDialog(rootPane, "Escolha um cliente primeiro!");
+                ProcuraCliente pc = new ProcuraCliente(this.getClass().getSimpleName());
+                Telas.AparecerTela(pc);
             } else if (txtcodigo.getText().equals("")) {
+                //Caso não tenha sido selecionado material
                 JOptionPane.showMessageDialog(rootPane, "Selecione um produto primeiro!");
+                ProcuraMaterial pm = new ProcuraMaterial(this.getClass().getSimpleName());
+                Telas.AparecerTela(pm);
             } else if (txtinicial.getText().equals("")) {
+                //Caso não tenha quantidade inicial na OS
                 JOptionPane.showMessageDialog(rootPane, "Coloque uma quantidade!");
                 txtinicial.requestFocus();
             } else if (!radiotopo.isSelected() && !radioreconstrucao.isSelected() && !radiocompleta.isSelected() && !radiodesenho.isSelected()) {
+                //Caso nenhum serviço tenha sido selecionado
                 JOptionPane.showMessageDialog(rootPane, "Escolha um serviço a ser executado.");
             } else {
-                //Criar OS
-                OSDAO od = new OSDAO();
-                OSBean ob = new OSBean();
+                //Se tudo estiver certo, podemos criar a OS
 
-                //Dados para método DAO
-                try { //Tentar achar primeira OP do ano para poder dar nome
-                    if (od.readnome() == false) {
-                        Calendar ca = Calendar.getInstance();
-                        String patterny = "yy";
-                        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-                        String year = simpleDateFormaty.format(ca.getTime());
-                        String idtela = year + "-0001S";
-                        ob.setIdtela(idtela);
-                        txtnumeroos.setText(idtela);
-                    } else {
-                        Calendar ca = Calendar.getInstance();
-                        String patterny = "yy";
-                        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-                        String year = simpleDateFormaty.format(ca.getTime());
-                        String hua = "";
-                        for (OSBean sob2 : od.read()) {
-                            hua = String.valueOf(sob2.getIdtela());
-                        }
-                        int yearint = Integer.parseInt(hua.replace(year + "-", ""));
-                        int yearnovo = yearint + 1;
-                        String idtela = year + "-" + String.format("%04d", yearnovo) + "S";
-                        ob.setIdtela(idtela);
-                        txtnumeroos.setText(idtela);
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                //Criar data do dia para data de criação e prazo de entrega
-                Calendar c = Calendar.getInstance();
-                String pattern = "dd/MM/yyyy HH:mm:ss";
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                txtabertura.setText(simpleDateFormat.format(c.getTime()));
-                ob.setDataabertura(simpleDateFormat.format(c.getTime()));
+////////////////Criar OS
+                String idos = Dates.CriarIdOS();//ok
+                ob.setIdtela(idos);//ok
+                txtnumeroos.setText(idos);//ok
+                String abertura = Dates.CriarDataCompletaParaDB();//ok
+                ob.setDateabertura(abertura);//ok
+                int days = Integer.parseInt(JOptionPane.showInputDialog(null, "Quantos dias de prazo de entrega?", "Prazo de Entrega", JOptionPane.YES_NO_OPTION));//ok
+                String previsao = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(days);//ok
+                ob.setDateprevisao(previsao);//ok
+                ob.setStatus("Rascunho");//ok
+                ob.setCliente(txtcliente.getText());//ok
+                ob.setDas(txtdas.getText());//ok
+                ob.setCodigo(txtcodigo.getText());//ok
+                ob.setDescricao(txtdesc.getText());//ok
+                ob.setQtdinicial(Integer.parseInt(txtinicial.getText()));//ok
+                ob.setQtdok(0);//ok
+                ob.setQtdnaook(0);//ok
+                ob.setNotes(txtnotes.getText());//ok
+                ob.setTopob(radiotopo.isSelected());//ok
+                ob.setReconstrucaob(radioreconstrucao.isSelected());//ok
+                ob.setCompletab(radiocompleta.isSelected());//ok
+                ob.setDesenhob(radiodesenho.isSelected());//ok
+                ob.setRaio(txtraio.getText());//ok
+                ob.setFrontal(txtfrontal.getText());//ok
 
-                //Perguntar prazo para fazer a data de entrega
-                int days = Integer.parseInt(JOptionPane.showInputDialog(rootPane, "Quantos dias de prazo?", "Prazo", JOptionPane.YES_NO_OPTION));
-                c.add(Calendar.DAY_OF_MONTH, days);
-                txtprevisao.setText(simpleDateFormat.format(c.getTime()));
-                ob.setDataprevisao(simpleDateFormat.format(c.getTime()));
-
-                //Resto dos dados para o método DAO
-                txtstatus.setText("Rascunho");
-                ob.setStatus("Rascunho");
-                ob.setCliente(txtcliente.getText());
-                ob.setDas("");
-                ob.setCodigo(txtcodigo.getText());
-                ob.setDescricao(txtdesc.getText());
-                ob.setQtdinicial(Integer.parseInt(txtinicial.getText()));
-                ob.setQtdok(Integer.parseInt(txtinicial.getText()));
-                ob.setQtdnaook(0);
-                ob.setNotes(txtnotes.getText());
-                String topo = "false";
-                String rec = "false";
-                String com = "false";
-                String des = "false";
-                if (radiotopo.isSelected()) {
-                    topo = "true";
-                }
-                if (radioreconstrucao.isSelected()) {
-                    rec = "true";
-                }
-                if (radiocompleta.isSelected()) {
-                    com = "true";
-                }
-                if (radiodesenho.isSelected()) {
-                    des = "true";
-                }
-                ob.setTopo(topo);
-                ob.setReconstrucao(rec);
-                ob.setCompleta(com);
-                ob.setDesenho(des);
-                ob.setRaio(txtraio.getText());
-                txtraio.setEditable(false);
-                checkraio.setEnabled(false);
-                ob.setFrontal(txtfrontal.getText());
-                txtfrontal.setEditable(false);
-                checkfrontal.setEnabled(false);
-                //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, desenho, raio, frontal
+                //idtela, dateabertura, dateprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topob, reconstrucaob, completab, desenhob, raio, frontal
                 od.create(ob);
 
-                //Criar Processos
-                OSProcessosDAO opd = new OSProcessosDAO();
-                OSProcessosBean opb = new OSProcessosBean();
+////////////////Criar F_UP da OS
+                fb.setDav(txtdas.getText());//ok
+                fb.setOp(idos);//ok
+                fb.setDataentrega(previsao);//ok
+                fb.setMaterial(txtcodigo.getText());//ok
+                String processo = "Separação de Material";//ok
+                fb.setProcesso(processo);//ok
+                fb.setDatacriacao(abertura);//ok
+                fb.setNivel(3);//ok
+                fb.setValor(0);//ok
+                fb.setObservacao("");//ok
+                fb.setCliente(txtcliente.getText());//ok
 
-                int rcproc = tableprocessos.getRowCount();
-                for (int i = 0; i < rcproc; i++) {
-                    opb.setIdos(txtnumeroos.getText());
+                //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
+                fd.create(fb);
+
+////////////////Criar Processo Inicial da OS
+                for (int i = 0; i < tableprocessos.getRowCount(); i++) {
+                    opb.setIdos(idos);//ok
                     opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
                     opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
                     opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
@@ -1640,187 +1694,120 @@ public class OS1 extends javax.swing.JInternalFrame {
                     opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
                     opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
                     opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                    opb.setDisponivel(txtinicial.getText());
+                    opb.setDisponivel(Integer.parseInt(tableprocessos.getValueAt(i, 9).toString()));
 
                     //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                     opd.create(opb);
                 }
 
-                //Criar Documentos da OS
-                OSDocumentosDAO odd = new OSDocumentosDAO();
-                OSDocumentosBean odb = new OSDocumentosBean();
-
-                int rcdoc = tabledocumentos.getRowCount();
-                for (int i = 0; i < rcdoc; i++) {
+////////////////Criar os Documentos da OS
+                for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
                     File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
-                    File folder = new File("Q:/MIKE_ERP/os_arq/" + txtnumeroos.getText());
+                    File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + idos);
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                     folder.mkdirs();
                     try {
                         Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
                     } catch (IOException ex) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
                         JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                         try {
                             SendEmail.EnviarErro(ex.toString());
-                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                            JOptionPane.showMessageDialog(null, "E-mail com erro enviado com sucesso!");
                         } catch (HeadlessException hex) {
-                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                            JOptionPane.showMessageDialog(null, "Erro!\n" + hex);
                         } catch (AWTException | IOException ex1) {
-                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            JOptionPane.showMessageDialog(null, "Erro!\n" + ex1 + "\nEnviando email para suporte.");
+                            try {
+                                SendEmail.EnviarErro(ex1.toString());
+                            } catch (AWTException | IOException ex2) {
+                                Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex2);
+                            }
                         }
                     }
 
-                    odb.setIdos(txtnumeroos.getText());
+                    odb.setIdos(idos);
                     odb.setDesc(tabledocumentos.getValueAt(i, 2).toString());
-                    odb.setLocal(filecopy.toString());
+                    odb.setLocal(Arquivos.localArquivoEmRede(this.getClass().getSimpleName(), tabledocumentos.getValueAt(i, 4).toString(), Integer.parseInt(txtnumeroos.getText())));
 
                     //idos, descricao, local
                     odd.create(odb);
                 }
-                reados();
-                readdocs();
-                readprocessos();
-                radios();
-                JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
             }
+            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } else {
-            //Atualizar OS
-            OSDAO od = new OSDAO();
-            OSBean ob = new OSBean();
+            //Caso a OS já exista
 
-            ob.setDataabertura(txtabertura.getText());
-            ob.setDataprevisao(txtprevisao.getText());
-            ob.setStatus(txtstatus.getText());
-            ob.setCliente(txtcliente.getText());
-            ob.setDas(txtdas.getText());
-            ob.setCodigo(txtcodigo.getText());
-            ob.setDescricao(txtdesc.getText());
-            ob.setQtdinicial(Integer.parseInt(txtinicial.getText()));
-            ob.setQtdok(Integer.parseInt(txtfinal.getText()));
-            ob.setQtdnaook(Integer.parseInt(txtmortas.getText()));
-            ob.setNotes(txtnotes.getText());
-            String topo = "false";
-            String rec = "false";
-            String com = "false";
-            String des = "false";
-            if (radiotopo.isSelected()) {
-                topo = "true";
-                if (!txtstatus.getText().equals("Rascunho")) {
-                    radioreconstrucao.setEnabled(false);
-                    radiocompleta.setEnabled(false);
-                    radiodesenho.setEnabled(false);
-                }
-            }
-            if (radioreconstrucao.isSelected()) {
-                rec = "true";
-                if (!txtstatus.getText().equals("Rascunho")) {
-                    radiotopo.setEnabled(false);
-                    radiocompleta.setEnabled(false);
-                    radiodesenho.setEnabled(false);
-                }
-            }
-            if (radiocompleta.isSelected()) {
-                com = "true";
-                if (!txtstatus.getText().equals("Rascunho")) {
-                    radiotopo.setEnabled(false);
-                    radioreconstrucao.setEnabled(false);
-                    radiodesenho.setEnabled(false);
-                }
-            }
-            if (radiodesenho.isSelected()) {
-                des = "true";
-                if (!txtstatus.getText().equals("Rascunho")) {
-                    radiotopo.setEnabled(false);
-                    radioreconstrucao.setEnabled(false);
-                    radiocompleta.setEnabled(false);
-                }
-            }
-            ob.setTopo(topo);
-            ob.setReconstrucao(rec);
-            ob.setCompleta(com);
-            ob.setDesenho(des);
-            ob.setRaio(txtraio.getText());
-//            txtraio.setEditable(false);
-//            checkraio.setEnabled(false);
-            ob.setFrontal(txtfrontal.getText());
-//            txtfrontal.setEditable(false);
-//            checkfrontal.setEnabled(false);
+////////////////Atualizar OS
+            ob.setCliente(txtcliente.getText());//ok
+            ob.setDas(txtdas.getText());//ok
+            ob.setCodigo(txtcodigo.getText());//ok
+            ob.setDescricao(txtdesc.getText());//ok
+            ob.setQtdinicial(Integer.parseInt(txtinicial.getText()));//ok
+            ob.setQtdok(Integer.parseInt(txtfinal.getText()));//ok
+            ob.setQtdnaook(Integer.parseInt(txtmortas.getText()));//ok
+            ob.setNotes(txtnotes.getText());//ok
+            ob.setTopob(radiotopo.isSelected());//ok
+            ob.setReconstrucaob(radioreconstrucao.isSelected());//ok
+            ob.setCompletab(radiocompleta.isSelected());//ok
+            ob.setDesenhob(radiodesenho.isSelected());//ok
+            ob.setRaio(txtraio.getText());//ok
+            ob.setFrontal(txtfrontal.getText());//ok
             ob.setIdtela(txtnumeroos.getText());
-            //dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, completa = ?, desenho = ?, raio = ?, frontal = ? WHERE idtela = ?
+
+            //cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topob = ?, reconstrucaob = ?, completab = ?, desenhob = ?, raio = ?, frontal = ? WHERE idtela = ?
             od.update(ob);
 
-            //Atualizar Processos
-            OSProcessosDAO opd = new OSProcessosDAO();
-            OSProcessosBean opb = new OSProcessosBean();
-
-            int rcproc = tableprocessos.getRowCount();
-            for (int i = 0; i < rcproc; i++) {
-                opb.setIdos(txtnumeroos.getText());
-                opb.setProcesso(tableprocessos.getValueAt(i, 2).toString());
-                opb.setInicio(tableprocessos.getValueAt(i, 3).toString());
-                opb.setTermino(tableprocessos.getValueAt(i, 4).toString());
-                opb.setQtdok(Integer.parseInt(tableprocessos.getValueAt(i, 5).toString()));
-                opb.setQtdnaook(Integer.parseInt(tableprocessos.getValueAt(i, 6).toString()));
-                opb.setUsuario(tableprocessos.getValueAt(i, 7).toString());
-                opb.setOrdem(Integer.parseInt(tableprocessos.getValueAt(i, 8).toString()));
-                opb.setDisponivel(tableprocessos.getValueAt(i, 9).toString());
-                opb.setId(Integer.parseInt(tableprocessos.getValueAt(i, 1).toString()));
-
-                //idos = ?, processo = ?, inicio = ?, termino = ?, qtdok = ?, qtdnaook = ?, usuario = ?, ordem = ?, disponivel = ? WHERE id = ?
-                opd.updatetotal(opb);
-            }
-
-            //Atualizar Documentos da OS
-            OSDocumentosDAO odd = new OSDocumentosDAO();
-            OSDocumentosBean odb = new OSDocumentosBean();
-
-            int rcdoc = tabledocumentos.getRowCount();
-            for (int i = 0; i < rcdoc; i++) {
+////////////////Criar os Documentos da OS que são novos
+            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
                 if (tabledocumentos.getValueAt(i, 1).equals("")) {
+                    //Caso o documento não tenha ID
                     File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
-                    File folder = new File("Q:/MIKE_ERP/os_arq/" + txtnumeroos.getText());
+                    File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + txtnumeroos.getText());
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                     folder.mkdirs();
                     try {
                         Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
                     } catch (IOException ex) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
                         JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                         try {
                             SendEmail.EnviarErro(ex.toString());
-                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                            JOptionPane.showMessageDialog(null, "E-mail com erro enviado com sucesso!");
                         } catch (HeadlessException hex) {
-                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                            JOptionPane.showMessageDialog(null, "Erro!\n" + hex);
                         } catch (AWTException | IOException ex1) {
-                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            JOptionPane.showMessageDialog(null, "Erro!\n" + ex1 + "\nEnviando email para suporte.");
+                            try {
+                                SendEmail.EnviarErro(ex1.toString());
+                            } catch (AWTException | IOException ex2) {
+                                Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex2);
+                            }
                         }
                     }
 
                     odb.setIdos(txtnumeroos.getText());
                     odb.setDesc(tabledocumentos.getValueAt(i, 2).toString());
-                    odb.setLocal(filecopy.toString());
+                    odb.setLocal(Arquivos.localArquivoEmRede(this.getClass().getSimpleName(), tabledocumentos.getValueAt(i, 4).toString(), Integer.parseInt(txtnumeroos.getText())));
 
                     //idos, descricao, local
                     odd.create(odb);
                 }
             }
-            reados();
-            readdocs();
-            readprocessos();
-            JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
+            JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         }
+        reados();
+        readdocs();
+        readprocessos();
     }//GEN-LAST:event_btnsalvarosActionPerformed
 
     private void btnprocurarmaterialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarmaterialActionPerformed
-        ProcuraItemOS p = new ProcuraItemOS();
+        ProcuraMaterial p = new ProcuraMaterial(this.getClass().getSimpleName());
         Telas.AparecerTela(p);
     }//GEN-LAST:event_btnprocurarmaterialActionPerformed
 
     private void btnprocurarclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarclienteActionPerformed
-        ProcurarCliente p = new ProcurarCliente("OS");
+        ProcurarCliente p = new ProcurarCliente(this.getClass().getSimpleName());
         Telas.AparecerTela(p);
     }//GEN-LAST:event_btnprocurarclienteActionPerformed
 
@@ -1837,9 +1824,6 @@ public class OS1 extends javax.swing.JInternalFrame {
                 if (tableprocessos.getValueAt(tableprocessos.getSelectedRow(), 3).equals("")) {
                     int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja iniciar o processo " + tableprocessos.getValueAt(tableprocessos.getSelectedRow(), 2) + "?", "Início de Processo", JOptionPane.YES_NO_OPTION);
                     if (resp == 0) {
-                        OSProcessosDAO opd = new OSProcessosDAO();
-                        OSProcessosBean opb = new OSProcessosBean();
-
                         Calendar c = Calendar.getInstance();
                         String pattern = "dd/MM/yyyy HH:mm:ss";
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -1892,18 +1876,16 @@ public class OS1 extends javax.swing.JInternalFrame {
 
     private void btnadddocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnadddocActionPerformed
         File dir = new File(lbldirectory.getText());
-        if (lbldirectory.getText().equals("")) {
-            DocumentosOS p = new DocumentosOS();
-            Telas.AparecerTela(p);
-        } else {
-            DocumentosOS p = new DocumentosOS();
-            Telas.AparecerTela(p);
+        ProcurarDocumento pd = new ProcurarDocumento(this.getClass().getSimpleName());
+        Telas.AparecerTela(pd);
+        if (!lbldirectory.getText().equals("")) {
             DocumentosOS.chooser.setCurrentDirectory(dir);
         }
     }//GEN-LAST:event_btnadddocActionPerformed
 
     private void btndeldocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndeldocActionPerformed
         int numerotrue = 0;
+
         for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
             if (tabledocumentos.getValueAt(i, 0).equals(true)) {
                 numerotrue++;
@@ -1928,12 +1910,9 @@ public class OS1 extends javax.swing.JInternalFrame {
                             JOptionPane.showMessageDialog(rootPane, "Erro!\n" + ex);
                         }
 
-                        OSDocumentosBean spdb = new OSDocumentosBean();
-                        OSDocumentosDAO spdd = new OSDocumentosDAO();
-
                         spdb.setId(Integer.parseInt(tabledocumentos.getValueAt(i, 1).toString()));
-                        //id
 
+                        //id
                         spdd.delete(spdb);
 
                         model.removeRow(i);
@@ -1951,7 +1930,7 @@ public class OS1 extends javax.swing.JInternalFrame {
             tabadp.setSelectedIndex(0);
 
             //Pegar dados da OS
-            OS1.dadosos();
+            dadosos();
 
             //Pegar documentos
             readdocs();
@@ -2079,8 +2058,7 @@ public class OS1 extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tableos.getModel();
         model.setNumRows(0);
 
-        OSDAO od = new OSDAO();
-        for (OSBean ob : od.pesquisa(txtpesquisa.getText(), cbstatus.getSelectedItem().toString())) {
+        od.pesquisa(txtpesquisa.getText(), cbstatus.getSelectedItem().toString()).forEach((ob) -> {
             model.addRow(new Object[]{
                 false,
                 ob.getIdtela(),
@@ -2088,7 +2066,7 @@ public class OS1 extends javax.swing.JInternalFrame {
                 ob.getCodigo(),
                 ob.getStatus()
             });
-        }
+        });
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -2099,8 +2077,8 @@ public class OS1 extends javax.swing.JInternalFrame {
             String osoriginal = txtnumeroos.getText();
 
             //Zerar campos
-            OS1.camposembranco();
-            
+            camposembranco();
+
             //Substring de código OS
             String codigoos = osoriginal.substring(0, 5);
 
@@ -2111,7 +2089,7 @@ public class OS1 extends javax.swing.JInternalFrame {
             txtnumeroos.setText(codigoos + String.format("%04d", numero));
 
             //Pegar dados da OS
-            OS1.dadosos();
+            dadosos();
 
             //Pegar documentos
             readdocs();
@@ -2139,7 +2117,7 @@ public class OS1 extends javax.swing.JInternalFrame {
 
             //Zerar campos
             OS1.camposembranco();
-            
+
             //Substring do código da OS
             String codigoos = osoriginal.substring(0, 5);
 
@@ -2176,6 +2154,10 @@ public class OS1 extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        JOptionPane.showMessageDialog(null, tableos.getRowCount());
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnadddoc;
@@ -2191,6 +2173,7 @@ public class OS1 extends javax.swing.JInternalFrame {
     public static javax.swing.JCheckBox checkraio;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton12;
+    public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public static javax.swing.JButton jButton5;

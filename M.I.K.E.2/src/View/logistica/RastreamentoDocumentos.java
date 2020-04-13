@@ -140,73 +140,71 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             if (!txtxml.getText().equals("")) {
                 File fileoriginal = new File(txtxml.getText());
                 File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + idcriado);
-                String folderFtp = "MIKE/ras_doc_arq/" + idcriado;
-                String fileFtp = folderFtp + "/" + fileoriginal.getName();
+
                 File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                 folder.mkdirs();
                 try {
                     Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
                 } catch (IOException ex) {
-                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                     try {
                         SendEmail.EnviarErro(ex.toString());
+                        JOptionPane.showMessageDialog(null, "E-mail com erro enviado com sucesso!");
                     } catch (HeadlessException hex) {
-                        JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                        JOptionPane.showMessageDialog(null, "Erro!\n" + hex);
                     } catch (AWTException | IOException ex1) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                        JOptionPane.showMessageDialog(null, "Erro!\n" + ex1 + "\nEnviando email para suporte.");
+                        try {
+                            SendEmail.EnviarErro(ex1.toString());
+                        } catch (AWTException | IOException ex2) {
+                            Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex2);
+                        }
                     }
                 }
+
                 //Itens Bean
                 rdb.setXml(filecopy.toString());
                 rdb.setId(idcriado);
 
                 //xml = ? WHERE id = ?
                 rdd.updatexml(rdb);
-
-                try {
-                    Arquivos.subirArquivoFTP(fileoriginal.getAbsolutePath(), fileFtp, folderFtp);
-                } catch (IOException ex) {
-                    Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
             //Loop para número de itens na tabledocumentos
             for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+////////////////Criar Arquivo em Rede
                 File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
                 File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + idcriado);
-                String folderFtp = "MIKE/ras_doc_arq/" + idcriado;
-                String fileFtp = folderFtp + "/" + fileoriginal.getName();
                 File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                 folder.mkdirs();
                 try {
                     Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
                 } catch (IOException ex) {
-                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao criar arquivo do Documento!\n" + ex + "\nEnviando e-mail para suporte.");
+                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                     try {
                         SendEmail.EnviarErro(ex.toString());
+                        JOptionPane.showMessageDialog(null, "E-mail com erro enviado com sucesso!");
                     } catch (HeadlessException hex) {
                         JOptionPane.showMessageDialog(null, "Erro!\n" + hex);
                     } catch (AWTException | IOException ex1) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                        JOptionPane.showMessageDialog(null, "Erro!\n" + ex1 + "\nEnviando email para suporte.");
+                        try {
+                            SendEmail.EnviarErro(ex1.toString());
+                        } catch (AWTException | IOException ex2) {
+                            Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex2);
+                        }
                     }
                 }
+
                 //Itens Bean
                 rddb.setIddoc(idcriado);
                 rddb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
                 rddb.setLocal(filecopy.toString());
-                rddb.setLocalremoto("speedcut.com.br/" + folderFtp);
+                rddb.setLocalremoto(Arquivos.localArquivoFTP(this.getClass().getSimpleName(), tabledocumentos.getValueAt(i, 4).toString(), idcriado));
 
                 //iddoc, descricao, local, localremoto
                 rddd.create(rddb);
-
-                try {
-                    Arquivos.subirArquivoFTP(fileoriginal.getAbsolutePath(), fileFtp, folderFtp);
-                } catch (IOException ex) {
-                    Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
 
             //Loop para comentários
@@ -258,39 +256,37 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
                 if (tabledocumentos.getValueAt(i, 0).equals("")) {
                     File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
-                    File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + id);
-                    String folderFtp = "MIKE/ras_doc_arq/" + idcriado;
-                    String fileFtp = folderFtp + "/" + fileoriginal.getName();
+                    File folder = new File("Q:/MIKE_ERP/ras_doc_arq/" + txtid.getText());
                     File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                     folder.mkdirs();
                     try {
                         Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
                     } catch (IOException ex) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                        JOptionPane.showMessageDialog(null, "Erro ao criar arquivo do Documento!\n" + ex + "\nEnviando e-mail para suporte.");
+                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                         try {
                             SendEmail.EnviarErro(ex.toString());
+                            JOptionPane.showMessageDialog(null, "E-mail com erro enviado com sucesso!");
                         } catch (HeadlessException hex) {
                             JOptionPane.showMessageDialog(null, "Erro!\n" + hex);
                         } catch (AWTException | IOException ex1) {
-                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            JOptionPane.showMessageDialog(null, "Erro!\n" + ex1 + "\nEnviando email para suporte.");
+                            try {
+                                SendEmail.EnviarErro(ex1.toString());
+                            } catch (AWTException | IOException ex2) {
+                                Logger.getLogger(Arquivos.class.getName()).log(Level.SEVERE, null, ex2);
+                            }
                         }
                     }
+
                     //Itens Bean
                     rddb.setIddoc(id);
                     rddb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
-                    rddb.setLocal(filecopy.toString());
-                    rddb.setLocalremoto("speedcut.com.br/" + folderFtp);
+                    rddb.setLocal(Arquivos.localArquivoEmRede(this.getClass().getSimpleName(), tabledocumentos.getValueAt(i, 4).toString(), idcriado));
+                    rddb.setLocalremoto(Arquivos.localArquivoFTP(this.getClass().getSimpleName(), tabledocumentos.getValueAt(i, 4).toString(), idcriado));
 
                     //iddoc, descricao, local, localremoto
                     rddd.create(rddb);
-
-                    try {
-                        Arquivos.subirArquivoFTP(fileoriginal.getAbsolutePath(), fileFtp, folderFtp);
-                    } catch (IOException ex) {
-                        Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 }
             }
 
@@ -355,26 +351,52 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tabledocs.getModel();
         model.setNumRows(0);
 
-        switch (s) {
-            case 2:
-                rdd.readtable().forEach((rdb) -> {
-                    model.addRow(new Object[]{
-                        rdb.getId(),
-                        rdb.getNumero(),
-                        rdb.getEmitente()
+        if (txtpesquisa.getText().length() == 0) {
+            //Se não houver pesquisa
+            switch (s) {
+                case 2:
+                    rdd.readtable().forEach((rdb) -> {
+                        model.addRow(new Object[]{
+                            rdb.getId(),
+                            rdb.getNumero(),
+                            rdb.getEmitente()
+                        });
                     });
-                });
-                break;
-            default:
-                rdd.readtablestatus(cbstatus.getSelectedItem().toString()).forEach((rdb) -> {
-                    model.addRow(new Object[]{
-                        rdb.getId(),
-                        rdb.getNumero(),
-                        rdb.getEmitente()
+                    break;
+                default:
+                    rdd.readtablestatus(cbstatus.getSelectedItem().toString()).forEach((rdb) -> {
+                        model.addRow(new Object[]{
+                            rdb.getId(),
+                            rdb.getNumero(),
+                            rdb.getEmitente()
+                        });
                     });
-                });
-                break;
+                    break;
+            }
+        } else {
+            //Se houver pesquisa
+            switch (s) {
+                case 2:
+                    rdd.readtablePesquisa(txtpesquisa.getText()).forEach((rdb) -> {
+                        model.addRow(new Object[]{
+                            rdb.getId(),
+                            rdb.getNumero(),
+                            rdb.getEmitente()
+                        });
+                    });
+                    break;
+                default:
+                    rdd.readtablestatusPesquisa(cbstatus.getSelectedItem().toString(), txtpesquisa.getText()).forEach((rdb) -> {
+                        model.addRow(new Object[]{
+                            rdb.getId(),
+                            rdb.getNumero(),
+                            rdb.getEmitente()
+                        });
+                    });
+                    break;
+            }
         }
+
     }
 
     public static void readhist() {
@@ -506,6 +528,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
         GroupEmitente = new javax.swing.ButtonGroup();
         GroupTipo = new javax.swing.ButtonGroup();
+        GroupArquivo = new javax.swing.ButtonGroup();
         tabdocs = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -553,6 +576,8 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         txtxml = new javax.swing.JTextField();
         btnxml = new javax.swing.JButton();
+        radioNuvem = new javax.swing.JRadioButton();
+        radioLocal = new javax.swing.JRadioButton();
         jPanel10 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tablecomentarios = new javax.swing.JTable();
@@ -965,7 +990,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, true, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -992,9 +1017,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             tabledocumentos.getColumnModel().getColumn(4).setMinWidth(0);
             tabledocumentos.getColumnModel().getColumn(4).setPreferredWidth(0);
             tabledocumentos.getColumnModel().getColumn(4).setMaxWidth(0);
-            tabledocumentos.getColumnModel().getColumn(5).setMinWidth(0);
-            tabledocumentos.getColumnModel().getColumn(5).setPreferredWidth(0);
-            tabledocumentos.getColumnModel().getColumn(5).setMaxWidth(0);
         }
 
         jButton5.setText("Adicionar Documento");
@@ -1005,6 +1027,11 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         });
 
         jButton6.setText("Excluir Documento");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Arquivo XML:");
 
@@ -1018,6 +1045,13 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             }
         });
 
+        GroupArquivo.add(radioNuvem);
+        radioNuvem.setText("Nuvem");
+
+        GroupArquivo.add(radioLocal);
+        radioLocal.setSelected(true);
+        radioLocal.setText("Local");
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -1026,17 +1060,23 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnxml)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtxml)))
+                        .addComponent(txtxml))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addComponent(btnxml)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton5))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addComponent(radioLocal)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(radioNuvem)))))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -1047,7 +1087,11 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     .addComponent(jLabel4)
                     .addComponent(txtxml, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(radioNuvem)
+                    .addComponent(radioLocal))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton5)
@@ -1227,17 +1271,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_radiocontaActionPerformed
 
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
-        //DefaultTable para filtrar resultados na tabledocs
-        DefaultTableModel model = (DefaultTableModel) tabledocs.getModel();
-        model.setNumRows(0);
-
-        rdd.pesquisa(txtpesquisa.getText()).forEach((rdb) -> {
-            model.addRow(new Object[]{
-                rdb.getId(),
-                rdb.getNumero(),
-                rdb.getEmitente()
-            });
-        });
+        readtabledocumentos();
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -1316,7 +1350,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 Dates.SetarDataJDateChooser(txtemissao, rdb.getEmissao());
                 radionf.setSelected(rdb.isNf());
                 radioconta.setSelected(rdb.isConta());
-                radiooutros.setSelected(rdb.isOutrostipo());
+                radiooutrostipo.setSelected(rdb.isOutrostipo());
                 txtoutros.setText(rdb.getOutrosdesc());
                 checkpagamento.setSelected(rdb.isCap());
                 txtxml.setText(rdb.getXml());
@@ -1351,35 +1385,34 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
         if (evt.getClickCount() == 2) {
             Desktop desk = Desktop.getDesktop();
-
-            if (tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).equals("")) {
-                try {
-                    desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4)));
-                } catch (IOException ex) {
-                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
+            if (radioLocal.isSelected()) {
+                if (tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).equals("")) {
                     try {
-                        SendEmail.EnviarErro(ex.toString());
-                    } catch (AWTException | IOException ex1) {
-                        Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
+                        desk.open(new File(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4).toString()));
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
+                        try {
+                            SendEmail.EnviarErro(ex.toString());
+                        } catch (AWTException | IOException ex1) {
+                            Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
                     }
-                    JOptionPane.showMessageDialog(null, "Tentando abrir arquivo remotamente.");
-                    Arquivos.abrirArquivoFTP(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 5).toString());
+                } else {
+                    try {
+                        desk.open(new File(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).toString()));
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
+                        try {
+                            SendEmail.EnviarErro(ex.toString());
+                        } catch (AWTException | IOException ex1) {
+                            Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
+                    }
                 }
             } else {
-                try {
-                    desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
-                } catch (IOException ex) {
-                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
-                    try {
-                        SendEmail.EnviarErro(ex.toString());
-                    } catch (AWTException | IOException ex1) {
-                        Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
-                    }
-                    JOptionPane.showMessageDialog(null, "Tentando abrir arquivo remotamente.");
-                    Arquivos.abrirArquivoFTP(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 5).toString());
-                }
+                Arquivos.abrirArquivoFTP(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 5).toString());
             }
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
@@ -1465,15 +1498,41 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        int numtrue = 0;
+        for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+            if (tabledocumentos.getValueAt(i, 1).equals(true)) {
+                numtrue++;
+            }
+        }
+        if (numtrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum documento selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja mesmo excluir o(s) documento(s) selecionado(s)?", "Excluir Documento", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                    if (tabledocumentos.getValueAt(i, 1).equals(true)) {
+                        rddb.setId(Integer.parseInt(tabledocumentos.getValueAt(i, 0).toString()));
+
+                        //DELETE FROM rastreamento_doc_doc WHERE id = ?
+                        rddd.delete(rddb);
+                    }
+                }
+            }
+            readdocumentosdodocumento();
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup GroupArquivo;
     private javax.swing.ButtonGroup GroupEmitente;
     private javax.swing.ButtonGroup GroupTipo;
     public static javax.swing.JButton btnaprovar;
     public static javax.swing.JButton btnextornarsempagamento;
     public static javax.swing.JButton btnpesquisa;
     public static javax.swing.JButton btnxml;
-    private static javax.swing.JComboBox<String> cbstatus;
+    public static javax.swing.JComboBox<String> cbstatus;
     public static javax.swing.JCheckBox checkpagamento;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -1503,6 +1562,8 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JRadioButton radioLocal;
+    private javax.swing.JRadioButton radioNuvem;
     public static javax.swing.JRadioButton radiocliente;
     public static javax.swing.JRadioButton radioconta;
     public static javax.swing.JRadioButton radiofornecedor;
@@ -1520,7 +1581,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private static javax.swing.JTextField txtid;
     public static javax.swing.JTextField txtnumero;
     public static javax.swing.JTextField txtoutros;
-    private javax.swing.JTextField txtpesquisa;
+    private static javax.swing.JTextField txtpesquisa;
     public static javax.swing.JTextField txtxml;
     // End of variables declaration//GEN-END:variables
 }

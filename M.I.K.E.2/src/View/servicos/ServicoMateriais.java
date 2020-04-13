@@ -69,6 +69,9 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     /**
      * Creates new form MateriaisServico
      */
+    
+    private int idmaterial = 0;
+    
     public ServicoMateriais() {
         initComponents();
         readtablemateriais();
@@ -765,6 +768,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
 
     private void tablelistamaterialservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablelistamaterialservicoMouseClicked
         if (evt.getClickCount() == 2) {
+            idmaterial = Integer.parseInt(tablelistamaterialservico.getValueAt(tablelistamaterialservico.getSelectedRow(), 0).toString());
+            
             tabmateriaisservico.setSelectedIndex(1);
 
             txtid.setText(tablelistamaterialservico.getValueAt(tablelistamaterialservico.getSelectedRow(), 0).toString());

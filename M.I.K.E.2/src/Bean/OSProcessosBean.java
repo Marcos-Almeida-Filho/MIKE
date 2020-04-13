@@ -23,7 +23,7 @@ public class OSProcessosBean {
     private int ordem;
     private String observacao;
     private String motivo;
-    private String disponivel;
+    private int disponivel;
 
     public int getId() {
         return id;
@@ -113,11 +113,11 @@ public class OSProcessosBean {
         this.motivo = motivo;
     }
 
-    public String getDisponivel() {
+    public int getDisponivel() {
         return disponivel;
     }
 
-    public void setDisponivel(String disponivel) {
+    public void setDisponivel(int disponivel) {
         this.disponivel = disponivel;
     }
     

@@ -28,9 +28,11 @@ import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import DAO.ServicoPedidoItensNFDAO;
+import Methods.Dates;
 import Methods.Numeros;
 import Methods.SendEmail;
 import Methods.Telas;
+import Methods.Valores;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarCondicaoDePagamento;
 import View.Geral.ProcurarRepresentante;
@@ -81,6 +83,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     /**
      * Creates new form PedidoServico
      */
+    OSDAO od = new OSDAO();
+    OSBean ob = new OSBean();
+
+    //Criar OS
+    ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+    ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+
     public PedidoServico() {
         initComponents();
         filltablepedidoorcamento();
@@ -1757,47 +1766,15 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         } else if (numerooss > 0) {
             JOptionPane.showMessageDialog(rootPane, "Item(ns) com OS selecionado(s).");
         } else {
-            OSDAO od = new OSDAO();
-            OSBean ob = new OSBean();
-
-            //Criar OS
-            ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
-            ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
             for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
                 if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
-                    try {
-                        if (od.readnome() == false) {
-                            Calendar ca = Calendar.getInstance();
-                            String patterny = "yy";
-                            SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-                            String year = simpleDateFormaty.format(ca.getTime());
-                            String idtela = "OS" + year + "-0001";
-                            ob.setIdtela(idtela);
-                        } else {
-                            Calendar ca = Calendar.getInstance();
-                            String patterny = "yy";
-                            SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-                            String year = simpleDateFormaty.format(ca.getTime());
-                            String hua = "";
-                            for (OSBean sob2 : od.read()) {
-                                hua = String.valueOf(sob2.getIdtela());
-                            }
-                            int yearint = Integer.parseInt(hua.replace("OS" + year + "-", ""));
-                            int yearnovo = yearint + 1;
-                            String idtela = "OS" + year + "-" + String.format("%04d", yearnovo);
-                            ob.setIdtela(idtela);
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Calendar c = Calendar.getInstance();
-                    String pattern = "dd/MM/yyyy HH:mm:ss";
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                    String data = simpleDateFormat.format(c.getTime());
+                    String idos = Dates.CriarIdOS();
+                    ob.setIdtela(idos);
+                    String data = Dates.CriarDataCompletaParaDB();
                     ob.setDataabertura(data);
                     int days = Integer.parseInt(tableitensorcamento.getValueAt(i, 7).toString().replace(" dias", ""));
-                    c.add(Calendar.DAY_OF_MONTH, days);
-                    ob.setDataprevisao(simpleDateFormat.format(c.getTime()));
+                    String dataPrevisao = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(days);
+                    ob.setDataprevisao(dataPrevisao);
                     ob.setStatus("Rascunho");
                     ob.setCliente(txtclientepedido.getText());
                     ob.setDas(txtnumeropedido.getText());
@@ -1807,14 +1784,14 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     ob.setQtdok(Numeros.TransformarNumeroEmInt(tableitensorcamento.getValueAt(i, 4).toString()));
                     ob.setQtdnaook(0);
                     ob.setNotes("");
-                    ob.setTopo("false");
-                    ob.setReconstrucao("false");
-                    ob.setCompleta("false");
-                    ob.setDesenho("false");
+                    ob.setTopob(false);
+                    ob.setReconstrucaob(false);
+                    ob.setCompletab(false);
+                    ob.setDesenhob(false);
                     ob.setRaio("");
                     ob.setFrontal("");
 
-                    //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, completa, desenho, raio, frontal
+                    //idtela, dateabertura, dateprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topob, reconstrucaob, completab, desenhob, raio, frontal
                     od.create(ob);
 
                     String oscriada = "";
@@ -1832,7 +1809,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
                     spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
                     spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
-                    spib.setOs(oscriada);
+                    spib.setOs(idos);
                     if (n.isEmpty()) {
                         spib.setNf("");
                     } else {
@@ -1860,7 +1837,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
                     for (ServicoMateriaisDocumentosBean smdb : smdd.read(idmaterial)) {
                         File fileoriginal = new File(smdb.getLocal());
-                        File folder = new File("Q:/MIKE_ERP/os_arq/" + oscriada);
+                        File folder = new File("Q:/MIKE_ERP/os_arq/" + idos);
                         File filecopy = new File(folder + "/" + fileoriginal.getName());
 
                         folder.mkdirs();
@@ -1879,7 +1856,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                             }
                         }
 
-                        odb.setIdos(oscriada);
+                        odb.setIdos(idos);
                         odb.setDesc(smdb.getDescricao());
                         odb.setLocal(filecopy.toString());
 
@@ -1911,7 +1888,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 //
                     String processo = "Separação de material";
 
-                    opb.setIdos(oscriada);
+                    opb.setIdos(idos);
                     opb.setProcesso(processo);
                     opb.setInicio("");
                     opb.setTermino("");
@@ -1919,7 +1896,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     opb.setQtdnaook(0);
                     opb.setUsuario("");
                     opb.setOrdem(0);
-                    opb.setDisponivel(tableitensorcamento.getValueAt(i, 4).toString());
+                    opb.setDisponivel(Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString()));
 
                     //idos, processo, inicio, termino, qtdok, qtdnaook, usuario, ordem, disponivel
                     opd.create(opb);
@@ -1931,13 +1908,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     F_UPBean fb = new F_UPBean();
 
                     fb.setDav(txtnumeropedido.getText());
-                    fb.setOp(oscriada);
-                    fb.setDataentrega(data);
+                    fb.setOp(idos);
+                    fb.setDataentrega(dataPrevisao);
                     fb.setMaterial(tableitensorcamento.getValueAt(i, 2).toString());
                     fb.setProcesso(processo);
-                    fb.setDatacriacao(oscriada);
+                    fb.setDatacriacao(data);
                     fb.setNivel(3);
-                    fb.setValor(Double.parseDouble(tableitensorcamento.getValueAt(i, 6).toString()));
+                    fb.setValor(Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableitensorcamento.getValueAt(i, 6).toString())));
                     fb.setObservacao("");
                     fb.setCliente(txtclientepedido.getText());
 

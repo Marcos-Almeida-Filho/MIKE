@@ -9,6 +9,7 @@ import Bean.RastreamentoDocumentosDocBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.awt.AWTException;
+import java.awt.HeadlessException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -92,5 +93,28 @@ public class RastreamentoDocumentosDocDAO {
         }
 
         return listrddb;
+    }
+    
+    public void delete(RastreamentoDocumentosDocBean rddb) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM rastreamento_doc_doc WHERE id = ?");
+            stmt.setInt(1, rddb.getId());
+
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(CAPDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
     }
 }

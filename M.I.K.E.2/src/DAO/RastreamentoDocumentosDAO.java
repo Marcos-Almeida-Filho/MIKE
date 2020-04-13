@@ -227,6 +227,41 @@ public class RastreamentoDocumentosDAO {
 
         return listrdb;
     }
+    
+    public List<RastreamentoDocumentosBean> readtablePesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<RastreamentoDocumentosBean> listrdb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM rastreamento_doc WHERE emitente LIKE '%" + pesquisa + "%' OR numero LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                RastreamentoDocumentosBean rdb = new RastreamentoDocumentosBean();
+
+                rdb.setId(rs.getInt("id"));
+                rdb.setEmitente(rs.getString("emitente"));
+                rdb.setNumero(rs.getString("numero"));
+
+                listrdb.add(rdb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, "Erro ao ler Documentos lançados!\n" + e);
+            try {
+                SendEmail.EnviarErro("Erro ao ler Documentos lançados!\n" + e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listrdb;
+    }
 
     public List<RastreamentoDocumentosBean> readtablestatus(String status) {
 
@@ -238,6 +273,43 @@ public class RastreamentoDocumentosDAO {
         try {
             stmt = con.prepareStatement("SELECT * FROM rastreamento_doc WHERE status = ?");
             stmt.setString(1, status);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                RastreamentoDocumentosBean rdb = new RastreamentoDocumentosBean();
+
+                rdb.setId(rs.getInt("id"));
+                rdb.setEmitente(rs.getString("emitente"));
+                rdb.setNumero(rs.getString("numero"));
+
+                listrdb.add(rdb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, e);
+            JOptionPane.showMessageDialog(null, "Erro ao ler Documentos lançados!\n" + e);
+            try {
+                SendEmail.EnviarErro("Erro ao ler Documentos lançados!\n" + e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(RastreamentoDocumentosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listrdb;
+    }
+    
+    public List<RastreamentoDocumentosBean> readtablestatusPesquisa(String status, String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<RastreamentoDocumentosBean> listrdb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM rastreamento_doc WHERE status = ? AND emitente LIKE '%" + pesquisa + "%' OR status = ? AND numero LIKE '%" + pesquisa + "%'");
+            stmt.setString(1, status);
+            stmt.setString(2, status);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -308,7 +380,7 @@ public class RastreamentoDocumentosDAO {
         List<RastreamentoDocumentosBean> listrdb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM rastreamento_doc WHERE capuser IS NULL AND numero LIKE '%" + pesquisa + "%' OR emitente LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM rastreamento_doc WHERE capuser IS NULL AND numero LIKE '%" + pesquisa + "%' OR capuser IS NULL AND emitente LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

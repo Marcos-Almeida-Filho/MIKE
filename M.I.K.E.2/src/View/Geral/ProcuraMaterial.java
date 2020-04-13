@@ -5,6 +5,8 @@
  */
 package View.Geral;
 
+import DAO.ServicoMateriaisDAO;
+import View.servicos.OS;
 import View.vendas.VendasMateriais;
 import javax.swing.table.DefaultTableModel;
 
@@ -12,24 +14,38 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Marcos Filho
  */
-public class ProcuraMaterialVenda extends javax.swing.JInternalFrame {
+public class ProcuraMaterial extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form ProcuraMaterialVenda
      */
-    private String origem;
+    private static String origem;
 
-    public ProcuraMaterialVenda(String origin) {
+    static ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+
+    public ProcuraMaterial(String origin) {
         initComponents();
         readtablemateriais();
         origem = origin;
     }
-    
+
     public static void readtablemateriais() {
         DefaultTableModel model = (DefaultTableModel) tablemateriais.getModel();
         model.setNumRows(0);
-        
-        
+
+        switch (origem) {
+            case "VendasMaterial":
+                break;
+            case "OS":
+                smd.read().forEach(smb -> {
+                    model.addRow(new Object[]{
+                        smb.getId(),
+                        smb.getCodigo(),
+                        smb.getDescricao()
+                    });
+                });
+                break;
+        }
     }
 
     /**
@@ -144,6 +160,11 @@ public class ProcuraMaterialVenda extends javax.swing.JInternalFrame {
             switch (origem) {
                 case "VendasMaterial":
                     VendasMateriais.txtmaterialdeorigem.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
+                    dispose();
+                    break;
+                case "OS":
+                    OS.txtcodigo.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
+                    OS.txtdesc.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString());
                     dispose();
                     break;
             }

@@ -5,10 +5,11 @@
  */
 package DAO;
 
-import Bean.SenhasBean;
+import Bean.SenhasAcessoBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.awt.AWTException;
+import java.awt.HeadlessException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,36 +26,34 @@ import javax.swing.JOptionPane;
  *
  * @author Marcos Filho
  */
-public class SenhasDAO {
+public class SenhasAcessoDAO {
     
-    public void create(SenhasBean sb) {
+    public void create(SenhasAcessoBean sab) {
 
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO senhas (login, nome, senha, site) VALUES (?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO senhas_acesso (idsenha, nome) VALUES (?,?)");
 
-            stmt.setString(1, sb.getLogin());
-            stmt.setString(2, sb.getNome());
-            stmt.setString(3, sb.getSenha());
-            stmt.setString(4, sb.getSite());
+            stmt.setInt(1, sab.getIdsenha());
+            stmt.setString(2, sab.getNome());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar senha!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao salvar acesso à senha!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
-                Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
 
-    public List<SenhasBean> read() {
+    public List<SenhasAcessoBean> read() {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -62,29 +61,27 @@ public class SenhasDAO {
 
         ResultSet rs = null;
 
-        List<SenhasBean> listbb = new ArrayList<>();
+        List<SenhasAcessoBean> listbb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM senhas");
+            stmt = con.prepareStatement("SELECT * FROM senhas_acesso");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                SenhasBean cb = new SenhasBean();
+                SenhasAcessoBean cb = new SenhasAcessoBean();
 
                 cb.setId(rs.getInt("id"));
-                cb.setLogin(rs.getString("login"));
+                cb.setIdsenha(rs.getInt("idsenha"));
                 cb.setNome(rs.getString("nome"));
-                cb.setSenha(rs.getString("senha"));
-                cb.setSite(rs.getString("site"));
 
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
-                Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
@@ -92,7 +89,7 @@ public class SenhasDAO {
         return listbb;
     }
 
-    public List<SenhasBean> click(int id) {
+    public List<SenhasAcessoBean> click(int id) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -100,51 +97,103 @@ public class SenhasDAO {
 
         ResultSet rs = null;
 
-        List<SenhasBean> listbb = new ArrayList<>();
+        List<SenhasAcessoBean> listbb = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM senhas WHERE id = ?");
+            stmt = con.prepareStatement("SELECT * FROM senhas_acesso WHERE idsenha = ?");
             stmt.setInt(1, id);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                SenhasBean cb = new SenhasBean();
+                SenhasAcessoBean sab = new SenhasAcessoBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setLogin(rs.getString("login"));
-                cb.setNome(rs.getString("nome"));
-                cb.setSenha(rs.getString("senha"));
-                cb.setSite(rs.getString("site"));
+                sab.setId(rs.getInt("id"));
+                sab.setIdsenha(rs.getInt("idsenha"));
+                sab.setNome(rs.getString("nome"));
 
-                listbb.add(cb);
+                listbb.add(sab);
             }
         } catch (SQLException e) {
-            Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
-                Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
         return listbb;
     }
+    
+    public int numeroAcessos(int id) {
 
-    public void update(SenhasBean bb) {
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        int acessos = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM senhas_acesso WHERE idsenha = ?");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                acessos++;
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return acessos;
+    }
+    
+    public void delete(SenhasAcessoBean sab) {
 
         Connection con = ConnectionFactory.getConnection();
 
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE senhas SET login = ?, senha = ?, nome = ?, site = ? WHERE id = ?");
+            stmt = con.prepareStatement("DELETE FROM senhas_acesso WHERE id = ?");
+            stmt.setInt(1, sab.getId());
 
-            stmt.setString(1, bb.getLogin());
-            stmt.setString(2, bb.getSenha());
-            stmt.setString(3, bb.getNome());
-            stmt.setString(4, bb.getSite());
-            stmt.setInt(5, bb.getId());
+            stmt.executeUpdate();
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    /*public void update(SenhasAcessoBean sab) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE senhas_acesso SET login = ?, senha = ?, nome = ?, site = ? WHERE id = ?");
+
+            stmt.setString(1, sab.getLogin());
+            stmt.setString(2, sab.getSenha());
+            stmt.setString(3, sab.getNome());
+            stmt.setString(4, sab.getSite());
+            stmt.setInt(5, sab.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -152,12 +201,12 @@ public class SenhasDAO {
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
-                Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SenhasAcessoDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
-    }
+    }*/
 
 //    public static SenhasDAO instance;
 //    protected EntityManager entityManager;
@@ -183,17 +232,17 @@ public class SenhasDAO {
 //        return entityManager;
 //    }
 //
-//    public SenhasBean getById(final int id) {
-//        return entityManager.find(SenhasBean.class, id);
+//    public SenhasAcessoBean getById(final int id) {
+//        return entityManager.find(SenhasAcessoBean.class, id);
 //    }
 //
 //
 //    @SuppressWarnings("unchecked")
-//    public List<SenhasBean> findAll() {
-//        return entityManager.createQuery("FROM " + SenhasBean.class.getName()).getResultList();
+//    public List<SenhasAcessoBean> findAll() {
+//        return entityManager.createQuery("FROM " + SenhasAcessoBean.class.getName()).getResultList();
 //    }
 //
-//    public void persist(SenhasBean cliente) {
+//    public void persist(SenhasAcessoBean cliente) {
 //        try {
 //            entityManager.getTransaction().begin();
 //            entityManager.persist(cliente);
@@ -204,7 +253,7 @@ public class SenhasDAO {
 //        }
 //    }
 //
-//    public void merge(SenhasBean cliente) {
+//    public void merge(SenhasAcessoBean cliente) {
 //        try {
 //            entityManager.getTransaction().begin();
 //            entityManager.merge(cliente);
@@ -215,10 +264,10 @@ public class SenhasDAO {
 //        }
 //    }
 //
-//    public void remove(SenhasBean cliente) {
+//    public void remove(SenhasAcessoBean cliente) {
 //        try {
 //            entityManager.getTransaction().begin();
-//            cliente = entityManager.find(SenhasBean.class, cliente.getId());
+//            cliente = entityManager.find(SenhasAcessoBean.class, cliente.getId());
 //            entityManager.remove(cliente);
 //            entityManager.getTransaction().commit();
 //        } catch (Exception ex) {
@@ -229,7 +278,7 @@ public class SenhasDAO {
 //
 //    public void removeById(final int id) {
 //        try {
-//            SenhasBean cliente = getById(id);
+//            SenhasAcessoBean cliente = getById(id);
 //            remove(cliente);
 //        } catch (Exception ex) {
 //            ex.printStackTrace();
