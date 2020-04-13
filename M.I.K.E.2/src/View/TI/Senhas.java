@@ -438,6 +438,8 @@ public class Senhas extends javax.swing.JInternalFrame {
 
             //login, nome, senha, site
             sd.create(sb);
+            
+            txtid.setText(String.valueOf(sd.readcreated()));
 
             for (int i = 0; i < tableacesso.getRowCount(); i++) {
                 sab.setNome(tableacesso.getValueAt(i, 2).toString());

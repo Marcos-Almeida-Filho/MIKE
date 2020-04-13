@@ -91,6 +91,36 @@ public class SenhasDAO {
         }
         return listbb;
     }
+    
+    public int readcreated() {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        int lastid = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT MAX(id) AS id FROM senhas");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                lastid = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return lastid;
+    }
 
     public List<SenhasBean> click(int id) {
 
