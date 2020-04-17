@@ -34,11 +34,10 @@ public class RastreamentoDocumentosDocDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO rastreamento_doc_doc (iddoc, descricao, local, localremoto) VALUES (?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO rastreamento_doc_doc (iddoc, descricao, local) VALUES (?,?,?)");
             stmt.setInt(1, rddb.getIddoc());
             stmt.setString(2, rddb.getDescricao());
             stmt.setString(3, rddb.getLocal());
-            stmt.setString(4, rddb.getLocalremoto());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

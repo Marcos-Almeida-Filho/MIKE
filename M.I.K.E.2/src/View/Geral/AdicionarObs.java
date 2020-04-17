@@ -8,6 +8,7 @@ package View.Geral;
 import Methods.Obs;
 import View.compras.Insumos;
 import View.compras.TiposInsumo;
+import View.vendas.VM;
 import View.vendas.VendasMateriais;
 import javax.swing.JOptionPane;
 
@@ -112,8 +113,11 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                 case "Insumos":
                     Obs.AdicionarObs(Insumos.tableobs, obs);
                     break;
+                case "VM":
+                    Obs.AdicionarObs(VM.tableobs, obs);
+                    break;
                 case "VendasMateriais":
-                    Obs.AdicionarObs(VendasMateriais.tableobs, obs);
+                    Obs.AdicionarObs(VendasMateriais.tableObs, obs);
                     break;
             }
             dispose();

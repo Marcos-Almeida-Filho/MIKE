@@ -502,21 +502,21 @@ public class OSDAO {
         try {
             stmt = con.prepareStatement("UPDATE os SET cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topob = ?, reconstrucaob = ?, completab = ?, desenhob = ?, raio = ?, frontal = ? WHERE idtela = ?");
 
-            stmt.setString(4, bb.getCliente());
-            stmt.setString(5, bb.getDas());
-            stmt.setString(6, bb.getCodigo());
-            stmt.setString(7, bb.getDescricao());
-            stmt.setInt(8, bb.getQtdinicial());
-            stmt.setInt(9, bb.getQtdok());
-            stmt.setInt(10, bb.getQtdnaook());
-            stmt.setString(11, bb.getNotes());
-            stmt.setBoolean(12, bb.isTopob());
-            stmt.setBoolean(13, bb.isReconstrucaob());
-            stmt.setBoolean(14, bb.isCompletab());
-            stmt.setBoolean(15, bb.isDesenhob());
-            stmt.setString(16, bb.getRaio());
-            stmt.setString(17, bb.getFrontal());
-            stmt.setString(18, bb.getIdtela());
+            stmt.setString(1, bb.getCliente());
+            stmt.setString(2, bb.getDas());
+            stmt.setString(3, bb.getCodigo());
+            stmt.setString(4, bb.getDescricao());
+            stmt.setInt(5, bb.getQtdinicial());
+            stmt.setInt(6, bb.getQtdok());
+            stmt.setInt(7, bb.getQtdnaook());
+            stmt.setString(8, bb.getNotes());
+            stmt.setBoolean(9, bb.isTopob());
+            stmt.setBoolean(10, bb.isReconstrucaob());
+            stmt.setBoolean(11, bb.isCompletab());
+            stmt.setBoolean(12, bb.isDesenhob());
+            stmt.setString(13, bb.getRaio());
+            stmt.setString(14, bb.getFrontal());
+            stmt.setString(15, bb.getIdtela());
             //idtela, dataabertura, dataprevisao, status, cliente, das, codigo, desc, qtdinicial, qtdok, qtdnaook, notes, topo, reconstrucao, raio, frontal
 
             stmt.executeUpdate();

@@ -215,7 +215,7 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
             case "Outros":
                 txtoutros.setEnabled(true);
                 for (int i = 0; i < tablepagamento.getRowCount(); i++) {
-                    tablepagamento.setValueAt("", i, 2);
+                    tablepagamento.setValueAt("", i, 1);
                 }
                 break;
             case "Adiantamento":
@@ -224,20 +224,20 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
                 for (int i = 0; i < tablepagamento.getRowCount(); i++) {
                     UsuariosDAO ud = new UsuariosDAO();
                     
-                    String nome = tablepagamento.getValueAt(i, 1).toString();
+                    String nome = tablepagamento.getValueAt(i, 0).toString();
                     
                     ud.readsalario(nome).forEach(ub -> {
                         salario = ub.getSalario() * 0.4;
                     });
                     
-                    tablepagamento.setValueAt(Valores.TransformarDoubleDBemString(salario), i, 2);
+                    tablepagamento.setValueAt(Valores.TransformarDoubleDBemString(salario), i, 1);
                 }
                 break;
             default:
                 txtoutros.setText("");
                 txtoutros.setEnabled(false);
                 for (int i = 0; i < tablepagamento.getRowCount(); i++) {
-                    tablepagamento.setValueAt("", i, 2);
+                    tablepagamento.setValueAt("", i, 1);
                 }
                 break;
         }
@@ -285,7 +285,7 @@ public class PagamentoRH extends javax.swing.JInternalFrame {
             for (int i = 0; i < tablepagamento.getRowCount(); i++) {
                 if (!tablepagamento.getValueAt(i, 1).equals("")) {
                     cb.setDatalancamento(Dates.CriarDataCurtaDBJDateChooser(dia));
-                    cb.setFornecedor(tipo + " - " + tablepagamento.getValueAt(i, 1).toString());
+                    cb.setFornecedor(tipo + " - " + tablepagamento.getValueAt(i, 0).toString());
                     cb.setNumero(txtnumero.getText());
                     cb.setDataemissao(Dates.CriarDataCurtaDBJDateChooser(dia));
                     cb.setTotal(tablepagamento.getValueAt(i, 1).toString());

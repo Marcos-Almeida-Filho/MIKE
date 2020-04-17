@@ -308,10 +308,10 @@ public class OS extends javax.swing.JInternalFrame {
                     radiocompleta.setEnabled(false);
                 }
             }
-            ob.setTopo(topo);
-            ob.setReconstrucao(rec);
-            ob.setCompleta(com);
-            ob.setDesenho(des);
+            ob.setTopob(radiotopo.isSelected());
+            ob.setReconstrucaob(radioreconstrucao.isSelected());
+            ob.setCompletab(radiocompleta.isSelected());
+            ob.setDesenhob(radiodesenho.isSelected());
             ob.setRaio(txtraio.getText());
 //            txtraio.setEditable(false);
 //            checkraio.setEnabled(false);
@@ -319,7 +319,7 @@ public class OS extends javax.swing.JInternalFrame {
 //            txtfrontal.setEditable(false);
 //            checkfrontal.setEnabled(false);
             ob.setIdtela(txtnumeroos.getText());
-            //dataabertura = ?, dataprevisao = ?, status = ?, cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topo = ?, reconstrucao = ?, completa = ?, desenho = ?, raio = ?, frontal = ? WHERE idtela = ?
+            //cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topob = ?, reconstrucaob = ?, completab = ?, desenhob = ?, raio = ?, frontal = ? WHERE idtela = ?
             od.update(ob);
 
             int rcproc = tableprocessos.getRowCount();

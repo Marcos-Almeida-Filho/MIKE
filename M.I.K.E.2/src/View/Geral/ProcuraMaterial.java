@@ -7,7 +7,7 @@ package View.Geral;
 
 import DAO.ServicoMateriaisDAO;
 import View.servicos.OS;
-import View.vendas.VendasMateriais;
+import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -159,7 +159,7 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             switch (origem) {
                 case "VendasMaterial":
-                    VendasMateriais.txtmaterialdeorigem.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
+                    VM.txtmaterialdeorigem.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
                     dispose();
                     break;
                 case "OS":

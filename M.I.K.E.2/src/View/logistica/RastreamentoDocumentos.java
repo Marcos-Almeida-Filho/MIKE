@@ -201,7 +201,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                 rddb.setIddoc(idcriado);
                 rddb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
                 rddb.setLocal(filecopy.toString());
-                rddb.setLocalremoto(Arquivos.localArquivoFTP(this.getClass().getSimpleName(), tabledocumentos.getValueAt(i, 4).toString(), idcriado));
 
                 //iddoc, descricao, local, localremoto
                 rddd.create(rddb);
@@ -282,10 +281,9 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     //Itens Bean
                     rddb.setIddoc(id);
                     rddb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
-                    rddb.setLocal(Arquivos.localArquivoEmRede(this.getClass().getSimpleName(), tabledocumentos.getValueAt(i, 4).toString(), idcriado));
-                    rddb.setLocalremoto(Arquivos.localArquivoFTP(this.getClass().getSimpleName(), tabledocumentos.getValueAt(i, 4).toString(), idcriado));
+                    rddb.setLocal(filecopy.toString());
 
-                    //iddoc, descricao, local, localremoto
+                    //iddoc, descricao, local
                     rddd.create(rddb);
                 }
             }
@@ -576,8 +574,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jLabel4 = new javax.swing.JLabel();
         txtxml = new javax.swing.JTextField();
         btnxml = new javax.swing.JButton();
-        radioNuvem = new javax.swing.JRadioButton();
-        radioLocal = new javax.swing.JRadioButton();
         jPanel10 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tablecomentarios = new javax.swing.JTable();
@@ -983,14 +979,14 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Descrição", "Local", "Local Original", "Local Remoto"
+                "ID", "", "Descrição", "Local", "Local Original"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, false, false
+                false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1045,13 +1041,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             }
         });
 
-        GroupArquivo.add(radioNuvem);
-        radioNuvem.setText("Nuvem");
-
-        GroupArquivo.add(radioLocal);
-        radioLocal.setSelected(true);
-        radioLocal.setText("Local");
-
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -1066,17 +1055,11 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                         .addComponent(txtxml))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                                .addComponent(btnxml)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton5))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                                .addComponent(radioLocal)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(radioNuvem)))))
+                        .addComponent(btnxml)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton5)))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -1087,11 +1070,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     .addComponent(jLabel4)
                     .addComponent(txtxml, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioNuvem)
-                    .addComponent(radioLocal))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton5)
@@ -1385,34 +1364,30 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
         if (evt.getClickCount() == 2) {
             Desktop desk = Desktop.getDesktop();
-            if (radioLocal.isSelected()) {
-                if (tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).equals("")) {
+            if (tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).equals("")) {
+                try {
+                    desk.open(new File(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4).toString()));
+                } catch (IOException ex) {
+                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
                     try {
-                        desk.open(new File(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4).toString()));
-                    } catch (IOException ex) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                        JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
-                        try {
-                            SendEmail.EnviarErro(ex.toString());
-                        } catch (AWTException | IOException ex1) {
-                            Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
-                        }
-                    }
-                } else {
-                    try {
-                        desk.open(new File(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).toString()));
-                    } catch (IOException ex) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
-                        JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
-                        try {
-                            SendEmail.EnviarErro(ex.toString());
-                        } catch (AWTException | IOException ex1) {
-                            Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
-                        }
+                        SendEmail.EnviarErro(ex.toString());
+                    } catch (AWTException | IOException ex1) {
+                        Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
                     }
                 }
             } else {
-                Arquivos.abrirArquivoFTP(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 5).toString());
+                try {
+                    desk.open(new File(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).toString()));
+                } catch (IOException ex) {
+                    Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo localmente!\n" + ex);
+                    try {
+                        SendEmail.EnviarErro(ex.toString());
+                    } catch (AWTException | IOException ex1) {
+                        Logger.getLogger(RastreamentoDocumentos.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+                }
             }
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
@@ -1562,8 +1537,6 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JRadioButton radioLocal;
-    private javax.swing.JRadioButton radioNuvem;
     public static javax.swing.JRadioButton radiocliente;
     public static javax.swing.JRadioButton radioconta;
     public static javax.swing.JRadioButton radiofornecedor;

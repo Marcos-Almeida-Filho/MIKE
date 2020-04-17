@@ -38,13 +38,14 @@ import View.servicos.OS;
 import View.servicos.ServicoMateriais;
 import View.servicos.PedidoServico;
 import View.servicos.ProcessosServico;
-import View.vendas.VendasMateriais;
 import View.TI.Senhas;
+import View.arquivo.ProgramacaoMIKE;
 import View.comercial.PlanejamentoFaturamento;
 import View.financeiro.Cartoes;
 import View.financeiro.Extratos;
 import View.fiscal.NotasFiscais;
 import View.servicos.OS1;
+import View.vendas.VendasMateriais;
 import View.vendas.ProcessosVendas;
 import java.awt.Toolkit;
 import java.net.URL;
@@ -142,6 +143,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         menuarquivo = new javax.swing.JMenu();
         menuitememail = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem17 = new javax.swing.JMenuItem();
         menuitemsair = new javax.swing.JMenuItem();
         menuadministracao = new javax.swing.JMenu();
         menuitemusuarios = new javax.swing.JMenuItem();
@@ -274,8 +276,18 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menuarquivo.add(menuitememail);
 
+        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/text_list_bullets.png"))); // NOI18N
         jMenuItem5.setText("Protocolos de Atendimento");
         menuarquivo.add(jMenuItem5);
+
+        jMenuItem17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/bricks.png"))); // NOI18N
+        jMenuItem17.setText("Programação MIKE");
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
+        menuarquivo.add(jMenuItem17);
 
         menuitemsair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/door_out.png"))); // NOI18N
         menuitemsair.setText("Sair");
@@ -1063,6 +1075,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+        ProgramacaoMIKE pm = new ProgramacaoMIKE();
+        Telas.AparecerTelaAumentada(pm);
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1108,6 +1125,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

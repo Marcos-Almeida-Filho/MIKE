@@ -6,7 +6,7 @@
 package View.Geral;
 
 import DAO.InsumosDAO;
-import View.vendas.VendasMateriais;
+import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -152,7 +152,7 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             switch (origem) {
                 case "VendasMaterial":
-                    VendasMateriais.txtmaterialdeorigem.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
+                    VM.txtmaterialdeorigem.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
                     dispose();
                     break;
             }

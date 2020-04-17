@@ -9,6 +9,7 @@ import Methods.Arquivos;
 import View.compras.Insumos;
 import View.financeiro.AdicionarContasAPagar;
 import View.servicos.*;
+import View.vendas.VM;
 import View.vendas.VendasMateriais;
 import java.io.File;
 import javax.swing.JOptionPane;
@@ -125,12 +126,16 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                     case "CotacaoServico":
                         Arquivos.AdicionarArquivoEmTable(CotacaoServico.tabledocumentos, filestring, this);
                         break;
+                    case "VM":
+                        Arquivos.AdicionarArquivoEmTable(VM.tabledocumentos, filestring, this);
+                        break;
                     case "VendasMateriais":
-                        Arquivos.AdicionarArquivoEmTable(VendasMateriais.tabledocumentos, filestring, this);
+                        Arquivos.AdicionarArquivoEmTable(VendasMateriais.tableDocumentos, filestring, this);
                         break;
                     default:
                         throw new AssertionError();
                 }
+                dispose();
             }
         }
     }//GEN-LAST:event_chooserActionPerformed
