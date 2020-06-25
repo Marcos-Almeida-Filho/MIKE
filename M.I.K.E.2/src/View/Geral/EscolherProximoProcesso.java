@@ -5,6 +5,11 @@
  */
 package View.Geral;
 
+import Bean.F_UPBean;
+import Bean.F_UP_HistBean;
+import DAO.F_UPDAO;
+import DAO.F_UP_HistDAO;
+import DAO.ProcessosServicoDAO;
 import View.servicos.OS;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -20,11 +25,26 @@ public class EscolherProximoProcesso extends javax.swing.JInternalFrame {
      *
      * @param origin
      */
-    String origem;
+    static String origem;
 
     public EscolherProximoProcesso(String origin) {
         initComponents();
         origem = origin;
+        pegarProcessos();
+    }
+    
+    public static void pegarProcessos() {
+        switch (origem) {
+            case "OS":
+                ProcessosServicoDAO psd = new ProcessosServicoDAO();
+                
+                psd.read().forEach(psb -> {
+                    cbprocesso.addItem(psb.getNome());
+                });
+                break;
+            default:
+                throw new AssertionError();
+        }
     }
 
     /**
@@ -107,7 +127,8 @@ public class EscolherProximoProcesso extends javax.swing.JInternalFrame {
             cbprocesso.showPopup();
         } else {
             switch (origem) {
-                case "ProcessoOS":
+                case "OS":
+                    int ordem = OS.tableprocessos.getRowCount();
                     DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
                     model.addRow(new Object[]{
                         false,
@@ -118,19 +139,39 @@ public class EscolherProximoProcesso extends javax.swing.JInternalFrame {
                         0,
                         0,
                         "",
-                        0,
+                        ordem,
                         0
                     });
                     OS.salvarOS();
+                    
+                    F_UPDAO fud = new F_UPDAO();
+                    F_UPBean fub = new F_UPBean();
+                    
+                    fub.setProcesso(cbprocesso.getSelectedItem().toString());
+                    fub.setOp(OS.txtnumeroos.getText());
+                    
+                    //SET processo = ? WHERE op = ?
+                    fud.updateProcessoByOs(fub);
+                    
+                    F_UP_HistDAO fuhd = new F_UP_HistDAO();
+                    F_UP_HistBean fuhb = new F_UP_HistBean();
+                    
+                    fuhb.setIdfup(fud.getId(OS.txtnumeroos.getText()));
+                    fuhb.setProcesso(OS.tableprocessos.getValueAt(OS.tableprocessos.getRowCount() - 1, 2).toString());
+                    fuhb.setFuncionario(null);
+                    fuhb.setData(null);
+                    
+                    //idfup, processo, funcionario, data
+                    fuhd.create(fuhb);
                     break;
             }
-            dispose();
+            this.dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JComboBox<String> cbprocesso;
+    public static javax.swing.JComboBox<String> cbprocesso;
     public javax.swing.JButton jButton1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JPanel jPanel1;

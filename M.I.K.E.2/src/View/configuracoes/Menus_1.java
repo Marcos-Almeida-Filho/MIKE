@@ -110,7 +110,6 @@ public class Menus_1 extends javax.swing.JInternalFrame {
         jLabel2.setText("ID");
 
         txtid.setEditable(false);
-        txtid.setBackground(new java.awt.Color(255, 255, 255));
 
         btnnovo.setText("Novo");
         btnnovo.addActionListener(new java.awt.event.ActionListener() {

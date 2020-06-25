@@ -27,11 +27,31 @@ import javax.swing.JOptionPane;
  */
 public class UsuariosDAO {
 
+    Connection con;
+
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<UsuariosBean> listub;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listub = new ArrayList<>();
+    }
+
     public void create(UsuariosBean ub) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO usuarios (nome, emailpessoal, dataadmissao, telefonefixo, telefonecelular, datanascimento, datademissao, emailfabrica, vendedor, status, login, senha, cargo, cpf, pis, rg, livrofolha, nivel, salario) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -79,13 +99,7 @@ public class UsuariosDAO {
 
     public List<UsuariosBean> readusuarioclick() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE id = ?");
@@ -114,7 +128,7 @@ public class UsuariosDAO {
                 ub.setVendedor(rs.getBoolean("vendedor"));
                 ub.setNivel(rs.getString("nivel"));
 
-                listu.add(ub);
+                listub.add(ub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -126,18 +140,12 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listu;
+        return listub;
     }
 
     public List<UsuariosBean> readapelido(String login) {
 
-        Connection con = ConnectionFactory.getConnectionlogin();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE login = ?");
@@ -150,7 +158,7 @@ public class UsuariosDAO {
                 ub.setNome(rs.getString("nome"));
                 ub.setNivel(rs.getString("nivel"));
 
-                listu.add(ub);
+                listub.add(ub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -162,18 +170,12 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listu;
+        return listub;
     }
-    
+
     public List<UsuariosBean> readcreated(String nome) {
 
-        Connection con = ConnectionFactory.getConnectionlogin();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE nome = ?");
@@ -186,7 +188,7 @@ public class UsuariosDAO {
                 ub.setNome(rs.getString("nome"));
                 ub.setNivel(rs.getString("nivel"));
 
-                listu.add(ub);
+                listub.add(ub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -198,18 +200,12 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listu;
+        return listub;
     }
 
     public List<UsuariosBean> vendedores() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE vendedor = 1");
@@ -221,7 +217,7 @@ public class UsuariosDAO {
                 ub.setId(rs.getInt("id"));
                 ub.setNome(rs.getString("nome"));
 
-                listu.add(ub);
+                listub.add(ub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -233,18 +229,12 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listu;
+        return listub;
     }
-    
+
     public List<UsuariosBean> readsalario(String nome) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT salario FROM usuarios WHERE nome = ?");
@@ -256,7 +246,7 @@ public class UsuariosDAO {
 
                 ub.setSalario(rs.getDouble("salario"));
 
-                listu.add(ub);
+                listub.add(ub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -268,18 +258,12 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listu;
+        return listub;
     }
 
     public List<UsuariosBean> readtabelausuariosativo() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE status = 'ativo' ORDER BY nome");
@@ -293,7 +277,7 @@ public class UsuariosDAO {
                 ub.setCargo(rs.getString("cargo"));
                 ub.setStatus(rs.getString("status"));
 
-                listu.add(ub);
+                listub.add(ub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -305,18 +289,12 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listu;
+        return listub;
     }
 
     public List<UsuariosBean> readtabelausuariosinativo() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE status = 'inativo'");
@@ -330,7 +308,7 @@ public class UsuariosDAO {
                 ub.setCargo(rs.getString("cargo"));
                 ub.setStatus(rs.getString("status"));
 
-                listu.add(ub);
+                listub.add(ub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -342,18 +320,12 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listu;
+        return listub;
     }
 
     public List<UsuariosBean> readtabelausuariostodos() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios");
@@ -367,7 +339,7 @@ public class UsuariosDAO {
                 ub.setCargo(rs.getString("cargo"));
                 ub.setStatus(rs.getString("status"));
 
-                listu.add(ub);
+                listub.add(ub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -379,18 +351,12 @@ public class UsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listu;
+        return listub;
     }
 
     public List<UsuariosBean> pesquisa(String pesquisa) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listub = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE id LIKE '%" + pesquisa + "%' OR nome LIKE '%" + pesquisa + "%'");
@@ -419,11 +385,7 @@ public class UsuariosDAO {
 
     public boolean checklogin(String login, String senha) {
 
-        Connection con = ConnectionFactory.getConnectionlogin();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
+        rsList();
 
         Boolean check = false;
 
@@ -451,13 +413,8 @@ public class UsuariosDAO {
 
     public List<UsuariosBean> checknivel(String nivel) {
 
-        Connection con = ConnectionFactory.getConnection();
+        rsList();
 
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UsuariosBean> listub = new ArrayList<>();
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE login = ?");
             stmt.setString(1, nivel);
@@ -486,9 +443,7 @@ public class UsuariosDAO {
 
     public void update(UsuariosBean ub) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE usuarios SET nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ?, nivel = ?, salario = ? WHERE id = ?");
@@ -516,6 +471,27 @@ public class UsuariosDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateSenha(String senha, String nome) {
+
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE usuarios SET senha = '" + senha + "' WHERE nome = '" + nome + "'");
+
+            stmt.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Senha atualizada com sucesso.");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar a senha!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {

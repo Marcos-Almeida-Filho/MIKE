@@ -282,8 +282,8 @@ public class ProgramacaoMIKE extends javax.swing.JInternalFrame {
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         for (int i = 0; i < tableProgramacao.getRowCount(); i++) {
             if (tableProgramacao.getValueAt(i, 0).equals("")) {
-                pb.setNome(tableProgramacao.getValueAt(i, 1).toString());
-                pb.setDataProgramada(Dates.CriarDataCurtaDBComDataExistente(tableProgramacao.getValueAt(i, 2).toString()));
+                pb.setNome(tableProgramacao.getValueAt(i, 2).toString());
+                pb.setDataProgramada(Dates.CriarDataCurtaDBComDataExistente(tableProgramacao.getValueAt(i, 3).toString()));
                 pb.setDataInicio("0000-00-00");
                 pb.setDataTermino("0000-00-00");
                 pb.setStatus("Planejado");
@@ -303,7 +303,7 @@ public class ProgramacaoMIKE extends javax.swing.JInternalFrame {
 
             if (evt.getClickCount() == 2) {
                 if (tableProgramacao.getValueAt(selectedRow, 4).equals("")) {
-                    int resp = JOptionPane.showConfirmDialog(null, "Deseja dar início a " + tableProgramacao.getValueAt(selectedRow, 1).toString() + "?", "Iniciar", JOptionPane.YES_NO_OPTION);
+                    int resp = JOptionPane.showConfirmDialog(null, "Deseja iniciar " + tableProgramacao.getValueAt(selectedRow, 2).toString() + "?", "Iniciar", JOptionPane.YES_NO_OPTION);
                     if (resp == 0) {
                         pb.setDataInicio(Dates.CriarDataCurtaDBSemDataExistente());
                         pb.setId(id);
@@ -312,7 +312,7 @@ public class ProgramacaoMIKE extends javax.swing.JInternalFrame {
                         pd.updateInicio(pb);
                     }
                 } else if (tableProgramacao.getValueAt(selectedRow, 5).equals("")) {
-                    int resp = JOptionPane.showConfirmDialog(null, "Desejar finalizar " + tableProgramacao.getValueAt(selectedRow, 1).toString() + "?", "Finalizar", JOptionPane.YES_NO_OPTION);
+                    int resp = JOptionPane.showConfirmDialog(null, "Desejar finalizar " + tableProgramacao.getValueAt(selectedRow, 2).toString() + "?", "Finalizar", JOptionPane.YES_NO_OPTION);
                     if (resp == 0) {
                         pb.setDataTermino(Dates.CriarDataCurtaDBSemDataExistente());
                         pb.setId(id);

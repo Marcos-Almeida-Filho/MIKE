@@ -8,6 +8,7 @@ package DAO;
 import Bean.OSBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
+import View.servicos.PedidoServico;
 import java.awt.AWTException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -29,6 +30,9 @@ import javax.swing.JOptionPane;
 public class OSDAO {
 
 //    OSBean ob = new OSBean();
+    
+    int vezes = 0;
+    
     public void create(OSBean osb) {
         Connection con = ConnectionFactory.getConnection();
 
@@ -57,6 +61,14 @@ public class OSDAO {
             stmt.setString(18, osb.getFrontal());
 
             stmt.executeUpdate();
+            
+            vezes++;
+            
+            if (vezes == PedidoServico.vezes) {
+                JOptionPane.showMessageDialog(null,"Criado com sucesso!");
+                PedidoServico.vezes = 0;
+                vezes = 0;
+            }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
             try {
@@ -335,8 +347,6 @@ public class OSDAO {
 
                 ob.setDataabertura(rs.getString("dataabertura"));
                 ob.setDataprevisao(rs.getString("dataprevisao"));
-                ob.setDateabertura(rs.getString("dateabertura"));
-                ob.setDateprevisao(rs.getString("dateprevisao"));
                 ob.setStatus(rs.getString("status"));
                 ob.setCliente(rs.getString("cliente"));
                 ob.setDas(rs.getString("das"));
@@ -578,6 +588,23 @@ public class OSDAO {
             } catch (AWTException | IOException ex) {
                 Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void delete(String os) {
+        Connection con = ConnectionFactory.getConnection();
+        
+        PreparedStatement stmt = null;
+        
+        try {
+            stmt = con.prepareStatement("DELETE FROM os WHERE idtela = '" + os + "'");
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro ao excluir.\n" + e);
+            SendEmail.EnviarErro2(e.toString());
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

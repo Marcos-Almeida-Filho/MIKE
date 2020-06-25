@@ -28,11 +28,31 @@ import javax.swing.JOptionPane;
  */
 public class GrupoDeUsuariosDAO {
 
+    Connection con;
+
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<GrupoDeUsuariosBean> listg;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listg = new ArrayList<>();
+    }
+
     public void create(GrupoDeUsuariosBean gub) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO grupo_usuarios (nome, menuadministracao, submenuusuarios, submenugrupodeusuarios, submenurepresentantes, submenuregioesdeatuacao, menufiscal, submenunotasfiscais, submenunaturezadeoperacao, menucomercial, submenuclientes, submenugrupodeclientes, submenufornecedores, submenucategoriadepreco, menufinanceiro, submenucontasareceber, submenucontasapagar, submenucondicoesdepagamento, submenubancos, menucompras, submenusolicitacaodecompras, submenuorcamentodecompras, submenupedidodecompras, submenuinsumos, submenutipodeproduto, menulogistica, submenucarros, submenurastreamentodedocumentos, menuqualidade, submenuinstrumentosdemedicao, submenuiqf, submenumedicoes, menuvendas, submenuorcamentosvenda, submenupedidosvenda, submenuops, submenuprodutosvenda, submenuprocessosvenda, submenugrupodeprocessosvenda, menuservicos, submenuorcamentosservico, submenupedidosservico, submenuoss, submenuprodutosservico, submenuprocessosservico, submenugrupodeprocessosservico, menuconfiguracoes, submenumenus) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -98,15 +118,24 @@ public class GrupoDeUsuariosDAO {
         }
     }
 
+    public void create2(String nome) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("INSERT INTO grupo_usuarios (nome) VALUES ('" + nome + "')");
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao criar grupo de usuário.\n" + e);
+            SendEmail.EnviarErro2(e.toString());
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
     public List<GrupoDeUsuariosBean> read() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<GrupoDeUsuariosBean> listgu = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM grupo_usuarios");
@@ -117,7 +146,7 @@ public class GrupoDeUsuariosDAO {
 
                 gub.setId(rs.getInt("id"));
                 gub.setNome(rs.getString("nome"));
-                listgu.add(gub);
+                listg.add(gub);
             }
 
         } catch (SQLException e) {
@@ -130,18 +159,35 @@ public class GrupoDeUsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listgu;
+        return listg;
+    }
+
+    public int created(String nome) {
+        rsList();
+
+        int id = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT id FROM grupo_usuarios WHERE nome = '" + nome + "'");
+
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao conseguir id criado.\n" + e);
+            SendEmail.EnviarErro2(e.toString());
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return id;
     }
 
     public List<GrupoDeUsuariosBean> readgrupocadastrado(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<GrupoDeUsuariosBean> listgub = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM grupo_usuarios WHERE id = ?");
@@ -200,7 +246,7 @@ public class GrupoDeUsuariosDAO {
                 gub.setMenuconfiguracoes(rs.getBoolean("menuconfiguracoes"));
                 gub.setSubmenumenus(rs.getBoolean("submenumenus"));
 
-                listgub.add(gub);
+                listg.add(gub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -212,18 +258,12 @@ public class GrupoDeUsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listgub;
+        return listg;
     }
 
     public List<GrupoDeUsuariosBean> getmenus(String nivel) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<GrupoDeUsuariosBean> listgub = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM grupo_usuarios WHERE nome = ?");
@@ -282,7 +322,7 @@ public class GrupoDeUsuariosDAO {
                 gub.setMenuconfiguracoes(rs.getBoolean("menuconfiguracoes"));
                 gub.setSubmenumenus(rs.getBoolean("submenumenus"));
 
-                listgub.add(gub);
+                listg.add(gub);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -294,14 +334,12 @@ public class GrupoDeUsuariosDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listgub;
+        return listg;
     }
 
     public void update(GrupoDeUsuariosBean gub) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE grupo_usuarios SET nome = ?, menuadministracao = ?, submenuusuarios = ?, submenugrupodeusuarios = ?, submenurepresentantes = ?, submenuregioesdeatuacao = ?, menufiscal = ?, submenunotasfiscais = ?, submenunaturezadeoperacao = ?, menucomercial = ?, submenuclientes = ?, submenugrupodeclientes = ?, submenufornecedores = ?, submenucategoriadepreco = ?, menufinanceiro = ?, submenucontasareceber = ?, submenucontasapagar = ?, submenucondicoesdepagamento = ?, submenubancos = ?, menucompras = ?, submenusolicitacaodecompras = ?, submenuorcamentodecompras = ?, submenupedidodecompras = ?, submenuinsumos = ?, submenutipodeproduto = ?, menulogistica = ?, submenucarros = ?, submenurastreamentodedocumentos = ?, menuqualidade = ?, submenuinstrumentosdemedicao = ?, submenuiqf = ?, submenumedicoes = ?, menuvendas = ?, submenuorcamentosvenda = ?, submenupedidosvenda = ?, submenuops = ?, submenuprodutosvenda = ?, submenuprocessosvenda = ?, submenugrupodeprocessosvenda = ?, menuservicos = ?, submenuorcamentosservico = ?, submenupedidosservico = ?, submenuoss = ?, submenuprodutosservico = ?, submenuprocessosservico = ?, submenugrupodeprocessosservico = ?, menuconfiguracoes = ?, submenumenus = ? WHERE id = ?");
@@ -363,6 +401,21 @@ public class GrupoDeUsuariosDAO {
             } catch (AWTException | IOException ex) {
                 Logger.getLogger(GrupoDeUsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void update2(String nome, int idgrupo) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE grupo_usuarios SET nome = '" + nome + "' WHERE id = " + idgrupo);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar grupo de usuário.\n" + e);
+            SendEmail.EnviarErro2(e.toString());
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

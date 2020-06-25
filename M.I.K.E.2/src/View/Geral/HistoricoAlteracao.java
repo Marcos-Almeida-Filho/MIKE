@@ -5,10 +5,10 @@
  */
 package View.Geral;
 
-import Bean.AltBean;
 import View.comercial.*;
 import DAO.AltDAO;
 import Methods.Dates;
+import View.vendas.VendasMateriais;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,6 +22,9 @@ public class HistoricoAlteracao extends javax.swing.JInternalFrame {
      */
     static String origem;
 
+    //DAO para consulta
+    static AltDAO ad = new AltDAO();
+
     public HistoricoAlteracao(String origin) {
         initComponents();
         origem = origin;
@@ -32,26 +35,32 @@ public class HistoricoAlteracao extends javax.swing.JInternalFrame {
         //Zerar número de linhas da table
         DefaultTableModel model = (DefaultTableModel) tablehist.getModel();
         model.setNumRows(0);
-        
+
         //Verificar origem e mostrar resultado correto.
         switch (origem) {
-            case "Fornecedor":
-                //DAO para consulta
-                AltDAO ad = new AltDAO();
-
-                for (AltBean ab : ad.read(Integer.parseInt(Fornecedores.txtidfornecedor.getText()),"fornecedores_alt","idfornecedor")) {
-                    String datadb = ab.getData();
-
+            case "Fornecedores":
+                ad.read(Fornecedores.id, "Fornecedores").forEach((ab) -> {
                     model.addRow(new Object[]{
-                        Dates.TransformarDataCompletaDoDB(datadb),
+                        Dates.TransformarDataCompletaDoDB(ab.getData()),
                         ab.getUser(),
                         ab.getValor(),
                         ab.getValoranterior(),
                         ab.getValornovo()
                     });
-                }
+                });
                 break;
             case "HistDoc":
+                break;
+            case "VendasMateriais":
+                ad.read(VendasMateriais.id, "VendasMateriais").forEach(ab -> {
+                    model.addRow(new Object[]{
+                        Dates.TransformarDataCompletaDoDB(ab.getData()),
+                        ab.getUser(),
+                        ab.getValor(),
+                        ab.getValoranterior(),
+                        ab.getValornovo()
+                    });
+                });
                 break;
         }
     }

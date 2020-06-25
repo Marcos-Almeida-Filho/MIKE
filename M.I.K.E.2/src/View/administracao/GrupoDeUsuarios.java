@@ -5,10 +5,9 @@
  */
 package View.administracao;
 
-import Bean.GrupoDeUsuariosBean;
 import DAO.GrupoDeUsuariosDAO;
-import DAO.MenusDAO;
-import java.lang.reflect.Field;
+import DAO.GrupoDeUsuariosPermDAO;
+import View.TelaPrincipal;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,6 +20,11 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
     /**
      * Creates new form GrupoDeUsuarios
      */
+    private int id = 0;
+
+    GrupoDeUsuariosDAO gd = new GrupoDeUsuariosDAO();
+    GrupoDeUsuariosPermDAO gupd = new GrupoDeUsuariosPermDAO();
+
     public GrupoDeUsuarios() {
         initComponents();
         readtablegrupos();
@@ -43,14 +47,25 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
     public static void readtablepermissoes() {
         DefaultTableModel modelo = (DefaultTableModel) tablepermissoes.getModel();
         modelo.setNumRows(0);
-        MenusDAO ud = new MenusDAO();
 
-        ud.read().forEach((c) -> {
+        int menu = TelaPrincipal.jMenuBar1.getMenuCount();
+        for (int i = 0; i < menu; i++) {
+            String menuname = TelaPrincipal.jMenuBar1.getMenu(i).getName();
             modelo.addRow(new Object[]{
+                "",
                 false,
-                c.getNome()
+                menuname
             });
-        });
+            int sub = TelaPrincipal.jMenuBar1.getMenu(i).getItemCount();
+            for (int j = 0; j < sub; j++) {
+                String subname = TelaPrincipal.jMenuBar1.getMenu(i).getItem(j).getName();
+                modelo.addRow(new Object[]{
+                    "",
+                    false,
+                    subname
+                });
+            }
+        }
     }
 
     /**
@@ -72,8 +87,6 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
         txtnomegrupo = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablepermissoes = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
-        txtidgrupo = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -142,14 +155,14 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Permissão", "Nome"
+                "ID", "Permissão", "Nome"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false
+                false, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -163,16 +176,14 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
         tablepermissoes.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tablepermissoes);
         if (tablepermissoes.getColumnModel().getColumnCount() > 0) {
-            tablepermissoes.getColumnModel().getColumn(0).setMinWidth(100);
-            tablepermissoes.getColumnModel().getColumn(0).setPreferredWidth(100);
-            tablepermissoes.getColumnModel().getColumn(0).setMaxWidth(100);
-            tablepermissoes.getColumnModel().getColumn(1).setResizable(false);
+            tablepermissoes.getColumnModel().getColumn(0).setMinWidth(40);
+            tablepermissoes.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tablepermissoes.getColumnModel().getColumn(0).setMaxWidth(40);
+            tablepermissoes.getColumnModel().getColumn(1).setMinWidth(75);
+            tablepermissoes.getColumnModel().getColumn(1).setPreferredWidth(75);
+            tablepermissoes.getColumnModel().getColumn(1).setMaxWidth(75);
+            tablepermissoes.getColumnModel().getColumn(2).setResizable(false);
         }
-
-        jLabel2.setText("ID");
-
-        txtidgrupo.setEditable(false);
-        txtidgrupo.setBackground(new java.awt.Color(255, 255, 255));
 
         jButton2.setText("Marcar todos");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -197,10 +208,6 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 529, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtidgrupo, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtnomegrupo))
@@ -217,9 +224,7 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
                 .addGap(4, 4, 4)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtnomegrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtidgrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtnomegrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -276,206 +281,66 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tablegruposMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablegruposMouseClicked
-        String id = tablegrupos.getValueAt(tablegrupos.getSelectedRow(), 0).toString();
-        
+        id = Integer.parseInt(tablegrupos.getValueAt(tablegrupos.getSelectedRow(), 0).toString());
+
         if (evt.getClickCount() == 2) {
             tabgrupos.setSelectedIndex(1);
-            txtidgrupo.setText(id);
 
-            GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
-            
-            gud.readgrupocadastrado(Integer.parseInt(id)).forEach((ub) -> {
+            gd.readgrupocadastrado(id).forEach((ub) -> {
                 txtnomegrupo.setText(ub.getNome());
-//                for (int i = 0; i < GrupoDeUsuariosBean.getNumberMethodsBoolean(); i++) {
-//
-//                }
-                tablepermissoes.setValueAt(ub.isMenuadministracao(), 0, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuusuarios(), 1, 0);
-                tablepermissoes.setValueAt(ub.isSubmenugrupodeusuarios(), 2, 0);
-                tablepermissoes.setValueAt(ub.isSubmenurepresentantes(), 3, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuregioesdeatuacao(), 4, 0);
-                tablepermissoes.setValueAt(ub.isMenufiscal(), 5, 0);
-                tablepermissoes.setValueAt(ub.isSubmenunotasfiscais(), 6, 0);
-                tablepermissoes.setValueAt(ub.isSubmenunaturezadeoperacao(), 7, 0);
-                tablepermissoes.setValueAt(ub.isMenucomercial(), 8, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuclientes(), 9, 0);
-                tablepermissoes.setValueAt(ub.isSubmenugrupodeclientes(), 10, 0);
-                tablepermissoes.setValueAt(ub.isSubmenufornecedores(), 11, 0);
-                tablepermissoes.setValueAt(ub.isSubmenucategoriadepreco(), 12, 0);
-                tablepermissoes.setValueAt(ub.isMenufinanceiro(), 13, 0);
-                tablepermissoes.setValueAt(ub.isSubmenucontasareceber(), 14, 0);
-                tablepermissoes.setValueAt(ub.isSubmenucontasapagar(), 15, 0);
-                tablepermissoes.setValueAt(ub.isSubmenucondicoesdepagamento(), 16, 0);
-                tablepermissoes.setValueAt(ub.isSubmenubancos(), 17, 0);
-                tablepermissoes.setValueAt(ub.isMenucompras(), 18, 0);
-                tablepermissoes.setValueAt(ub.isSubmenusolicitacaodecompras(), 19, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuorcamentodecompras(), 20, 0);
-                tablepermissoes.setValueAt(ub.isSubmenupedidodecompras(), 21, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuinsumos(), 22, 0);
-                tablepermissoes.setValueAt(ub.isSubmenutipodeproduto(), 23, 0);
-                tablepermissoes.setValueAt(ub.isMenulogistica(), 24, 0);
-                tablepermissoes.setValueAt(ub.isSubmenucarros(), 25, 0);
-                tablepermissoes.setValueAt(ub.isSubmenurastreamentodedocumentos(), 26, 0);
-                tablepermissoes.setValueAt(ub.isMenuqualidade(), 27, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuinstrumentosdemedicao(), 28, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuiqf(), 29, 0);
-                tablepermissoes.setValueAt(ub.isSubmenumedicoes(), 30, 0);
-                tablepermissoes.setValueAt(ub.isMenuvendas(), 31, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuorcamentosvenda(), 32, 0);
-                tablepermissoes.setValueAt(ub.isSubmenupedidosvenda(), 33, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuops(), 34, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuprodutosvenda(), 35, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuprocessosvenda(), 36, 0);
-                tablepermissoes.setValueAt(ub.isSubmenugrupodeprocessosvenda(), 37, 0);
-                tablepermissoes.setValueAt(ub.isMenuservicos(), 38, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuorcamentosservico(), 39, 0);
-                tablepermissoes.setValueAt(ub.isSubmenupedidosservico(), 40, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuoss(), 41, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuprodutosservico(), 42, 0);
-                tablepermissoes.setValueAt(ub.isSubmenuprocessosservico(), 43, 0);
-                tablepermissoes.setValueAt(ub.isSubmenugrupodeprocessosservico(), 44, 0);
-                tablepermissoes.setValueAt(ub.isMenuconfiguracoes(), 45, 0);
-                tablepermissoes.setValueAt(ub.isSubmenumenus(), 46, 0);
             });
+
+            for (int i = 0; i < tablepermissoes.getRowCount(); i++) {
+                if (tablepermissoes.getValueAt(i, 2) != null) {
+                    boolean perm = gupd.readPerm(id, tablepermissoes.getValueAt(i, 2).toString());
+                    tablepermissoes.setValueAt(perm, i, 1);
+                    String id2 = String.valueOf(gupd.readId(id, tablepermissoes.getValueAt(i, 2).toString()));
+                    tablepermissoes.setValueAt(id2, i, 0);
+                }
+            }
         }
     }//GEN-LAST:event_tablegruposMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (txtnomegrupo.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Coloque um nome!");
-        } else if (txtidgrupo.getText().equals("")) {
-            GrupoDeUsuariosBean gub = new GrupoDeUsuariosBean();
-            GrupoDeUsuariosDAO gudao = new GrupoDeUsuariosDAO();
+        } else if (id == 0) {
+            gd.create2(txtnomegrupo.getText());
 
-            gub.setNome(txtnomegrupo.getText());
-            gub.setMenuadministracao(Boolean.valueOf(tablepermissoes.getValueAt(0, 0).toString()));
-            gub.setSubmenuusuarios(Boolean.valueOf(tablepermissoes.getValueAt(1, 0).toString()));
-            gub.setSubmenugrupodeusuarios(Boolean.valueOf(tablepermissoes.getValueAt(2, 0).toString()));
-            gub.setSubmenurepresentantes(Boolean.valueOf(tablepermissoes.getValueAt(3, 0).toString()));
-            gub.setSubmenuregioesdeatuacao(Boolean.valueOf(tablepermissoes.getValueAt(4, 0).toString()));
-            gub.setMenufiscal(Boolean.valueOf(tablepermissoes.getValueAt(5, 0).toString()));
-            gub.setSubmenunotasfiscais(Boolean.valueOf(tablepermissoes.getValueAt(6, 0).toString()));
-            gub.setSubmenunaturezadeoperacao(Boolean.valueOf(tablepermissoes.getValueAt(7, 0).toString()));
-            gub.setMenucomercial(Boolean.valueOf(tablepermissoes.getValueAt(8, 0).toString()));
-            gub.setSubmenuclientes(Boolean.valueOf(tablepermissoes.getValueAt(9, 0).toString()));
-            gub.setSubmenugrupodeclientes(Boolean.valueOf(tablepermissoes.getValueAt(10, 0).toString()));
-            gub.setSubmenufornecedores(Boolean.valueOf(tablepermissoes.getValueAt(11, 0).toString()));
-            gub.setSubmenucategoriadepreco(Boolean.valueOf(tablepermissoes.getValueAt(12, 0).toString()));
-            gub.setMenufinanceiro(Boolean.valueOf(tablepermissoes.getValueAt(13, 0).toString()));
-            gub.setSubmenucontasareceber(Boolean.valueOf(tablepermissoes.getValueAt(14, 0).toString()));
-            gub.setSubmenucontasapagar(Boolean.valueOf(tablepermissoes.getValueAt(15, 0).toString()));
-            gub.setSubmenucondicoesdepagamento(Boolean.valueOf(tablepermissoes.getValueAt(16, 0).toString()));
-            gub.setSubmenubancos(Boolean.valueOf(tablepermissoes.getValueAt(17, 0).toString()));
-            gub.setMenucompras(Boolean.valueOf(tablepermissoes.getValueAt(18, 0).toString()));
-            gub.setSubmenusolicitacaodecompras(Boolean.valueOf(tablepermissoes.getValueAt(19, 0).toString()));
-            gub.setSubmenuorcamentodecompras(Boolean.valueOf(tablepermissoes.getValueAt(20, 0).toString()));
-            gub.setSubmenupedidodecompras(Boolean.valueOf(tablepermissoes.getValueAt(21, 0).toString()));
-            gub.setSubmenuinsumos(Boolean.valueOf(tablepermissoes.getValueAt(22, 0).toString()));
-            gub.setSubmenutipodeproduto(Boolean.valueOf(tablepermissoes.getValueAt(23, 0).toString()));
-            gub.setMenulogistica(Boolean.valueOf(tablepermissoes.getValueAt(24, 0).toString()));
-            gub.setSubmenucarros(Boolean.valueOf(tablepermissoes.getValueAt(25, 0).toString()));
-            gub.setSubmenurastreamentodedocumentos(Boolean.valueOf(tablepermissoes.getValueAt(26, 0).toString()));
-            gub.setMenuqualidade(Boolean.valueOf(tablepermissoes.getValueAt(27, 0).toString()));
-            gub.setSubmenuinstrumentosdemedicao(Boolean.valueOf(tablepermissoes.getValueAt(28, 0).toString()));
-            gub.setSubmenuiqf(Boolean.valueOf(tablepermissoes.getValueAt(29, 0).toString()));
-            gub.setSubmenumedicoes(Boolean.valueOf(tablepermissoes.getValueAt(30, 0).toString()));
-            gub.setMenuvendas(Boolean.valueOf(tablepermissoes.getValueAt(31, 0).toString()));
-            gub.setSubmenuorcamentosvenda(Boolean.valueOf(tablepermissoes.getValueAt(32, 0).toString()));
-            gub.setSubmenupedidosvenda(Boolean.valueOf(tablepermissoes.getValueAt(33, 0).toString()));
-            gub.setSubmenuops(Boolean.valueOf(tablepermissoes.getValueAt(34, 0).toString()));
-            gub.setSubmenuprodutosvenda(Boolean.valueOf(tablepermissoes.getValueAt(35, 0).toString()));
-            gub.setSubmenuprocessosvenda(Boolean.valueOf(tablepermissoes.getValueAt(36, 0).toString()));
-            gub.setSubmenugrupodeprocessosvenda(Boolean.valueOf(tablepermissoes.getValueAt(37, 0).toString()));
-            gub.setMenuservicos(Boolean.valueOf(tablepermissoes.getValueAt(38, 0).toString()));
-            gub.setSubmenuorcamentosservico(Boolean.valueOf(tablepermissoes.getValueAt(39, 0).toString()));
-            gub.setSubmenupedidosservico(Boolean.valueOf(tablepermissoes.getValueAt(40, 0).toString()));
-            gub.setSubmenuoss(Boolean.valueOf(tablepermissoes.getValueAt(41, 0).toString()));
-            gub.setSubmenuprodutosservico(Boolean.valueOf(tablepermissoes.getValueAt(42, 0).toString()));
-            gub.setSubmenuprocessosservico(Boolean.valueOf(tablepermissoes.getValueAt(43, 0).toString()));
-            gub.setSubmenugrupodeprocessosservico(Boolean.valueOf(tablepermissoes.getValueAt(44, 0).toString()));
-            gub.setMenuconfiguracoes(Boolean.valueOf(tablepermissoes.getValueAt(45, 0).toString()));
-            gub.setSubmenumenus(Boolean.valueOf(tablepermissoes.getValueAt(46, 0).toString()));
+            int idgrupo = gd.created(txtnomegrupo.getText());
 
-            //nome, menuadministracao, submenuusuarios, submenugrupodeusuarios, submenurepresentantes, submenuregioesdeatuacao, menufiscal, submenunotasfiscais, submenunaturezadeoperacao, menucomercial, submenuclientes, submenugrupodeclientes, submenufornecedores, submenucategoriadepreco, menufinanceiro, submenucontasareceber, submenucontasapagar, submenucondicoesdepagamento, submenubancos, menucompras, submenusolicitacaodecompras, submenuorcamentodecompras, submenupedidodecompras, submenuinsumos, submenutipodeproduto, menulogistica, submenucarros, submenurastreamentodedocumentos, menuqualidade, submenuinstrumentosdemedicao, submenuiqf, submenumedicoes, menuvendas, submenuorcamentosvenda, submenupedidosvenda, submenuops, submenuprodutosvenda, submenuprocessosvenda, submenugrupodeprocessosvenda, menuservicos, submenuorcamentosservico, submenupedidosservico, submenuoss, submenuprodutosservico, submenuprocessosservico, submenugrupodeprocessosservico, menuconfiguracoes, submenumenus
-            gudao.create(gub);
-            txtidgrupo.setText("");
-            txtnomegrupo.setText("");
-            tabgrupos.setSelectedIndex(0);
-            readtablegrupos();
+            for (int i = 0; i < tablepermissoes.getRowCount(); i++) {
+                gupd.create(idgrupo, tablepermissoes.getValueAt(i, 1).toString(), Boolean.parseBoolean(tablepermissoes.getValueAt(i, 0).toString()));
+            }
         } else {
-            GrupoDeUsuariosBean gub = new GrupoDeUsuariosBean();
-            GrupoDeUsuariosDAO gudao = new GrupoDeUsuariosDAO();
+            gd.update2(txtnomegrupo.getText(), id);
 
-            gub.setNome(txtnomegrupo.getText());
-            gub.setMenuadministracao(Boolean.valueOf(tablepermissoes.getValueAt(0, 0).toString()));
-            gub.setSubmenuusuarios(Boolean.valueOf(tablepermissoes.getValueAt(1, 0).toString()));
-            gub.setSubmenugrupodeusuarios(Boolean.valueOf(tablepermissoes.getValueAt(2, 0).toString()));
-            gub.setSubmenurepresentantes(Boolean.valueOf(tablepermissoes.getValueAt(3, 0).toString()));
-            gub.setSubmenuregioesdeatuacao(Boolean.valueOf(tablepermissoes.getValueAt(4, 0).toString()));
-            gub.setMenufiscal(Boolean.valueOf(tablepermissoes.getValueAt(5, 0).toString()));
-            gub.setSubmenunotasfiscais(Boolean.valueOf(tablepermissoes.getValueAt(6, 0).toString()));
-            gub.setSubmenunaturezadeoperacao(Boolean.valueOf(tablepermissoes.getValueAt(7, 0).toString()));
-            gub.setMenucomercial(Boolean.valueOf(tablepermissoes.getValueAt(8, 0).toString()));
-            gub.setSubmenuclientes(Boolean.valueOf(tablepermissoes.getValueAt(9, 0).toString()));
-            gub.setSubmenugrupodeclientes(Boolean.valueOf(tablepermissoes.getValueAt(10, 0).toString()));
-            gub.setSubmenufornecedores(Boolean.valueOf(tablepermissoes.getValueAt(11, 0).toString()));
-            gub.setSubmenucategoriadepreco(Boolean.valueOf(tablepermissoes.getValueAt(12, 0).toString()));
-            gub.setMenufinanceiro(Boolean.valueOf(tablepermissoes.getValueAt(13, 0).toString()));
-            gub.setSubmenucontasareceber(Boolean.valueOf(tablepermissoes.getValueAt(14, 0).toString()));
-            gub.setSubmenucontasapagar(Boolean.valueOf(tablepermissoes.getValueAt(15, 0).toString()));
-            gub.setSubmenucondicoesdepagamento(Boolean.valueOf(tablepermissoes.getValueAt(16, 0).toString()));
-            gub.setSubmenubancos(Boolean.valueOf(tablepermissoes.getValueAt(17, 0).toString()));
-            gub.setMenucompras(Boolean.valueOf(tablepermissoes.getValueAt(18, 0).toString()));
-            gub.setSubmenusolicitacaodecompras(Boolean.valueOf(tablepermissoes.getValueAt(19, 0).toString()));
-            gub.setSubmenuorcamentodecompras(Boolean.valueOf(tablepermissoes.getValueAt(20, 0).toString()));
-            gub.setSubmenupedidodecompras(Boolean.valueOf(tablepermissoes.getValueAt(21, 0).toString()));
-            gub.setSubmenuinsumos(Boolean.valueOf(tablepermissoes.getValueAt(22, 0).toString()));
-            gub.setSubmenutipodeproduto(Boolean.valueOf(tablepermissoes.getValueAt(23, 0).toString()));
-            gub.setMenulogistica(Boolean.valueOf(tablepermissoes.getValueAt(24, 0).toString()));
-            gub.setSubmenucarros(Boolean.valueOf(tablepermissoes.getValueAt(25, 0).toString()));
-            gub.setSubmenurastreamentodedocumentos(Boolean.valueOf(tablepermissoes.getValueAt(26, 0).toString()));
-            gub.setMenuqualidade(Boolean.valueOf(tablepermissoes.getValueAt(27, 0).toString()));
-            gub.setSubmenuinstrumentosdemedicao(Boolean.valueOf(tablepermissoes.getValueAt(28, 0).toString()));
-            gub.setSubmenuiqf(Boolean.valueOf(tablepermissoes.getValueAt(29, 0).toString()));
-            gub.setSubmenumedicoes(Boolean.valueOf(tablepermissoes.getValueAt(30, 0).toString()));
-            gub.setMenuvendas(Boolean.valueOf(tablepermissoes.getValueAt(31, 0).toString()));
-            gub.setSubmenuorcamentosvenda(Boolean.valueOf(tablepermissoes.getValueAt(32, 0).toString()));
-            gub.setSubmenupedidosvenda(Boolean.valueOf(tablepermissoes.getValueAt(33, 0).toString()));
-            gub.setSubmenuops(Boolean.valueOf(tablepermissoes.getValueAt(34, 0).toString()));
-            gub.setSubmenuprodutosvenda(Boolean.valueOf(tablepermissoes.getValueAt(35, 0).toString()));
-            gub.setSubmenuprocessosvenda(Boolean.valueOf(tablepermissoes.getValueAt(36, 0).toString()));
-            gub.setSubmenugrupodeprocessosvenda(Boolean.valueOf(tablepermissoes.getValueAt(37, 0).toString()));
-            gub.setMenuservicos(Boolean.valueOf(tablepermissoes.getValueAt(38, 0).toString()));
-            gub.setSubmenuorcamentosservico(Boolean.valueOf(tablepermissoes.getValueAt(39, 0).toString()));
-            gub.setSubmenupedidosservico(Boolean.valueOf(tablepermissoes.getValueAt(40, 0).toString()));
-            gub.setSubmenuoss(Boolean.valueOf(tablepermissoes.getValueAt(41, 0).toString()));
-            gub.setSubmenuprodutosservico(Boolean.valueOf(tablepermissoes.getValueAt(42, 0).toString()));
-            gub.setSubmenuprocessosservico(Boolean.valueOf(tablepermissoes.getValueAt(43, 0).toString()));
-            gub.setSubmenugrupodeprocessosservico(Boolean.valueOf(tablepermissoes.getValueAt(44, 0).toString()));
-            gub.setMenuconfiguracoes(Boolean.valueOf(tablepermissoes.getValueAt(45, 0).toString()));
-            gub.setSubmenumenus(Boolean.valueOf(tablepermissoes.getValueAt(46, 0).toString()));
-            gub.setId(Integer.parseInt(txtidgrupo.getText()));
-
-            //nome = ?, menuadministracao = ?, submenuusuarios = ?, submenugrupodeusuarios = ?, submenurepresentantes = ?, submenuregioesdeatuacao = ?, menufiscal = ?, submenunotasfiscais = ?, submenunaturezadeoperacao = ?, menucomercial = ?, submenuclientes = ?, submenugrupodeclientes = ?, submenufornecedores = ?, submenucategoriadepreco = ?, menufinanceiro = ?, submenucontasareceber = ?, submenucontasapagar = ?, submenucondicoesdepagamento = ?, submenubancos = ?, menucompras = ?, submenusolicitacaodecompras = ?, submenuorcamentodecompras = ?, submenupedidodecompras = ?, submenuinsumos = ?, submenutipodeproduto = ?, menulogistica = ?, submenucarros = ?, submenurastreamentodedocumentos = ?, menuqualidade = ?, submenuinstrumentosdemedicao = ?, submenuiqf = ?, submenumedicoes = ?, menuvendas = ?, submenuorcamentosvenda = ?, submenupedidosvenda = ?, submenuops = ?, submenuprodutosvenda = ?, submenuprocessosvenda = ?, submenugrupodeprocessosvenda = ?, menuservicos = ?, submenuorcamentosservico = ?, submenupedidosservico = ?, submenuoss = ?, submenuprodutosservico = ?, submenuprocessosservico = ?, submenugrupodeprocessosservico = ?, menuconfiguracoes = ?, submenumenus = ? WHERE id = ?
-            gudao.update(gub);
-            txtidgrupo.setText("");
-            txtnomegrupo.setText("");
-            tabgrupos.setSelectedIndex(0);
-            readtablegrupos();
+            for (int i = 0; i < tablepermissoes.getRowCount(); i++) {
+                if (tablepermissoes.getValueAt(i, 0).equals("0")) {
+                    gupd.create(id, tablepermissoes.getValueAt(i, 2).toString(), Boolean.parseBoolean(tablepermissoes.getValueAt(i, 1).toString()));
+                } else {
+                    int idpermissao = Integer.parseInt(tablepermissoes.getValueAt(i, 0).toString());
+                    gupd.update(idpermissao, Boolean.parseBoolean(tablepermissoes.getValueAt(i, 1).toString()));
+                }
+            }
         }
+        txtnomegrupo.setText("");
+        tabgrupos.setSelectedIndex(0);
+        readtablepermissoes();
+        readtablegrupos();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int i = tablepermissoes.getRowCount();
         for (int j = 0; j < i; j++) {
-            tablepermissoes.setValueAt(false, j, 0);
+            tablepermissoes.setValueAt(false, j, 1);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int i = tablepermissoes.getRowCount();
         for (int j = 0; j < i; j++) {
-            tablepermissoes.setValueAt(true, j, 0);
+            tablepermissoes.setValueAt(true, j, 1);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -485,7 +350,6 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JLabel jLabel1;
-    public javax.swing.JLabel jLabel2;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
@@ -494,7 +358,6 @@ public class GrupoDeUsuarios extends javax.swing.JInternalFrame {
     public javax.swing.JTabbedPane tabgrupos;
     public static javax.swing.JTable tablegrupos;
     public static javax.swing.JTable tablepermissoes;
-    public static javax.swing.JTextField txtidgrupo;
     public static javax.swing.JTextField txtnomegrupo;
     // End of variables declaration//GEN-END:variables
 }

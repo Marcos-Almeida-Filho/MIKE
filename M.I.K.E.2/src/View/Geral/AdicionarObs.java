@@ -10,6 +10,7 @@ import View.compras.Insumos;
 import View.compras.TiposInsumo;
 import View.vendas.VM;
 import View.vendas.VendasMateriais;
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,12 +22,35 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
     /**
      * Creates new form AdicionarObs
      */
-    
     String origem;
-    
+
     public AdicionarObs(String origin) {
         initComponents();
         origem = origin;
+    }
+
+    public void adicionar() {
+        if (txtobs.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Favor digitar uma observação.");
+            txtobs.requestFocus();
+        } else {
+            String obs = txtobs.getText();
+            switch (origem) {
+                case "TiposInsumo":
+                    Obs.AdicionarObs(TiposInsumo.tableobs, obs);
+                    break;
+                case "Insumos":
+                    Obs.AdicionarObs(Insumos.tableobs, obs);
+                    break;
+                case "VM":
+                    Obs.AdicionarObs(VM.tableobs, obs);
+                    break;
+                case "VendasMateriais":
+                    Obs.AdicionarObs(VendasMateriais.tableObs, obs);
+                    break;
+            }
+            dispose();
+        }
     }
 
     /**
@@ -53,6 +77,11 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
         jLabel1.setName("jLabel1"); // NOI18N
 
         txtobs.setName("txtobs"); // NOI18N
+        txtobs.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtobsKeyReleased(evt);
+            }
+        });
 
         jButton1.setText("Adicionar");
         jButton1.setName("jButton1"); // NOI18N
@@ -83,7 +112,7 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtobs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -101,28 +130,14 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtobs.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Favor digitar uma observação.");
-            txtobs.requestFocus();
-        } else {
-            String obs = txtobs.getText();
-            switch (origem) {
-                case "TiposInsumo":
-                    Obs.AdicionarObs(TiposInsumo.tableobs, obs);
-                    break;
-                case "Insumos":
-                    Obs.AdicionarObs(Insumos.tableobs, obs);
-                    break;
-                case "VM":
-                    Obs.AdicionarObs(VM.tableobs, obs);
-                    break;
-                case "VendasMateriais":
-                    Obs.AdicionarObs(VendasMateriais.tableObs, obs);
-                    break;
-            }
-            dispose();
-        }
+        adicionar();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtobsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtobsKeyReleased
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            adicionar();
+        }
+    }//GEN-LAST:event_txtobsKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

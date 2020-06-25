@@ -143,6 +143,12 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                 lblcheque.setVisible(false);
                 txtcheque.setVisible(false);
                 break;
+            case "Débito Automático":
+                lblbanco.setVisible(true);
+                cbbanco.setVisible(true);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
         }
     }
 
@@ -243,6 +249,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         tabledocs = new javax.swing.JTable();
 
         setClosable(true);
+        setMaximizable(true);
         setResizable(true);
         setTitle("Conta A Pagar");
 
@@ -415,7 +422,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
         jLabel12.setText("Método");
 
-        cbmetodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Boleto", "Depósito", "Transferência", "Cartão de Crédito", "Cheque", "Dinheiro" }));
+        cbmetodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Boleto", "Depósito", "Transferência", "Cartão de Crédito", "Cheque", "Dinheiro", "Débito Automático" }));
         cbmetodo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbmetodoActionPerformed(evt);

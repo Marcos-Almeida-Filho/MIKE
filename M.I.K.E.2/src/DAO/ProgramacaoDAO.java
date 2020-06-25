@@ -170,6 +170,8 @@ public class ProgramacaoDAO {
             stmt.setInt(2, pb.getId());
 
             stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null,"Iniciado com sucesso!");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
@@ -194,6 +196,8 @@ public class ProgramacaoDAO {
             stmt.setInt(2, pb.getId());
 
             stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null,"Finalizado com sucesso!");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar programação!\n" + e);
             try {

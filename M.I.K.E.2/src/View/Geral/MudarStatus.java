@@ -5,10 +5,12 @@
  */
 package View.Geral;
 
+import Bean.F_UPBean;
 import Bean.OSBean;
 import Bean.ServicoMateriaisBean;
 import Bean.ServicoMateriaisMovimentacaoBean;
 import DAO.CAPDAO;
+import DAO.F_UPDAO;
 import DAO.OSDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.ServicoMateriaisMovimentacaoDAO;
@@ -30,6 +32,10 @@ public class MudarStatus extends javax.swing.JInternalFrame {
     ServicoMateriaisBean smb = new ServicoMateriaisBean();
     ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
     ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+    OSDAO od = new OSDAO();
+    OSBean ob = new OSBean();
+    F_UPDAO fud = new F_UPDAO();
+    F_UPBean fub = new F_UPBean();
 
     int est = 0;
     int idmaterial;
@@ -96,12 +102,6 @@ public class MudarStatus extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //DAO para alteração
-        OSDAO od = new OSDAO();
-
-        //Bean para alteração
-        OSBean ob = new OSBean();
-
         switch (origem) {
             case "CAP":
                 for (int i = 0; i < ContasPagar.tablecap.getRowCount(); i++) {
@@ -116,13 +116,33 @@ public class MudarStatus extends javax.swing.JInternalFrame {
                 dispose();
                 break;
             case "OSLote":
-                for (int i = 0; i < OS.tableos.getRowCount(); i++) {
-                    if (OS.tableos.getValueAt(i, 0).equals(true)) {
-                        ob.setStatus(cbstatus.getSelectedItem().toString());
-                        ob.setIdtela(OS.tableos.getValueAt(i, 1).toString());
+                if (cbstatus.getSelectedItem().toString().equals("Fechado")) {
+                    for (int i = 0; i < OS.tableos.getRowCount(); i++) {
+                        if (OS.tableos.getValueAt(i, 0).equals(true)) {
+                            String idtela = OS.tableos.getValueAt(i, 1).toString();
+                            
+                            ob.setStatus(cbstatus.getSelectedItem().toString());
+                            ob.setIdtela(idtela);
 
-                        //SET status = ? WHERE idtela = ?
-                        od.updatestatus(ob);
+                            //SET status = ? WHERE idtela = ?
+                            od.updatestatus(ob);
+                            
+                            fub.setProcesso("Encerrado");
+                            fub.setOp(idtela);
+                            
+                            //processo = ? WHERE op = ?
+                            fud.updateProcessoByOs(fub);
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < OS.tableos.getRowCount(); i++) {
+                        if (OS.tableos.getValueAt(i, 0).equals(true)) {
+                            ob.setStatus(cbstatus.getSelectedItem().toString());
+                            ob.setIdtela(OS.tableos.getValueAt(i, 1).toString());
+
+                            //SET status = ? WHERE idtela = ?
+                            od.updatestatus(ob);
+                        }
                     }
                 }
                 OS.reados();
@@ -138,23 +158,23 @@ public class MudarStatus extends javax.swing.JInternalFrame {
                 if (cbstatus.getSelectedItem().toString().equals("Fechado")) {
 ////////////////////Descobrir ID do material
                     String codigo = OS.txtcodigo.getText();
-                    
+
                     smd.readid(codigo).forEach(smb -> {
                         idmaterial = smb.getId();
                     });
-                    
+
 ////////////////////Criar estoque novo
                     int qtdfinal = Integer.parseInt(OS.txtfinal.getText());
                     smd.readestoque(idmaterial).forEach(smb -> {
                         est = smb.getEstoque();
                     });
-                    
+
                     smb.setEstoque(est + qtdfinal);
                     smb.setId(idmaterial);
-                    
+
                     //estoque = ? WHERE id = ?
                     smd.updateestoque(smb);
-                    
+
 ////////////////////Criar Movimentação
                     smmb.setIdmaterial(idmaterial);
                     smmb.setInicial(est);

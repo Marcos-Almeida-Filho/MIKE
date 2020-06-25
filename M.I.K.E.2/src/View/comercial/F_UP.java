@@ -8,8 +8,14 @@ package View.comercial;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
 import Methods.Dates;
+import Methods.ExcelMethods;
 import Methods.Telas;
 import Methods.Valores;
+import View.financeiro.ContasPagar;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -83,6 +89,8 @@ public class F_UP extends javax.swing.JInternalFrame {
                 data
             });
         });
+        
+        OPF_UP.btnAlterarProcesso();
     }
 
     public static void readprocesso() {
@@ -129,11 +137,28 @@ public class F_UP extends javax.swing.JInternalFrame {
 
     public static void readops() {
         DefaultTableModel model = (DefaultTableModel) tablefup.getModel();
+        model.setNumRows(0);
 
         String processo = cbfiltro.getSelectedItem().toString();
 
         if (txtpesquisa.getText().equals("")) {
             switch (processo) {
+                case "Em Aberto":
+                    model.setNumRows(0);
+                    
+                    fud.readtableplanejamento().forEach(fub -> {
+                        model.addRow(new Object[]{
+                            fub.getId(),
+                            fub.getDav(),
+                            fub.getMaterial(),
+                            Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
+                            fub.getOp(),
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
+                        });
+                    });
+                    break;
                 case "Todos":
                     model.setNumRows(0);
 
@@ -155,11 +180,28 @@ public class F_UP extends javax.swing.JInternalFrame {
                     break;
             }
         } else {
+            String pesquisa = txtpesquisa.getText();
             switch (processo) {
+                case "Em Aberto":
+                    model.setNumRows(0);
+                    
+                    fud.readtableplanejamentoepesquisa(pesquisa).forEach(fub -> {
+                        model.addRow(new Object[]{
+                            fub.getId(),
+                            fub.getDav(),
+                            fub.getMaterial(),
+                            Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
+                            fub.getOp(),
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
+                        });
+                    });
+                    break;
                 case "Todos":
                     model.setNumRows(0);
 
-                    fud.readtableepesquisa(txtpesquisa.getText()).forEach(fub -> {
+                    fud.readtableepesquisa(pesquisa).forEach(fub -> {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
@@ -196,6 +238,7 @@ public class F_UP extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         txtpesquisa = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Follow Up");
@@ -207,7 +250,7 @@ public class F_UP extends javax.swing.JInternalFrame {
         jPanel2.setName("jPanel2"); // NOI18N
 
         cbfiltro.setMaximumRowCount(10);
-        cbfiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Rascunho", "Corte", "Para Canulação", "Em Canulação", "Para Retífica", "Em Retífica", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC", "Para Revestimento", "Em Revestimento", "Terceiros", "Gravação", "Inspeção", "Etiquetagem", "Faturamento", "Encerrado" }));
+        cbfiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Todos", "Rascunho", "Separação de Material", "Corte", "Para Canulação", "Em Canulação", "Para Retífica", "Em Retífica", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC", "Para Revestimento", "Em Revestimento", "Terceiros", "Gravação", "Inspeção", "Etiquetagem", "Faturamento", "Encerrado" }));
         cbfiltro.setName("cbfiltro"); // NOI18N
         cbfiltro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -255,15 +298,15 @@ public class F_UP extends javax.swing.JInternalFrame {
             tablefup.getColumnModel().getColumn(0).setMinWidth(0);
             tablefup.getColumnModel().getColumn(0).setPreferredWidth(0);
             tablefup.getColumnModel().getColumn(0).setMaxWidth(0);
-            tablefup.getColumnModel().getColumn(1).setMinWidth(70);
-            tablefup.getColumnModel().getColumn(1).setPreferredWidth(70);
-            tablefup.getColumnModel().getColumn(1).setMaxWidth(70);
+            tablefup.getColumnModel().getColumn(1).setMinWidth(80);
+            tablefup.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tablefup.getColumnModel().getColumn(1).setMaxWidth(80);
             tablefup.getColumnModel().getColumn(3).setMinWidth(100);
             tablefup.getColumnModel().getColumn(3).setPreferredWidth(100);
             tablefup.getColumnModel().getColumn(3).setMaxWidth(100);
-            tablefup.getColumnModel().getColumn(4).setMinWidth(60);
-            tablefup.getColumnModel().getColumn(4).setPreferredWidth(60);
-            tablefup.getColumnModel().getColumn(4).setMaxWidth(60);
+            tablefup.getColumnModel().getColumn(4).setMinWidth(80);
+            tablefup.getColumnModel().getColumn(4).setPreferredWidth(80);
+            tablefup.getColumnModel().getColumn(4).setMaxWidth(80);
             tablefup.getColumnModel().getColumn(5).setMinWidth(45);
             tablefup.getColumnModel().getColumn(5).setPreferredWidth(45);
             tablefup.getColumnModel().getColumn(5).setMaxWidth(45);
@@ -298,6 +341,14 @@ public class F_UP extends javax.swing.JInternalFrame {
             .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
+        jButton2.setText("Exportar para Excel");
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -308,6 +359,8 @@ public class F_UP extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1041, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -325,7 +378,9 @@ public class F_UP extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -355,45 +410,27 @@ public class F_UP extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tablefupMouseClicked
 
     private void cbfiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfiltroActionPerformed
-        txtpesquisa.setText("");
+        //txtpesquisa.setText("");
         readops();
     }//GEN-LAST:event_cbfiltroActionPerformed
 
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
-        String pesquisa = txtpesquisa.getText();
-
-        DefaultTableModel model = (DefaultTableModel) tablefup.getModel();
-
-        model.setNumRows(0);
-
-        if (cbfiltro.getSelectedIndex() == 0) {
-            fud.readtableepesquisa(pesquisa).forEach(fub -> {
-                model.addRow(new Object[]{
-                    fub.getId(),
-                    fub.getDav(),
-                    fub.getMaterial(),
-                    Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
-                    fub.getOp(),
-                    fub.getProcesso()
-                });
-            });
-        } else {
-            fud.readtableporprocessoepesquisa(cbfiltro.getSelectedItem().toString(), pesquisa).forEach(fub -> {
-                model.addRow(new Object[]{
-                    fub.getId(),
-                    fub.getMaterial(),
-                    Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
-                    fub.getOp(),
-                    fub.getProcesso()
-                });
-            });
-        }
+        readops();
     }//GEN-LAST:event_txtpesquisaKeyReleased
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            ExcelMethods.exportTable(tablefup, new File("/f-up.xls"), 1);
+        } catch (IOException ex) {
+            Logger.getLogger(ContasPagar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JComboBox<String> cbfiltro;
     public javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton2;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;

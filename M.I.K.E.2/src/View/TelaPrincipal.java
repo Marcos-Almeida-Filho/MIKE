@@ -7,7 +7,7 @@ package View;
 
 import Bean.UsuariosBean;
 import Connection.Session;
-import DAO.GrupoDeUsuariosDAO;
+import DAO.GrupoDeUsuariosPermDAO;
 import DAO.UsuariosDAO;
 import View.comercial.Clientes;
 import View.administracao.Usuarios;
@@ -26,7 +26,6 @@ import View.comercial.Fornecedores;
 import View.compras.ComprasSolicitacao;
 import View.compras.Insumos;
 import View.compras.TiposInsumo;
-import View.configuracoes.Menus;
 import View.financeiro.Bancos;
 import View.financeiro.CondicoesDePagamento;
 import View.financeiro.ContasPagar;
@@ -41,10 +40,12 @@ import View.servicos.ProcessosServico;
 import View.TI.Senhas;
 import View.arquivo.ProgramacaoMIKE;
 import View.comercial.PlanejamentoFaturamento;
+import View.configuracoes.Menus;
 import View.financeiro.Cartoes;
 import View.financeiro.Extratos;
 import View.fiscal.NotasFiscais;
-import View.servicos.OS1;
+import View.logistica.LocaisArmazenagem;
+import View.vendas.CotacaoVenda;
 import View.vendas.VendasMateriais;
 import View.vendas.ProcessosVendas;
 import java.awt.Toolkit;
@@ -82,48 +83,60 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             //Setar nível do acesso
             Session.nivel = ub.getNivel();
         });
-        GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
-//        TelaPrincipal.menuarquivo.setVisible(false);
-        gud.getmenus(Session.nivel).forEach(gub -> {
-            TelaPrincipal.menuadministracao.setVisible(gub.isMenuadministracao());
-            TelaPrincipal.menuitemusuarios.setVisible(gub.isSubmenuusuarios());
-            TelaPrincipal.menuitemgrupodeusuarios.setVisible(gub.isSubmenugrupodeusuarios());
-            TelaPrincipal.menuitemrepresentantes.setVisible(gub.isSubmenurepresentantes());
-            TelaPrincipal.menuitemregioesdeatuacao.setVisible(gub.isSubmenuregioesdeatuacao());
-            TelaPrincipal.menucomercial.setVisible(gub.isMenucomercial());
-            TelaPrincipal.menuitemclientes.setVisible(gub.isSubmenuclientes());
-            TelaPrincipal.menuitemgrupodeclientes.setVisible(gub.isSubmenugrupodeclientes());
-            TelaPrincipal.menuitemfornecedores.setVisible(gub.isSubmenufornecedores());
-            TelaPrincipal.menufinanceiro.setVisible(gub.isMenufinanceiro());
-            TelaPrincipal.menuitemcontasareceber.setVisible(gub.isSubmenucontasareceber());
-            TelaPrincipal.menuitemcontasapagar.setVisible(gub.isSubmenucontasapagar());
-            TelaPrincipal.menuitemcondicoesdepagamento.setVisible(gub.isSubmenucondicoesdepagamento());
-            TelaPrincipal.menuitembancos.setVisible(gub.isSubmenubancos());
-            TelaPrincipal.menucompras.setVisible(gub.isMenucompras());
-            TelaPrincipal.menuitemsolicitacaodecompras.setVisible(gub.isSubmenusolicitacaodecompras());
-            TelaPrincipal.menuitemorcamentodecompras.setVisible(gub.isSubmenuorcamentodecompras());
-            TelaPrincipal.menuitempedidodecompras.setVisible(gub.isSubmenupedidodecompras());
-            TelaPrincipal.menuiteminsumos.setVisible(gub.isSubmenuinsumos());
-            TelaPrincipal.menulogistica.setVisible(gub.isMenulogistica());
-            TelaPrincipal.menuitemcarros.setVisible(gub.isSubmenucarros());
-            TelaPrincipal.menuqualidade.setVisible(gub.isMenuqualidade());
-            TelaPrincipal.menuiteminstrumentosmedicao.setVisible(gub.isSubmenuinstrumentosdemedicao());
-            TelaPrincipal.menuvendas.setVisible(gub.isMenuvendas());
-            TelaPrincipal.menuitemvendasorcamentos.setVisible(gub.isSubmenuorcamentosvenda());
-            TelaPrincipal.menuitemvendaspedidos.setVisible(gub.isSubmenupedidosvenda());
-            TelaPrincipal.menuitemvendasops.setVisible(gub.isSubmenuops());
-            TelaPrincipal.menuitemvendasprodutos.setVisible(gub.isSubmenuprodutosvenda());
-            TelaPrincipal.menuitemvendasprocessos.setVisible(gub.isSubmenuprocessosvenda());
-            TelaPrincipal.menuservicos.setVisible(gub.isMenuservicos());
-            TelaPrincipal.menuitemservicosorcamentos.setVisible(gub.isSubmenuorcamentosservico());
-            TelaPrincipal.menuitemservicospedidos.setVisible(gub.isSubmenupedidosservico());
-            TelaPrincipal.menuitemservicososs.setVisible(gub.isSubmenuoss());
-            TelaPrincipal.menuitemservicosprodutos.setVisible(gub.isSubmenuprodutosservico());
-            TelaPrincipal.menuitemservicosproccessos.setVisible(gub.isSubmenuprocessosservico());
-            TelaPrincipal.menuitemservicosgrupodeprocessos.setVisible(gub.isSubmenugrupodeprocessosservico());
-            TelaPrincipal.menuconfiguracoes.setVisible(gub.isMenuconfiguracoes());
-            TelaPrincipal.menuitemmenus.setVisible(gub.isSubmenumenus());
-        });
+//        GrupoDeUsuariosDAO gud = new GrupoDeUsuariosDAO();
+////        TelaPrincipal.menuarquivo.setVisible(false);
+//        gud.getmenus(Session.nivel).forEach(gub -> {
+//            TelaPrincipal.menu_adm.setVisible(gub.isMenuadministracao());
+//            TelaPrincipal.item_usuarios.setVisible(gub.isSubmenuusuarios());
+//            TelaPrincipal.item_grupo_usuarios.setVisible(gub.isSubmenugrupodeusuarios());
+//            TelaPrincipal.item_representantes.setVisible(gub.isSubmenurepresentantes());
+//            TelaPrincipal.item_regioes_atuacao.setVisible(gub.isSubmenuregioesdeatuacao());
+//            TelaPrincipal.menu_comercial.setVisible(gub.isMenucomercial());
+//            TelaPrincipal.item_clientes.setVisible(gub.isSubmenuclientes());
+//            TelaPrincipal.item_grupo_clientes.setVisible(gub.isSubmenugrupodeclientes());
+//            TelaPrincipal.item_fornecedores.setVisible(gub.isSubmenufornecedores());
+//            TelaPrincipal.menu_financeiro.setVisible(gub.isMenufinanceiro());
+//            TelaPrincipal.item_car.setVisible(gub.isSubmenucontasareceber());
+//            TelaPrincipal.item_cap.setVisible(gub.isSubmenucontasapagar());
+//            TelaPrincipal.item_condicoes_pagamento.setVisible(gub.isSubmenucondicoesdepagamento());
+//            TelaPrincipal.item_bancos.setVisible(gub.isSubmenubancos());
+//            TelaPrincipal.menu_compras.setVisible(gub.isMenucompras());
+//            TelaPrincipal.item_solicitacao_compras.setVisible(gub.isSubmenusolicitacaodecompras());
+//            TelaPrincipal.item_orcamento_compras.setVisible(gub.isSubmenuorcamentodecompras());
+//            TelaPrincipal.item_pedido_compras.setVisible(gub.isSubmenupedidodecompras());
+//            TelaPrincipal.item_insumos_compras.setVisible(gub.isSubmenuinsumos());
+//            TelaPrincipal.menu_logistica.setVisible(gub.isMenulogistica());
+//            TelaPrincipal.item_carros.setVisible(gub.isSubmenucarros());
+//            TelaPrincipal.menu_qualidade.setVisible(gub.isMenuqualidade());
+//            TelaPrincipal.item_inst_med.setVisible(gub.isSubmenuinstrumentosdemedicao());
+//            TelaPrincipal.menu_vendas.setVisible(gub.isMenuvendas());
+//            TelaPrincipal.item_vendas_cotacoes.setVisible(gub.isSubmenuorcamentosvenda());
+//            TelaPrincipal.item_vendas_pedido.setVisible(gub.isSubmenupedidosvenda());
+//            TelaPrincipal.item_ops.setVisible(gub.isSubmenuops());
+//            TelaPrincipal.item_vendas_produtos.setVisible(gub.isSubmenuprodutosvenda());
+//            TelaPrincipal.item_vendas_processos.setVisible(gub.isSubmenuprocessosvenda());
+//            TelaPrincipal.menu_servicos.setVisible(gub.isMenuservicos());
+//            TelaPrincipal.item_servicos_cotacoes.setVisible(gub.isSubmenuorcamentosservico());
+//            TelaPrincipal.item_servicos_pedido.setVisible(gub.isSubmenupedidosservico());
+//            TelaPrincipal.item_oss.setVisible(gub.isSubmenuoss());
+//            TelaPrincipal.item_servicos_produtos.setVisible(gub.isSubmenuprodutosservico());
+//            TelaPrincipal.item_servicos_processo.setVisible(gub.isSubmenuprocessosservico());
+//            TelaPrincipal.item_servicos_grupo_processo.setVisible(gub.isSubmenugrupodeprocessosservico());
+//            TelaPrincipal.menu_configuracoes.setVisible(gub.isMenuconfiguracoes());
+//            TelaPrincipal.item_menus.setVisible(gub.isSubmenumenus());
+//        });
+        GrupoDeUsuariosPermDAO gupd = new GrupoDeUsuariosPermDAO();
+        
+        int menu = TelaPrincipal.jMenuBar1.getMenuCount();
+        for (int i = 0; i < menu; i++) {
+            String menuname = TelaPrincipal.jMenuBar1.getMenu(i).getName();
+            TelaPrincipal.jMenuBar1.getMenu(i).setVisible(gupd.readPerm(Session.idnivel, menuname));
+            int sub = TelaPrincipal.jMenuBar1.getMenu(i).getItemCount();
+            for (int j = 0; j < sub; j++) {
+                String subname = TelaPrincipal.jMenuBar1.getMenu(i).getItem(j).getName();
+                TelaPrincipal.jMenuBar1.getMenu(i).getItem(j).setVisible(gupd.readPerm(Session.idnivel, subname));
+            }
+        }
     }
 
     /**
@@ -140,75 +153,76 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lblnome = new javax.swing.JLabel();
         btntestemenus = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        menuarquivo = new javax.swing.JMenu();
-        menuitememail = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem17 = new javax.swing.JMenuItem();
-        menuitemsair = new javax.swing.JMenuItem();
-        menuadministracao = new javax.swing.JMenu();
-        menuitemusuarios = new javax.swing.JMenuItem();
-        menuitemgrupodeusuarios = new javax.swing.JMenuItem();
-        menuitemrepresentantes = new javax.swing.JMenuItem();
-        menuitemregioesdeatuacao = new javax.swing.JMenuItem();
-        menufiscal = new javax.swing.JMenu();
-        menuitemnotasfiscais = new javax.swing.JMenuItem();
-        menuitemnatureza = new javax.swing.JMenuItem();
-        menucomercial = new javax.swing.JMenu();
-        menuitemclientes = new javax.swing.JMenuItem();
-        menuitemgrupodeclientes = new javax.swing.JMenuItem();
-        menuitemfornecedores = new javax.swing.JMenuItem();
-        menuitemcategoriapreco = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem15 = new javax.swing.JMenuItem();
-        menufinanceiro = new javax.swing.JMenu();
-        menuitemcontasareceber = new javax.swing.JMenuItem();
-        menuitemcontasapagar = new javax.swing.JMenuItem();
-        menuitemcondicoesdepagamento = new javax.swing.JMenuItem();
-        menuitembancos = new javax.swing.JMenuItem();
-        jMenuItem12 = new javax.swing.JMenuItem();
-        jMenuItem13 = new javax.swing.JMenuItem();
-        jMenuItem14 = new javax.swing.JMenuItem();
-        menucompras = new javax.swing.JMenu();
-        menuitemsolicitacaodecompras = new javax.swing.JMenuItem();
-        menuitemorcamentodecompras = new javax.swing.JMenuItem();
-        menuitempedidodecompras = new javax.swing.JMenuItem();
-        menuiteminsumos = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        menulogistica = new javax.swing.JMenu();
-        menuitemcarros = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        menuqualidade = new javax.swing.JMenu();
-        menuiteminstrumentosmedicao = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem9 = new javax.swing.JMenuItem();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        menuvendas = new javax.swing.JMenu();
-        menuitemvendasorcamentos = new javax.swing.JMenuItem();
-        menuitemvendaspedidos = new javax.swing.JMenuItem();
-        menuitemvendasops = new javax.swing.JMenuItem();
-        menuitemvendasprodutos = new javax.swing.JMenuItem();
-        menuitemvendasprocessos = new javax.swing.JMenuItem();
-        menuservicos = new javax.swing.JMenu();
-        menuitemservicosorcamentos = new javax.swing.JMenuItem();
-        menuitemservicospedidos = new javax.swing.JMenuItem();
-        menuitemservicososs = new javax.swing.JMenuItem();
-        menuitemservicosprodutos = new javax.swing.JMenuItem();
-        menuitemservicosproccessos = new javax.swing.JMenuItem();
-        menuitemservicosgrupodeprocessos = new javax.swing.JMenuItem();
-        jMenuItem16 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        jMenuItem11 = new javax.swing.JMenuItem();
-        menuconfiguracoes = new javax.swing.JMenu();
-        menuitemmenus = new javax.swing.JMenuItem();
-        menuajuda = new javax.swing.JMenu();
-        menuitemmike = new javax.swing.JMenuItem();
-        menuitemsobre = new javax.swing.JMenuItem();
+        menu_arquivo = new javax.swing.JMenu();
+        item_email = new javax.swing.JMenuItem();
+        item_protocolos = new javax.swing.JMenuItem();
+        item_prog_mike = new javax.swing.JMenuItem();
+        item_sair = new javax.swing.JMenuItem();
+        menu_adm = new javax.swing.JMenu();
+        item_usuarios = new javax.swing.JMenuItem();
+        item_grupo_usuarios = new javax.swing.JMenuItem();
+        item_representantes = new javax.swing.JMenuItem();
+        item_regioes_atuacao = new javax.swing.JMenuItem();
+        menu_fiscal = new javax.swing.JMenu();
+        item_nf = new javax.swing.JMenuItem();
+        item_natureza = new javax.swing.JMenuItem();
+        menu_comercial = new javax.swing.JMenu();
+        item_clientes = new javax.swing.JMenuItem();
+        item_grupo_clientes = new javax.swing.JMenuItem();
+        item_fornecedores = new javax.swing.JMenuItem();
+        item_categoria_preco = new javax.swing.JMenuItem();
+        item_f_up = new javax.swing.JMenuItem();
+        item_planejamento = new javax.swing.JMenuItem();
+        menu_financeiro = new javax.swing.JMenu();
+        item_car = new javax.swing.JMenuItem();
+        item_cap = new javax.swing.JMenuItem();
+        item_condicoes_pagamento = new javax.swing.JMenuItem();
+        item_bancos = new javax.swing.JMenuItem();
+        item_extratos = new javax.swing.JMenuItem();
+        item_conciliacao = new javax.swing.JMenuItem();
+        item_cartoes = new javax.swing.JMenuItem();
+        menu_compras = new javax.swing.JMenu();
+        item_solicitacao_compras = new javax.swing.JMenuItem();
+        item_orcamento_compras = new javax.swing.JMenuItem();
+        item_pedido_compras = new javax.swing.JMenuItem();
+        item_insumos_compras = new javax.swing.JMenuItem();
+        item_tipo_insumos = new javax.swing.JMenuItem();
+        menu_logistica = new javax.swing.JMenu();
+        item_carros = new javax.swing.JMenuItem();
+        item_rastreamento = new javax.swing.JMenuItem();
+        item_unidades = new javax.swing.JMenuItem();
+        item_locais = new javax.swing.JMenuItem();
+        menu_ti = new javax.swing.JMenu();
+        item_senhas = new javax.swing.JMenuItem();
+        menu_qualidade = new javax.swing.JMenu();
+        item_inst_med = new javax.swing.JMenuItem();
+        item_iqf = new javax.swing.JMenuItem();
+        item_medicoes = new javax.swing.JMenuItem();
+        menu_rh = new javax.swing.JMenu();
+        item_form = new javax.swing.JMenu();
+        item_solic_hora_extra = new javax.swing.JMenuItem();
+        item_atraso = new javax.swing.JMenuItem();
+        menu_vendas = new javax.swing.JMenu();
+        item_vendas_cotacoes = new javax.swing.JMenuItem();
+        item_vendas_pedido = new javax.swing.JMenuItem();
+        item_ops = new javax.swing.JMenuItem();
+        item_vendas_produtos = new javax.swing.JMenuItem();
+        item_vendas_processos = new javax.swing.JMenuItem();
+        menu_servicos = new javax.swing.JMenu();
+        item_servicos_cotacoes = new javax.swing.JMenuItem();
+        item_servicos_pedido = new javax.swing.JMenuItem();
+        item_oss = new javax.swing.JMenuItem();
+        item_servicos_produtos = new javax.swing.JMenuItem();
+        item_servicos_processo = new javax.swing.JMenuItem();
+        item_servicos_grupo_processo = new javax.swing.JMenuItem();
+        menu_terceiros = new javax.swing.JMenu();
+        item_ots = new javax.swing.JMenuItem();
+        menu_configuracoes = new javax.swing.JMenu();
+        item_menus = new javax.swing.JMenuItem();
+        menu_ajuda = new javax.swing.JMenu();
+        item_trocar_senha = new javax.swing.JMenuItem();
+        item_mike = new javax.swing.JMenuItem();
+        item_sobre = new javax.swing.JMenuItem();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -246,7 +260,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 1160, Short.MAX_VALUE)
+            .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
                 .addContainerGap(540, Short.MAX_VALUE)
                 .addComponent(btntestemenus)
@@ -262,569 +276,602 @@ public final class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap(267, Short.MAX_VALUE))
         );
 
-        menuarquivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
-        menuarquivo.setText("Arquivo");
-        menuarquivo.setName("menuarquivo"); // NOI18N
+        menu_arquivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
+        menu_arquivo.setText("Arquivo");
+        menu_arquivo.setName("menu_arquivo"); // NOI18N
 
-        menuitememail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/email.png"))); // NOI18N
-        menuitememail.setText("Email");
-        menuitememail.setName("menuitememail"); // NOI18N
-        menuitememail.addActionListener(new java.awt.event.ActionListener() {
+        item_email.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/email.png"))); // NOI18N
+        item_email.setText("Email");
+        item_email.setName("item_email"); // NOI18N
+        item_email.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitememailActionPerformed(evt);
+                item_emailActionPerformed(evt);
             }
         });
-        menuarquivo.add(menuitememail);
+        menu_arquivo.add(item_email);
 
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/text_list_bullets.png"))); // NOI18N
-        jMenuItem5.setText("Protocolos de Atendimento");
-        menuarquivo.add(jMenuItem5);
+        item_protocolos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/text_list_bullets.png"))); // NOI18N
+        item_protocolos.setText("Protocolos de Atendimento");
+        item_protocolos.setName("item_protocolos"); // NOI18N
+        menu_arquivo.add(item_protocolos);
 
-        jMenuItem17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/bricks.png"))); // NOI18N
-        jMenuItem17.setText("Programação MIKE");
-        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+        item_prog_mike.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/bricks.png"))); // NOI18N
+        item_prog_mike.setText("Programação MIKE");
+        item_prog_mike.setName("item_prog_mike"); // NOI18N
+        item_prog_mike.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem17ActionPerformed(evt);
+                item_prog_mikeActionPerformed(evt);
             }
         });
-        menuarquivo.add(jMenuItem17);
+        menu_arquivo.add(item_prog_mike);
 
-        menuitemsair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/door_out.png"))); // NOI18N
-        menuitemsair.setText("Sair");
-        menuitemsair.setName("menuitemsair"); // NOI18N
-        menuitemsair.addActionListener(new java.awt.event.ActionListener() {
+        item_sair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/door_out.png"))); // NOI18N
+        item_sair.setText("Sair");
+        item_sair.setName("item_sair"); // NOI18N
+        item_sair.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemsairActionPerformed(evt);
+                item_sairActionPerformed(evt);
             }
         });
-        menuarquivo.add(menuitemsair);
+        menu_arquivo.add(item_sair);
 
-        jMenuBar1.add(menuarquivo);
+        jMenuBar1.add(menu_arquivo);
 
-        menuadministracao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user_gray.png"))); // NOI18N
-        menuadministracao.setText("Administração");
-        menuadministracao.setName("menuadministracao"); // NOI18N
+        menu_adm.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user_gray.png"))); // NOI18N
+        menu_adm.setText("Administração");
+        menu_adm.setName("menu_adm"); // NOI18N
 
-        menuitemusuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user.png"))); // NOI18N
-        menuitemusuarios.setText("Usuários");
-        menuitemusuarios.setName("menuitemusuarios"); // NOI18N
-        menuitemusuarios.addActionListener(new java.awt.event.ActionListener() {
+        item_usuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/user.png"))); // NOI18N
+        item_usuarios.setText("Usuários");
+        item_usuarios.setName("item_usuarios"); // NOI18N
+        item_usuarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemusuariosActionPerformed(evt);
+                item_usuariosActionPerformed(evt);
             }
         });
-        menuadministracao.add(menuitemusuarios);
+        menu_adm.add(item_usuarios);
 
-        menuitemgrupodeusuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group.png"))); // NOI18N
-        menuitemgrupodeusuarios.setText("Grupo de Usuários");
-        menuitemgrupodeusuarios.setName("menuitemgrupodeusuarios"); // NOI18N
-        menuitemgrupodeusuarios.addActionListener(new java.awt.event.ActionListener() {
+        item_grupo_usuarios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group.png"))); // NOI18N
+        item_grupo_usuarios.setText("Grupo de Usuários");
+        item_grupo_usuarios.setName("item_grupo_usuarios"); // NOI18N
+        item_grupo_usuarios.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemgrupodeusuariosActionPerformed(evt);
+                item_grupo_usuariosActionPerformed(evt);
             }
         });
-        menuadministracao.add(menuitemgrupodeusuarios);
+        menu_adm.add(item_grupo_usuarios);
 
-        menuitemrepresentantes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group_go.png"))); // NOI18N
-        menuitemrepresentantes.setText("Representantes");
-        menuitemrepresentantes.setName("menuitemrepresentantes"); // NOI18N
-        menuitemrepresentantes.addActionListener(new java.awt.event.ActionListener() {
+        item_representantes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group_go.png"))); // NOI18N
+        item_representantes.setText("Representantes");
+        item_representantes.setName("item_representantes"); // NOI18N
+        item_representantes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemrepresentantesActionPerformed(evt);
+                item_representantesActionPerformed(evt);
             }
         });
-        menuadministracao.add(menuitemrepresentantes);
+        menu_adm.add(item_representantes);
 
-        menuitemregioesdeatuacao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/map.png"))); // NOI18N
-        menuitemregioesdeatuacao.setText("Regiões de Atuação");
-        menuitemregioesdeatuacao.setName("menuitemregioesdeatuacao"); // NOI18N
-        menuitemregioesdeatuacao.addActionListener(new java.awt.event.ActionListener() {
+        item_regioes_atuacao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/map.png"))); // NOI18N
+        item_regioes_atuacao.setText("Regiões de Atuação");
+        item_regioes_atuacao.setName("item_regioes_atuacao"); // NOI18N
+        item_regioes_atuacao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemregioesdeatuacaoActionPerformed(evt);
+                item_regioes_atuacaoActionPerformed(evt);
             }
         });
-        menuadministracao.add(menuitemregioesdeatuacao);
+        menu_adm.add(item_regioes_atuacao);
 
-        jMenuBar1.add(menuadministracao);
+        jMenuBar1.add(menu_adm);
 
-        menufiscal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
-        menufiscal.setText("Fiscal");
-        menufiscal.setName("menufiscal"); // NOI18N
+        menu_fiscal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
+        menu_fiscal.setText("Fiscal");
+        menu_fiscal.setName("menu_fiscal"); // NOI18N
 
-        menuitemnotasfiscais.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_refresh.png"))); // NOI18N
-        menuitemnotasfiscais.setText("Notas Fiscais");
-        menuitemnotasfiscais.setName("menuitemnotasfiscais"); // NOI18N
-        menuitemnotasfiscais.addActionListener(new java.awt.event.ActionListener() {
+        item_nf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_refresh.png"))); // NOI18N
+        item_nf.setText("Notas Fiscais");
+        item_nf.setName("item_nf"); // NOI18N
+        item_nf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemnotasfiscaisActionPerformed(evt);
+                item_nfActionPerformed(evt);
             }
         });
-        menufiscal.add(menuitemnotasfiscais);
+        menu_fiscal.add(item_nf);
 
-        menuitemnatureza.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_gear.png"))); // NOI18N
-        menuitemnatureza.setText("Natureza de Operação");
-        menuitemnatureza.setName("menuitemnatureza"); // NOI18N
-        menuitemnatureza.addActionListener(new java.awt.event.ActionListener() {
+        item_natureza.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_gear.png"))); // NOI18N
+        item_natureza.setText("Natureza de Operação");
+        item_natureza.setName("item_natureza"); // NOI18N
+        item_natureza.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemnaturezaActionPerformed(evt);
+                item_naturezaActionPerformed(evt);
             }
         });
-        menufiscal.add(menuitemnatureza);
+        menu_fiscal.add(item_natureza);
 
-        jMenuBar1.add(menufiscal);
+        jMenuBar1.add(menu_fiscal);
 
-        menucomercial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/phone.png"))); // NOI18N
-        menucomercial.setText("Comercial");
-        menucomercial.setName("menucomercial"); // NOI18N
+        menu_comercial.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/phone.png"))); // NOI18N
+        menu_comercial.setText("Comercial");
+        menu_comercial.setName("menu_comercial"); // NOI18N
 
-        menuitemclientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group.png"))); // NOI18N
-        menuitemclientes.setText("Clientes");
-        menuitemclientes.setName("menuitemclientes"); // NOI18N
-        menuitemclientes.addActionListener(new java.awt.event.ActionListener() {
+        item_clientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group.png"))); // NOI18N
+        item_clientes.setText("Clientes");
+        item_clientes.setName("item_clientes"); // NOI18N
+        item_clientes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemclientesActionPerformed(evt);
+                item_clientesActionPerformed(evt);
             }
         });
-        menucomercial.add(menuitemclientes);
+        menu_comercial.add(item_clientes);
 
-        menuitemgrupodeclientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group_add.png"))); // NOI18N
-        menuitemgrupodeclientes.setText("Grupo de Clientes");
-        menuitemgrupodeclientes.setName("menuitemgrupodeclientes"); // NOI18N
-        menucomercial.add(menuitemgrupodeclientes);
+        item_grupo_clientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group_add.png"))); // NOI18N
+        item_grupo_clientes.setText("Grupo de Clientes");
+        item_grupo_clientes.setName("item_grupo_clientes"); // NOI18N
+        menu_comercial.add(item_grupo_clientes);
 
-        menuitemfornecedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry.png"))); // NOI18N
-        menuitemfornecedores.setText("Fornecedores");
-        menuitemfornecedores.setName("menuitemfornecedores"); // NOI18N
-        menuitemfornecedores.addActionListener(new java.awt.event.ActionListener() {
+        item_fornecedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry.png"))); // NOI18N
+        item_fornecedores.setText("Fornecedores");
+        item_fornecedores.setName("item_fornecedores"); // NOI18N
+        item_fornecedores.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemfornecedoresActionPerformed(evt);
+                item_fornecedoresActionPerformed(evt);
             }
         });
-        menucomercial.add(menuitemfornecedores);
+        menu_comercial.add(item_fornecedores);
 
-        menuitemcategoriapreco.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/chart_line.png"))); // NOI18N
-        menuitemcategoriapreco.setText("Categorias de Preço");
-        menuitemcategoriapreco.addActionListener(new java.awt.event.ActionListener() {
+        item_categoria_preco.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/chart_line.png"))); // NOI18N
+        item_categoria_preco.setText("Categorias de Preço");
+        item_categoria_preco.setName("item_categoria_preco"); // NOI18N
+        item_categoria_preco.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemcategoriaprecoActionPerformed(evt);
+                item_categoria_precoActionPerformed(evt);
             }
         });
-        menucomercial.add(menuitemcategoriapreco);
+        menu_comercial.add(item_categoria_preco);
 
-        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/arrow_branch.png"))); // NOI18N
-        jMenuItem2.setText("Follow Up");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        item_f_up.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/arrow_branch.png"))); // NOI18N
+        item_f_up.setText("Follow Up");
+        item_f_up.setName("item_f_up"); // NOI18N
+        item_f_up.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                item_f_upActionPerformed(evt);
             }
         });
-        menucomercial.add(jMenuItem2);
+        menu_comercial.add(item_f_up);
 
-        jMenuItem15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/calendar_edit.png"))); // NOI18N
-        jMenuItem15.setText("Planejamento De Faturamento");
-        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+        item_planejamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/calendar_edit.png"))); // NOI18N
+        item_planejamento.setText("Planejamento De Faturamento");
+        item_planejamento.setName("item_planejamento"); // NOI18N
+        item_planejamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem15ActionPerformed(evt);
+                item_planejamentoActionPerformed(evt);
             }
         });
-        menucomercial.add(jMenuItem15);
+        menu_comercial.add(item_planejamento);
 
-        jMenuBar1.add(menucomercial);
+        jMenuBar1.add(menu_comercial);
 
-        menufinanceiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money.png"))); // NOI18N
-        menufinanceiro.setText("Financeiro");
-        menufinanceiro.setName("menufinanceiro"); // NOI18N
+        menu_financeiro.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money.png"))); // NOI18N
+        menu_financeiro.setText("Financeiro");
+        menu_financeiro.setName("menu_financeiro"); // NOI18N
 
-        menuitemcontasareceber.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_add.png"))); // NOI18N
-        menuitemcontasareceber.setText("Contas a Receber");
-        menuitemcontasareceber.setName("menuitemcontasareceber"); // NOI18N
-        menuitemcontasareceber.addActionListener(new java.awt.event.ActionListener() {
+        item_car.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_add.png"))); // NOI18N
+        item_car.setText("Contas a Receber");
+        item_car.setName("item_car"); // NOI18N
+        item_car.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemcontasareceberActionPerformed(evt);
+                item_carActionPerformed(evt);
             }
         });
-        menufinanceiro.add(menuitemcontasareceber);
+        menu_financeiro.add(item_car);
 
-        menuitemcontasapagar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_delete.png"))); // NOI18N
-        menuitemcontasapagar.setText("Contas a Pagar");
-        menuitemcontasapagar.setName("menuitemcontasapagar"); // NOI18N
-        menuitemcontasapagar.addActionListener(new java.awt.event.ActionListener() {
+        item_cap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_delete.png"))); // NOI18N
+        item_cap.setText("Contas a Pagar");
+        item_cap.setName("item_cap"); // NOI18N
+        item_cap.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemcontasapagarActionPerformed(evt);
+                item_capActionPerformed(evt);
             }
         });
-        menufinanceiro.add(menuitemcontasapagar);
+        menu_financeiro.add(item_cap);
 
-        menuitemcondicoesdepagamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_dollar.png"))); // NOI18N
-        menuitemcondicoesdepagamento.setText("Condições de Pagamento");
-        menuitemcondicoesdepagamento.setName("menuitemcondicoesdepagamento"); // NOI18N
-        menuitemcondicoesdepagamento.addActionListener(new java.awt.event.ActionListener() {
+        item_condicoes_pagamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/money_dollar.png"))); // NOI18N
+        item_condicoes_pagamento.setText("Condições de Pagamento");
+        item_condicoes_pagamento.setName("item_condicoes_pagamento"); // NOI18N
+        item_condicoes_pagamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemcondicoesdepagamentoActionPerformed(evt);
+                item_condicoes_pagamentoActionPerformed(evt);
             }
         });
-        menufinanceiro.add(menuitemcondicoesdepagamento);
+        menu_financeiro.add(item_condicoes_pagamento);
 
-        menuitembancos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/coins.png"))); // NOI18N
-        menuitembancos.setText("Bancos");
-        menuitembancos.setName("menuitembancos"); // NOI18N
-        menuitembancos.addActionListener(new java.awt.event.ActionListener() {
+        item_bancos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/coins.png"))); // NOI18N
+        item_bancos.setText("Bancos");
+        item_bancos.setName("item_bancos"); // NOI18N
+        item_bancos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitembancosActionPerformed(evt);
+                item_bancosActionPerformed(evt);
             }
         });
-        menufinanceiro.add(menuitembancos);
+        menu_financeiro.add(item_bancos);
 
-        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_copy.png"))); // NOI18N
-        jMenuItem12.setText("Extratos");
-        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+        item_extratos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_copy.png"))); // NOI18N
+        item_extratos.setText("Extratos");
+        item_extratos.setName("item_extratos"); // NOI18N
+        item_extratos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem12ActionPerformed(evt);
+                item_extratosActionPerformed(evt);
             }
         });
-        menufinanceiro.add(jMenuItem12);
+        menu_financeiro.add(item_extratos);
 
-        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_code.png"))); // NOI18N
-        jMenuItem13.setText("Conciliação Bancária");
-        menufinanceiro.add(jMenuItem13);
+        item_conciliacao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_code.png"))); // NOI18N
+        item_conciliacao.setText("Conciliação Bancária");
+        item_conciliacao.setName("item_conciliacao"); // NOI18N
+        menu_financeiro.add(item_conciliacao);
 
-        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/creditcards.png"))); // NOI18N
-        jMenuItem14.setText("Cartões");
-        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+        item_cartoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/creditcards.png"))); // NOI18N
+        item_cartoes.setText("Cartões");
+        item_cartoes.setName("item_cartoes"); // NOI18N
+        item_cartoes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem14ActionPerformed(evt);
+                item_cartoesActionPerformed(evt);
             }
         });
-        menufinanceiro.add(jMenuItem14);
+        menu_financeiro.add(item_cartoes);
 
-        jMenuBar1.add(menufinanceiro);
+        jMenuBar1.add(menu_financeiro);
 
-        menucompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart.png"))); // NOI18N
-        menucompras.setText("Compras");
-        menucompras.setName("menucompras"); // NOI18N
+        menu_compras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart.png"))); // NOI18N
+        menu_compras.setText("Compras");
+        menu_compras.setName("menu_compras"); // NOI18N
 
-        menuitemsolicitacaodecompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_add.png"))); // NOI18N
-        menuitemsolicitacaodecompras.setText("Solicitação de Compra");
-        menuitemsolicitacaodecompras.setName("menuitemsolicitacaodecompras"); // NOI18N
-        menuitemsolicitacaodecompras.addActionListener(new java.awt.event.ActionListener() {
+        item_solicitacao_compras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_add.png"))); // NOI18N
+        item_solicitacao_compras.setText("Solicitação de Compra");
+        item_solicitacao_compras.setName("item_solicitacao_compras"); // NOI18N
+        item_solicitacao_compras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemsolicitacaodecomprasActionPerformed(evt);
+                item_solicitacao_comprasActionPerformed(evt);
             }
         });
-        menucompras.add(menuitemsolicitacaodecompras);
+        menu_compras.add(item_solicitacao_compras);
 
-        menuitemorcamentodecompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_edit.png"))); // NOI18N
-        menuitemorcamentodecompras.setText("Cotação de Compra");
-        menuitemorcamentodecompras.setName("menuitemorcamentodecompras"); // NOI18N
-        menucompras.add(menuitemorcamentodecompras);
+        item_orcamento_compras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_edit.png"))); // NOI18N
+        item_orcamento_compras.setText("Cotação de Compra");
+        item_orcamento_compras.setName("item_orcamento_compras"); // NOI18N
+        menu_compras.add(item_orcamento_compras);
 
-        menuitempedidodecompras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_go.png"))); // NOI18N
-        menuitempedidodecompras.setText("Pedido de Compra");
-        menuitempedidodecompras.setName("menuitempedidodecompras"); // NOI18N
-        menucompras.add(menuitempedidodecompras);
+        item_pedido_compras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_go.png"))); // NOI18N
+        item_pedido_compras.setText("Pedido de Compra");
+        item_pedido_compras.setName("item_pedido_compras"); // NOI18N
+        menu_compras.add(item_pedido_compras);
 
-        menuiteminsumos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_put.png"))); // NOI18N
-        menuiteminsumos.setText("Insumos");
-        menuiteminsumos.setName("menuiteminsumos"); // NOI18N
-        menuiteminsumos.addActionListener(new java.awt.event.ActionListener() {
+        item_insumos_compras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_put.png"))); // NOI18N
+        item_insumos_compras.setText("Insumos");
+        item_insumos_compras.setName("item_insumos_compras"); // NOI18N
+        item_insumos_compras.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuiteminsumosActionPerformed(evt);
+                item_insumos_comprasActionPerformed(evt);
             }
         });
-        menucompras.add(menuiteminsumos);
+        menu_compras.add(item_insumos_compras);
 
-        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/basket.png"))); // NOI18N
-        jMenuItem1.setText("Tipos de Insumo");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        item_tipo_insumos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/basket.png"))); // NOI18N
+        item_tipo_insumos.setText("Tipos de Insumo");
+        item_tipo_insumos.setName("item_tipo_insumos"); // NOI18N
+        item_tipo_insumos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                item_tipo_insumosActionPerformed(evt);
             }
         });
-        menucompras.add(jMenuItem1);
+        menu_compras.add(item_tipo_insumos);
 
-        jMenuBar1.add(menucompras);
+        jMenuBar1.add(menu_compras);
 
-        menulogistica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/package_green.png"))); // NOI18N
-        menulogistica.setText("Logística");
-        menulogistica.setName("menulogistica"); // NOI18N
+        menu_logistica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/package_green.png"))); // NOI18N
+        menu_logistica.setText("Logística");
+        menu_logistica.setName("menu_logistica"); // NOI18N
 
-        menuitemcarros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/car.png"))); // NOI18N
-        menuitemcarros.setText("Carros");
-        menuitemcarros.setName("menuitemcarros"); // NOI18N
-        menuitemcarros.addActionListener(new java.awt.event.ActionListener() {
+        item_carros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/car.png"))); // NOI18N
+        item_carros.setText("Carros");
+        item_carros.setName("item_carros"); // NOI18N
+        item_carros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemcarrosActionPerformed(evt);
+                item_carrosActionPerformed(evt);
             }
         });
-        menulogistica.add(menuitemcarros);
+        menu_logistica.add(item_carros);
 
-        jMenuItem6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_go.png"))); // NOI18N
-        jMenuItem6.setText("Rastreamento de Documentos");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+        item_rastreamento.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_go.png"))); // NOI18N
+        item_rastreamento.setText("Rastreamento de Documentos");
+        item_rastreamento.setName("item_rastreamento"); // NOI18N
+        item_rastreamento.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                item_rastreamentoActionPerformed(evt);
             }
         });
-        menulogistica.add(jMenuItem6);
+        menu_logistica.add(item_rastreamento);
 
-        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/tag_blue.png"))); // NOI18N
-        jMenuItem8.setText("Cadastro de Unidades");
-        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+        item_unidades.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/tag_blue.png"))); // NOI18N
+        item_unidades.setText("Cadastro de Unidades");
+        item_unidades.setName("item_unidades"); // NOI18N
+        item_unidades.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem8ActionPerformed(evt);
+                item_unidadesActionPerformed(evt);
             }
         });
-        menulogistica.add(jMenuItem8);
+        menu_logistica.add(item_unidades);
 
-        jMenuBar1.add(menulogistica);
-
-        jMenu1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/computer.png"))); // NOI18N
-        jMenu1.setText("TI");
-
-        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/key.png"))); // NOI18N
-        jMenuItem7.setText("Senhas");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+        item_locais.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/box.png"))); // NOI18N
+        item_locais.setText("Locais de Armazenagem");
+        item_locais.setName("item_locais"); // NOI18N
+        item_locais.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
+                item_locaisActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem7);
+        menu_logistica.add(item_locais);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(menu_logistica);
 
-        menuqualidade.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/award_star_bronze_3.png"))); // NOI18N
-        menuqualidade.setText("Qualidade");
-        menuqualidade.setName("menuqualidade"); // NOI18N
+        menu_ti.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/computer.png"))); // NOI18N
+        menu_ti.setText("TI");
+        menu_ti.setName("menu_ti"); // NOI18N
 
-        menuiteminstrumentosmedicao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/compress.png"))); // NOI18N
-        menuiteminstrumentosmedicao.setText("Instrumentos de Medição");
-        menuiteminstrumentosmedicao.setName("menuiteminstrumentosmedicao"); // NOI18N
-        menuiteminstrumentosmedicao.addActionListener(new java.awt.event.ActionListener() {
+        item_senhas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/key.png"))); // NOI18N
+        item_senhas.setText("Senhas");
+        item_senhas.setName("item_senhas"); // NOI18N
+        item_senhas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuiteminstrumentosmedicaoActionPerformed(evt);
+                item_senhasActionPerformed(evt);
             }
         });
-        menuqualidade.add(menuiteminstrumentosmedicao);
+        menu_ti.add(item_senhas);
 
-        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry_error.png"))); // NOI18N
-        jMenuItem3.setText("IQF");
-        menuqualidade.add(jMenuItem3);
+        jMenuBar1.add(menu_ti);
 
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/chart_bar.png"))); // NOI18N
-        jMenuItem4.setText("Medições");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        menu_qualidade.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/award_star_bronze_3.png"))); // NOI18N
+        menu_qualidade.setText("Qualidade");
+        menu_qualidade.setName("menu_qualidade"); // NOI18N
+
+        item_inst_med.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/compress.png"))); // NOI18N
+        item_inst_med.setText("Instrumentos de Medição");
+        item_inst_med.setName("item_inst_med"); // NOI18N
+        item_inst_med.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                item_inst_medActionPerformed(evt);
             }
         });
-        menuqualidade.add(jMenuItem4);
+        menu_qualidade.add(item_inst_med);
 
-        jMenuBar1.add(menuqualidade);
+        item_iqf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry_error.png"))); // NOI18N
+        item_iqf.setText("IQF");
+        item_iqf.setName("item_iqf"); // NOI18N
+        menu_qualidade.add(item_iqf);
 
-        jMenu2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/folder_user.png"))); // NOI18N
-        jMenu2.setText("RH");
-
-        jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_copy.png"))); // NOI18N
-        jMenu3.setText("Formulários");
-
-        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/hourglass_add.png"))); // NOI18N
-        jMenuItem9.setText("Solicitação de Hora Extra");
-        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+        item_medicoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/chart_bar.png"))); // NOI18N
+        item_medicoes.setText("Medições");
+        item_medicoes.setName("item_medicoes"); // NOI18N
+        item_medicoes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem9ActionPerformed(evt);
+                item_medicoesActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem9);
+        menu_qualidade.add(item_medicoes);
 
-        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/hourglass_delete.png"))); // NOI18N
-        jMenuItem10.setText("Atraso/Saída Antecipada");
-        jMenu3.add(jMenuItem10);
+        jMenuBar1.add(menu_qualidade);
 
-        jMenu2.add(jMenu3);
+        menu_rh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/folder_user.png"))); // NOI18N
+        menu_rh.setText("RH");
+        menu_rh.setName("menu_rh"); // NOI18N
 
-        jMenuBar1.add(jMenu2);
+        item_form.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_copy.png"))); // NOI18N
+        item_form.setText("Formulários");
+        item_form.setName("item_form"); // NOI18N
 
-        menuvendas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/wrench.png"))); // NOI18N
-        menuvendas.setText("Vendas");
-        menuvendas.setName("menuvendas"); // NOI18N
-
-        menuitemvendasorcamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench.png"))); // NOI18N
-        menuitemvendasorcamentos.setText("Cotações");
-        menuitemvendasorcamentos.setName("menuitemvendasorcamentos"); // NOI18N
-        menuitemvendasorcamentos.addActionListener(new java.awt.event.ActionListener() {
+        item_solic_hora_extra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/hourglass_add.png"))); // NOI18N
+        item_solic_hora_extra.setText("Solicitação de Hora Extra");
+        item_solic_hora_extra.setName("item_solic_hora_extra"); // NOI18N
+        item_solic_hora_extra.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemvendasorcamentosActionPerformed(evt);
+                item_solic_hora_extraActionPerformed(evt);
             }
         });
-        menuvendas.add(menuitemvendasorcamentos);
+        item_form.add(item_solic_hora_extra);
 
-        menuitemvendaspedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_go.png"))); // NOI18N
-        menuitemvendaspedidos.setText("Pedidos");
-        menuitemvendaspedidos.setName("menuitemvendaspedidos"); // NOI18N
-        menuitemvendaspedidos.addActionListener(new java.awt.event.ActionListener() {
+        item_atraso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/hourglass_delete.png"))); // NOI18N
+        item_atraso.setText("Atraso/Saída Antecipada");
+        item_atraso.setName("item_atraso"); // NOI18N
+        item_form.add(item_atraso);
+
+        menu_rh.add(item_form);
+
+        jMenuBar1.add(menu_rh);
+
+        menu_vendas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/wrench.png"))); // NOI18N
+        menu_vendas.setText("Vendas");
+        menu_vendas.setName("menu_vendas"); // NOI18N
+
+        item_vendas_cotacoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench.png"))); // NOI18N
+        item_vendas_cotacoes.setText("Cotações");
+        item_vendas_cotacoes.setName("item_vendas_cotacoes"); // NOI18N
+        item_vendas_cotacoes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemvendaspedidosActionPerformed(evt);
+                item_vendas_cotacoesActionPerformed(evt);
             }
         });
-        menuvendas.add(menuitemvendaspedidos);
+        menu_vendas.add(item_vendas_cotacoes);
 
-        menuitemvendasops.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_wrench.png"))); // NOI18N
-        menuitemvendasops.setText("OP's");
-        menuitemvendasops.setName("menuitemvendasops"); // NOI18N
-        menuitemvendasops.addActionListener(new java.awt.event.ActionListener() {
+        item_vendas_pedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_go.png"))); // NOI18N
+        item_vendas_pedido.setText("Pedidos");
+        item_vendas_pedido.setName("item_vendas_pedido"); // NOI18N
+        item_vendas_pedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemvendasopsActionPerformed(evt);
+                item_vendas_pedidoActionPerformed(evt);
             }
         });
-        menuvendas.add(menuitemvendasops);
+        menu_vendas.add(item_vendas_pedido);
 
-        menuitemvendasprodutos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cog_wrench.png"))); // NOI18N
-        menuitemvendasprodutos.setText("Produtos");
-        menuitemvendasprodutos.setName("menuitemvendasprodutos"); // NOI18N
-        menuitemvendasprodutos.addActionListener(new java.awt.event.ActionListener() {
+        item_ops.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_wrench.png"))); // NOI18N
+        item_ops.setText("OP's");
+        item_ops.setName("item_ops"); // NOI18N
+        item_ops.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemvendasprodutosActionPerformed(evt);
+                item_opsActionPerformed(evt);
             }
         });
-        menuvendas.add(menuitemvendasprodutos);
+        menu_vendas.add(item_ops);
 
-        menuitemvendasprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench.png"))); // NOI18N
-        menuitemvendasprocessos.setText("Processos");
-        menuitemvendasprocessos.setName("menuitemvendasprocessos"); // NOI18N
-        menuitemvendasprocessos.addActionListener(new java.awt.event.ActionListener() {
+        item_vendas_produtos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cog_wrench.png"))); // NOI18N
+        item_vendas_produtos.setText("Produtos");
+        item_vendas_produtos.setName("item_vendas_produtos"); // NOI18N
+        item_vendas_produtos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemvendasprocessosActionPerformed(evt);
+                item_vendas_produtosActionPerformed(evt);
             }
         });
-        menuvendas.add(menuitemvendasprocessos);
+        menu_vendas.add(item_vendas_produtos);
 
-        jMenuBar1.add(menuvendas);
-
-        menuservicos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/wrench_orange.png"))); // NOI18N
-        menuservicos.setText("Serviços");
-        menuservicos.setName("menuservicos"); // NOI18N
-
-        menuitemservicosorcamentos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_orange.png"))); // NOI18N
-        menuitemservicosorcamentos.setText("Cotações");
-        menuitemservicosorcamentos.setName("menuitemservicosorcamentos"); // NOI18N
-        menuitemservicosorcamentos.addActionListener(new java.awt.event.ActionListener() {
+        item_vendas_processos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench.png"))); // NOI18N
+        item_vendas_processos.setText("Processos");
+        item_vendas_processos.setName("item_vendas_processos"); // NOI18N
+        item_vendas_processos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemservicosorcamentosActionPerformed(evt);
+                item_vendas_processosActionPerformed(evt);
             }
         });
-        menuservicos.add(menuitemservicosorcamentos);
+        menu_vendas.add(item_vendas_processos);
 
-        menuitemservicospedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_orange_go.png"))); // NOI18N
-        menuitemservicospedidos.setText("Pedidos");
-        menuitemservicospedidos.setName("menuitemservicospedidos"); // NOI18N
-        menuitemservicospedidos.addActionListener(new java.awt.event.ActionListener() {
+        jMenuBar1.add(menu_vendas);
+
+        menu_servicos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/wrench_orange.png"))); // NOI18N
+        menu_servicos.setText("Serviços");
+        menu_servicos.setName("menu_servicos"); // NOI18N
+
+        item_servicos_cotacoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_orange.png"))); // NOI18N
+        item_servicos_cotacoes.setText("Cotações");
+        item_servicos_cotacoes.setName("item_servicos_cotacoes"); // NOI18N
+        item_servicos_cotacoes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemservicospedidosActionPerformed(evt);
+                item_servicos_cotacoesActionPerformed(evt);
             }
         });
-        menuservicos.add(menuitemservicospedidos);
+        menu_servicos.add(item_servicos_cotacoes);
 
-        menuitemservicososs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_wrench_orange.png"))); // NOI18N
-        menuitemservicososs.setText("OS's");
-        menuitemservicososs.setName("menuitemservicososs"); // NOI18N
-        menuitemservicososs.addActionListener(new java.awt.event.ActionListener() {
+        item_servicos_pedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/table_wrench_orange_go.png"))); // NOI18N
+        item_servicos_pedido.setText("Pedidos");
+        item_servicos_pedido.setName("item_servicos_pedido"); // NOI18N
+        item_servicos_pedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemservicosossActionPerformed(evt);
+                item_servicos_pedidoActionPerformed(evt);
             }
         });
-        menuservicos.add(menuitemservicososs);
+        menu_servicos.add(item_servicos_pedido);
 
-        menuitemservicosprodutos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cog_wrench_orange.png"))); // NOI18N
-        menuitemservicosprodutos.setText("Produtos");
-        menuitemservicosprodutos.setName("menuitemservicosprodutos"); // NOI18N
-        menuitemservicosprodutos.addActionListener(new java.awt.event.ActionListener() {
+        item_oss.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_wrench_orange.png"))); // NOI18N
+        item_oss.setText("OS's");
+        item_oss.setName("item_oss"); // NOI18N
+        item_oss.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemservicosprodutosActionPerformed(evt);
+                item_ossActionPerformed(evt);
             }
         });
-        menuservicos.add(menuitemservicosprodutos);
+        menu_servicos.add(item_oss);
 
-        menuitemservicosproccessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench_orange.png"))); // NOI18N
-        menuitemservicosproccessos.setText("Processos");
-        menuitemservicosproccessos.setName("menuitemservicosproccessos"); // NOI18N
-        menuitemservicosproccessos.addActionListener(new java.awt.event.ActionListener() {
+        item_servicos_produtos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cog_wrench_orange.png"))); // NOI18N
+        item_servicos_produtos.setText("Produtos");
+        item_servicos_produtos.setName("item_servicos_produtos"); // NOI18N
+        item_servicos_produtos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemservicosproccessosActionPerformed(evt);
+                item_servicos_produtosActionPerformed(evt);
             }
         });
-        menuservicos.add(menuitemservicosproccessos);
+        menu_servicos.add(item_servicos_produtos);
 
-        menuitemservicosgrupodeprocessos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench_orange.png"))); // NOI18N
-        menuitemservicosgrupodeprocessos.setText("Grupo de Processos");
-        menuitemservicosgrupodeprocessos.setName("menuitemservicosgrupodeprocessos"); // NOI18N
-        menuitemservicosgrupodeprocessos.addActionListener(new java.awt.event.ActionListener() {
+        item_servicos_processo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench_orange.png"))); // NOI18N
+        item_servicos_processo.setText("Processos");
+        item_servicos_processo.setName("item_servicos_processo"); // NOI18N
+        item_servicos_processo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemservicosgrupodeprocessosActionPerformed(evt);
+                item_servicos_processoActionPerformed(evt);
             }
         });
-        menuservicos.add(menuitemservicosgrupodeprocessos);
+        menu_servicos.add(item_servicos_processo);
 
-        jMenuItem16.setText("jMenuItem16");
-        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+        item_servicos_grupo_processo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench_orange.png"))); // NOI18N
+        item_servicos_grupo_processo.setText("Grupo de Processos");
+        item_servicos_grupo_processo.setName("item_servicos_grupo_processo"); // NOI18N
+        item_servicos_grupo_processo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem16ActionPerformed(evt);
+                item_servicos_grupo_processoActionPerformed(evt);
             }
         });
-        menuservicos.add(jMenuItem16);
+        menu_servicos.add(item_servicos_grupo_processo);
 
-        jMenuBar1.add(menuservicos);
+        jMenuBar1.add(menu_servicos);
 
-        jMenu4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/link.png"))); // NOI18N
-        jMenu4.setText("Terceiros");
+        menu_terceiros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/link.png"))); // NOI18N
+        menu_terceiros.setText("Terceiros");
+        menu_terceiros.setName("menu_terceiros"); // NOI18N
 
-        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_link.png"))); // NOI18N
-        jMenuItem11.setText("OT's");
-        jMenu4.add(jMenuItem11);
+        item_ots.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_link.png"))); // NOI18N
+        item_ots.setText("OT's");
+        item_ots.setName("item_ots"); // NOI18N
+        menu_terceiros.add(item_ots);
 
-        jMenuBar1.add(jMenu4);
+        jMenuBar1.add(menu_terceiros);
 
-        menuconfiguracoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/plugin.png"))); // NOI18N
-        menuconfiguracoes.setText("Configurações");
-        menuconfiguracoes.setName("menuconfiguracoes"); // NOI18N
+        menu_configuracoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/plugin.png"))); // NOI18N
+        menu_configuracoes.setText("Configurações");
+        menu_configuracoes.setName("menu_configuracoes"); // NOI18N
 
-        menuitemmenus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade.png"))); // NOI18N
-        menuitemmenus.setText("Menus");
-        menuitemmenus.setName("menuitemmenus"); // NOI18N
-        menuitemmenus.addActionListener(new java.awt.event.ActionListener() {
+        item_menus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade.png"))); // NOI18N
+        item_menus.setText("Menus");
+        item_menus.setName("item_menus"); // NOI18N
+        item_menus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemmenusActionPerformed(evt);
+                item_menusActionPerformed(evt);
             }
         });
-        menuconfiguracoes.add(menuitemmenus);
+        menu_configuracoes.add(item_menus);
 
-        jMenuBar1.add(menuconfiguracoes);
+        jMenuBar1.add(menu_configuracoes);
 
-        menuajuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/information.png"))); // NOI18N
-        menuajuda.setText("Ajuda");
-        menuajuda.setName("menuajuda"); // NOI18N
+        menu_ajuda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/information.png"))); // NOI18N
+        menu_ajuda.setText("Ajuda");
+        menu_ajuda.setName("menu_ajuda"); // NOI18N
 
-        menuitemmike.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
-        menuitemmike.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lightbulb.png"))); // NOI18N
-        menuitemmike.setText("M.I.K.E.");
-        menuitemmike.setName("menuitemmike"); // NOI18N
-        menuitemmike.addActionListener(new java.awt.event.ActionListener() {
+        item_trocar_senha.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/arrow_refresh.png"))); // NOI18N
+        item_trocar_senha.setText("Trocar Senha");
+        item_trocar_senha.setName("item_trocar_senha"); // NOI18N
+        item_trocar_senha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemmikeActionPerformed(evt);
+                item_trocar_senhaActionPerformed(evt);
             }
         });
-        menuajuda.add(menuitemmike);
+        menu_ajuda.add(item_trocar_senha);
 
-        menuitemsobre.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_text.png"))); // NOI18N
-        menuitemsobre.setText("Sobre");
-        menuitemsobre.setName("menuitemsobre"); // NOI18N
-        menuitemsobre.addActionListener(new java.awt.event.ActionListener() {
+        item_mike.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        item_mike.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lightbulb.png"))); // NOI18N
+        item_mike.setText("M.I.K.E.");
+        item_mike.setName("item_mike"); // NOI18N
+        item_mike.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuitemsobreActionPerformed(evt);
+                item_mikeActionPerformed(evt);
             }
         });
-        menuajuda.add(menuitemsobre);
+        menu_ajuda.add(item_mike);
 
-        jMenuBar1.add(menuajuda);
+        item_sobre.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_text.png"))); // NOI18N
+        item_sobre.setText("Sobre");
+        item_sobre.setName("item_sobre"); // NOI18N
+        item_sobre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_sobreActionPerformed(evt);
+            }
+        });
+        menu_ajuda.add(item_sobre);
+
+        jMenuBar1.add(menu_ajuda);
 
         setJMenuBar(jMenuBar1);
 
@@ -842,139 +889,140 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void menuitemsairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemsairActionPerformed
+    private void item_sairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_sairActionPerformed
         this.dispose();
-    }//GEN-LAST:event_menuitemsairActionPerformed
+    }//GEN-LAST:event_item_sairActionPerformed
 
-    private void menuitemusuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemusuariosActionPerformed
+    private void item_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_usuariosActionPerformed
         Usuarios telauser = new Usuarios();
         Telas.AparecerTela(telauser);
-    }//GEN-LAST:event_menuitemusuariosActionPerformed
+    }//GEN-LAST:event_item_usuariosActionPerformed
 
-    private void menuitemvendasopsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasopsActionPerformed
+    private void item_opsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_opsActionPerformed
         OPs ops = new OPs();
         Telas.AparecerTelaAumentada(ops);
-    }//GEN-LAST:event_menuitemvendasopsActionPerformed
+    }//GEN-LAST:event_item_opsActionPerformed
 
-    private void menuitememailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitememailActionPerformed
+    private void item_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_emailActionPerformed
         Email email = new Email();
         Telas.AparecerTela(email);
-    }//GEN-LAST:event_menuitememailActionPerformed
+    }//GEN-LAST:event_item_emailActionPerformed
 
-    private void menuitemvendaspedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendaspedidosActionPerformed
+    private void item_vendas_pedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_vendas_pedidoActionPerformed
         EmBreve.EmBreve();
-    }//GEN-LAST:event_menuitemvendaspedidosActionPerformed
+    }//GEN-LAST:event_item_vendas_pedidoActionPerformed
 
-    private void menuitemvendasorcamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasorcamentosActionPerformed
-        EmBreve.EmBreve();
-    }//GEN-LAST:event_menuitemvendasorcamentosActionPerformed
+    private void item_vendas_cotacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_vendas_cotacoesActionPerformed
+        CotacaoVenda cv = new CotacaoVenda();
+        Telas.AparecerTelaAumentada(cv);
+    }//GEN-LAST:event_item_vendas_cotacoesActionPerformed
 
-    private void menuitemsobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemsobreActionPerformed
+    private void item_sobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_sobreActionPerformed
         JOptionPane.showMessageDialog(rootPane, "Sistema M.I.K.E®\n\nCriado por Marcos Filho\nTodos os direitos reservados");
-    }//GEN-LAST:event_menuitemsobreActionPerformed
+    }//GEN-LAST:event_item_sobreActionPerformed
 
-    private void menuitemmikeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemmikeActionPerformed
+    private void item_mikeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_mikeActionPerformed
         Tarefas t = new Tarefas();
         t.setVisible(true);
-    }//GEN-LAST:event_menuitemmikeActionPerformed
+    }//GEN-LAST:event_item_mikeActionPerformed
 
-    private void menuitemservicosorcamentosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosorcamentosActionPerformed
+    private void item_servicos_cotacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_cotacoesActionPerformed
         CotacaoServico tela = new CotacaoServico();
         Telas.AparecerTelaAumentada(tela);
-    }//GEN-LAST:event_menuitemservicosorcamentosActionPerformed
+    }//GEN-LAST:event_item_servicos_cotacoesActionPerformed
 
-    private void menuitemservicospedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicospedidosActionPerformed
+    private void item_servicos_pedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_pedidoActionPerformed
         PedidoServico p = new PedidoServico();
         Telas.AparecerTelaAumentada(p);
-    }//GEN-LAST:event_menuitemservicospedidosActionPerformed
+    }//GEN-LAST:event_item_servicos_pedidoActionPerformed
 
-    private void menuitemservicosossActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosossActionPerformed
+    private void item_ossActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_ossActionPerformed
         OS os = new OS();
         Telas.AparecerTelaAumentada(os);
-    }//GEN-LAST:event_menuitemservicosossActionPerformed
+    }//GEN-LAST:event_item_ossActionPerformed
 
-    private void menuitemclientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemclientesActionPerformed
+    private void item_clientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_clientesActionPerformed
         Clientes telaclientes = new Clientes();
         Telas.AparecerTelaAumentada(telaclientes);
-    }//GEN-LAST:event_menuitemclientesActionPerformed
+    }//GEN-LAST:event_item_clientesActionPerformed
 
-    private void menuitemservicosprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosprodutosActionPerformed
+    private void item_servicos_produtosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_produtosActionPerformed
         ServicoMateriais tela = new ServicoMateriais();
         Telas.AparecerTelaAumentada(tela);
-    }//GEN-LAST:event_menuitemservicosprodutosActionPerformed
+    }//GEN-LAST:event_item_servicos_produtosActionPerformed
 
-    private void menuitemgrupodeusuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemgrupodeusuariosActionPerformed
+    private void item_grupo_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_grupo_usuariosActionPerformed
         GrupoDeUsuarios gu = new GrupoDeUsuarios();
         Telas.AparecerTela(gu);
-    }//GEN-LAST:event_menuitemgrupodeusuariosActionPerformed
+    }//GEN-LAST:event_item_grupo_usuariosActionPerformed
 
-    private void menuitemmenusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemmenusActionPerformed
+    private void item_menusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_menusActionPerformed
         Menus m = new Menus();
         Telas.AparecerTela(m);
-    }//GEN-LAST:event_menuitemmenusActionPerformed
+    }//GEN-LAST:event_item_menusActionPerformed
 
-    private void menuitemrepresentantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemrepresentantesActionPerformed
+    private void item_representantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_representantesActionPerformed
         Representantes r = new Representantes();
         Telas.AparecerTela(r);
-    }//GEN-LAST:event_menuitemrepresentantesActionPerformed
+    }//GEN-LAST:event_item_representantesActionPerformed
 
-    private void menuitemregioesdeatuacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemregioesdeatuacaoActionPerformed
+    private void item_regioes_atuacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_regioes_atuacaoActionPerformed
         Regioes r = new Regioes();
         Telas.AparecerTela(r);
-    }//GEN-LAST:event_menuitemregioesdeatuacaoActionPerformed
+    }//GEN-LAST:event_item_regioes_atuacaoActionPerformed
 
-    private void menuitemcondicoesdepagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcondicoesdepagamentoActionPerformed
+    private void item_condicoes_pagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_condicoes_pagamentoActionPerformed
         CondicoesDePagamento cp = new CondicoesDePagamento();
         Telas.AparecerTela(cp);
-    }//GEN-LAST:event_menuitemcondicoesdepagamentoActionPerformed
+    }//GEN-LAST:event_item_condicoes_pagamentoActionPerformed
 
-    private void menuitemcontasapagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcontasapagarActionPerformed
+    private void item_capActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_capActionPerformed
         ContasPagar c = new ContasPagar();
         Telas.AparecerTelaAumentada(c);
-    }//GEN-LAST:event_menuitemcontasapagarActionPerformed
+    }//GEN-LAST:event_item_capActionPerformed
 
-    private void menuitembancosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitembancosActionPerformed
+    private void item_bancosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_bancosActionPerformed
         Bancos b = new Bancos();
         Telas.AparecerTelaAumentada(b);
-    }//GEN-LAST:event_menuitembancosActionPerformed
+    }//GEN-LAST:event_item_bancosActionPerformed
 
-    private void menuitemfornecedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemfornecedoresActionPerformed
+    private void item_fornecedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_fornecedoresActionPerformed
         Fornecedores f = new Fornecedores();
         Telas.AparecerTela(f);
-    }//GEN-LAST:event_menuitemfornecedoresActionPerformed
+    }//GEN-LAST:event_item_fornecedoresActionPerformed
 
-    private void menuitemservicosproccessosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosproccessosActionPerformed
+    private void item_servicos_processoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_processoActionPerformed
         ProcessosServico ps = new ProcessosServico();
         Telas.AparecerTela(ps);
-    }//GEN-LAST:event_menuitemservicosproccessosActionPerformed
+    }//GEN-LAST:event_item_servicos_processoActionPerformed
 
-    private void menuitemservicosgrupodeprocessosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemservicosgrupodeprocessosActionPerformed
+    private void item_servicos_grupo_processoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_grupo_processoActionPerformed
         GrupoDeProcessosServico gps = new GrupoDeProcessosServico();
         Telas.AparecerTela(gps);
-    }//GEN-LAST:event_menuitemservicosgrupodeprocessosActionPerformed
+    }//GEN-LAST:event_item_servicos_grupo_processoActionPerformed
 
-    private void menuitemsolicitacaodecomprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemsolicitacaodecomprasActionPerformed
+    private void item_solicitacao_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_solicitacao_comprasActionPerformed
         ComprasSolicitacao p = new ComprasSolicitacao();
         Telas.AparecerTelaAumentada(p);
-    }//GEN-LAST:event_menuitemsolicitacaodecomprasActionPerformed
+    }//GEN-LAST:event_item_solicitacao_comprasActionPerformed
 
-    private void menuiteminstrumentosmedicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuiteminstrumentosmedicaoActionPerformed
+    private void item_inst_medActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_inst_medActionPerformed
         InstrumentosMedicao p = new InstrumentosMedicao();
         Telas.AparecerTela(p);
-    }//GEN-LAST:event_menuiteminstrumentosmedicaoActionPerformed
+    }//GEN-LAST:event_item_inst_medActionPerformed
 
-    private void menuitemcarrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcarrosActionPerformed
+    private void item_carrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_carrosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_menuitemcarrosActionPerformed
+    }//GEN-LAST:event_item_carrosActionPerformed
 
-    private void menuitemnotasfiscaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemnotasfiscaisActionPerformed
+    private void item_nfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_nfActionPerformed
         NotasFiscais nf = new NotasFiscais();
         Telas.AparecerTelaAumentada(nf);
-    }//GEN-LAST:event_menuitemnotasfiscaisActionPerformed
+    }//GEN-LAST:event_item_nfActionPerformed
 
-    private void menuitemnaturezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemnaturezaActionPerformed
+    private void item_naturezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_naturezaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_menuitemnaturezaActionPerformed
+    }//GEN-LAST:event_item_naturezaActionPerformed
 
     private void btntestemenusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntestemenusActionPerformed
 //        int menu = TelaPrincipal.jMenuBar1.getMenuCount();
@@ -993,92 +1041,117 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 ////////        p.setVisible(true);
     }//GEN-LAST:event_btntestemenusActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void item_tipo_insumosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_tipo_insumosActionPerformed
         TiposInsumo p = new TiposInsumo();
         Telas.AparecerTela(p);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_item_tipo_insumosActionPerformed
 
-    private void menuitemvendasprodutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasprodutosActionPerformed
+    private void item_vendas_produtosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_vendas_produtosActionPerformed
         VendasMateriais p = new VendasMateriais();
         Telas.AparecerTelaAumentada(p);
-    }//GEN-LAST:event_menuitemvendasprodutosActionPerformed
+    }//GEN-LAST:event_item_vendas_produtosActionPerformed
 
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+    private void item_rastreamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_rastreamentoActionPerformed
         RastreamentoDocumentos p = new RastreamentoDocumentos();
         Telas.AparecerTela(p);
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
+    }//GEN-LAST:event_item_rastreamentoActionPerformed
 
-    private void menuitemcategoriaprecoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcategoriaprecoActionPerformed
+    private void item_categoria_precoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_categoria_precoActionPerformed
         CategoriaDePreco p = new CategoriaDePreco();
         Telas.AparecerTelaAumentada(p);
-    }//GEN-LAST:event_menuitemcategoriaprecoActionPerformed
+    }//GEN-LAST:event_item_categoria_precoActionPerformed
 
-    private void menuitemcontasareceberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemcontasareceberActionPerformed
+    private void item_carActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_carActionPerformed
         ContasReceber p = new ContasReceber();
         Telas.AparecerTelaAumentada(p);
-    }//GEN-LAST:event_menuitemcontasareceberActionPerformed
+    }//GEN-LAST:event_item_carActionPerformed
 
-    private void menuiteminsumosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuiteminsumosActionPerformed
+    private void item_insumos_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_insumos_comprasActionPerformed
         Insumos i = new Insumos();
         Telas.AparecerTelaAumentada(i);
-    }//GEN-LAST:event_menuiteminsumosActionPerformed
+    }//GEN-LAST:event_item_insumos_comprasActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+    private void item_f_upActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_f_upActionPerformed
         F_UP f = new F_UP();
         Telas.AparecerTelaAumentada(f);
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    }//GEN-LAST:event_item_f_upActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+    private void item_senhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_senhasActionPerformed
         Senhas s = new Senhas();
         Telas.AparecerTela(s);
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
+    }//GEN-LAST:event_item_senhasActionPerformed
 
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+    private void item_unidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_unidadesActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
+    }//GEN-LAST:event_item_unidadesActionPerformed
 
-    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+    private void item_solic_hora_extraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_solic_hora_extraActionPerformed
         SolicitacaoHoraExtra she = new SolicitacaoHoraExtra();
         Telas.AparecerTelaAumentada(she);
-    }//GEN-LAST:event_jMenuItem9ActionPerformed
+    }//GEN-LAST:event_item_solic_hora_extraActionPerformed
 
-    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+    private void item_extratosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_extratosActionPerformed
         Extratos e = new Extratos();
         Telas.AparecerTelaAumentada(e);
-    }//GEN-LAST:event_jMenuItem12ActionPerformed
+    }//GEN-LAST:event_item_extratosActionPerformed
 
-    private void menuitemvendasprocessosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuitemvendasprocessosActionPerformed
+    private void item_vendas_processosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_vendas_processosActionPerformed
         ProcessosVendas pv = new ProcessosVendas();
         Telas.AparecerTela(pv);
-    }//GEN-LAST:event_menuitemvendasprocessosActionPerformed
+    }//GEN-LAST:event_item_vendas_processosActionPerformed
 
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+    private void item_medicoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_medicoesActionPerformed
 
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    }//GEN-LAST:event_item_medicoesActionPerformed
 
-    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+    private void item_cartoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_cartoesActionPerformed
         Cartoes c = new Cartoes();
         Telas.AparecerTela(c);
-    }//GEN-LAST:event_jMenuItem14ActionPerformed
+    }//GEN-LAST:event_item_cartoesActionPerformed
 
-    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+    private void item_planejamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_planejamentoActionPerformed
         PlanejamentoFaturamento pf = new PlanejamentoFaturamento();
         Telas.AparecerTelaAumentada(pf);
-    }//GEN-LAST:event_jMenuItem15ActionPerformed
+    }//GEN-LAST:event_item_planejamentoActionPerformed
 
-    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
-        if (Session.nivel.equals("Administrador")) {
-            OS1 os1 = new OS1();
-            Telas.AparecerTelaAumentada(os1);
-        } else {
-            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
-        }
-    }//GEN-LAST:event_jMenuItem16ActionPerformed
-
-    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+    private void item_prog_mikeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_prog_mikeActionPerformed
         ProgramacaoMIKE pm = new ProgramacaoMIKE();
         Telas.AparecerTelaAumentada(pm);
-    }//GEN-LAST:event_jMenuItem17ActionPerformed
+    }//GEN-LAST:event_item_prog_mikeActionPerformed
+
+    private void item_locaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_locaisActionPerformed
+        LocaisArmazenagem la = new LocaisArmazenagem();
+        Telas.AparecerTela(la);
+    }//GEN-LAST:event_item_locaisActionPerformed
+
+    private void item_trocar_senhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_trocar_senhaActionPerformed
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja realmente alterar sua senha?", "Alterar Senha", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            String senha = JOptionPane.showInputDialog(null, "Digite a nova senha.", "Nova senha", JOptionPane.YES_NO_OPTION);
+            if (senha.length() == 0) {
+                JOptionPane.showMessageDialog(null,"Nenhuma senha digitada.");
+            } else {
+                String conf_senha = JOptionPane.showInputDialog(null, "Confirme a nova senha.", "Confirmar nova senha", JOptionPane.YES_NO_OPTION);
+                if (conf_senha.length() == 0) {
+                    JOptionPane.showMessageDialog(null,"Nenhuma senha de confirmação digitada.");
+                } else {
+                    if (senha.equals(conf_senha)) {
+                        UsuariosDAO ud = new UsuariosDAO();
+                        
+                        ud.updateSenha(senha, Session.nome);
+                        
+                        TelaPrincipal tp = new TelaPrincipal();
+                        tp.dispose();
+                        
+                        TelaLogin tl = new TelaLogin();
+                        tl.setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(null,"Senhas diferentes.\nNão foi possível alterar sua senha.");
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_item_trocar_senhaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1111,78 +1184,79 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btntestemenus;
+    private javax.swing.JMenuItem item_atraso;
+    public static javax.swing.JMenuItem item_bancos;
+    public static javax.swing.JMenuItem item_cap;
+    public static javax.swing.JMenuItem item_car;
+    public static javax.swing.JMenuItem item_carros;
+    private javax.swing.JMenuItem item_cartoes;
+    private javax.swing.JMenuItem item_categoria_preco;
+    public static javax.swing.JMenuItem item_clientes;
+    private javax.swing.JMenuItem item_conciliacao;
+    public static javax.swing.JMenuItem item_condicoes_pagamento;
+    public static javax.swing.JMenuItem item_email;
+    private javax.swing.JMenuItem item_extratos;
+    private javax.swing.JMenuItem item_f_up;
+    private javax.swing.JMenu item_form;
+    public static javax.swing.JMenuItem item_fornecedores;
+    public static javax.swing.JMenuItem item_grupo_clientes;
+    public static javax.swing.JMenuItem item_grupo_usuarios;
+    public static javax.swing.JMenuItem item_inst_med;
+    public static javax.swing.JMenuItem item_insumos_compras;
+    private javax.swing.JMenuItem item_iqf;
+    private javax.swing.JMenuItem item_locais;
+    private javax.swing.JMenuItem item_medicoes;
+    public static javax.swing.JMenuItem item_menus;
+    public static javax.swing.JMenuItem item_mike;
+    public static javax.swing.JMenuItem item_natureza;
+    public static javax.swing.JMenuItem item_nf;
+    public static javax.swing.JMenuItem item_ops;
+    public static javax.swing.JMenuItem item_orcamento_compras;
+    public static javax.swing.JMenuItem item_oss;
+    private javax.swing.JMenuItem item_ots;
+    public static javax.swing.JMenuItem item_pedido_compras;
+    private javax.swing.JMenuItem item_planejamento;
+    private javax.swing.JMenuItem item_prog_mike;
+    private javax.swing.JMenuItem item_protocolos;
+    private javax.swing.JMenuItem item_rastreamento;
+    public static javax.swing.JMenuItem item_regioes_atuacao;
+    public static javax.swing.JMenuItem item_representantes;
+    public static javax.swing.JMenuItem item_sair;
+    private javax.swing.JMenuItem item_senhas;
+    public static javax.swing.JMenuItem item_servicos_cotacoes;
+    public static javax.swing.JMenuItem item_servicos_grupo_processo;
+    public static javax.swing.JMenuItem item_servicos_pedido;
+    public static javax.swing.JMenuItem item_servicos_processo;
+    public static javax.swing.JMenuItem item_servicos_produtos;
+    public static javax.swing.JMenuItem item_sobre;
+    private javax.swing.JMenuItem item_solic_hora_extra;
+    public static javax.swing.JMenuItem item_solicitacao_compras;
+    private javax.swing.JMenuItem item_tipo_insumos;
+    private javax.swing.JMenuItem item_trocar_senha;
+    private javax.swing.JMenuItem item_unidades;
+    public static javax.swing.JMenuItem item_usuarios;
+    public static javax.swing.JMenuItem item_vendas_cotacoes;
+    public static javax.swing.JMenuItem item_vendas_pedido;
+    public static javax.swing.JMenuItem item_vendas_processos;
+    public static javax.swing.JMenuItem item_vendas_produtos;
     public static javax.swing.JDesktopPane jDesktopPane1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
     public static javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem12;
-    private javax.swing.JMenuItem jMenuItem13;
-    private javax.swing.JMenuItem jMenuItem14;
-    private javax.swing.JMenuItem jMenuItem15;
-    private javax.swing.JMenuItem jMenuItem16;
-    private javax.swing.JMenuItem jMenuItem17;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     public static javax.swing.JLabel lblnome;
-    public static javax.swing.JMenu menuadministracao;
-    public static javax.swing.JMenu menuajuda;
-    public static javax.swing.JMenu menuarquivo;
-    public static javax.swing.JMenu menucomercial;
-    public static javax.swing.JMenu menucompras;
-    public static javax.swing.JMenu menuconfiguracoes;
-    public static javax.swing.JMenu menufinanceiro;
-    public static javax.swing.JMenu menufiscal;
-    public static javax.swing.JMenuItem menuitembancos;
-    public static javax.swing.JMenuItem menuitemcarros;
-    private javax.swing.JMenuItem menuitemcategoriapreco;
-    public static javax.swing.JMenuItem menuitemclientes;
-    public static javax.swing.JMenuItem menuitemcondicoesdepagamento;
-    public static javax.swing.JMenuItem menuitemcontasapagar;
-    public static javax.swing.JMenuItem menuitemcontasareceber;
-    public static javax.swing.JMenuItem menuitememail;
-    public static javax.swing.JMenuItem menuitemfornecedores;
-    public static javax.swing.JMenuItem menuitemgrupodeclientes;
-    public static javax.swing.JMenuItem menuitemgrupodeusuarios;
-    public static javax.swing.JMenuItem menuiteminstrumentosmedicao;
-    public static javax.swing.JMenuItem menuiteminsumos;
-    public static javax.swing.JMenuItem menuitemmenus;
-    public static javax.swing.JMenuItem menuitemmike;
-    public static javax.swing.JMenuItem menuitemnatureza;
-    public static javax.swing.JMenuItem menuitemnotasfiscais;
-    public static javax.swing.JMenuItem menuitemorcamentodecompras;
-    public static javax.swing.JMenuItem menuitempedidodecompras;
-    public static javax.swing.JMenuItem menuitemregioesdeatuacao;
-    public static javax.swing.JMenuItem menuitemrepresentantes;
-    public static javax.swing.JMenuItem menuitemsair;
-    public static javax.swing.JMenuItem menuitemservicosgrupodeprocessos;
-    public static javax.swing.JMenuItem menuitemservicosorcamentos;
-    public static javax.swing.JMenuItem menuitemservicososs;
-    public static javax.swing.JMenuItem menuitemservicospedidos;
-    public static javax.swing.JMenuItem menuitemservicosproccessos;
-    public static javax.swing.JMenuItem menuitemservicosprodutos;
-    public static javax.swing.JMenuItem menuitemsobre;
-    public static javax.swing.JMenuItem menuitemsolicitacaodecompras;
-    public static javax.swing.JMenuItem menuitemusuarios;
-    public static javax.swing.JMenuItem menuitemvendasops;
-    public static javax.swing.JMenuItem menuitemvendasorcamentos;
-    public static javax.swing.JMenuItem menuitemvendaspedidos;
-    public static javax.swing.JMenuItem menuitemvendasprocessos;
-    public static javax.swing.JMenuItem menuitemvendasprodutos;
-    public static javax.swing.JMenu menulogistica;
-    public static javax.swing.JMenu menuqualidade;
-    public static javax.swing.JMenu menuservicos;
-    public static javax.swing.JMenu menuvendas;
+    public static javax.swing.JMenu menu_adm;
+    public static javax.swing.JMenu menu_ajuda;
+    public static javax.swing.JMenu menu_arquivo;
+    public static javax.swing.JMenu menu_comercial;
+    public static javax.swing.JMenu menu_compras;
+    public static javax.swing.JMenu menu_configuracoes;
+    public static javax.swing.JMenu menu_financeiro;
+    public static javax.swing.JMenu menu_fiscal;
+    public static javax.swing.JMenu menu_logistica;
+    public static javax.swing.JMenu menu_qualidade;
+    private javax.swing.JMenu menu_rh;
+    public static javax.swing.JMenu menu_servicos;
+    private javax.swing.JMenu menu_terceiros;
+    private javax.swing.JMenu menu_ti;
+    public static javax.swing.JMenu menu_vendas;
     // End of variables declaration//GEN-END:variables
 }

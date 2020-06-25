@@ -111,6 +111,7 @@ public class AdicionarProgramacao extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) ProgramacaoMIKE.tableProgramacao.getModel();
         model.addRow(new Object[]{
             "",
+            false,
             txtNome.getText(),
             Dates.TransformarDataCurtaDoDB(Dates.CriarDataCurtaDBJDateChooser(jDataProgramada.getDate())),
             "",

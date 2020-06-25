@@ -27,11 +27,13 @@ import javax.swing.JOptionPane;
  */
 public class Dates {
 
-    static String data = "";
+    static String data;
     static String datanormal = "";
     static Calendar date = Calendar.getInstance();
+    static Date d = new Date();
 
     public static String CriarDataCompletaParaDB() {
+        data = "";
         String pattern = "yyyy-MM-dd HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
@@ -40,14 +42,16 @@ public class Dates {
     }
 
     public static String CriarDataCurta() {
+        data = "";
         String pattern = "dd/MM/yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
 
         return data;
     }
-
+    
     public static String CriarDataCurtaDBSemDataExistente() {
+        data = "";
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
@@ -56,6 +60,7 @@ public class Dates {
     }
 
     public static String CriarDataCurtaDBSemDataExistenteComPrazo(int days) {
+        data = "";
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         date.add(Calendar.DAY_OF_MONTH, days);
@@ -98,6 +103,7 @@ public class Dates {
     }
 
     public static String CriarDataCurtaDBComDataExistente(String data) {
+        datanormal = "";
         String dia = data.substring(0, 2);
         String mes = data.substring(3, 5);
         String ano = data.substring(6, 10);
@@ -107,6 +113,7 @@ public class Dates {
     }
 
     public static String TransformarDataCompletaDoDB(String datadb) {
+        datanormal = "";
         String dia = datadb.substring(8, 10);
         String mes = datadb.substring(5, 7);
         String ano = datadb.substring(0, 4);
@@ -117,6 +124,7 @@ public class Dates {
     }
 
     public static String TransformarDataCurtaDoDB(String datadb) {
+        datanormal = "";
         String dia = datadb.substring(8, 10);
         String mes = datadb.substring(5, 7);
         String ano = datadb.substring(0, 4);
@@ -126,6 +134,7 @@ public class Dates {
     }
 
     public static String dataxml(String dataxml) {
+        datanormal = "";
         String dia = dataxml.substring(8, 10);
         String mes = dataxml.substring(5, 7);
         String ano = dataxml.substring(0, 4);
@@ -823,6 +832,7 @@ public class Dates {
     }
 
     public static String CriarDataCurtaDBJDateChooser(Date data) {
+        datanormal = "";
         if (data == null) {
             datanormal = null;
 

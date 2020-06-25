@@ -18,10 +18,10 @@ import DAO.FornecedoresDocDAO;
 import DAO.FornecedoresTipoDAO;
 import Methods.Dates;
 import Methods.SendEmail;
+import Methods.Telas;
 import ValoresOriginais.FornecedoresValoresOriginais;
 import View.Geral.HistoricoAlteracao;
 import java.awt.AWTException;
-import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,6 @@ import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -38,6 +37,14 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class Fornecedores extends javax.swing.JInternalFrame {
+
+    public static int id = 0;
+
+    //DAO para buscar dados
+    FornecedoresDAO fd = new FornecedoresDAO();
+    FornecedoresTipoDAO ftd = new FornecedoresTipoDAO();
+    FornecedoresContatosDAO fcd = new FornecedoresContatosDAO();
+    FornecedoresDocDAO fdd = new FornecedoresDocDAO();
 
     /**
      * Creates new form TelaCadastroCliente
@@ -269,7 +276,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         txtpesquisa = new javax.swing.JTextField();
         jPanel11 = new javax.swing.JPanel();
         cbstatus = new javax.swing.JComboBox<>();
-        jButton11 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         btnsalvar = new javax.swing.JButton();
@@ -400,13 +406,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
             .addComponent(cbstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        jButton11.setText("jButton11");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -417,8 +416,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 906, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -436,9 +433,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton11))
+                .addComponent(jButton3)
                 .addContainerGap())
         );
 
@@ -997,20 +992,16 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnsalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsalvarActionPerformed
-        //DAO e Bean para criar/alterar novo Fornecedor
+        //Bean para criar/alterar novo Fornecedor
         FornecedoresBean fb = new FornecedoresBean();
-        FornecedoresDAO fd = new FornecedoresDAO();
 
-        //DAO e Bean para criar documentos do Fornecedor
-        FornecedoresDocDAO fdd = new FornecedoresDocDAO();
+        //Bean para criar documentos do Fornecedor
         FornecedoresDocBean fdb = new FornecedoresDocBean();
 
-        //DAO e Bean para criar/alterar contatos do Fornecedor
-        FornecedoresContatosDAO fcd = new FornecedoresContatosDAO();
+        //Bean para criar/alterar contatos do Fornecedor
         FornecedoresContatosBean fcb = new FornecedoresContatosBean();
 
-        //DAO e Bean para criar/alterar tipo do Fonecedor
-        FornecedoresTipoDAO ftd = new FornecedoresTipoDAO();
+        //Bean para criar/alterar tipo do Fonecedor
         FornecedoresTipoBean ftb = new FornecedoresTipoBean();
 
         //DAO e Bean para criar alterações do Fornecedor
@@ -1041,171 +1032,62 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         } else if (txtcep.getText().equals("     -   ")) {
             JOptionPane.showMessageDialog(null, "Digite um CEP.");
             txtcep.requestFocus();
-        } else if (txtidfornecedor.getText().equals("")) {//Se o ID está vazio
-            //Dados para criar novo Fornecedor
-            fb.setNome(txtnomefornecedor.getText());
-            fb.setRazaosocial(txtrazao.getText());
-            fb.setCnpj(txtcnpj.getText());
-            fb.setIe(txtie.getText());
-            fb.setTelefone(txttelefone.getText());
-            fb.setLogradouro(txtlogradouro.getText());
-            fb.setNumero(txtnumero.getText());
-            fb.setComplemento(txtcomplemento.getText());
-            fb.setBairro(txtbairro.getText());
-            fb.setCidade(txtcidade.getText());
-            fb.setUf(cbuf.getSelectedItem().toString());
-            fb.setCep(txtcep.getText());
-            fb.setData(data);
-            fb.setEmailnfe(txtnfe.getText());
-            fb.setStatus("Ativo");
+        } else {
+            String tipo = this.getClass().getSimpleName();
+            String user = Session.nome;
 
-            //nome, razaosocial, cnpj, ie, telefone, logradouro, numero, complemento, bairro, cidade, uf, cep, data, emailnfe, status
-            fd.create(fb);
+            if (id == 0) {//Se o ID está vazio
+                //Dados para criar novo Fornecedor
+                fb.setNome(txtnomefornecedor.getText());
+                fb.setRazaosocial(txtrazao.getText());
+                fb.setCnpj(txtcnpj.getText());
+                fb.setIe(txtie.getText());
+                fb.setTelefone(txttelefone.getText());
+                fb.setLogradouro(txtlogradouro.getText());
+                fb.setNumero(txtnumero.getText());
+                fb.setComplemento(txtcomplemento.getText());
+                fb.setBairro(txtbairro.getText());
+                fb.setCidade(txtcidade.getText());
+                fb.setUf(cbuf.getSelectedItem().toString());
+                fb.setCep(txtcep.getText());
+                fb.setData(data);
+                fb.setEmailnfe(txtnfe.getText());
+                fb.setStatus("Ativo");
 
-            //Retornar ID do fornecedor criado
-            int idcriado = 0;
-            for (FornecedoresBean fb2 : fd.readcreated(data)) {
-                idcriado = fb2.getId();
-            }
+                //nome, razaosocial, cnpj, ie, telefone, logradouro, numero, complemento, bairro, cidade, uf, cep, data, emailnfe, status
+                fd.create(fb);
 
-            //Salvar tipo de Fornecedor
-            ftb.setIdfornecedor(idcriado);
-            ftb.setMp((boolean) tabletipo.getValueAt(0, 0));
-            ftb.setFerramentas((boolean) tabletipo.getValueAt(1, 0));
-            ftb.setRebolo((boolean) tabletipo.getValueAt(2, 0));
-            ftb.setOleo((boolean) tabletipo.getValueAt(3, 0));
-            ftb.setGravacao((boolean) tabletipo.getValueAt(4, 0));
-            ftb.setEmbalagem((boolean) tabletipo.getValueAt(5, 0));
-            ftb.setCalibracao((boolean) tabletipo.getValueAt(6, 0));
-            ftb.setManutencao((boolean) tabletipo.getValueAt(7, 0));
-            ftb.setEscritorio((boolean) tabletipo.getValueAt(8, 0));
-            ftb.setLimpeza((boolean) tabletipo.getValueAt(9, 0));
-            ftb.setRevestimento((boolean) tabletipo.getValueAt(10, 0));
-            ftb.setRetifica((boolean) tabletipo.getValueAt(11, 0));
-
-            //idfornecedor, mp, ferramentas, rebolo, oleo, gravacao, embalagem, calibracao, manutencao, escritorio, limpeza, revestimento, retifica
-            ftd.create(ftb);
-
-            //Salvar documentos do Fornecedor
-            if (tabledocumentos.getRowCount() > 0) {//Se existem documentos
-                for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                    //Localicação do documento original
-                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
-                    //Pasta que será colocar o documento
-                    File folder = new File("Q:/MIKE_ERP/fornecedor_arq/" + String.valueOf(idcriado));
-                    //Documento copiado do original
-                    File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                    //Criar pasta no caso de já não existir
-                    folder.mkdirs();
-                    try {
-                        //Criar o documento copiado na pasta
-                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                    } catch (IOException ex) {
-                        Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
-                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-                        try {
-                            SendEmail.EnviarErro(ex.toString());
-                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                        } catch (HeadlessException hex) {
-                            JOptionPane.showMessageDialog(rootPane, "Erro ao enviar e-mail para suporte!\n" + hex);
-                        } catch (AWTException | IOException ex1) {
-                            Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex1);
-                        }
-                    }
-
-                    //Dados do documento para salvar no DB
-                    fdb.setIdfornecedor(idcriado);
-                    fdb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
-                    fdb.setLocal(filecopy.toString());
-
-                    //idorcamento, descricao, local
-                    fdd.create(fdb);
+                //Retornar ID do fornecedor criado
+                int idcriado = 0;
+                for (FornecedoresBean fb2 : fd.readcreated(data)) {
+                    idcriado = fb2.getId();
                 }
-            }
 
-            //Salvar contatos do Fornecedor
-            if (tablecontatos.getRowCount() > 0) {//Se existem contatos
-                //Dados para criar contato
-                for (int i = 0; i < tablecontatos.getRowCount(); i++) {
-                    fcb.setIdfornecedor(idcriado);
-                    fcb.setNome(tablecontatos.getValueAt(i, 2).toString());
-                    fcb.setCargo(tablecontatos.getValueAt(i, 3).toString());
-                    fcb.setTelefone(tablecontatos.getValueAt(i, 4).toString());
-                    fcb.setEmail(tablecontatos.getValueAt(i, 5).toString());
+                //Salvar tipo de Fornecedor
+                ftb.setIdfornecedor(idcriado);
+                ftb.setMp((boolean) tabletipo.getValueAt(0, 0));
+                ftb.setFerramentas((boolean) tabletipo.getValueAt(1, 0));
+                ftb.setRebolo((boolean) tabletipo.getValueAt(2, 0));
+                ftb.setOleo((boolean) tabletipo.getValueAt(3, 0));
+                ftb.setGravacao((boolean) tabletipo.getValueAt(4, 0));
+                ftb.setEmbalagem((boolean) tabletipo.getValueAt(5, 0));
+                ftb.setCalibracao((boolean) tabletipo.getValueAt(6, 0));
+                ftb.setManutencao((boolean) tabletipo.getValueAt(7, 0));
+                ftb.setEscritorio((boolean) tabletipo.getValueAt(8, 0));
+                ftb.setLimpeza((boolean) tabletipo.getValueAt(9, 0));
+                ftb.setRevestimento((boolean) tabletipo.getValueAt(10, 0));
+                ftb.setRetifica((boolean) tabletipo.getValueAt(11, 0));
 
-                    //idfornecedor, nome, cargo, telefone, email
-                    fcd.create(fcb);
-                }
-            }
+                //idfornecedor, mp, ferramentas, rebolo, oleo, gravacao, embalagem, calibracao, manutencao, escritorio, limpeza, revestimento, retifica
+                ftd.create(ftb);
 
-            //Salvar criação do Fornecedor
-            ab.setIdlocal(idcriado);
-            ab.setData(data);
-            ab.setUser(Session.nome);
-            ab.setValor("Criação do registro");
-            ab.setValoranterior("");
-            ab.setValornovo(data);
-
-            //idlocal, data, user, valor, valoranterior, valornovo
-            ad.create(ab, "fornecedores_alt", "idfornecedor");
-
-            //Zerar campos
-            zeracampos();
-
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
-
-            //Voltar para primeira tela de Fornecedores
-            tabfornecedores.setSelectedIndex(0);
-
-            //Atualizar lista com fonecedores cadastrados
-            readtablefornecedores();
-        } else {//Se o ID não está vazio
-            //Dados para atualizar Fornecedor
-            fb.setNome(txtnomefornecedor.getText());
-            fb.setRazaosocial(txtrazao.getText());
-            fb.setCnpj(txtcnpj.getText());
-            fb.setIe(txtie.getText());
-            fb.setTelefone(txttelefone.getText());
-            fb.setLogradouro(txtlogradouro.getText());
-            fb.setNumero(txtnumero.getText());
-            fb.setComplemento(txtcomplemento.getText());
-            fb.setBairro(txtbairro.getText());
-            fb.setCidade(txtcidade.getText());
-            fb.setUf(cbuf.getSelectedItem().toString());
-            fb.setCep(txtcep.getText());
-            fb.setEmailnfe(txtnfe.getText());
-            fb.setId(Integer.parseInt(txtidfornecedor.getText()));
-
-            //nome = ?, razaosocial = ?, cnpj = ?, ie = ?, telefone = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, emailnfe = ? WHERE id = ?
-            fd.update(fb);
-
-            //Update do tipo de Fornecedor
-            ftb.setMp((boolean) tabletipo.getValueAt(0, 0));
-            ftb.setFerramentas((boolean) tabletipo.getValueAt(1, 0));
-            ftb.setRebolo((boolean) tabletipo.getValueAt(2, 0));
-            ftb.setOleo((boolean) tabletipo.getValueAt(3, 0));
-            ftb.setGravacao((boolean) tabletipo.getValueAt(4, 0));
-            ftb.setEmbalagem((boolean) tabletipo.getValueAt(5, 0));
-            ftb.setCalibracao((boolean) tabletipo.getValueAt(6, 0));
-            ftb.setManutencao((boolean) tabletipo.getValueAt(7, 0));
-            ftb.setEscritorio((boolean) tabletipo.getValueAt(8, 0));
-            ftb.setLimpeza((boolean) tabletipo.getValueAt(9, 0));
-            ftb.setRevestimento((boolean) tabletipo.getValueAt(10, 0));
-            ftb.setRetifica((boolean) tabletipo.getValueAt(11, 0));
-            ftb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
-
-            //mp = ?, ferramentas = ?, rebolo = ?, oleo = ?, gravacao = ?, embalagem = ?, calibracao = ?, manutencao = ?, escritorio = ?, limpeza = ?, revestimento = ?, retifica = ? WHERE idfornecedor = ?
-            ftd.update(ftb);
-
-            //Salvar documentos do Fornecedor
-            if (tabledocumentos.getRowCount() > 0) {//Se existem documentos
-                for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                    if (tabledocumentos.getValueAt(i, 0).equals("")) {
+                //Salvar documentos do Fornecedor
+                if (tabledocumentos.getRowCount() > 0) {//Se existem documentos
+                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
                         //Localicação do documento original
                         File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
                         //Pasta que será colocar o documento
-                        File folder = new File("Q:/MIKE_ERP/fornecedor_arq/" + txtidfornecedor.getText());
+                        File folder = new File("Q:/MIKE_ERP/fornecedor_arq/" + String.valueOf(idcriado));
                         //Documento copiado do original
                         File filecopy = new File(folder + "/" + fileoriginal.getName());
 
@@ -1228,7 +1110,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                         }
 
                         //Dados do documento para salvar no DB
-                        fdb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+                        fdb.setIdfornecedor(idcriado);
                         fdb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
                         fdb.setLocal(filecopy.toString());
 
@@ -1236,14 +1118,12 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                         fdd.create(fdb);
                     }
                 }
-            }
 
-            //Salvar contatos do Fornecedor
-            if (tablecontatos.getRowCount() > 0) {//Se existem contatos
-                //Dados para criar contato
-                for (int i = 0; i < tablecontatos.getRowCount(); i++) {
-                    if (tablecontatos.getValueAt(i, 0).equals("")) {//Se não tem id, criar
-                        fcb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+                //Salvar contatos do Fornecedor
+                if (tablecontatos.getRowCount() > 0) {//Se existem contatos
+                    //Dados para criar contato
+                    for (int i = 0; i < tablecontatos.getRowCount(); i++) {
+                        fcb.setIdfornecedor(idcriado);
                         fcb.setNome(tablecontatos.getValueAt(i, 2).toString());
                         fcb.setCargo(tablecontatos.getValueAt(i, 3).toString());
                         fcb.setTelefone(tablecontatos.getValueAt(i, 4).toString());
@@ -1251,333 +1131,225 @@ public class Fornecedores extends javax.swing.JInternalFrame {
 
                         //idfornecedor, nome, cargo, telefone, email
                         fcd.create(fcb);
-                    } else {//Se tem id, atualizar
-                        fcb.setNome(tablecontatos.getValueAt(i, 2).toString());
-                        fcb.setCargo(tablecontatos.getValueAt(i, 3).toString());
-                        fcb.setTelefone(tablecontatos.getValueAt(i, 4).toString());
-                        fcb.setEmail(tablecontatos.getValueAt(i, 5).toString());
-                        fcb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
-
-                        //nome = ?, cargo = ?, telefone = ?, email = ? WHERE idfornecedor = ?
-                        fcd.update(fcb);
                     }
                 }
+
+                //Salvar criação do Fornecedor nas alterações
+                ad.create(idcriado, tipo, data, user, "Criação de Registro", "", data);
+
+                //Zerar campos
+                zeracampos();
+
+                JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
+
+                //Voltar para primeira tela de Fornecedores
+                tabfornecedores.setSelectedIndex(0);
+
+                //Atualizar lista com fonecedores cadastrados
+                readtablefornecedores();
+            } else {//Se o ID não está vazio
+                //Dados para atualizar Fornecedor
+                fb.setNome(txtnomefornecedor.getText());
+                fb.setRazaosocial(txtrazao.getText());
+                fb.setCnpj(txtcnpj.getText());
+                fb.setIe(txtie.getText());
+                fb.setTelefone(txttelefone.getText());
+                fb.setLogradouro(txtlogradouro.getText());
+                fb.setNumero(txtnumero.getText());
+                fb.setComplemento(txtcomplemento.getText());
+                fb.setBairro(txtbairro.getText());
+                fb.setCidade(txtcidade.getText());
+                fb.setUf(cbuf.getSelectedItem().toString());
+                fb.setCep(txtcep.getText());
+                fb.setEmailnfe(txtnfe.getText());
+                fb.setId(Integer.parseInt(txtidfornecedor.getText()));
+
+                //nome = ?, razaosocial = ?, cnpj = ?, ie = ?, telefone = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, emailnfe = ? WHERE id = ?
+                fd.update(fb);
+
+                //Update do tipo de Fornecedor
+                ftb.setMp((boolean) tabletipo.getValueAt(0, 0));
+                ftb.setFerramentas((boolean) tabletipo.getValueAt(1, 0));
+                ftb.setRebolo((boolean) tabletipo.getValueAt(2, 0));
+                ftb.setOleo((boolean) tabletipo.getValueAt(3, 0));
+                ftb.setGravacao((boolean) tabletipo.getValueAt(4, 0));
+                ftb.setEmbalagem((boolean) tabletipo.getValueAt(5, 0));
+                ftb.setCalibracao((boolean) tabletipo.getValueAt(6, 0));
+                ftb.setManutencao((boolean) tabletipo.getValueAt(7, 0));
+                ftb.setEscritorio((boolean) tabletipo.getValueAt(8, 0));
+                ftb.setLimpeza((boolean) tabletipo.getValueAt(9, 0));
+                ftb.setRevestimento((boolean) tabletipo.getValueAt(10, 0));
+                ftb.setRetifica((boolean) tabletipo.getValueAt(11, 0));
+                ftb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+
+                //mp = ?, ferramentas = ?, rebolo = ?, oleo = ?, gravacao = ?, embalagem = ?, calibracao = ?, manutencao = ?, escritorio = ?, limpeza = ?, revestimento = ?, retifica = ? WHERE idfornecedor = ?
+                ftd.update(ftb);
+
+                //Salvar documentos do Fornecedor
+                if (tabledocumentos.getRowCount() > 0) {//Se existem documentos
+                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                        if (tabledocumentos.getValueAt(i, 0).equals("")) {
+                            //Localicação do documento original
+                            File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                            //Pasta que será colocar o documento
+                            File folder = new File("Q:/MIKE_ERP/fornecedor_arq/" + txtidfornecedor.getText());
+                            //Documento copiado do original
+                            File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                            //Criar pasta no caso de já não existir
+                            folder.mkdirs();
+                            try {
+                                //Criar o documento copiado na pasta
+                                Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                            } catch (IOException ex) {
+                                Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
+                                JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                                try {
+                                    SendEmail.EnviarErro(ex.toString());
+                                    JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                                } catch (HeadlessException hex) {
+                                    JOptionPane.showMessageDialog(rootPane, "Erro ao enviar e-mail para suporte!\n" + hex);
+                                } catch (AWTException | IOException ex1) {
+                                    Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex1);
+                                }
+                            }
+
+                            //Dados do documento para salvar no DB
+                            fdb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+                            fdb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
+                            fdb.setLocal(filecopy.toString());
+
+                            //idorcamento, descricao, local
+                            fdd.create(fdb);
+                        }
+                    }
+                }
+
+                //Salvar contatos do Fornecedor
+                if (tablecontatos.getRowCount() > 0) {//Se existem contatos
+                    //Dados para criar contato
+                    for (int i = 0; i < tablecontatos.getRowCount(); i++) {
+                        if (tablecontatos.getValueAt(i, 0).equals("")) {//Se não tem id, criar
+                            fcb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+                            fcb.setNome(tablecontatos.getValueAt(i, 2).toString());
+                            fcb.setCargo(tablecontatos.getValueAt(i, 3).toString());
+                            fcb.setTelefone(tablecontatos.getValueAt(i, 4).toString());
+                            fcb.setEmail(tablecontatos.getValueAt(i, 5).toString());
+
+                            //idfornecedor, nome, cargo, telefone, email
+                            fcd.create(fcb);
+                        } else {//Se tem id, atualizar
+                            fcb.setNome(tablecontatos.getValueAt(i, 2).toString());
+                            fcb.setCargo(tablecontatos.getValueAt(i, 3).toString());
+                            fcb.setTelefone(tablecontatos.getValueAt(i, 4).toString());
+                            fcb.setEmail(tablecontatos.getValueAt(i, 5).toString());
+                            fcb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+
+                            //nome = ?, cargo = ?, telefone = ?, email = ? WHERE idfornecedor = ?
+                            fcd.update(fcb);
+                        }
+                    }
+                }
+
+                //Verificar alterações e salvar caso seja necessário
+                if (!txtnomefornecedor.getText().equals(FornecedoresValoresOriginais.nome)) {
+                    ad.create(id, tipo, data, user, "Nome", FornecedoresValoresOriginais.nome, txtnomefornecedor.getText());
+                }
+                if (!txtrazao.getText().equals(FornecedoresValoresOriginais.razao)) {
+                    ad.create(id, tipo, data, user, "Razão Social", FornecedoresValoresOriginais.razao, txtrazao.getText());
+                }
+                if (!txtcnpj.getText().equals(FornecedoresValoresOriginais.cnpj)) {
+                    ad.create(id, tipo, data, user, "CNPJ", FornecedoresValoresOriginais.cnpj, txtcnpj.getText());
+                }
+                if (!txtie.getText().equals(FornecedoresValoresOriginais.ie)) {
+                    ad.create(id, tipo, data, user, "Inscrição Estadual", FornecedoresValoresOriginais.ie, txtie.getText());
+                }
+                if (!txttelefone.getText().equals(FornecedoresValoresOriginais.tel)) {
+                    ad.create(id, tipo, data, user, "Telefone", FornecedoresValoresOriginais.tel, txttelefone.getText());
+                }
+                if (!txtnfe.getText().equals(FornecedoresValoresOriginais.nfe)) {
+                    ad.create(id, tipo, data, user, "E-mail de nfe", FornecedoresValoresOriginais.nfe, txtnfe.getText());
+                }
+                if (!txtlogradouro.getText().equals(FornecedoresValoresOriginais.rua)) {
+                    ad.create(id, tipo, data, user, "Logradouro", FornecedoresValoresOriginais.rua, txtlogradouro.getText());
+                }
+                if (!txtnumero.getText().equals(FornecedoresValoresOriginais.num)) {
+                    ad.create(id, tipo, data, user, "Número", FornecedoresValoresOriginais.num, txtnumero.getText());
+                }
+                if (!txtcomplemento.getText().equals(FornecedoresValoresOriginais.comp)) {
+                    ad.create(id, tipo, data, user, "Complemento", FornecedoresValoresOriginais.comp, txtcomplemento.getText());
+                }
+                if (!txtbairro.getText().equals(FornecedoresValoresOriginais.bairro)) {
+                    ad.create(id, tipo, data, user, "Bairro", FornecedoresValoresOriginais.bairro, txtbairro.getText());
+                }
+                if (!txtcidade.getText().equals(FornecedoresValoresOriginais.cidade)) {
+                    ad.create(id, tipo, data, user, "Cidade", FornecedoresValoresOriginais.cidade, txtcidade.getText());
+                }
+                if (!cbuf.getSelectedItem().toString().equals(FornecedoresValoresOriginais.uf)) {
+                    ad.create(id, tipo, data, user, "Estado", FornecedoresValoresOriginais.uf, cbuf.getSelectedItem().toString());
+                }
+                if (!txtcep.getText().equals(FornecedoresValoresOriginais.cep)) {
+                    ad.create(id, tipo, data, user, "CEP", FornecedoresValoresOriginais.cep, txtcep.getText());
+                }
+                boolean mpn = (boolean) tabletipo.getValueAt(0, 0);
+                if (mpn != FornecedoresValoresOriginais.mp) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Matéria Prima", String.valueOf(FornecedoresValoresOriginais.mp), String.valueOf(mpn));
+                }
+                boolean ferrn = (boolean) tabletipo.getValueAt(1, 0);
+                if (ferrn != FornecedoresValoresOriginais.ferr) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Ferramentas", String.valueOf(FornecedoresValoresOriginais.ferr), String.valueOf(ferrn));
+                }
+                boolean rebolon = (boolean) tabletipo.getValueAt(2, 0);
+                if (rebolon != FornecedoresValoresOriginais.reb) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Rebolo", String.valueOf(FornecedoresValoresOriginais.reb), String.valueOf(rebolon));
+                }
+                boolean oleon = (boolean) tabletipo.getValueAt(3, 0);
+                if (oleon != FornecedoresValoresOriginais.oleo) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Óleo", String.valueOf(FornecedoresValoresOriginais.oleo), String.valueOf(oleon));
+                }
+                boolean gravn = (boolean) tabletipo.getValueAt(4, 0);
+                if (gravn != FornecedoresValoresOriginais.grav) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Material para Gravação", String.valueOf(FornecedoresValoresOriginais.grav), String.valueOf(gravn));
+                }
+                boolean embn = (boolean) tabletipo.getValueAt(5, 0);
+                if (embn != FornecedoresValoresOriginais.emb) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Embalagem", String.valueOf(FornecedoresValoresOriginais.emb), String.valueOf(embn));
+                }
+                boolean caln = (boolean) tabletipo.getValueAt(6, 0);
+                if (caln != FornecedoresValoresOriginais.cal) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Calibração", String.valueOf(FornecedoresValoresOriginais.cal), String.valueOf(caln));
+                }
+                boolean manutencaon = (boolean) tabletipo.getValueAt(7, 0);
+                if (manutencaon != FornecedoresValoresOriginais.man) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Manutenção", String.valueOf(FornecedoresValoresOriginais.man), String.valueOf(manutencaon));
+                }
+                boolean escritorion = (boolean) tabletipo.getValueAt(8, 0);
+                if (escritorion != FornecedoresValoresOriginais.esc) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Material para Escritório", String.valueOf(FornecedoresValoresOriginais.esc), String.valueOf(escritorion));
+                }
+                boolean limpezan = (boolean) tabletipo.getValueAt(9, 0);
+                if (limpezan != FornecedoresValoresOriginais.lim) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Material de Limpeza", String.valueOf(FornecedoresValoresOriginais.lim), String.valueOf(limpezan));
+                }
+                boolean revestn = (boolean) tabletipo.getValueAt(10, 0);
+                if (revestn != FornecedoresValoresOriginais.rev) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Revestimento", String.valueOf(FornecedoresValoresOriginais.rev), String.valueOf(revestn));
+                }
+                boolean retn = (boolean) tabletipo.getValueAt(11, 0);
+                if (retn != FornecedoresValoresOriginais.ret) {
+                    ad.create(id, tipo, data, user, "Fornecedor de Retífica", String.valueOf(FornecedoresValoresOriginais.ret), String.valueOf(retn));
+                }
+                if (tabledocumentos.getRowCount() != FornecedoresValoresOriginais.rcdoc) {
+                    ad.create(id, tipo, data, user, "Número de Documentos", String.valueOf(FornecedoresValoresOriginais.rcdoc), String.valueOf(tabledocumentos.getRowCount()));
+                }
+                if (tablecontatos.getRowCount() != FornecedoresValoresOriginais.rccont) {
+                    ad.create(id, tipo, data, user, "Número de Contatos", String.valueOf(FornecedoresValoresOriginais.rccont), String.valueOf(tablecontatos.getRowCount()));
+                }
+                JOptionPane.showMessageDialog(null, "Fornecedor atualizado com sucesso!");
+
+                //Atualizar lista com fonecedores cadastrados
+                readtablefornecedores();
             }
-
-            //Verificar alterações e salvar caso seja necessário
-            if (!txtnomefornecedor.getText().equals(FornecedoresValoresOriginais.nome)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Nome");
-                ab.setValoranterior(FornecedoresValoresOriginais.nome);
-                ab.setValornovo(txtnomefornecedor.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtrazao.getText().equals(FornecedoresValoresOriginais.razao)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Razão Social");
-                ab.setValoranterior(FornecedoresValoresOriginais.razao);
-                ab.setValornovo(txtrazao.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtcnpj.getText().equals(FornecedoresValoresOriginais.cnpj)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("CNPJ");
-                ab.setValoranterior(FornecedoresValoresOriginais.cnpj);
-                ab.setValornovo(txtcnpj.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtie.getText().equals(FornecedoresValoresOriginais.ie)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Inscrição Estadual");
-                ab.setValoranterior(FornecedoresValoresOriginais.ie);
-                ab.setValornovo(txtie.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txttelefone.getText().equals(FornecedoresValoresOriginais.tel)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Telefone");
-                ab.setValoranterior(FornecedoresValoresOriginais.tel);
-                ab.setValornovo(txttelefone.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtnfe.getText().equals(FornecedoresValoresOriginais.nfe)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("E-mail de nfe");
-                ab.setValoranterior(FornecedoresValoresOriginais.nfe);
-                ab.setValornovo(txtnfe.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtlogradouro.getText().equals(FornecedoresValoresOriginais.rua)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Logradouro");
-                ab.setValoranterior(FornecedoresValoresOriginais.rua);
-                ab.setValornovo(txtlogradouro.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtnumero.getText().equals(FornecedoresValoresOriginais.num)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Número");
-                ab.setValoranterior(FornecedoresValoresOriginais.num);
-                ab.setValornovo(txtnumero.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtcomplemento.getText().equals(FornecedoresValoresOriginais.comp)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Complemento");
-                ab.setValoranterior(FornecedoresValoresOriginais.comp);
-                ab.setValornovo(txtcomplemento.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtbairro.getText().equals(FornecedoresValoresOriginais.bairro)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData("Bairro");
-                ab.setUser(Session.nome);
-                ab.setValoranterior(FornecedoresValoresOriginais.bairro);
-                ab.setValornovo(txtbairro.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtcidade.getText().equals(FornecedoresValoresOriginais.cidade)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Cidade");
-                ab.setValoranterior(FornecedoresValoresOriginais.cidade);
-                ab.setValornovo(txtcidade.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!cbuf.getSelectedItem().toString().equals(FornecedoresValoresOriginais.uf)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Estado");
-                ab.setValoranterior(FornecedoresValoresOriginais.uf);
-                ab.setValornovo(cbuf.getSelectedItem().toString());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (!txtcep.getText().equals(FornecedoresValoresOriginais.cep)) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("CEP");
-                ab.setValoranterior(FornecedoresValoresOriginais.cep);
-                ab.setValornovo(txtcep.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean mpn = (boolean) tabletipo.getValueAt(0, 0);
-            if (mpn != FornecedoresValoresOriginais.mp) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Matéria Prima");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.mp));
-                ab.setValornovo(String.valueOf(mpn));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean ferrn = (boolean) tabletipo.getValueAt(1, 0);
-            if (ferrn != FornecedoresValoresOriginais.ferr) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Ferramentas");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.ferr));
-                ab.setValornovo(String.valueOf(ferrn));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean rebolon = (boolean) tabletipo.getValueAt(2, 0);
-            if (rebolon != FornecedoresValoresOriginais.reb) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Rebolo");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.reb));
-                ab.setValornovo(txtrazao.getText());
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean oleon = (boolean) tabletipo.getValueAt(3, 0);
-            if (oleon != FornecedoresValoresOriginais.oleo) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Óleo");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.oleo));
-                ab.setValornovo(String.valueOf(oleon));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean gravn = (boolean) tabletipo.getValueAt(4, 0);
-            if (gravn != FornecedoresValoresOriginais.grav) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Material para Gravação");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.grav));
-                ab.setValornovo(String.valueOf(gravn));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean embn = (boolean) tabletipo.getValueAt(5, 0);
-            if (embn != FornecedoresValoresOriginais.emb) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Embalagem");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.emb));
-                ab.setValornovo(String.valueOf(embn));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean caln = (boolean) tabletipo.getValueAt(6, 0);
-            if (caln != FornecedoresValoresOriginais.cal) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Calibração");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.cal));
-                ab.setValornovo(String.valueOf(caln));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean manutencaon = (boolean) tabletipo.getValueAt(7, 0);
-            if (manutencaon != FornecedoresValoresOriginais.man) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Manutenção");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.man));
-                ab.setValornovo(String.valueOf(manutencaon));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean escritorion = (boolean) tabletipo.getValueAt(8, 0);
-            if (escritorion != FornecedoresValoresOriginais.esc) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Material para Escritório");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.esc));
-                ab.setValornovo(String.valueOf(escritorion));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean limpezan = (boolean) tabletipo.getValueAt(9, 0);
-            if (limpezan != FornecedoresValoresOriginais.lim) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Material de Limpeza");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.lim));
-                ab.setValornovo(String.valueOf(limpezan));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean revestn = (boolean) tabletipo.getValueAt(10, 0);
-            if (revestn != FornecedoresValoresOriginais.rev) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Revestimento");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.rev));
-                ab.setValornovo(String.valueOf(revestn));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            boolean retn = (boolean) tabletipo.getValueAt(11, 0);
-            if (retn != FornecedoresValoresOriginais.ret) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Fornecedor de Retífica");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.ret));
-                ab.setValornovo(String.valueOf(retn));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (tabledocumentos.getRowCount() != FornecedoresValoresOriginais.rcdoc) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Número de Documentos");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.rcdoc));
-                ab.setValornovo(String.valueOf(tabledocumentos.getRowCount()));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            if (tablecontatos.getRowCount() != FornecedoresValoresOriginais.rccont) {
-                ab.setIdlocal(Integer.parseInt(txtidfornecedor.getText()));
-                ab.setData(data);
-                ab.setUser(Session.nome);
-                ab.setValor("Número de Contatos");
-                ab.setValoranterior(String.valueOf(FornecedoresValoresOriginais.rccont));
-                ab.setValornovo(String.valueOf(tablecontatos.getRowCount()));
-
-                //idfornecedor, data, user, valor, valoranterior, valornovo
-                ad.create(ab, "fornecedores_alt", "idfornecedor");
-            }
-            JOptionPane.showMessageDialog(null, "Fornecedor atualizado com sucesso!");
-
-            //Atualizar lista com fonecedores cadastrados
-            readtablefornecedores();
-
         }
     }//GEN-LAST:event_btnsalvarActionPerformed
 
@@ -1594,21 +1366,14 @@ public class Fornecedores extends javax.swing.JInternalFrame {
             //Zerar campos com valores anteriores
             zeracampos();
 
-            //Colocar o ID no txt
-            txtidfornecedor.setText(tablefornecedores.getValueAt(tablefornecedores.getSelectedRow(), 0).toString());
+            //Colocar o ID da table no id
+            id = Integer.parseInt(tablefornecedores.getValueAt(tablefornecedores.getSelectedRow(), 0).toString());
+
             //Mudar a aba para os dados do Fornecedor
             tabfornecedores.setSelectedIndex(1);
-            //Variável de ID
-            int idfornecedor = Integer.parseInt(txtidfornecedor.getText());
-
-            //DAO para buscar dados
-            FornecedoresDAO fd = new FornecedoresDAO();
-            FornecedoresTipoDAO ftd = new FornecedoresTipoDAO();
-            FornecedoresContatosDAO fcd = new FornecedoresContatosDAO();
-            FornecedoresDocDAO fdd = new FornecedoresDocDAO();
 
             //Colocar dados do Fornecedor de acordo com ID nos txt's
-            for (FornecedoresBean fb : fd.click(idfornecedor)) {
+            fd.click(id).forEach(fb -> {
                 txtnomefornecedor.setText(fb.getNome());
                 txtrazao.setText(fb.getRazaosocial());
                 txtcnpj.setText(fb.getCnpj());
@@ -1622,14 +1387,14 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                 cbuf.setSelectedItem(fb.getUf());
                 txtcep.setText(fb.getCep());
                 txtnfe.setText(fb.getEmailnfe());
-            }
+            });
 
             //Colocar tabelas em Default
             DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
             DefaultTableModel modelcont = (DefaultTableModel) tablecontatos.getModel();
 
             //Colocar Tipos do Fornecedor de acordo com ID
-            for (FornecedoresTipoBean ftb : ftd.read(idfornecedor)) {
+            ftd.read(id).forEach(ftb -> {
                 tabletipo.setValueAt(ftb.isMp(), 0, 0);
                 tabletipo.setValueAt(ftb.isFerramentas(), 1, 0);
                 tabletipo.setValueAt(ftb.isRebolo(), 2, 0);
@@ -1642,11 +1407,11 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                 tabletipo.setValueAt(ftb.isLimpeza(), 9, 0);
                 tabletipo.setValueAt(ftb.isRevestimento(), 10, 0);
                 tabletipo.setValueAt(ftb.isRetifica(), 11, 0);
-            }
+            });
 
             //Colocar Documentos do Fornecedor de acordo com ID
             modeldoc.setNumRows(0);
-            for (FornecedoresDocBean fdb : fdd.read(idfornecedor)) {
+            fdd.read(id).forEach(fdb -> {
                 modeldoc.addRow(new Object[]{
                     fdb.getId(),
                     false,
@@ -1654,11 +1419,11 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                     fdb.getLocal(),
                     ""
                 });
-            }
+            });
 
             //Colocar Contatos do Fornecedor de acordo com ID
             modelcont.setNumRows(0);
-            for (FornecedoresContatosBean fcb : fcd.read(idfornecedor)) {
+            fcd.read(id).forEach(fcb -> {
                 modelcont.addRow(new Object[]{
                     fcb.getId(),
                     false,
@@ -1667,7 +1432,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                     fcb.getTelefone(),
                     fcb.getEmail()
                 });
-            }
+            });
 
             //Pegar valores originais de cada campo monitorado
             orgnome();
@@ -1739,53 +1504,33 @@ public class Fornecedores extends javax.swing.JInternalFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         DocumentosFornecedores p = new DocumentosFornecedores();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension jif = p.getSize();
-        Dimension d = desk.getSize();
-        p.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        if (txtidfornecedor.getText().equals("")) {
+        if (id == 0) {
             JOptionPane.showMessageDialog(null, "Nenhum fornecedor selecionado.");
         } else {
-            HistoricoAlteracao p = new HistoricoAlteracao("Fornecedor");
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(p);
-            Dimension jif = p.getSize();
-            Dimension d = desk.getSize();
-            p.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-            p.setVisible(true);
+            HistoricoAlteracao p = new HistoricoAlteracao(this.getClass().getSimpleName());
+            Telas.AparecerTela(p);
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         FornecedoresContatoAdd p = new FornecedoresContatoAdd();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension jif = p.getSize();
-        Dimension d = desk.getSize();
-        p.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void tablecontatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablecontatosMouseClicked
         //Verificar quantidade de cliques para abrir tela com dados do contato
         if (evt.getClickCount() == 2) {
             FornecedoresContatoAdd p = new FornecedoresContatoAdd();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(p);
-            Dimension jif = p.getSize();
-            Dimension d = desk.getSize();
-            p.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
+            Telas.AparecerTela(p);
             FornecedoresContatoAdd.lbllinha.setText(String.valueOf(tablecontatos.getSelectedRow()));
             FornecedoresContatoAdd.txtnome.setText(String.valueOf(tablecontatos.getValueAt(tablecontatos.getSelectedRow(), 2)));
             FornecedoresContatoAdd.txtcargo.setText(String.valueOf(tablecontatos.getValueAt(tablecontatos.getSelectedRow(), 3)));
             FornecedoresContatoAdd.txttel.setText(String.valueOf(tablecontatos.getValueAt(tablecontatos.getSelectedRow(), 4)));
             FornecedoresContatoAdd.txtemail.setText(String.valueOf(tablecontatos.getValueAt(tablecontatos.getSelectedRow(), 5)));
-            p.setVisible(true);
         }
     }//GEN-LAST:event_tablecontatosMouseClicked
 
@@ -1797,12 +1542,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         readtablefornecedores();
     }//GEN-LAST:event_cbstatusActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        FornecedoresDAO fd = new FornecedoresDAO();
-
-        JOptionPane.showMessageDialog(null, fd.readlast());
-    }//GEN-LAST:event_jButton11ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btncep;
@@ -1812,7 +1551,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     public static javax.swing.JComboBox<String> cbuf;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;

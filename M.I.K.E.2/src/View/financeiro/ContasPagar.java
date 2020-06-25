@@ -16,12 +16,10 @@ import Methods.Valores;
 import View.Geral.MudarStatus;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -728,12 +726,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
                 ops[1] = "Aprovado";
                 ops[2] = "Automático";
                 MudarStatus sel = new MudarStatus(ops, "Mudar Status CAP", "CAP");
-                JDesktopPane desk = this.getDesktopPane();
-                desk.add(sel);
-                Dimension jif = sel.getSize();
-                Dimension d = desk.getSize();
-                sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-                sel.setVisible(true);
+                Telas.AparecerTela(sel);
             }
             if (ativo > 0) {
                 ops = new String[4];
@@ -742,12 +735,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
                 ops[2] = "Aprovado";
                 ops[3] = "Automático";
                 MudarStatus sel = new MudarStatus(ops, "Mudar Status CAP", "CAP");
-                JDesktopPane desk = this.getDesktopPane();
-                desk.add(sel);
-                Dimension jif = sel.getSize();
-                Dimension d = desk.getSize();
-                sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-                sel.setVisible(true);
+                Telas.AparecerTela(sel);
             }
             if (aprovado > 0) {
                 JOptionPane.showMessageDialog(null, "Pagamentos selecionados estão aprovados. Favor usar botão Pagar em Lote.");
@@ -762,12 +750,7 @@ public class ContasPagar extends javax.swing.JInternalFrame {
                     ops[3] = "Aprovado";
                     ops[4] = "Automático";
                     MudarStatus sel = new MudarStatus(ops, "Mudar Status CAP", "CAP");
-                    JDesktopPane desk = this.getDesktopPane();
-                    desk.add(sel);
-                    Dimension jif = sel.getSize();
-                    Dimension d = desk.getSize();
-                    sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-                    sel.setVisible(true);
+                    Telas.AparecerTela(sel);
                 }
             }
         }

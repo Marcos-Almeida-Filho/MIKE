@@ -11,7 +11,6 @@ import Connection.Session;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
 import Methods.Dates;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,7 +42,6 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         cbprocesso = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Alterar Processo");
@@ -66,14 +64,6 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton2.setText("jButton2");
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -85,9 +75,7 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
                 .addComponent(cbprocesso, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
-                .addContainerGap(120, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -96,8 +84,7 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(cbprocesso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -127,13 +114,10 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
         fub.setId(id);
         
         //processo = ? WHERE id = ?
-        fud.updateprocesso(fub);
-        
-        fuhb.setFuncionario(Session.nome);
-        fuhb.setData(Dates.CriarDataCurtaDBSemDataExistente());
+        fud.updateProcessoById(fub);
         
         //funcionario = ?, data = ? WHERE idfup = ? AND processo = ?
-        fuhd.update(fuhb, id, processo);
+        fuhd.update(Session.nome, Dates.CriarDataCurtaDBSemDataExistente(), id, processo);
         
         fuhb.setIdfup(id);
         fuhb.setProcesso(cbprocesso.getSelectedItem().toString());
@@ -150,15 +134,10 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JOptionPane.showMessageDialog(null, processo);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JComboBox<String> cbprocesso;
     public javax.swing.JButton jButton1;
-    public javax.swing.JButton jButton2;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

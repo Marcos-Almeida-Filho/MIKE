@@ -12,6 +12,7 @@ import Methods.Numeros;
 import Methods.Telas;
 import Methods.Valores;
 import View.Geral.ProcurarCliente;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,6 +25,13 @@ public class OPF_UP extends javax.swing.JInternalFrame {
      */
     public OPF_UP() {
         initComponents();
+        btnAlterarProcesso();
+    }
+
+    public static void btnAlterarProcesso() {
+        if (txtop.getText().contains("OS")) {
+            btnAlterarProcesso.setEnabled(false);
+        }
     }
 
     /**
@@ -60,7 +68,7 @@ public class OPF_UP extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablehist = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnAlterarProcesso = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("OP Follow Up");
@@ -86,13 +94,16 @@ public class OPF_UP extends javax.swing.JInternalFrame {
         jLabel5.setText("Data de Entrega");
         jLabel5.setName("jLabel5"); // NOI18N
 
-        txtid.setEnabled(false);
+        txtid.setEditable(false);
         txtid.setName("txtid"); // NOI18N
 
+        txtdav.setEditable(false);
         txtdav.setName("txtdav"); // NOI18N
 
+        txtop.setEditable(false);
         txtop.setName("txtop"); // NOI18N
 
+        txtmaterial.setEditable(false);
         txtmaterial.setName("txtmaterial"); // NOI18N
 
         dateentrega.setDateFormatString("dd/MM/yyyy");
@@ -119,6 +130,7 @@ public class OPF_UP extends javax.swing.JInternalFrame {
         jLabel8.setText("Observação");
         jLabel8.setName("jLabel8"); // NOI18N
 
+        txtcliente.setEditable(false);
         txtcliente.setName("txtcliente"); // NOI18N
 
         jLabel9.setText("Cliente");
@@ -258,11 +270,11 @@ public class OPF_UP extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton3.setText("Alterar Processo Atual");
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnAlterarProcesso.setText("Alterar Processo Atual");
+        btnAlterarProcesso.setName("btnAlterarProcesso"); // NOI18N
+        btnAlterarProcesso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnAlterarProcessoActionPerformed(evt);
             }
         });
 
@@ -276,7 +288,7 @@ public class OPF_UP extends javax.swing.JInternalFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addComponent(btnAlterarProcesso)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -292,7 +304,7 @@ public class OPF_UP extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton3))
+                    .addComponent(btnAlterarProcesso))
                 .addContainerGap())
         );
 
@@ -311,23 +323,44 @@ public class OPF_UP extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        F_UPDAO fud = new F_UPDAO();
-        F_UPBean fub = new F_UPBean();
-        
-        fub.setDav(txtdav.getText());
-        fub.setOp(txtop.getText());
-        fub.setMaterial(txtmaterial.getText());
-        fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(dateentrega.getDate()));
-        fub.setCliente(txtcliente.getText());
-        fub.setNivel(cbnivel.getSelectedIndex());
-        fub.setValor(Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(txtvalor.getText())));
-        fub.setObservacao(txtobs.getText());
-        fub.setId(Integer.parseInt(txtid.getText()));
-        
-        //dav = ?, op = ?, material = ?, dataentrega = ?, cliente = ?, nivel = ?, valor = ?, observacao = ? WHERE id = ?
-        fud.update(fub);
-        
-        F_UP.readprocesso();
+        if (txtcliente.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Escolha um cliente.");
+        } else if (txtdav.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite uma dav.");
+            txtdav.requestFocus();
+        } else if (txtop.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite uma op.");
+            txtop.requestFocus();
+        } else if (dateentrega.getDate().toString().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite uma data de entrega.");
+        } else if (txtmaterial.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite o material.");
+            txtmaterial.requestFocus();
+        } else if (cbnivel.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Escolha um nível.");
+            cbnivel.showPopup();
+        } else if (txtvalor.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um valor.");
+            txtvalor.requestFocus();
+        } else {
+            F_UPDAO fud = new F_UPDAO();
+            F_UPBean fub = new F_UPBean();
+
+            fub.setDav(txtdav.getText());
+            fub.setOp(txtop.getText());
+            fub.setMaterial(txtmaterial.getText());
+            fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(dateentrega.getDate()));
+            fub.setCliente(txtcliente.getText());
+            fub.setNivel(cbnivel.getSelectedIndex());
+            fub.setValor(Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(txtvalor.getText())));
+            fub.setObservacao(txtobs.getText());
+            fub.setId(Integer.parseInt(txtid.getText()));
+
+            //dav = ?, op = ?, material = ?, dataentrega = ?, cliente = ?, nivel = ?, valor = ?, observacao = ? WHERE id = ?
+            fud.update(fub);
+
+            F_UP.readops();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -339,20 +372,20 @@ public class OPF_UP extends javax.swing.JInternalFrame {
         Numeros.SetarTextoNumeroEmDinheiro(txtvalor.getText(), txtvalor);
     }//GEN-LAST:event_txtvalorFocusLost
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnAlterarProcessoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarProcessoActionPerformed
         String proc = tablehist.getValueAt(tablehist.getRowCount() - 1, 0).toString();
-        
+
         AlterarProcesso ap = new AlterarProcesso(proc);
         Telas.AparecerTela(ap);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnAlterarProcessoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton btnAlterarProcesso;
     public static javax.swing.JComboBox<String> cbnivel;
     public static com.toedter.calendar.JDateChooser dateentrega;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
-    public javax.swing.JButton jButton3;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;

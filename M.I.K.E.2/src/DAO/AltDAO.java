@@ -25,25 +25,50 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class AltDAO {
+    
+    Connection con;
+    
+    PreparedStatement stmt;
+    
+    ResultSet rs;
+    
+    List<AltBean> listab;
 
-    public void create(AltBean ab, String tabela, String idlocal) {
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+        
+        stmt = null;
+    }
+    
+    private void rsList() {
+        conStmt();
+        
+        rs = null;
+        
+        listab = new ArrayList<>();
+    }
+    
+    /**
+     * Método para criar alterações em qualquer item.
+     * 
+     * @param id Int contendo o ID do item
+     * @param tipo String do tipo do item
+     * @param data String com data completa invertida para o Banco de Dados
+     * @param user String com o nome do usuário fazendo a alteração
+     * @param valor String com o valor que foi alterado. (Ex: Nome, Código, Descrição, etc.)
+     * @param valoranterior String com o valor original
+     * @param valornovo String com o novo valor que foi inserido
+     */
+    public void create(int id, String tipo, String data, String user, String valor, String valoranterior, String valornovo) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO " + tabela + " (" + idlocal + " , data, user, valor, valoranterior, valornovo) VALUES (?,?,?,?,?,?)");
-            stmt.setInt(1, ab.getIdlocal());
-            stmt.setString(2, ab.getData());
-            stmt.setString(3, ab.getUser());
-            stmt.setString(4, ab.getValor());
-            stmt.setString(5, ab.getValoranterior());
-            stmt.setString(6, ab.getValornovo());
+            stmt = con.prepareStatement("INSERT INTO alteracoes (iditem, tipo, data, user, valor, valoranterior, valornovo) VALUES (" + id + ",'" + tipo + "','" + data + "','" + user + "','" + valor + "','" + valoranterior + "','" + valornovo + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar as alterações do Fornecedor!\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao salvar as alterações!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -53,20 +78,21 @@ public class AltDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    /**
+     * Método para leitura de todas as modificações de qualquer item.
+     * 
+     * @param id Int contendo o id do item a ser procuradas as alterações
+     * @param tipo String com o tipo do item para achar as alterações
+     * @return List<> com todas as alterações do item.
+     */
+    public List<AltBean> read(int id, String tipo) {
 
-    public List<AltBean> read(int idfornecedor, String tabela, String idlocal) {
-
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt;
-
-        ResultSet rs;
-
-        List<AltBean> listab = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM " + tabela + " WHERE " + idlocal + " = ?");
-            stmt.setInt(1, idfornecedor);
+            stmt = con.prepareStatement("SELECT * FROM alteracoes WHERE iditem = " + id + " AND tipo = '" + tipo + "'");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {

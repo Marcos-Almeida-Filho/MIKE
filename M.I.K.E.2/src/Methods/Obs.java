@@ -19,6 +19,7 @@ public class Obs {
         DefaultTableModel modelobs = (DefaultTableModel) table.getModel();
         modelobs.addRow(new Object[]{
             "",
+            false,
             Dates.CriarDataCurta(),
             Session.nome,
             obs

@@ -7,6 +7,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="closable" type="boolean" value="true"/>
+    <Property name="maximizable" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="true"/>
     <Property name="title" type="java.lang.String" value="Conta A Pagar"/>
   </Properties>
@@ -469,7 +470,7 @@
             <Component class="javax.swing.JComboBox" name="cbmetodo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="7">
+                  <StringArray count="8">
                     <StringItem index="0" value="Selecione"/>
                     <StringItem index="1" value="Boleto"/>
                     <StringItem index="2" value="Dep&#xf3;sito"/>
@@ -477,6 +478,7 @@
                     <StringItem index="4" value="Cart&#xe3;o de Cr&#xe9;dito"/>
                     <StringItem index="5" value="Cheque"/>
                     <StringItem index="6" value="Dinheiro"/>
+                    <StringItem index="7" value="D&#xe9;bito Autom&#xe1;tico"/>
                   </StringArray>
                 </Property>
               </Properties>

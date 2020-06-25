@@ -84,6 +84,36 @@ public class ProcessosServicoDAO {
         }
         return listpsb;
     }
+    
+    public int qtdProcessos() {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+        
+        int qtd = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM processosservico");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                qtd++;
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ProcessosServicoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return qtd;
+    }
 
     public void update(ServicoGrupoDeProcessosBean psb) {
 

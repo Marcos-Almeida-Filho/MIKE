@@ -33,14 +33,53 @@ public class Senhas extends javax.swing.JInternalFrame {
 
     public Senhas() {
         initComponents();
-        readsenhas();
+        readSenhas();
+        criador();
+    }
+
+    public static void criador() {
+        DefaultTableModel modelacesso = (DefaultTableModel) tableacesso.getModel();
+        modelacesso.setNumRows(0);
+
+        modelacesso.addRow(new Object[]{
+            "",
+            false,
+            Session.nome
+        });
+
+    }
+
+    public void readSenhas() {
+        DefaultTableModel model = (DefaultTableModel) tablesenhas.getModel();
+        model.setNumRows(0);
+
+        sd.read().forEach(sb -> {
+            acesso = new String[sad.click(sb.getId()).size()];
+
+            int index = 0;
+
+            for (SenhasAcessoBean sab : sad.click(sb.getId())) {
+                acesso[index] = sab.getNome();
+                index++;
+            }
+
+            for (int i = 0; i < acesso.length; i++) {
+                if (Session.nome.equals(acesso[i])) {
+                    model.addRow(new Object[]{
+                        sb.getId(),
+                        false,
+                        sb.getNome()
+                    });
+                    break;
+                }
+            }
+        });
+
     }
 
     public static void readsenhas() {
         DefaultTableModel model = (DefaultTableModel) tablesenhas.getModel();
         model.setNumRows(0);
-
-        SenhasDAO sd = new SenhasDAO();
 
         sd.read().forEach(sb -> {
             model.addRow(new Object[]{
@@ -90,6 +129,7 @@ public class Senhas extends javax.swing.JInternalFrame {
         tablesenhas = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         txtpesquisa = new javax.swing.JTextField();
+        jButton5 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -175,6 +215,14 @@ public class Senhas extends javax.swing.JInternalFrame {
             .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
+        jButton5.setText("Excluir");
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -183,7 +231,10 @@ public class Senhas extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton5)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -192,7 +243,9 @@ public class Senhas extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5)
                 .addContainerGap())
         );
 
@@ -451,7 +504,7 @@ public class Senhas extends javax.swing.JInternalFrame {
 
             //login, nome, senha, site
             sd.create(sb);
-            
+
             txtid.setText(String.valueOf(sd.readcreated()));
 
             for (int i = 0; i < tableacesso.getRowCount(); i++) {
@@ -573,8 +626,31 @@ public class Senhas extends javax.swing.JInternalFrame {
         if (resp == 0) {
             zeracampos();
             txtnome.requestFocus();
+            criador();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        int numtrue = 0;
+        for (int i = 0; i < tablesenhas.getRowCount(); i++) {
+            if (tablesenhas.getValueAt(i, 1).equals(true)) {
+                numtrue++;
+            }
+        }
+        if (numtrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma senha selecionada.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja realmente excluir esta(s) senha(s)?", "Excluir Senhas", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                for (int i = 0; i < tablesenhas.getRowCount(); i++) {
+                    if (tablesenhas.getValueAt(i, 1).equals(true)) {
+                        sd.delete(Integer.parseInt(tablesenhas.getValueAt(i, 0).toString()));
+                    }
+                }
+            }
+            readSenhas();
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -582,6 +658,7 @@ public class Senhas extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
+    public javax.swing.JButton jButton5;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;

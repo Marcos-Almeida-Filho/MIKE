@@ -16,6 +16,7 @@ public class VendasMateriaisBean {
     private String codigo;
     private String descricao;
     private double estoque;
+    private String local;
     private String status;
 
     public int getId() {
@@ -48,6 +49,14 @@ public class VendasMateriaisBean {
 
     public void setEstoque(double estoque) {
         this.estoque = estoque;
+    }
+
+    public String getLocal() {
+        return local;
+    }
+
+    public void setLocal(String local) {
+        this.local = local;
     }
 
     public String getStatus() {

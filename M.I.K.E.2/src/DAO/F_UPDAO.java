@@ -26,11 +26,31 @@ import javax.swing.JOptionPane;
  */
 public class F_UPDAO {
 
+    Connection con;
+
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<F_UPBean> listbb;
+
+    public void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    public void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listbb = new ArrayList<>();
+    }
+
     public void create(F_UPBean fb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO f_up (dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente) VALUES (?,?,?,?,?,?,?,?,?,?)");
@@ -47,10 +67,9 @@ public class F_UPDAO {
             stmt.setString(10, fb.getCliente());
 
             stmt.executeUpdate();
-
-            JOptionPane.showMessageDialog(null, "Criado com sucesso!");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar OP no Follow Up!\n" + e);
+            e.printStackTrace();
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -63,13 +82,7 @@ public class F_UPDAO {
 
     public List<F_UPBean> readtable() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<F_UPBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up ORDER BY nivel, dataentrega, dav");
@@ -92,6 +105,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtable");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -103,16 +117,10 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readtableplanejamento() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<F_UPBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' ORDER BY nivel, dataentrega");
@@ -135,6 +143,45 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readtableplanejamentoepesquisa(String pesquisa) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -149,13 +196,7 @@ public class F_UPDAO {
 
     public List<F_UPBean> readtableepesquisa(String pesquisa) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<F_UPBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up WHERE op LIKE '%" + pesquisa + "%' OR dav LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega, dav");
@@ -178,6 +219,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtablepesquisa");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -192,13 +234,7 @@ public class F_UPDAO {
 
     public List<F_UPBean> readtableporprocesso(String processo) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<F_UPBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? ORDER BY nivel, dataentrega, dav");
@@ -222,6 +258,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableporprocesso");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -236,13 +273,7 @@ public class F_UPDAO {
 
     public List<F_UPBean> readtableporprocessoepesquisa(String processo, String pesquisa) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<F_UPBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? AND op LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega, dav");
@@ -266,6 +297,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableporprocessoepesquisa");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -280,13 +312,7 @@ public class F_UPDAO {
 
     public List<F_UPBean> readcreated(String datacriacao) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<F_UPBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up WHERE datacriacao = ?");
@@ -310,6 +336,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readcreated");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -324,13 +351,7 @@ public class F_UPDAO {
 
     public List<F_UPBean> click(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<F_UPBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up WHERE id = ?");
@@ -354,6 +375,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - click");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -366,11 +388,36 @@ public class F_UPDAO {
         return listbb;
     }
 
+    public int getId(String op) {
+
+        rsList();
+
+        int id = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op = '" + op + "'");
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - getId");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return id;
+    }
+
     public void update(F_UPBean fb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE f_up SET dav = ?, op = ?, material = ?, dataentrega = ?, cliente = ?, nivel = ?, valor = ?, observacao = ? WHERE id = ?");
@@ -389,6 +436,7 @@ public class F_UPDAO {
 
             JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - update");
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -400,11 +448,9 @@ public class F_UPDAO {
         }
     }
 
-    public void updateprocesso(F_UPBean fb) {
+    public void updateProcessoById(F_UPBean fb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE f_up SET processo = ? WHERE id = ?");
@@ -414,6 +460,31 @@ public class F_UPDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - updateProcessoById");
+            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateProcessoByOs(F_UPBean fb) {
+
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE f_up SET processo = ? WHERE op = ?");
+
+            stmt.setString(1, fb.getProcesso());
+            stmt.setString(2, fb.getOp());
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - updateProcessoByOs");
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());

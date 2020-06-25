@@ -22,24 +22,48 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
+ * 
  *
  * @author Marcos Filho
  */
 public class VendasMateriaisDAO {
 
-    public void create(VendasMateriaisBean vmb) {
+    Connection con;
+    PreparedStatement stmt;
+    ResultSet rs;
+    List<VendasMateriaisBean> listvmb;
 
-        Connection con = ConnectionFactory.getConnection();
+    /** 
+     * Método para criar uma nova conexão e deixar o PreparedStatement nulo de novo.
+     */
+    public void conStmt() {
+        con = ConnectionFactory.getConnection();
+        stmt = null;
+    }
 
-        PreparedStatement stmt = null;
+    /**
+     * Método para deixar o ResultSet nulo novamente e zerar a list. Chama o método conStmt() que cria uma nova conexão e deixa o PreparedStatement nulo novamente.
+     */
+    public void rsList() {
+        conStmt();
+        rs = null;
+        listvmb = new ArrayList<>();
+    }
+
+    /**
+     * Método para criar um novo Material de Venda.Stmt = INSERT INTO vendas_materiais (codigo, descricao, estoque, status)
+     *
+     * @param codigo String do código do material
+     * @param descricao String da descrição do material
+     * @param estoque Double contendo o estoque do material criado
+     * @param status String com o status do material (Ex: "Ativo", "Desativado", etc.)
+     * @param local String do Local de Armazenagem
+     */
+    public void create(String codigo, String descricao, double estoque, String status, String local) {
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO vendas_materiais (codigo, descricao, estoque, status) VALUES (?,?,?,?)");
-
-            stmt.setString(1, vmb.getCodigo());
-            stmt.setString(2, vmb.getDescricao());
-            stmt.setDouble(3, vmb.getEstoque());
-            stmt.setString(4, vmb.getStatus());
+            stmt = con.prepareStatement("INSERT INTO vendas_materiais (codigo, descricao, estoque, status, local) VALUES ('" + codigo + "','" + descricao + "'," + estoque + ",'" + status + "','" + local + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -54,15 +78,13 @@ public class VendasMateriaisDAO {
         }
     }
 
+    /**
+     * Método para recuperar todos os materiais cadastrados no banco de dados.
+     * @return List<VendasMateriasBean> com os materiais cadastrados.
+     */
     public List<VendasMateriaisBean> readtodos() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<VendasMateriaisBean> listvmb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM vendas_materiais");
@@ -76,6 +98,7 @@ public class VendasMateriaisDAO {
                 vmb.setDescricao(rs.getString("descricao"));
                 vmb.setEstoque(rs.getDouble("estoque"));
                 vmb.setStatus(rs.getString("status"));
+                vmb.setLocal(rs.getString("local"));
 
                 listvmb.add(vmb);
             }
@@ -91,16 +114,10 @@ public class VendasMateriaisDAO {
         }
         return listvmb;
     }
-    
+
     public List<VendasMateriaisBean> readTodosPesquisa(String pesquisa) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<VendasMateriaisBean> listvmb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE codigo LIKE '%" + pesquisa + "%' OR descricao LIKE '%" + pesquisa + "%'");
@@ -114,6 +131,7 @@ public class VendasMateriaisDAO {
                 vmb.setDescricao(rs.getString("descricao"));
                 vmb.setEstoque(rs.getDouble("estoque"));
                 vmb.setStatus(rs.getString("status"));
+                vmb.setLocal(rs.getString("local"));
 
                 listvmb.add(vmb);
             }
@@ -129,16 +147,10 @@ public class VendasMateriaisDAO {
         }
         return listvmb;
     }
-    
+
     public List<VendasMateriaisBean> readStatus(String status) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<VendasMateriaisBean> listvmb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE status = " + status);
@@ -152,6 +164,7 @@ public class VendasMateriaisDAO {
                 vmb.setDescricao(rs.getString("descricao"));
                 vmb.setEstoque(rs.getDouble("estoque"));
                 vmb.setStatus(rs.getString("status"));
+                vmb.setLocal(rs.getString("local"));
 
                 listvmb.add(vmb);
             }
@@ -167,16 +180,10 @@ public class VendasMateriaisDAO {
         }
         return listvmb;
     }
-    
+
     public List<VendasMateriaisBean> readStatusPesquisa(String status, String pesquisa) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<VendasMateriaisBean> listvmb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE status = " + status + " AND codigo LIKE '%" + pesquisa + "%' OR status = " + pesquisa + " AND descricao LIKE '%" + pesquisa + "%'");
@@ -190,6 +197,7 @@ public class VendasMateriaisDAO {
                 vmb.setDescricao(rs.getString("descricao"));
                 vmb.setEstoque(rs.getDouble("estoque"));
                 vmb.setStatus(rs.getString("status"));
+                vmb.setLocal(rs.getString("local"));
 
                 listvmb.add(vmb);
             }
@@ -205,20 +213,19 @@ public class VendasMateriaisDAO {
         }
         return listvmb;
     }
-    
-    public int readcreated(String data) {
 
-        Connection con = ConnectionFactory.getConnection();
+    /**
+     * Método para retornar o último ID criado no banco de dados.
+     * @return Integer do ID.
+     */
+    public int readcreated() {
 
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
+        rsList();
 
         int lastid = 0;
 
         try {
             stmt = con.prepareStatement("SELECT MAX(id) AS id FROM vendas_materiais");
-            stmt.setString(1, data);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -239,17 +246,10 @@ public class VendasMateriaisDAO {
 
     public List<VendasMateriaisBean> click(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<VendasMateriaisBean> listvmb = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE id = ?");
-            stmt.setInt(1, id);
+            stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE id = " + id);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -260,6 +260,7 @@ public class VendasMateriaisDAO {
                 vmb.setDescricao(rs.getString("descricao"));
                 vmb.setEstoque(rs.getDouble("estoque"));
                 vmb.setStatus(rs.getString("status"));
+                vmb.setLocal(rs.getString("local"));
 
                 listvmb.add(vmb);
             }
@@ -276,18 +277,12 @@ public class VendasMateriaisDAO {
         return listvmb;
     }
 
-    public void update(VendasMateriaisBean vmb) {
+    public void update(String codigo, String descricao, String local, int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE vendas_materiais SET codigo = ?, descricao = ? WHERE id = ?");
-
-            stmt.setString(1, vmb.getCodigo());
-            stmt.setString(2, vmb.getDescricao());
-            stmt.setInt(3, vmb.getId());
+            stmt = con.prepareStatement("UPDATE vendas_materiais SET codigo = '" + codigo + "', descricao = '" + descricao + "' , local = '" + local + "' WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -301,12 +296,10 @@ public class VendasMateriaisDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void updateStatus(VendasMateriaisBean vmb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE vendas_materiais SET status = ? WHERE id = ?");
@@ -326,12 +319,10 @@ public class VendasMateriaisDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void updateEstoque(VendasMateriaisBean vmb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE vendas_materiais SET estoque = ? WHERE id = ?");
@@ -351,12 +342,10 @@ public class VendasMateriaisDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void delete(VendasMateriaisBean cb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("DELETE FROM vendas_materiais WHERE id = ?");

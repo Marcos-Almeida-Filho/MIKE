@@ -6,6 +6,7 @@
 package View.servicos;
 
 import Bean.F_UPBean;
+import Bean.F_UP_HistBean;
 import Bean.OSBean;
 import Bean.OSDocumentosBean;
 import Bean.OSProcessosBean;
@@ -18,6 +19,7 @@ import Bean.ServicoPedidoItensBean;
 import Bean.ServicoPedidoItensNFBean;
 import Connection.Session;
 import DAO.F_UPDAO;
+import DAO.F_UP_HistDAO;
 import DAO.OSDAO;
 import DAO.OSDocumentosDAO;
 import DAO.OSProcessosDAO;
@@ -39,7 +41,6 @@ import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
-import View.servicos.OS;
 import static View.servicos.OS.radioreconstrucao;
 import static View.servicos.OS.radiotopo;
 import static View.servicos.OS.txtcodigo;
@@ -89,6 +90,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     //Criar OS
     ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
     ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+
+    public static int vezes = 0;
 
     public PedidoServico() {
         initComponents();
@@ -390,6 +393,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Cliente");
 
+        txtclientepedido.setEditable(false);
         txtclientepedido.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtclientepedidoKeyReleased(evt);
@@ -1766,6 +1770,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         } else if (numerooss > 0) {
             JOptionPane.showMessageDialog(rootPane, "Item(ns) com OS selecionado(s).");
         } else {
+            vezes = numerotrue;
             for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
                 if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
                     String idos = Dates.CriarIdOS();
@@ -1794,12 +1799,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     //idtela, dateabertura, dateprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topob, reconstrucaob, completab, desenhob, raio, frontal
                     od.create(ob);
 
-                    String oscriada = "";
                     String n = tableitensorcamento.getValueAt(i, 10).toString();
-
-                    for (OSBean osb : od.readcreated(tableitensorcamento.getValueAt(i, 2).toString(), data)) {
-                        oscriada = osb.getIdtela();
-                    }
 
                     spib.setIdpedido(txtnumeropedido.getText());
                     spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
@@ -1886,7 +1886,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 //
 //                    for (ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(idgrupo)) {
 //
-                    String processo = "Separação de material";
+                    String processo = "Separação de Material";
 
                     opb.setIdos(idos);
                     opb.setProcesso(processo);
@@ -1920,8 +1920,20 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
                     //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
                     fd.create(fb);
+                    
+                    F_UP_HistDAO fuhd = new F_UP_HistDAO();
+                    F_UP_HistBean fuhb = new F_UP_HistBean();
+                    
+                    fuhb.setIdfup(fd.getId(idos));
+                    fuhb.setProcesso(processo);
+                    fuhb.setFuncionario(null);
+                    fuhb.setData(null);
+                    
+                    //idfup, processo, funcionario, data
+                    fuhd.create(fuhb);
                 }
             }
+            vezes = 0;
             readitenscobranca();
         }
     }//GEN-LAST:event_jButton6ActionPerformed

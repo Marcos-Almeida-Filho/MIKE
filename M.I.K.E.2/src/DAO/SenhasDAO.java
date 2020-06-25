@@ -26,12 +26,32 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class SenhasDAO {
-    
+
+    Connection con;
+
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<SenhasBean> listsb;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listsb = new ArrayList<>();
+    }
+
     public void create(SenhasBean sb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO senhas (login, nome, senha, site) VALUES (?,?,?,?)");
@@ -56,13 +76,7 @@ public class SenhasDAO {
 
     public List<SenhasBean> read() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<SenhasBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM senhas");
@@ -77,7 +91,7 @@ public class SenhasDAO {
                 cb.setSenha(rs.getString("senha"));
                 cb.setSite(rs.getString("site"));
 
-                listbb.add(cb);
+                listsb.add(cb);
             }
         } catch (SQLException e) {
             Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -89,16 +103,12 @@ public class SenhasDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listsb;
     }
-    
+
     public int readcreated() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
+        rsList();
 
         int lastid = 0;
 
@@ -124,13 +134,7 @@ public class SenhasDAO {
 
     public List<SenhasBean> click(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<SenhasBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM senhas WHERE id = ?");
@@ -146,7 +150,7 @@ public class SenhasDAO {
                 cb.setSenha(rs.getString("senha"));
                 cb.setSite(rs.getString("site"));
 
-                listbb.add(cb);
+                listsb.add(cb);
             }
         } catch (SQLException e) {
             Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -158,14 +162,12 @@ public class SenhasDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listsb;
     }
 
     public void update(SenhasBean bb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE senhas SET login = ?, senha = ?, nome = ?, site = ? WHERE id = ?");
@@ -184,6 +186,21 @@ public class SenhasDAO {
             } catch (AWTException | IOException ex) {
                 Logger.getLogger(SenhasDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void delete(int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM senhas WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao excluir senhar!\n" + e);
+            SendEmail.EnviarErro2(e.toString());
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

@@ -26,11 +26,31 @@ import javax.swing.JOptionPane;
  */
 public class F_UP_HistDAO {
     
+    Connection con;
+
+    PreparedStatement stmt;
+    
+    ResultSet rs;
+
+    List<F_UP_HistBean> listbb;
+    
+    public void conStmt() {
+        con = ConnectionFactory.getConnection();
+        
+        stmt = null;
+    }
+    
+    public void rsList() {
+        conStmt();
+        
+        rs = null;
+        
+        listbb = new ArrayList<>();
+    }
+    
     public void create(F_UP_HistBean fhb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO f_up_hist (idfup, processo, funcionario, data) VALUES (?,?,?,?)");
@@ -42,6 +62,7 @@ public class F_UP_HistDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - create");
             JOptionPane.showMessageDialog(null, "Erro ao salvar OP no Follow Up!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -55,13 +76,7 @@ public class F_UP_HistDAO {
     
     public List<F_UP_HistBean> click(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<F_UP_HistBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up_hist WHERE idfup = ?");
@@ -79,6 +94,7 @@ public class F_UP_HistDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - click");
             Logger.getLogger(F_UP_HistDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -91,22 +107,40 @@ public class F_UP_HistDAO {
         return listbb;
     }
     
-    public void update(F_UP_HistBean fb, int idfup, String processo) {
+    public int getId(int idfup, String processo) {
+        rsList();
+        
+        int id = 0;
+        
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up_hist WHERE idfup = " + idfup + " AND processo = '" + processo + "'");
+            
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - getId");
+            JOptionPane.showMessageDialog(null,"Erro ao resgatar id do F-UP.");
+            SendEmail.EnviarErro2(e.toString());
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        
+        return id;
+    }
+    
+    public void update(String funcionario, String data, int idfup, String processo) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE f_up_hist SET funcionario = ?, data = ? WHERE idfup = ? AND processo = ?");
-
-            stmt.setString(1, fb.getFuncionario());
-            stmt.setString(2, fb.getData());
-            stmt.setInt(3, idfup);
-            stmt.setString(4, processo);
+            stmt = con.prepareStatement("UPDATE f_up_hist SET funcionario = '" + funcionario + "', data = '" + data + "' WHERE idfup = " + idfup + " AND processo = '" + processo + "' AND funcionario IS NULL");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - update");
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());

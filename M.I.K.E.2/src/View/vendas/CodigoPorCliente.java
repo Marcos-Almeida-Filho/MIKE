@@ -42,6 +42,14 @@ public class CodigoPorCliente extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
+        setClosable(true);
+        setTitle("Código por Cliente");
+        addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                formFocusLost(evt);
+            }
+        });
+
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -154,7 +162,7 @@ public class CodigoPorCliente extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null,"Digite uma descrição.");
             txtdesc.requestFocus();
         } else {
-            DefaultTableModel model = (DefaultTableModel) VM.tabledesccli.getModel();
+            DefaultTableModel model = (DefaultTableModel) VendasMateriais.tableCodigoPorCliente.getModel();
             model.addRow(new Object[]{
                 "",
                 false,
@@ -165,6 +173,10 @@ public class CodigoPorCliente extends javax.swing.JInternalFrame {
             dispose();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void formFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_formFocusLost
+        JOptionPane.showMessageDialog(null,"Salve um código ou feche a tela.");
+    }//GEN-LAST:event_formFocusLost
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

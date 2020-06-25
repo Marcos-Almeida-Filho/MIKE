@@ -422,8 +422,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
                     modelhist.setValueAt(rdb.getAprovacaouser(), 2, 1);
                     modelhist.setValueAt(Dates.TransformarDataCurtaDoDB(rdb.getAprovacaodata()), 2, 2);
                     btnaprovar.setEnabled(false);
-
-                } else if (Session.nivel.equals("Administrador")) {
+                } else if (Session.nivel.equals("Administrador") || Session.nome.equals("Tassiane Cristine Gomes Ventura Gonçalves")) {
                     btnaprovar.setEnabled(true);
                 }
                 if (rdb.getCapuser() != null) {
@@ -582,6 +581,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
         jButton7 = new javax.swing.JButton();
 
         setClosable(true);
+        setMaximizable(true);
         setTitle("Rastreamento de Documentos - FOR-95");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -1410,7 +1410,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
             JOptionPane.showMessageDialog(null, "Enviando e-mail para o financeiro.");
 
-            SendEmail.EnviarAviso("financeiro@speedcut.com.br", "Documento aprovado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi aprovado e necessita de lançamento no CAP.");
+            SendEmail.EnviarAviso("financeiro@speedcut.com.br, alexandre.almeida@speedcut.com.br", "Documento aprovado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi aprovado e necessita de lançamento no CAP.");
         }
     }//GEN-LAST:event_btnaprovarActionPerformed
 

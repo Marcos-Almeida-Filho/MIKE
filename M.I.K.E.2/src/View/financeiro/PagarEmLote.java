@@ -5,7 +5,6 @@
  */
 package View.financeiro;
 
-import Bean.BancosBean;
 import Bean.CAPBean;
 import DAO.BancosDAO;
 import DAO.CAPDAO;
@@ -24,27 +23,72 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
     /**
      * Creates new form PagarEmLote
      */
+    
+    static BancosDAO bd = new BancosDAO();
+    
     public PagarEmLote() {
         initComponents();
         readcbbancos();
-        cheque();
+        campos();
     }
 
     public static void readcbbancos() {
-        BancosDAO bd = new BancosDAO();
-
-        for (BancosBean bb : bd.read()) {
+        bd.read().forEach((bb) -> {
             cbbanco.addItem(bb.getBanco());
-        }
+        });
     }
 
-    public static void cheque() {
-        if (cbmetodo.getSelectedItem().toString().equals("Cheque")) {
-            lblcheque.setVisible(true);
-            txtcheque.setVisible(true);
-        } else {
-            lblcheque.setVisible(false);
-            txtcheque.setVisible(false);
+    public static void campos() {
+        String metodo = cbmetodo.getSelectedItem().toString();
+        switch (metodo) {
+            case "Selecione":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Boleto":
+                lblbanco.setVisible(true);
+                cbbanco.setVisible(true);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Depósito":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Transferência":
+                lblbanco.setVisible(true);
+                cbbanco.setVisible(true);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Cartão de Crédito":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Cheque":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(true);
+                txtcheque.setVisible(true);
+                break;
+            case "Dinheiro":
+                lblbanco.setVisible(false);
+                cbbanco.setVisible(false);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
+            case "Débito Automático":
+                lblbanco.setVisible(true);
+                cbbanco.setVisible(true);
+                lblcheque.setVisible(false);
+                txtcheque.setVisible(false);
+                break;
         }
     }
 
@@ -60,7 +104,7 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
+        lblbanco = new javax.swing.JLabel();
         cbbanco = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
         cbmetodo = new javax.swing.JComboBox<>();
@@ -78,13 +122,13 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
 
         jLabel10.setText("Data de Pagamento");
 
-        jLabel11.setText("Banco");
+        lblbanco.setText("Banco");
 
         cbbanco.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
 
         jLabel12.setText("Método");
 
-        cbmetodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Boleto", "Depósito", "Transferência", "Cartão de Crédito", "Cheque" }));
+        cbmetodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Boleto", "Depósito", "Transferência", "Cartão de Crédito", "Cheque", "Dinheiro", "Débito Automático" }));
         cbmetodo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbmetodoActionPerformed(evt);
@@ -101,25 +145,24 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtpagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(lblbanco)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblcheque)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcheque, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(txtcheque)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,18 +170,17 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel10)
-                        .addComponent(jLabel11)
-                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel12)
+                        .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel10)
                     .addComponent(txtpagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblcheque)
-                        .addComponent(txtcheque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel12)
-                        .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblbanco)
+                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblcheque))
+                    .addComponent(txtcheque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -211,7 +253,7 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnsalvarActionPerformed
 
     private void cbmetodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbmetodoActionPerformed
-        cheque();
+        campos();
     }//GEN-LAST:event_cbmetodoActionPerformed
 
 
@@ -220,10 +262,10 @@ public class PagarEmLote extends javax.swing.JInternalFrame {
     public static javax.swing.JComboBox<String> cbbanco;
     public static javax.swing.JComboBox<String> cbmetodo;
     public javax.swing.JLabel jLabel10;
-    public javax.swing.JLabel jLabel11;
     public javax.swing.JLabel jLabel12;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel4;
+    public static javax.swing.JLabel lblbanco;
     public static javax.swing.JLabel lblcheque;
     public static javax.swing.JTextField txtcheque;
     public com.toedter.calendar.JDateChooser txtpagamento;

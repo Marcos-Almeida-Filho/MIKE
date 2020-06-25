@@ -8,16 +8,16 @@ package View.servicos;
 import Bean.OSInspecaoBean;
 import Bean.OSProcessosBean;
 import Connection.Session;
+import DAO.F_UPDAO;
+import DAO.F_UP_HistDAO;
 import DAO.OSInspecaoDAO;
 import DAO.OSProcessosDAO;
+import Methods.Dates;
 import Methods.SoNumeros;
 import Methods.Telas;
 import View.Geral.EscolherProximoProcesso;
-import static View.TelaPrincipal.jDesktopPane1;
-import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -94,6 +94,15 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         txtokprocesso.setVisible(false);
         txtnaookos.setVisible(false);
         txtdispprocesso.setVisible(false);
+    }
+
+    public static void atualizarHistF_UP() {
+        F_UPDAO fud = new F_UPDAO();
+
+        F_UP_HistDAO fuhd = new F_UP_HistDAO();
+
+        //SET funcionario = ?, data = ? WHERE idfup = ? AND processo = ?
+        fuhd.update(Session.nome, Dates.CriarDataCurtaDBSemDataExistente(), fud.getId(OS.txtnumeroos.getText()), txtprocesso.getText());
     }
 
     /**
@@ -490,6 +499,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
         if (!txttermino.getText().equals("")) {
             dispose();
         } else if (tableinspecao.getRowCount() == 0) {
+            atualizarHistF_UP();
             int resp = JOptionPane.showConfirmDialog(rootPane, "Não existem medições! Está correto?", "Sem medições", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
                 if (ok + naook < inicial) {
@@ -743,6 +753,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
                 }
             }
         } else { //Se houver inspeção
+            atualizarHistF_UP();
             if (ok + naook < inicial) {
                 if (okprocesso + naookprocesso + ok + naook == dispprocesso) { //Se as quantidades finalizam o processo
                     //Criar data para término do processo
@@ -1065,12 +1076,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
 
     private void btnaddmedicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnaddmedicaoActionPerformed
         MedicaoOS p = new MedicaoOS();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_btnaddmedicaoActionPerformed
 
     private void txtokKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtokKeyReleased

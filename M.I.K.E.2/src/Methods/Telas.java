@@ -29,6 +29,15 @@ public class Telas {
         frame.setVisible(true);
     }
     
+//    public static void AparecerJWindow(JFrame frame) {
+////        TelaPrincipal.jDesktopPane1.add(frame);
+////        Dimension jif = frame.getSize();
+////        Dimension d = TelaPrincipal.jDesktopPane1.getSize();
+////        frame.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
+//        frame.setVisible(true);
+//        frame.setUndecorated(true);
+//    }
+    
     public static void AparecerTelaAumentada(JInternalFrame frame) {
         try {
             TelaPrincipal.jDesktopPane1.add(frame);

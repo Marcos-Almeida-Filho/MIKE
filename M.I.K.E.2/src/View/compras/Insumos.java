@@ -248,12 +248,19 @@ public class Insumos extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Data", "Funcionário", "Observação"
+                "ID", "", "Data", "Funcionário", "Observação"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -265,12 +272,15 @@ public class Insumos extends javax.swing.JInternalFrame {
             tableobs.getColumnModel().getColumn(0).setMinWidth(0);
             tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableobs.getColumnModel().getColumn(1).setMinWidth(75);
-            tableobs.getColumnModel().getColumn(1).setPreferredWidth(75);
-            tableobs.getColumnModel().getColumn(1).setMaxWidth(75);
-            tableobs.getColumnModel().getColumn(2).setMinWidth(200);
-            tableobs.getColumnModel().getColumn(2).setPreferredWidth(200);
-            tableobs.getColumnModel().getColumn(2).setMaxWidth(200);
+            tableobs.getColumnModel().getColumn(1).setMinWidth(35);
+            tableobs.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableobs.getColumnModel().getColumn(1).setMaxWidth(35);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(75);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(75);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(75);
+            tableobs.getColumnModel().getColumn(3).setMinWidth(200);
+            tableobs.getColumnModel().getColumn(3).setPreferredWidth(200);
+            tableobs.getColumnModel().getColumn(3).setMaxWidth(200);
         }
 
         jButton6.setText("Adicionar Observação");
@@ -667,9 +677,9 @@ public class Insumos extends javax.swing.JInternalFrame {
                 if (tableobs.getRowCount() > 0) {
                     for (int i = 0; i < tableobs.getRowCount(); i++) {
                         iob.setIdinsumo(idcriado);
-                        iob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 1).toString()));
-                        iob.setFuncionario(tableobs.getValueAt(i, 2).toString());
-                        iob.setObs(tableobs.getValueAt(i, 3).toString());
+                        iob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()));
+                        iob.setFuncionario(tableobs.getValueAt(i, 3).toString());
+                        iob.setObs(tableobs.getValueAt(i, 4).toString());
 
                         //idinsumo, data, funcionario, obs
                         iod.create(iob);

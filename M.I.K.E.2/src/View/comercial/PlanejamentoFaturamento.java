@@ -161,12 +161,12 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
             tablePlanejamento.getColumnModel().getColumn(0).setMinWidth(0);
             tablePlanejamento.getColumnModel().getColumn(0).setPreferredWidth(0);
             tablePlanejamento.getColumnModel().getColumn(0).setMaxWidth(0);
-            tablePlanejamento.getColumnModel().getColumn(1).setMinWidth(65);
-            tablePlanejamento.getColumnModel().getColumn(1).setPreferredWidth(65);
-            tablePlanejamento.getColumnModel().getColumn(1).setMaxWidth(65);
-            tablePlanejamento.getColumnModel().getColumn(4).setMinWidth(60);
-            tablePlanejamento.getColumnModel().getColumn(4).setPreferredWidth(60);
-            tablePlanejamento.getColumnModel().getColumn(4).setMaxWidth(60);
+            tablePlanejamento.getColumnModel().getColumn(1).setMinWidth(80);
+            tablePlanejamento.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tablePlanejamento.getColumnModel().getColumn(1).setMaxWidth(80);
+            tablePlanejamento.getColumnModel().getColumn(4).setMinWidth(80);
+            tablePlanejamento.getColumnModel().getColumn(4).setPreferredWidth(80);
+            tablePlanejamento.getColumnModel().getColumn(4).setMaxWidth(80);
             tablePlanejamento.getColumnModel().getColumn(5).setMinWidth(105);
             tablePlanejamento.getColumnModel().getColumn(5).setPreferredWidth(105);
             tablePlanejamento.getColumnModel().getColumn(5).setMaxWidth(105);

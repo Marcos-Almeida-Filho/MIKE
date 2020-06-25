@@ -254,11 +254,11 @@ public class TiposInsumo extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Data", "Funcionário", "Observação"
+                "ID", "", "Data", "Funcionário", "Observação"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, true, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -270,12 +270,15 @@ public class TiposInsumo extends javax.swing.JInternalFrame {
             tableobs.getColumnModel().getColumn(0).setMinWidth(0);
             tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableobs.getColumnModel().getColumn(1).setMinWidth(75);
-            tableobs.getColumnModel().getColumn(1).setPreferredWidth(75);
-            tableobs.getColumnModel().getColumn(1).setMaxWidth(75);
-            tableobs.getColumnModel().getColumn(2).setMinWidth(150);
-            tableobs.getColumnModel().getColumn(2).setPreferredWidth(150);
-            tableobs.getColumnModel().getColumn(2).setMaxWidth(150);
+            tableobs.getColumnModel().getColumn(1).setMinWidth(35);
+            tableobs.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableobs.getColumnModel().getColumn(1).setMaxWidth(35);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(75);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(75);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(75);
+            tableobs.getColumnModel().getColumn(3).setMinWidth(150);
+            tableobs.getColumnModel().getColumn(3).setPreferredWidth(150);
+            tableobs.getColumnModel().getColumn(3).setMaxWidth(150);
         }
 
         jButton2.setText("Adicionar Observação");
@@ -398,9 +401,9 @@ public class TiposInsumo extends javax.swing.JInternalFrame {
                 if (tableobs.getRowCount() > 0) {
                     for (int i = 0; i < tableobs.getRowCount(); i++) {
                         tiob.setIdtipoinsumo(idcriado);
-                        tiob.setData(tableobs.getValueAt(i, 1).toString());
-                        tiob.setFuncionario(tableobs.getValueAt(i, 2).toString());
-                        tiob.setObs(tableobs.getValueAt(i, 3).toString());
+                        tiob.setData(tableobs.getValueAt(i, 2).toString());
+                        tiob.setFuncionario(tableobs.getValueAt(i, 3).toString());
+                        tiob.setObs(tableobs.getValueAt(i, 4).toString());
 
                         //idtipoinsumo, data, funcionario, obs
                         tiod.create(tiob);
