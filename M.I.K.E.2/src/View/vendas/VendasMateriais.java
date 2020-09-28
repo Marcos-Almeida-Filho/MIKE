@@ -25,6 +25,7 @@ import ValoresOriginais.VendasMateriaisValoresOriginais;
 import View.Geral.AdicionarObs;
 import View.Geral.HistoricoAlteracao;
 import View.Geral.ProcurarDocumento;
+import View.Geral.ProcurarLocal;
 import View.servicos.DocumentosOrcamentoServico;
 import java.awt.AWTException;
 import java.awt.Desktop;
@@ -83,7 +84,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
         if (id == 0) {//Se o produto não tem ID, criar um novo
             //Criar um novo procuto
-            vmd.create(codigo, descricao, estoque, "Ativo", local);
+            //vmd.create(codigo, descricao, estoque, "Ativo", local);
 
             //Recuperar seu ID
             int created = vmd.readcreated();
@@ -132,7 +133,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
         } else {//O produto tem ID, atualizar produto
             //Atualizar produto
-            vmd.update(codigo, descricao, local, id);
+//            vmd.update(codigo, descricao, local, id);
 
             //Criar Observações, caso existam
             for (int i = 0; i < tableObs.getRowCount(); i++) {
@@ -1023,7 +1024,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        ProcurarLocal pl = new ProcurarLocal();
+        ProcurarLocal pl = new ProcurarLocal(this.getClass().getSimpleName());
         Telas.AparecerTela(pl);
     }//GEN-LAST:event_jButton9ActionPerformed
 

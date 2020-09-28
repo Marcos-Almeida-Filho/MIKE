@@ -272,17 +272,20 @@ public class LocaisArmazenagem extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbStatusActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String local = JOptionPane.showInputDialog(null, "Qual o nome do Local de Armazenagem?", "Novo Local", JOptionPane.YES_NO_OPTION);
+        try {
+            String local = JOptionPane.showInputDialog(null, "Qual o nome do Local de Armazenagem?", "Novo Local", JOptionPane.YES_NO_OPTION);
 
-        if (local.length() == 0) {
-            JOptionPane.showMessageDialog(null, "Nenhum nome digitado.");
-        } else {
-            if (ld.readLocal(local)) {
-                JOptionPane.showMessageDialog(null, "Local já cadastrado: " + local);
+            if (local.length() == 0) {
+                JOptionPane.showMessageDialog(null, "Nenhum nome digitado.");
             } else {
-                ld.create(local, 1);
+                if (ld.readLocal(local)) {
+                    JOptionPane.showMessageDialog(null, "Local já cadastrado: " + local);
+                } else {
+                    ld.create(local, 1);
+                }
+                readLocal();
             }
-            readLocal();
+        } catch (NullPointerException ex) {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

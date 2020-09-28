@@ -358,6 +358,8 @@ public class Usuarios extends javax.swing.JInternalFrame {
             ex.printStackTrace();
         }
 
+        datenascimento.setDateFormatString("dd/MM/yyyy");
+
         javax.swing.GroupLayout paneldadospessoaisLayout = new javax.swing.GroupLayout(paneldadospessoais);
         paneldadospessoais.setLayout(paneldadospessoaisLayout);
         paneldadospessoaisLayout.setHorizontalGroup(
@@ -491,6 +493,10 @@ public class Usuarios extends javax.swing.JInternalFrame {
                 jButton3ActionPerformed(evt);
             }
         });
+
+        dateadmissao.setDateFormatString("dd/MM/yyyy");
+
+        datedemissao.setDateFormatString("dd/MM/yyyy");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -758,7 +764,7 @@ public class Usuarios extends javax.swing.JInternalFrame {
             //Salvar salario
             for (int i = 0; i < tablesalario.getRowCount(); i++) {
                 usb.setIdusuario(idcriado);
-                usb.setData(tablesalario.getValueAt(i, 1).toString());
+                usb.setData(Dates.CriarDataCurtaDBComDataExistente(tablesalario.getValueAt(i, 1).toString()));
                 usb.setValor(Valores.TransformarDinheiroEmValorDouble(tablesalario.getValueAt(i, 2).toString()));
                 usb.setMotivo(tablesalario.getValueAt(i, 3).toString());
 
@@ -853,7 +859,7 @@ public class Usuarios extends javax.swing.JInternalFrame {
             for (int i = 0; i < tablesalario.getRowCount(); i++) {
                 if (tablesalario.getValueAt(i, 0).equals("")) {
                     usb.setIdusuario(Integer.parseInt(txtid.getText()));
-                    usb.setData(tablesalario.getValueAt(i, 1).toString());
+                    usb.setData(Dates.CriarDataCurtaDBComDataExistente(tablesalario.getValueAt(i, 1).toString()));
                     usb.setValor(Valores.TransformarDinheiroEmValorDouble(tablesalario.getValueAt(i, 2).toString()));
                     usb.setMotivo(tablesalario.getValueAt(i, 3).toString());
 

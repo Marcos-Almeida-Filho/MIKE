@@ -29,11 +29,11 @@ public class Dates {
 
     static String data;
     static String datanormal = "";
-    static Calendar date = Calendar.getInstance();
+    static Calendar date;
     static Date d = new Date();
 
     public static String CriarDataCompletaParaDB() {
-        data = "";
+        date = Calendar.getInstance();
         String pattern = "yyyy-MM-dd HH:mm:ss";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
@@ -42,7 +42,7 @@ public class Dates {
     }
 
     public static String CriarDataCurta() {
-        data = "";
+        date = Calendar.getInstance();
         String pattern = "dd/MM/yyyy";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
@@ -51,7 +51,7 @@ public class Dates {
     }
     
     public static String CriarDataCurtaDBSemDataExistente() {
-        data = "";
+        date = Calendar.getInstance();
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         data = simpleDateFormat.format(date.getTime());
@@ -60,7 +60,7 @@ public class Dates {
     }
 
     public static String CriarDataCurtaDBSemDataExistenteComPrazo(int days) {
-        data = "";
+        date = Calendar.getInstance();
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         date.add(Calendar.DAY_OF_MONTH, days);

@@ -9,7 +9,6 @@ import Bean.F_UPBean;
 import Bean.F_UP_HistBean;
 import Bean.OSBean;
 import Bean.OSDocumentosBean;
-import Bean.OSInspecaoBean;
 import Bean.OSProcessosBean;
 import Bean.ServicoGrupoDeProcessosBean;
 import Bean.ServicoMateriaisBean;
@@ -35,7 +34,6 @@ import Methods.Docs;
 import Methods.SendEmail;
 import Methods.SoNumeros;
 import Methods.Telas;
-import View.Geral.EscolherProximoProcesso;
 import View.Geral.MudarStatus;
 import View.Geral.ProcurarCliente;
 import View.TelaPrincipal;
@@ -96,6 +94,8 @@ public class OS extends javax.swing.JInternalFrame {
     //DAO e Bean para movimentação do produto
     static ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
     static ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
+
+    static String dataabertura, dataprevisao;
 
     private static JTable getNewRenderedTable(final JTable table, int coluna) {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
@@ -258,7 +258,7 @@ public class OS extends javax.swing.JInternalFrame {
                         fub.setMaterial(txtcodigo.getText());
                         fub.setProcesso(tableprocessos.getValueAt(i, 2).toString());
                         fub.setDatacriacao(Dates.CriarDataCurtaDBSemDataExistente());
-                        fub.setNivel(3);
+                        fub.setNivel(5);
                         fub.setValor(0);
                         fub.setObservacao("");
                         fub.setCliente(txtcliente.getText());
@@ -415,7 +415,7 @@ public class OS extends javax.swing.JInternalFrame {
 
         switch (index) {
             case 1:
-                for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
+                od.readstatus(cbstatus.getSelectedItem().toString()).forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -423,10 +423,11 @@ public class OS extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
+
             case 2:
-                for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
+                od.readstatus(cbstatus.getSelectedItem().toString()).forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -434,10 +435,11 @@ public class OS extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
+
             case 3:
-                for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
+                od.readstatus(cbstatus.getSelectedItem().toString()).forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -445,10 +447,11 @@ public class OS extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
+
             case 4:
-                for (OSBean ob : od.readstatus(cbstatus.getSelectedItem().toString())) {
+                od.readstatus(cbstatus.getSelectedItem().toString()).forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -456,10 +459,11 @@ public class OS extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
+
             case 5:
-                for (OSBean ob : od.read()) {
+                od.read().forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -467,10 +471,11 @@ public class OS extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
+
             default:
-                for (OSBean ob : od.reademaberto()) {
+                od.reademaberto().forEach((ob) -> {
                     model.addRow(new Object[]{
                         false,
                         ob.getIdtela(),
@@ -478,8 +483,9 @@ public class OS extends javax.swing.JInternalFrame {
                         ob.getCodigo(),
                         ob.getStatus()
                     });
-                }
+                });
                 break;
+
         }
 
     }
@@ -511,9 +517,28 @@ public class OS extends javax.swing.JInternalFrame {
     }
 
     public static void dadosos() {
-        for (OSBean ob : od.click(txtnumeroos.getText())) {
-            txtabertura.setText(ob.getDataabertura());
-            txtprevisao.setText(ob.getDataprevisao());
+        od.click(txtnumeroos.getText()).forEach(ob -> {
+            if (ob.getDataabertura() == null) {
+                if (ob.getDateabertura() == null) {
+                    dataabertura = "";
+                } else {
+                    dataabertura = Dates.TransformarDataCompletaDoDB(ob.getDateabertura());
+                }
+            } else {
+                dataabertura = ob.getDataabertura();
+            }
+
+            if (ob.getDataprevisao() == null) {
+                if (ob.getDateprevisao() == null) {
+                    dataprevisao = "";
+                } else {
+                    dataprevisao = Dates.TransformarDataCurtaDoDB(ob.getDateprevisao());
+                }
+            } else {
+                dataprevisao = ob.getDataprevisao();
+            }
+            txtabertura.setText(dataabertura);
+            txtprevisao.setText(dataprevisao);
             txtstatus.setText(ob.getStatus());
             txtdas.setText(ob.getDas());
             txtcliente.setText(ob.getCliente());
@@ -553,28 +578,28 @@ public class OS extends javax.swing.JInternalFrame {
             } else {
                 checkfrontal.setSelected(false);
             }
-        }
+        });
     }
 
     public static void readdocs() {
         DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
         model.setNumRows(0);
 
-        for (OSDocumentosBean odb : odd.readitens(txtnumeroos.getText())) {
+        odd.readitens(txtnumeroos.getText()).forEach((odb) -> {
             model.addRow(new Object[]{
                 false,
                 odb.getId(),
                 odb.getDesc(),
                 odb.getLocal()
             });
-        }
+        });
     }
 
     public static void readprocessos() {
         DefaultTableModel model = (DefaultTableModel) tableprocessos.getModel();
         model.setNumRows(0);
 
-        for (OSProcessosBean opb : opd.read(txtnumeroos.getText())) {
+        opd.read(txtnumeroos.getText()).forEach((opb) -> {
             model.addRow(new Object[]{
                 false,
                 opb.getId(),
@@ -587,7 +612,7 @@ public class OS extends javax.swing.JInternalFrame {
                 opb.getOrdem(),
                 opb.getDisponivel()
             });
-        }
+        });
     }
 
     public static void camposnumeros() {
@@ -597,118 +622,175 @@ public class OS extends javax.swing.JInternalFrame {
     }
 
     public static void travarcampos() {
-        if (txtstatus.getText().equals("Ativo")) {
-            //Desabilitar botões
-            btnprocurarcliente.setEnabled(false);
-            btnprocurarmaterial.setEnabled(false);
-            btnmudarprocesso.setEnabled(false);
-            btnalterarstatus.setEnabled(true);
+        int processos = tableprocessos.getRowCount(), finalizados = 0;
+        switch (txtstatus.getText()) {
+            case "Ativo":
+                //Desabilitar botões
+                btnprocurarcliente.setEnabled(false);
+                btnprocurarmaterial.setEnabled(false);
+                btnalterarstatus.setEnabled(true);
+                for (int i = 0; i < tableprocessos.getRowCount(); i++) {
+                    if (!tableprocessos.getValueAt(i, 4).equals("")) {
+                        finalizados++;
+                    }
+                    if (processos == finalizados) {
+                        btnmudarprocesso.setEnabled(true);
+                    } else {
+                        btnmudarprocesso.setEnabled(false);
+                    }
+                }
 
-            //Desabilitar txts
-            txtinicial.setEditable(false);
+                //Desabilitar txts
+                txtinicial.setEditable(false);
 
-            //Desabilitar checks
-            checkraio.setEnabled(false);
-            checkfrontal.setEnabled(false);
+                //Desabilitar checks
+                checkraio.setEnabled(false);
+                checkfrontal.setEnabled(false);
 
-            //Desabilitar radios
-            if (radiotopo.isSelected()) {
-                radiotopo.setSelected(true);
-                radiotopo.setEnabled(true);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setEnabled(false);
-            }
-            if (radioreconstrucao.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setSelected(true);
+                //Desabilitar radios
+                if (radiotopo.isSelected()) {
+                    radiotopo.setSelected(true);
+                    radiotopo.setEnabled(true);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radioreconstrucao.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setSelected(true);
+                    radioreconstrucao.setEnabled(true);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radiocompleta.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setSelected(true);
+                    radiocompleta.setEnabled(true);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radiodesenho.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setSelected(true);
+                    radiodesenho.setEnabled(true);
+                }
+                break;
+            case "Cancelado":
+                //Desabilitar botões
+                btnprocurarcliente.setEnabled(false);
+                btnprocurarmaterial.setEnabled(false);
+                btnmudarprocesso.setEnabled(false);
+                btnadddoc.setEnabled(false);
+                btndeldoc.setEnabled(false);
+                btnalterarstatus.setEnabled(false);
+                btnsalvaros.setEnabled(false);
+
+                //Desabilitar txts
+                txtinicial.setEditable(false);
+                txtnotes.setEditable(false);
+
+                //Desabilitar checks
+                checkraio.setEnabled(false);
+                checkfrontal.setEnabled(false);
+
+                //Desabilitar radios
+                if (radiotopo.isSelected()) {
+                    radiotopo.setSelected(true);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radioreconstrucao.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setSelected(true);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radiocompleta.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setSelected(true);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radiodesenho.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setSelected(true);
+                }
+                break;
+            case "Fechado":
+                //Desabilitar botões
+                btnprocurarcliente.setEnabled(false);
+                btnprocurarmaterial.setEnabled(false);
+                btnmudarprocesso.setEnabled(false);
+                btnadddoc.setEnabled(false);
+                btndeldoc.setEnabled(false);
+                btnalterarstatus.setEnabled(false);
+                btnsalvaros.setEnabled(false);
+
+                //Desabilitar txts
+                txtinicial.setEditable(false);
+                txtnotes.setEditable(false);
+
+                //Desabilitar checks
+                checkraio.setEnabled(false);
+                checkfrontal.setEnabled(false);
+
+                //Desabilitar radios
+                if (radiotopo.isSelected()) {
+                    radiotopo.setSelected(true);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radioreconstrucao.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setSelected(true);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radiocompleta.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setSelected(true);
+                    radiodesenho.setEnabled(false);
+                }
+                if (radiodesenho.isSelected()) {
+                    radiotopo.setEnabled(false);
+                    radioreconstrucao.setEnabled(false);
+                    radiocompleta.setEnabled(false);
+                    radiodesenho.setSelected(true);
+                }
+                break;
+            default:
+                //Habilitar botões
+                btnprocurarcliente.setEnabled(true);
+                btnprocurarmaterial.setEnabled(true);
+                btnmudarprocesso.setEnabled(true);
+                btnalterarstatus.setEnabled(true);
+
+                //Habilitar txts
+                txtinicial.setEditable(true);
+
+                //Habilitar checks
+                checkraio.setEnabled(true);
+                checkfrontal.setEnabled(true);
+
+                //Habilitar radios
                 radioreconstrucao.setEnabled(true);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setEnabled(false);
-            }
-            if (radiocompleta.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setSelected(true);
-                radiocompleta.setEnabled(true);
-                radiodesenho.setEnabled(false);
-            }
-            if (radiodesenho.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setSelected(true);
-                radiodesenho.setEnabled(true);
-            }
-        } else if (txtstatus.getText().equals("Cancelado") || txtstatus.getText().equals("Fechado")) {
-            //Desabilitar botões
-            btnprocurarcliente.setEnabled(false);
-            btnprocurarmaterial.setEnabled(false);
-            btnmudarprocesso.setEnabled(false);
-            btnadddoc.setEnabled(false);
-            btndeldoc.setEnabled(false);
-            btnalterarstatus.setEnabled(false);
-            btnsalvaros.setEnabled(false);
-
-            //Desabilitar txts
-            txtinicial.setEditable(false);
-            txtnotes.setEditable(false);
-
-            //Desabilitar checks
-            checkraio.setEnabled(false);
-            checkfrontal.setEnabled(false);
-
-            //Desabilitar radios
-            if (radiotopo.isSelected()) {
-                radiotopo.setSelected(true);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setEnabled(false);
-            }
-            if (radioreconstrucao.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setSelected(true);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setEnabled(false);
-            }
-            if (radiocompleta.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setSelected(true);
-                radiodesenho.setEnabled(false);
-            }
-            if (radiodesenho.isSelected()) {
-                radiotopo.setEnabled(false);
-                radioreconstrucao.setEnabled(false);
-                radiocompleta.setEnabled(false);
-                radiodesenho.setSelected(true);
-            }
-        } else {
-            //Habilitar botões
-            btnprocurarcliente.setEnabled(true);
-            btnprocurarmaterial.setEnabled(true);
-            btnmudarprocesso.setEnabled(true);
-            btnalterarstatus.setEnabled(true);
-
-            //Habilitar txts
-            txtinicial.setEditable(true);
-
-            //Habilitar checks
-            checkraio.setEnabled(true);
-            checkfrontal.setEnabled(true);
-
-            //Habilitar radios
-            radioreconstrucao.setEnabled(true);
-            radiotopo.setEnabled(true);
-
-            if (!txtraio.getText().equals("")) {
-                checkraio.setSelected(true);
-                txtraio.setEditable(true);
-            }
-            if (!txtfrontal.getText().equals("")) {
-                checkfrontal.setSelected(true);
-                txtfrontal.setEditable(true);
-            }
+                radiotopo.setEnabled(true);
+                if (!txtraio.getText().equals("")) {
+                    checkraio.setSelected(true);
+                    txtraio.setEditable(true);
+                }
+                if (!txtfrontal.getText().equals("")) {
+                    checkfrontal.setSelected(true);
+                    txtfrontal.setEditable(true);
+                }
+                break;
         }
     }
 
@@ -717,7 +799,7 @@ public class OS extends javax.swing.JInternalFrame {
         model.setNumRows(0);
 
         OSInspecaoDAO oid = new OSInspecaoDAO();
-        for (OSInspecaoBean oib : oid.reados(txtnumeroos.getText())) {
+        oid.reados(txtnumeroos.getText()).forEach((oib) -> {
             model.addRow(new Object[]{
                 oib.getId(),
                 oib.getProcesso(),
@@ -727,7 +809,7 @@ public class OS extends javax.swing.JInternalFrame {
                 oib.getFuncionario(),
                 oib.getInstrumento()
             });
-        }
+        });
     }
 
     public static void qtdok() {
@@ -888,7 +970,7 @@ public class OS extends javax.swing.JInternalFrame {
         reados();
     }
 
-    public void btnExcluir() {
+    public static void btnExcluir() {
         if (!Session.nivel.equals("Administrador")) {
             btnExcluir.setVisible(false);
         }
@@ -1193,10 +1275,12 @@ public class OS extends javax.swing.JInternalFrame {
         jLabel2.setText("Status");
 
         txtprevisao.setEditable(false);
+        txtprevisao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel10.setText("Data de Previsão");
 
         txtabertura.setEditable(false);
+        txtabertura.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel11.setText("Data de Abertura");
 
@@ -1624,7 +1708,7 @@ public class OS extends javax.swing.JInternalFrame {
             tableprocessos.getColumnModel().getColumn(9).setMaxWidth(0);
         }
 
-        btnmudarprocesso.setText("Mudar Processos");
+        btnmudarprocesso.setText("Escolher Próximo Processo");
         btnmudarprocesso.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnmudarprocessoActionPerformed(evt);
@@ -1929,8 +2013,67 @@ public class OS extends javax.swing.JInternalFrame {
 
     private void btnmudarprocessoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnmudarprocessoActionPerformed
         //ProcuraGrupoDeProcessosOS p = new ProcuraGrupoDeProcessosOS();
-        EscolherProximoProcesso epp = new EscolherProximoProcesso(this.getClass().getSimpleName());
-        Telas.AparecerTela(epp);
+        //EscolherProximoProcesso epp = new EscolherProximoProcesso(this.getClass().getSimpleName());
+        //Telas.AparecerTela(epp);
+
+        String escolha;
+        for (;;) {
+            message:
+            {
+                ProcessosServicoDAO psd = new ProcessosServicoDAO();
+
+                int qtd = psd.qtdProcessos();
+
+                String[] processos = new String[qtd];
+
+                int i = 0;
+
+                for (ServicoGrupoDeProcessosBean psb : psd.read()) {
+                    processos[i] = psb.getNome();
+                    i++;
+                }
+
+                try {
+                    escolha = JOptionPane.showInternalInputDialog(jDesktopPane1, "Escolha o próximo processo", "Próximo Processo", JOptionPane.INFORMATION_MESSAGE, null, processos, processos[0]).toString();
+                } catch (NullPointerException e) {
+                    JOptionPane.showMessageDialog(null, "Nenhum processo escolhido!");
+                    break message;
+                }
+                break;
+            }
+        }
+        int ordem = OS.tableprocessos.getRowCount();
+        DefaultTableModel model = (DefaultTableModel) OS.tableprocessos.getModel();
+        model.addRow(new Object[]{
+            false,
+            "",
+            escolha,
+            "",
+            "",
+            0,
+            0,
+            "",
+            ordem,
+            0
+        });
+        OS.salvarOS();
+
+        fub.setProcesso(escolha);
+        fub.setOp(OS.txtnumeroos.getText());
+
+        //SET processo = ? WHERE op = ?
+        fud.updateProcessoByOs(fub);
+
+        F_UP_HistDAO fuhd = new F_UP_HistDAO();
+        F_UP_HistBean fuhb = new F_UP_HistBean();
+
+        fuhb.setIdfup(fud.getId(OS.txtnumeroos.getText()));
+        fuhb.setProcesso(OS.tableprocessos.getValueAt(OS.tableprocessos.getRowCount() - 1, 2).toString());
+        fuhb.setFuncionario(null);
+        fuhb.setData(null);
+
+        //idfup, processo, funcionario, data
+        fuhd.create(fuhb);
     }//GEN-LAST:event_btnmudarprocessoActionPerformed
 
     private void tableprocessosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableprocessosMouseClicked
@@ -2269,7 +2412,7 @@ public class OS extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton btnExcluir;
+    public static javax.swing.JButton btnExcluir;
     public static javax.swing.JButton btnadddoc;
     public static javax.swing.JButton btnalterarstatus;
     public static javax.swing.JButton btndeldoc;
@@ -2332,7 +2475,7 @@ public class OS extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tableinspecoes;
     public static javax.swing.JTable tableos;
     public static javax.swing.JTable tableprocessos;
-    public javax.swing.JTabbedPane tabos;
+    public static javax.swing.JTabbedPane tabos;
     public static javax.swing.JTextField txtabertura;
     public static javax.swing.JTextField txtcliente;
     public static javax.swing.JTextField txtcodigo;

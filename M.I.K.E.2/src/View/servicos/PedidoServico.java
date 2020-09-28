@@ -41,17 +41,7 @@ import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
 import View.TelaPrincipal;
 import static View.TelaPrincipal.jDesktopPane1;
-import static View.servicos.OS.radioreconstrucao;
-import static View.servicos.OS.radiotopo;
-import static View.servicos.OS.txtcodigo;
-import static View.servicos.OS.txtdesc;
-import static View.servicos.OS.txtfinal;
-import static View.servicos.OS.txtfrontal;
-import static View.servicos.OS.txtinicial;
-import static View.servicos.OS.txtmortas;
 import static View.servicos.OS.txtnumeroos;
-import static View.servicos.OS.txtraio;
-import static View.servicos.OS.txtstatus;
 import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -90,6 +80,18 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     //Criar OS
     ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
     ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+
+    //DAO e Bean para atualizar estoque do item
+    ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+    ServicoMateriaisBean smb = new ServicoMateriaisBean();
+
+    //DAO e Bean para alterar pedido
+    ServicoPedidoDAO spd = new ServicoPedidoDAO();
+    ServicoPedidoBean spb = new ServicoPedidoBean();
+
+    //DAO e Bean para criar movimentação do material
+    ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
+    ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
 
     public static int vezes = 0;
 
@@ -1137,10 +1139,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         } else if (tableitensorcamento.getRowCount() == 0) {
             JOptionPane.showMessageDialog(rootPane, "Coloque pelo menos um item no pedido!");
         } else if (txtnumeropedido.getText().equals("")) {
-            //Criar pedido novo
-            ServicoPedidoDAO spd = new ServicoPedidoDAO();
-            ServicoPedidoBean spb = new ServicoPedidoBean();
-
             try {
                 if (spd.readnome() == false) {
                     Calendar ca = Calendar.getInstance();
@@ -1185,10 +1183,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             //idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data
             spd.create(spb);
-
-            //Criar itens do pedido (Orçamento)
-            ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
-            ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
 
             for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
                 spib.setIdpedido(txtnumeropedido.getText());
@@ -1266,10 +1260,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             readitenscobranca();
             readitensretorno();
         } else {
-            //Atualizar pedido
-            ServicoPedidoDAO spd = new ServicoPedidoDAO();
-            ServicoPedidoBean spb = new ServicoPedidoBean();
-
             spb.setCliente(txtclientepedido.getText());
             spb.setCondicao(txtcondicao.getText());
             spb.setRepresentante(txtrepresentante.getText());
@@ -1281,10 +1271,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             //cliente = ?, condicao = ?, representante = ?, vendedor = ?, notes = ?, nfcliente = ? WHERE idtela = ?
             spd.update(spb);
-
-            //Criar itens do pedido (Orçamento)
-            ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
-            ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
 
             for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
                 if (tableitensorcamento.getValueAt(i, 1).equals("")) {
@@ -1403,8 +1389,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             tabpedidos.setSelectedIndex(1);
             txtnumeropedido.setText(tablepedidoservico.getValueAt(tablepedidoservico.getSelectedRow(), 0).toString());
 
-            ServicoPedidoDAO spd = new ServicoPedidoDAO();
-
             for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
                 txtclientepedido.setText(spb.getCliente());
                 txtcondicao.setText(spb.getCondicao());
@@ -1431,13 +1415,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             modeldoc.setNumRows(0);
             ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
 
-            for (ServicoPedidoDocumentosBean spdb : spdd.readitens(txtnumeropedido.getText())) {
+            spdd.readitens(txtnumeropedido.getText()).forEach((spdb) -> {
                 modeldoc.addRow(new Object[]{
                     false,
                     spdb.getId(),
                     spdb.getDescricao(),
                     spdb.getLocal(),});
-            }
+            });
         }
     }//GEN-LAST:event_tablepedidoservicoMouseClicked
 
@@ -1469,31 +1453,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         ItemRetornoServico p = new ItemRetornoServico();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        //DAO e Bean para atualizar estoque do item
-        ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
-        ServicoMateriaisBean smb = new ServicoMateriaisBean();
-
-        //DAO e Bean para atualizar itens do pedido
-        ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
-        ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
-
-        //DAO e Bean para alterar pedido
-        ServicoPedidoDAO spd = new ServicoPedidoDAO();
-        ServicoPedidoBean spb = new ServicoPedidoBean();
-
-        //DAO e Bean para criar movimentação do material
-        ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
-        ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
-
         //Número de linhas na table para fazer os métodos na table inteira
         int rc = tableitensorcamento.getRowCount();
         //Número de linhas selecionadas
@@ -1527,21 +1490,22 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             //Pegar número da nota para atualizar itens selecionados
             String nota = JOptionPane.showInputDialog(rootPane, "Qual o número da nota de cobrança?", "Nota de Cobrança", JOptionPane.YES_NO_OPTION);
 
-            //Atualizar itens com valor da nota anteriormente digitada
-            for (int i = 0; i < rc; i++) {
-                //Quantidade do item
-                int qtditem = Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString());
+            if (!nota.equals(null)) {
+                //Atualizar itens com valor da nota anteriormente digitada
+                for (int i = 0; i < rc; i++) {
+                    //Quantidade do item
+                    int qtditem = Integer.parseInt(tableitensorcamento.getValueAt(i, 4).toString());
 
-                //Pegar id do material
-                for (ServicoMateriaisBean smb2 : smd.readid(tableitensorcamento.getValueAt(i, 2).toString())) {
-                    idmaterial = smb2.getId();
-                }
-                //Pegar saldo atual do material
-                for (ServicoMateriaisBean smb3 : smd.readestoque(idmaterial)) {
-                    saldoatual = smb3.getEstoque();
-                }
-                if (tableitensorcamento.getValueAt(i, 0).equals(true)) { //Verificar se a linha está selecionada
-                    if (saldoatual >= qtditem) { //Verificar se o saldo atual é maior ou igual à quantidade do pedido 
+                    //Pegar id do material
+                    for (ServicoMateriaisBean smb2 : smd.readid(tableitensorcamento.getValueAt(i, 2).toString())) {
+                        idmaterial = smb2.getId();
+                    }
+                    //Pegar saldo atual do material
+                    for (ServicoMateriaisBean smb3 : smd.readestoque(idmaterial)) {
+                        saldoatual = smb3.getEstoque();
+                    }
+                    if (tableitensorcamento.getValueAt(i, 0).equals(true)) { //Verificar se a linha está selecionada
+                        //if (saldoatual >= qtditem) { //Verificar se o saldo atual é maior ou igual à quantidade do pedido 
                         //Dados para o método chamado
                         spib.setNf(nota);
                         spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
@@ -1572,11 +1536,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
                         //estoque = ? WHERE id = ?
                         smd.updateestoque(smb);
-                    } else {
+                        /*} else {
                         JOptionPane.showMessageDialog(rootPane, "O item " + tableitensorcamento.getValueAt(i, 2) + " não possui saldo suficiente.\n Favor verificar informações e refazer processo.");
+                    }*/
                     }
                 }
             }
+
             //Atualizar table com os itens
             readitenscobranca();
             //Pegar número de linhas com nota lançada depois de clicar no botão
@@ -1633,8 +1599,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             das.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    String OS = tableitensorcamento.getValueAt(tableitensorcamento.getSelectedRow(), 9).toString();
-                    if (OS.equals("")) {
+                    String OSstring = tableitensorcamento.getValueAt(tableitensorcamento.getSelectedRow(), 9).toString();
+                    if (OSstring.equals("")) {
                         JOptionPane.showMessageDialog(rootPane, "Produto sem OS");
                     } else {
                         OS p = new OS();
@@ -1645,48 +1611,48 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         } catch (PropertyVetoException ex) {
                             Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        p.txtnumeroos.setText(OS);
-                        p.tabos.setSelectedIndex(1);
+                        OS.txtnumeroos.setText(OSstring);
+                        OS.tabos.setSelectedIndex(1);
 
                         OSDAO od = new OSDAO();
 
                         for (OSBean ob : od.click(txtnumeroos.getText())) {
-                            p.txtabertura.setText(ob.getDataabertura());
-                            p.txtprevisao.setText(ob.getDataprevisao());
-                            txtstatus.setText(ob.getStatus());
-                            p.txtcliente.setText(ob.getCliente());
-                            p.txtdas.setText(ob.getDas());
-                            txtcodigo.setText(ob.getCodigo());
-                            txtdesc.setText(ob.getDescricao());
-                            txtinicial.setText(String.valueOf(ob.getQtdinicial()));
-                            txtfinal.setText(String.valueOf(ob.getQtdok()));
-                            txtmortas.setText(String.valueOf(ob.getQtdnaook()));
-                            txtnotes.setText(ob.getNotes());
+                            OS.txtabertura.setText(ob.getDataabertura());
+                            OS.txtprevisao.setText(ob.getDataprevisao());
+                            OS.txtstatus.setText(ob.getStatus());
+                            OS.txtcliente.setText(ob.getCliente());
+                            OS.txtdas.setText(ob.getDas());
+                            OS.txtcodigo.setText(ob.getCodigo());
+                            OS.txtdesc.setText(ob.getDescricao());
+                            OS.txtinicial.setText(String.valueOf(ob.getQtdinicial()));
+                            OS.txtfinal.setText(String.valueOf(ob.getQtdok()));
+                            OS.txtmortas.setText(String.valueOf(ob.getQtdnaook()));
+                            OS.txtnotes.setText(ob.getNotes());
                             if (ob.getTopo().equals("true")) {
-                                radiotopo.setSelected(true);
+                                OS.radiotopo.setSelected(true);
                             }
                             if (ob.getReconstrucao().equals("true")) {
-                                radioreconstrucao.setSelected(true);
+                                OS.radioreconstrucao.setSelected(true);
                             }
                             if (ob.getCompleta().equals("true")) {
-                                p.radiocompleta.setSelected(true);
+                                OS.radiocompleta.setSelected(true);
                             }
                             if (ob.getDesenho().equals("true")) {
-                                p.radiodesenho.setSelected(true);
+                                OS.radiodesenho.setSelected(true);
                             }
-                            txtraio.setText(ob.getRaio());
-                            txtfrontal.setText(ob.getFrontal());
+                            OS.txtraio.setText(ob.getRaio());
+                            OS.txtfrontal.setText(ob.getFrontal());
 
                         }
 
                         //Pegar documentos
-                        p.readdocs();
+                        OS.readdocs();
 
                         //Pegar processos
-                        p.readprocessos();
+                        OS.readprocessos();
 
                         //Travar campos de acordo com status da op
-                        p.travarcampos();
+                        OS.travarcampos();
                     }
                 }
             });
@@ -1776,10 +1742,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     String idos = Dates.CriarIdOS();
                     ob.setIdtela(idos);
                     String data = Dates.CriarDataCompletaParaDB();
-                    ob.setDataabertura(data);
+                    ob.setDateabertura(data);
                     int days = Integer.parseInt(tableitensorcamento.getValueAt(i, 7).toString().replace(" dias", ""));
                     String dataPrevisao = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(days);
-                    ob.setDataprevisao(dataPrevisao);
+                    ob.setDateprevisao(dataPrevisao);
                     ob.setStatus("Rascunho");
                     ob.setCliente(txtclientepedido.getText());
                     ob.setDas(txtnumeropedido.getText());
@@ -1913,22 +1879,22 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     fb.setMaterial(tableitensorcamento.getValueAt(i, 2).toString());
                     fb.setProcesso(processo);
                     fb.setDatacriacao(data);
-                    fb.setNivel(3);
+                    fb.setNivel(5);
                     fb.setValor(Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableitensorcamento.getValueAt(i, 6).toString())));
                     fb.setObservacao("");
                     fb.setCliente(txtclientepedido.getText());
 
                     //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
                     fd.create(fb);
-                    
+
                     F_UP_HistDAO fuhd = new F_UP_HistDAO();
                     F_UP_HistBean fuhb = new F_UP_HistBean();
-                    
+
                     fuhb.setIdfup(fd.getId(idos));
                     fuhb.setProcesso(processo);
                     fuhb.setFuncionario(null);
                     fuhb.setData(null);
-                    
+
                     //idfup, processo, funcionario, data
                     fuhd.create(fuhb);
                 }
@@ -1948,7 +1914,28 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableitensorcamentoMouseReleased
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Em breve!");
+        int numTrue = 0;
+        for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+            if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado!");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja realmente excluir o(s) item(ns) selecionado(s)?\nNo caso de haver OS lançada no item, será excluída juntamente com o item.", "Excluir", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+                    if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
+                        od.delete(tableitensorcamento.getValueAt(i, 9).toString());
+
+                        spid.delete(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
+                    }
+                }
+                readitenscobranca();
+            }
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed

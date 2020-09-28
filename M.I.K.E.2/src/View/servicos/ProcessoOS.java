@@ -49,7 +49,7 @@ public class ProcessoOS extends javax.swing.JInternalFrame {
             txtprocesso.setText(opb2.getProcesso());
             txtinicio.setText(opb2.getInicio());
             txttermino.setText(opb2.getTermino());
-            txtok.setText(String.valueOf(opb2.getQtdok()));
+            txtok.setText(txtdisponivel.getText());
             txtnaook.setText(String.valueOf(opb2.getQtdnaook()));
             txtusuario.setText(opb2.getUsuario());
             txtobservacao.setText(opb2.getObservacao());

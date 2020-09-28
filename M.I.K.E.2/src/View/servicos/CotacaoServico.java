@@ -20,6 +20,7 @@ import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
 import Methods.SendEmail;
 import Methods.Telas;
+import View.Geral.ItemCotacao;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarCondicaoDePagamento;
 import View.Geral.ProcurarDocumento;
@@ -31,7 +32,6 @@ import static View.servicos.PedidoServico.txtnumeropedido;
 import java.awt.AWTException;
 import java.awt.Container;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -50,7 +50,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -69,6 +68,10 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class CotacaoServico extends javax.swing.JInternalFrame {
 
+    static ServicoOrcamentoItensDAO iosd;
+    static ServicoOrcamentoDocumentosDAO sodd;
+    static ServicoOrcamentoDAO sod;
+
     /**
      * Creates new form OrcamentoServico
      */
@@ -86,41 +89,44 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             case 0:
                 DefaultTableModel model = (DefaultTableModel) tableorcamentoservico.getModel();
                 model.setNumRows(0);
-                ServicoOrcamentoDAO sod0 = new ServicoOrcamentoDAO();
+                sod = new ServicoOrcamentoDAO();
 
-                for (ServicoOrcamentoBean sob : sod0.reademaberto()) {
+                sod.reademaberto().forEach((sob) -> {
                     model.addRow(new Object[]{
                         sob.getIdtela(),
                         sob.getCliente(),
                         sob.getStatus()
                     });
-                }
+                });
                 break;
+
             case 5:
                 DefaultTableModel model5 = (DefaultTableModel) tableorcamentoservico.getModel();
                 model5.setNumRows(0);
-                ServicoOrcamentoDAO sod5 = new ServicoOrcamentoDAO();
+                sod = new ServicoOrcamentoDAO();
 
-                for (ServicoOrcamentoBean sob : sod5.read()) {
+                sod.read().forEach((sob) -> {
                     model5.addRow(new Object[]{
                         sob.getIdtela(),
                         sob.getCliente(),
                         sob.getStatus()
                     });
-                }
+                });
                 break;
+
             default:
                 DefaultTableModel modeld = (DefaultTableModel) tableorcamentoservico.getModel();
                 modeld.setNumRows(0);
-                ServicoOrcamentoDAO sodd = new ServicoOrcamentoDAO();
+                sod = new ServicoOrcamentoDAO();
 
-                for (ServicoOrcamentoBean sob : sodd.readstatus(cbstatus.getSelectedItem().toString())) {
+                sod.readstatus(cbstatus.getSelectedItem().toString()).forEach((sob) -> {
                     modeld.addRow(new Object[]{
                         sob.getIdtela(),
                         sob.getCliente(),
                         sob.getStatus()
                     });
-                }
+                });
+
         }
     }
 
@@ -150,9 +156,9 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     public static void tableitensatualizar() {
         DefaultTableModel model = (DefaultTableModel) tableitens.getModel();
         model.setNumRows(0);
-        ServicoOrcamentoItensDAO iosd = new ServicoOrcamentoItensDAO();
+        iosd = new ServicoOrcamentoItensDAO();
 
-        for (ServicoOrcamentoItensBean iosb : iosd.readitens(txtnumeroorcamento.getText())) {
+        iosd.readitens(txtnumeroorcamento.getText()).forEach((iosb) -> {
             model.addRow(new Object[]{
                 false,
                 iosb.getId(),
@@ -165,21 +171,21 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 iosb.getPedido(),
                 iosb.getDas()
             });
-        }
+        });
     }
 
     public static void tabledocumentosatualizar() {
         DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
         modeldoc.setNumRows(0);
-        ServicoOrcamentoDocumentosDAO sodd = new ServicoOrcamentoDocumentosDAO();
+        sodd = new ServicoOrcamentoDocumentosDAO();
 
-        for (ServicoOrcamentoDocumentosBean sodb : sodd.readitens(txtnumeroorcamento.getText())) {
+        sodd.readitens(txtnumeroorcamento.getText()).forEach((sodb) -> {
             modeldoc.addRow(new Object[]{
                 false,
                 sodb.getId(),
                 sodb.getDescricao(),
                 sodb.getLocal(),});
-        }
+        });
     }
 
     public static void checkstatus() {
@@ -257,6 +263,27 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         c.add(t);
         t.setVisible(false);
         c.setComponentZOrder(t, 0);
+    }
+
+    public static void lerItensCotacao() {
+        DefaultTableModel model = (DefaultTableModel) tableitens.getModel();
+        model.setNumRows(0);
+        ServicoOrcamentoItensDAO iosd = new ServicoOrcamentoItensDAO();
+
+        for (ServicoOrcamentoItensBean iosb : iosd.readitens(txtnumeroorcamento.getText())) {
+            model.addRow(new Object[]{
+                false,
+                iosb.getId(),
+                iosb.getCodigo(),
+                iosb.getDesc(),
+                iosb.getQtd(),
+                iosb.getValor(),
+                iosb.getTotal(),
+                iosb.getPrazo(),
+                iosb.getPedido(),
+                iosb.getDas()
+            });
+        }
     }
 
     /**
@@ -1028,43 +1055,24 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnclienteActionPerformed
 
     private void btnincluiritemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnincluiritemActionPerformed
-        ItemOrcamentoServico ios = new ItemOrcamentoServico();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(ios);
-        Dimension i = ios.getSize();
-        Dimension d = desk.getSize();
-        ios.setLocation((d.width - i.width) / 2, (d.height - i.height) / 2);
-        ios.setVisible(true);
+        ItemCotacao ic = new ItemCotacao(this.getClass().getSimpleName());
+        ic.setTitle("Item Cotação de Serviço");
+        Telas.AparecerTela(ic);
     }//GEN-LAST:event_btnincluiritemActionPerformed
 
     private void btncondicaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncondicaoActionPerformed
         ProcurarCondicaoDePagamento p = new ProcurarCondicaoDePagamento("ServiçoCotação");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_btncondicaoActionPerformed
 
     private void btnrepresentanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnrepresentanteActionPerformed
         ProcurarRepresentante p = new ProcurarRepresentante("ServiçoCotação");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_btnrepresentanteActionPerformed
 
     private void btnvendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnvendedorActionPerformed
         ProcurarVendedor p = new ProcurarVendedor("ServiçoCotação");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension desktopsize = jDesktopPane1.getSize();
-        Dimension jinternalframesize = p.getSize();
-        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_btnvendedorActionPerformed
 
     private void btnsalvarorcamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsalvarorcamentoActionPerformed
@@ -1366,12 +1374,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(rootPane, "Item incluído em DAS! Não pode ser alterado.");
                 } else {
                     ItemOrcamentoServico ios = new ItemOrcamentoServico();
-                    JDesktopPane desk = this.getDesktopPane();
-                    desk.add(ios);
-                    Dimension i = ios.getSize();
-                    Dimension d = desk.getSize();
-                    ios.setLocation((d.width - i.width) / 2, (d.height - i.height) / 2);
-                    ios.setVisible(true);
+                    Telas.AparecerTela(ios);
+
                     if (tableitens.getValueAt(tableitens.getSelectedRow(), 2).equals("")) {
                         ItemOrcamentoServico.jRadioButton2.setSelected(true);
                         ItemOrcamentoServico.btnprocurar.setEnabled(false);
@@ -1491,24 +1495,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 txtnomecliente.setEditable(true);
             }
 
-            DefaultTableModel model = (DefaultTableModel) tableitens.getModel();
-            model.setNumRows(0);
-            ServicoOrcamentoItensDAO iosd = new ServicoOrcamentoItensDAO();
-
-            for (ServicoOrcamentoItensBean iosb : iosd.readitens(txtnumeroorcamento.getText())) {
-                model.addRow(new Object[]{
-                    false,
-                    iosb.getId(),
-                    iosb.getCodigo(),
-                    iosb.getDesc(),
-                    iosb.getQtd(),
-                    iosb.getValor(),
-                    iosb.getTotal(),
-                    iosb.getPrazo(),
-                    iosb.getPedido(),
-                    iosb.getDas()
-                });
-            }
+            lerItensCotacao();
 
             txtvalor();
 

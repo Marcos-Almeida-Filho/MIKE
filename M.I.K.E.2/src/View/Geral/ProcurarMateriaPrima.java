@@ -58,7 +58,7 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
 
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
-        setTitle("Procurar Material");
+        setTitle("Procurar Matéria-Prima");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N

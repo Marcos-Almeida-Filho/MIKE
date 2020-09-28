@@ -10,11 +10,9 @@ import Connection.Session;
 import DAO.GrupoDeUsuariosPermDAO;
 import DAO.UsuariosDAO;
 import View.comercial.Clientes;
-import View.administracao.Usuarios;
 import View.servicos.CotacaoServico;
 import View.vendas.OPs;
 import View.arquivo.Email;
-import Methods.EmBreve;
 import Methods.Telas;
 import View.RH.SolicitacaoHoraExtra;
 import View.administracao.GrupoDeUsuarios;
@@ -38,6 +36,7 @@ import View.servicos.ServicoMateriais;
 import View.servicos.PedidoServico;
 import View.servicos.ProcessosServico;
 import View.TI.Senhas;
+import View.administracao.Usuarios;
 import View.arquivo.ProgramacaoMIKE;
 import View.comercial.PlanejamentoFaturamento;
 import View.configuracoes.Menus;
@@ -46,10 +45,11 @@ import View.financeiro.Extratos;
 import View.fiscal.NotasFiscais;
 import View.logistica.LocaisArmazenagem;
 import View.vendas.CotacaoVenda;
-import View.vendas.VendasMateriais;
 import View.vendas.ProcessosVendas;
+import View.vendas.VM;
 import java.awt.Toolkit;
 import java.net.URL;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 /**
@@ -58,14 +58,15 @@ import javax.swing.JOptionPane;
  */
 public final class TelaPrincipal extends javax.swing.JFrame {
 
+    static GrupoDeUsuariosPermDAO gupd = new GrupoDeUsuariosPermDAO();
+
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
         this.setExtendedState(TelaPrincipal.MAXIMIZED_BOTH);
-        menus();
-        btntestemenus.setVisible(false);
+        //menus();
         initialize();
     }
 
@@ -125,8 +126,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 //            TelaPrincipal.menu_configuracoes.setVisible(gub.isMenuconfiguracoes());
 //            TelaPrincipal.item_menus.setVisible(gub.isSubmenumenus());
 //        });
-        GrupoDeUsuariosPermDAO gupd = new GrupoDeUsuariosPermDAO();
-        
         int menu = TelaPrincipal.jMenuBar1.getMenuCount();
         for (int i = 0; i < menu; i++) {
             String menuname = TelaPrincipal.jMenuBar1.getMenu(i).getName();
@@ -151,7 +150,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jDesktopPane1 = new javax.swing.JDesktopPane();
         lblnome = new javax.swing.JLabel();
-        btntestemenus = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menu_arquivo = new javax.swing.JMenu();
         item_email = new javax.swing.JMenuItem();
@@ -246,34 +244,20 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         lblnome.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblnome.setText("jLabel1");
 
-        btntestemenus.setText("Teste Menus");
-        btntestemenus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btntestemenusActionPerformed(evt);
-            }
-        });
-
         jDesktopPane1.setLayer(lblnome, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jDesktopPane1.setLayer(btntestemenus, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout jDesktopPane1Layout = new javax.swing.GroupLayout(jDesktopPane1);
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDesktopPane1Layout.createSequentialGroup()
-                .addContainerGap(540, Short.MAX_VALUE)
-                .addComponent(btntestemenus)
-                .addGap(522, 522, 522))
+            .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 1161, Short.MAX_VALUE)
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDesktopPane1Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(lblnome)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btntestemenus)
-                .addContainerGap(267, Short.MAX_VALUE))
+                .addContainerGap(301, Short.MAX_VALUE))
         );
 
         menu_arquivo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page.png"))); // NOI18N
@@ -293,6 +277,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_protocolos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/text_list_bullets.png"))); // NOI18N
         item_protocolos.setText("Protocolos de Atendimento");
         item_protocolos.setName("item_protocolos"); // NOI18N
+        item_protocolos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_protocolosActionPerformed(evt);
+            }
+        });
         menu_arquivo.add(item_protocolos);
 
         item_prog_mike.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/bricks.png"))); // NOI18N
@@ -406,6 +395,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_grupo_clientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/group_add.png"))); // NOI18N
         item_grupo_clientes.setText("Grupo de Clientes");
         item_grupo_clientes.setName("item_grupo_clientes"); // NOI18N
+        item_grupo_clientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_grupo_clientesActionPerformed(evt);
+            }
+        });
         menu_comercial.add(item_grupo_clientes);
 
         item_fornecedores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry.png"))); // NOI18N
@@ -507,6 +501,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_conciliacao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_code.png"))); // NOI18N
         item_conciliacao.setText("Conciliação Bancária");
         item_conciliacao.setName("item_conciliacao"); // NOI18N
+        item_conciliacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_conciliacaoActionPerformed(evt);
+            }
+        });
         menu_financeiro.add(item_conciliacao);
 
         item_cartoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/creditcards.png"))); // NOI18N
@@ -538,11 +537,21 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_orcamento_compras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_edit.png"))); // NOI18N
         item_orcamento_compras.setText("Cotação de Compra");
         item_orcamento_compras.setName("item_orcamento_compras"); // NOI18N
+        item_orcamento_compras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_orcamento_comprasActionPerformed(evt);
+            }
+        });
         menu_compras.add(item_orcamento_compras);
 
         item_pedido_compras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_go.png"))); // NOI18N
         item_pedido_compras.setText("Pedido de Compra");
         item_pedido_compras.setName("item_pedido_compras"); // NOI18N
+        item_pedido_compras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_pedido_comprasActionPerformed(evt);
+            }
+        });
         menu_compras.add(item_pedido_compras);
 
         item_insumos_compras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/cart_put.png"))); // NOI18N
@@ -646,6 +655,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_iqf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/lorry_error.png"))); // NOI18N
         item_iqf.setText("IQF");
         item_iqf.setName("item_iqf"); // NOI18N
+        item_iqf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_iqfActionPerformed(evt);
+            }
+        });
         menu_qualidade.add(item_iqf);
 
         item_medicoes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/chart_bar.png"))); // NOI18N
@@ -681,6 +695,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_atraso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/hourglass_delete.png"))); // NOI18N
         item_atraso.setText("Atraso/Saída Antecipada");
         item_atraso.setName("item_atraso"); // NOI18N
+        item_atraso.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_atrasoActionPerformed(evt);
+            }
+        });
         item_form.add(item_atraso);
 
         menu_rh.add(item_form);
@@ -816,6 +835,11 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_ots.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_link.png"))); // NOI18N
         item_ots.setText("OT's");
         item_ots.setName("item_ots"); // NOI18N
+        item_ots.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_otsActionPerformed(evt);
+            }
+        });
         menu_terceiros.add(item_ots);
 
         jMenuBar1.add(menu_terceiros);
@@ -894,27 +918,62 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_item_sairActionPerformed
 
     private void item_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_usuariosActionPerformed
-        Usuarios telauser = new Usuarios();
-        Telas.AparecerTela(telauser);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Usuarios telauser = new Usuarios();
+            Telas.AparecerTela(telauser);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_usuariosActionPerformed
 
     private void item_opsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_opsActionPerformed
-        OPs ops = new OPs();
-        Telas.AparecerTelaAumentada(ops);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            OPs ops = new OPs();
+            Telas.AparecerTelaAumentada(ops);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_opsActionPerformed
 
     private void item_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_emailActionPerformed
-        Email email = new Email();
-        Telas.AparecerTela(email);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Email email = new Email();
+            Telas.AparecerTela(email);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_emailActionPerformed
 
     private void item_vendas_pedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_vendas_pedidoActionPerformed
-        EmBreve.EmBreve();
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_vendas_pedidoActionPerformed
 
     private void item_vendas_cotacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_vendas_cotacoesActionPerformed
-        CotacaoVenda cv = new CotacaoVenda();
-        Telas.AparecerTelaAumentada(cv);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            CotacaoVenda cv = new CotacaoVenda();
+            Telas.AparecerTelaAumentada(cv);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_vendas_cotacoesActionPerformed
 
     private void item_sobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_sobreActionPerformed
@@ -922,182 +981,396 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_item_sobreActionPerformed
 
     private void item_mikeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_mikeActionPerformed
-        Tarefas t = new Tarefas();
-        t.setVisible(true);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Tarefas t = new Tarefas();
+            t.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_mikeActionPerformed
 
     private void item_servicos_cotacoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_cotacoesActionPerformed
-        CotacaoServico tela = new CotacaoServico();
-        Telas.AparecerTelaAumentada(tela);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            CotacaoServico tela = new CotacaoServico();
+            Telas.AparecerTelaAumentada(tela);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_servicos_cotacoesActionPerformed
 
     private void item_servicos_pedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_pedidoActionPerformed
-        PedidoServico p = new PedidoServico();
-        Telas.AparecerTelaAumentada(p);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            PedidoServico p = new PedidoServico();
+            Telas.AparecerTelaAumentada(p);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_servicos_pedidoActionPerformed
 
     private void item_ossActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_ossActionPerformed
-        OS os = new OS();
-        Telas.AparecerTelaAumentada(os);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            OS os = new OS();
+            Telas.AparecerTelaAumentada(os);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_ossActionPerformed
 
     private void item_clientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_clientesActionPerformed
-        Clientes telaclientes = new Clientes();
-        Telas.AparecerTelaAumentada(telaclientes);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Clientes telaclientes = new Clientes();
+            Telas.AparecerTelaAumentada(telaclientes);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_clientesActionPerformed
 
     private void item_servicos_produtosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_produtosActionPerformed
-        ServicoMateriais tela = new ServicoMateriais();
-        Telas.AparecerTelaAumentada(tela);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            ServicoMateriais tela = new ServicoMateriais();
+            Telas.AparecerTelaAumentada(tela);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_servicos_produtosActionPerformed
 
     private void item_grupo_usuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_grupo_usuariosActionPerformed
-        GrupoDeUsuarios gu = new GrupoDeUsuarios();
-        Telas.AparecerTela(gu);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            GrupoDeUsuarios gu = new GrupoDeUsuarios();
+            Telas.AparecerTela(gu);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_grupo_usuariosActionPerformed
 
     private void item_menusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_menusActionPerformed
-        Menus m = new Menus();
-        Telas.AparecerTela(m);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Menus m = new Menus();
+            Telas.AparecerTela(m);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_menusActionPerformed
 
     private void item_representantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_representantesActionPerformed
-        Representantes r = new Representantes();
-        Telas.AparecerTela(r);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Representantes r = new Representantes();
+            Telas.AparecerTela(r);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_representantesActionPerformed
 
     private void item_regioes_atuacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_regioes_atuacaoActionPerformed
-        Regioes r = new Regioes();
-        Telas.AparecerTela(r);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Regioes r = new Regioes();
+            Telas.AparecerTela(r);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_regioes_atuacaoActionPerformed
 
     private void item_condicoes_pagamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_condicoes_pagamentoActionPerformed
-        CondicoesDePagamento cp = new CondicoesDePagamento();
-        Telas.AparecerTela(cp);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            CondicoesDePagamento cp = new CondicoesDePagamento();
+            Telas.AparecerTela(cp);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_condicoes_pagamentoActionPerformed
 
     private void item_capActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_capActionPerformed
-        ContasPagar c = new ContasPagar();
-        Telas.AparecerTelaAumentada(c);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            ContasPagar c = new ContasPagar();
+            Telas.AparecerTelaAumentada(c);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_capActionPerformed
 
     private void item_bancosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_bancosActionPerformed
-        Bancos b = new Bancos();
-        Telas.AparecerTelaAumentada(b);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Bancos b = new Bancos();
+            Telas.AparecerTelaAumentada(b);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_bancosActionPerformed
 
     private void item_fornecedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_fornecedoresActionPerformed
-        Fornecedores f = new Fornecedores();
-        Telas.AparecerTela(f);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Fornecedores f = new Fornecedores();
+            Telas.AparecerTela(f);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_fornecedoresActionPerformed
 
     private void item_servicos_processoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_processoActionPerformed
-        ProcessosServico ps = new ProcessosServico();
-        Telas.AparecerTela(ps);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            ProcessosServico ps = new ProcessosServico();
+            Telas.AparecerTela(ps);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_servicos_processoActionPerformed
 
     private void item_servicos_grupo_processoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_grupo_processoActionPerformed
-        GrupoDeProcessosServico gps = new GrupoDeProcessosServico();
-        Telas.AparecerTela(gps);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            GrupoDeProcessosServico gps = new GrupoDeProcessosServico();
+            Telas.AparecerTela(gps);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_servicos_grupo_processoActionPerformed
 
     private void item_solicitacao_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_solicitacao_comprasActionPerformed
-        ComprasSolicitacao p = new ComprasSolicitacao();
-        Telas.AparecerTelaAumentada(p);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            ComprasSolicitacao p = new ComprasSolicitacao();
+            Telas.AparecerTelaAumentada(p);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_solicitacao_comprasActionPerformed
 
     private void item_inst_medActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_inst_medActionPerformed
-        InstrumentosMedicao p = new InstrumentosMedicao();
-        Telas.AparecerTela(p);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            InstrumentosMedicao p = new InstrumentosMedicao();
+            Telas.AparecerTela(p);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_inst_medActionPerformed
 
     private void item_carrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_carrosActionPerformed
-        // TODO add your handling code here:
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_carrosActionPerformed
 
     private void item_nfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_nfActionPerformed
-        NotasFiscais nf = new NotasFiscais();
-        Telas.AparecerTelaAumentada(nf);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            NotasFiscais nf = new NotasFiscais();
+            Telas.AparecerTelaAumentada(nf);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_nfActionPerformed
 
     private void item_naturezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_naturezaActionPerformed
-        // TODO add your handling code here:
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_naturezaActionPerformed
 
-    private void btntestemenusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntestemenusActionPerformed
-//        int menu = TelaPrincipal.jMenuBar1.getMenuCount();
-//        for (int i = 0; i < menu; i++) {
-//            JOptionPane.showMessageDialog(rootPane, TelaPrincipal.jMenuBar1.getMenu(i).getName());
-//            int sub = TelaPrincipal.jMenuBar1.getMenu(i).getItemCount();
-//            for (int j = 0; j < sub; j++) {
-//                JOptionPane.showMessageDialog(rootPane, TelaPrincipal.jMenuBar1.getMenu(i).getItem(j).getName());
-//            }
-//        }
-////////        Menus_1 p = new Menus_1();
-////////        jDesktopPane1.add(p);
-////////        Dimension desktopsize = jDesktopPane1.getSize();
-////////        Dimension jinternalframesize = p.getSize();
-////////        p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-////////        p.setVisible(true);
-    }//GEN-LAST:event_btntestemenusActionPerformed
-
     private void item_tipo_insumosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_tipo_insumosActionPerformed
-        TiposInsumo p = new TiposInsumo();
-        Telas.AparecerTela(p);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            TiposInsumo p = new TiposInsumo();
+            Telas.AparecerTela(p);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_tipo_insumosActionPerformed
 
     private void item_vendas_produtosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_vendas_produtosActionPerformed
-        VendasMateriais p = new VendasMateriais();
-        Telas.AparecerTelaAumentada(p);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            VM p = new VM();
+            Telas.AparecerTelaAumentada(p);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_vendas_produtosActionPerformed
 
     private void item_rastreamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_rastreamentoActionPerformed
-        RastreamentoDocumentos p = new RastreamentoDocumentos();
-        Telas.AparecerTela(p);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            RastreamentoDocumentos p = new RastreamentoDocumentos();
+            Telas.AparecerTela(p);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_rastreamentoActionPerformed
 
     private void item_categoria_precoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_categoria_precoActionPerformed
-        CategoriaDePreco p = new CategoriaDePreco();
-        Telas.AparecerTelaAumentada(p);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            CategoriaDePreco p = new CategoriaDePreco();
+            Telas.AparecerTelaAumentada(p);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_categoria_precoActionPerformed
 
     private void item_carActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_carActionPerformed
-        ContasReceber p = new ContasReceber();
-        Telas.AparecerTelaAumentada(p);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            ContasReceber p = new ContasReceber();
+            Telas.AparecerTelaAumentada(p);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_carActionPerformed
 
     private void item_insumos_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_insumos_comprasActionPerformed
-        Insumos i = new Insumos();
-        Telas.AparecerTelaAumentada(i);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Insumos i = new Insumos();
+            Telas.AparecerTelaAumentada(i);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_insumos_comprasActionPerformed
 
     private void item_f_upActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_f_upActionPerformed
-        F_UP f = new F_UP();
-        Telas.AparecerTelaAumentada(f);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            F_UP f = new F_UP();
+            Telas.AparecerTelaAumentada(f);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_f_upActionPerformed
 
     private void item_senhasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_senhasActionPerformed
-        Senhas s = new Senhas();
-        Telas.AparecerTela(s);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Senhas s = new Senhas();
+            Telas.AparecerTela(s);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_senhasActionPerformed
 
     private void item_unidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_unidadesActionPerformed
-        // TODO add your handling code here:
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_unidadesActionPerformed
 
     private void item_solic_hora_extraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_solic_hora_extraActionPerformed
-        SolicitacaoHoraExtra she = new SolicitacaoHoraExtra();
-        Telas.AparecerTelaAumentada(she);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            SolicitacaoHoraExtra she = new SolicitacaoHoraExtra();
+            Telas.AparecerTelaAumentada(she);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_solic_hora_extraActionPerformed
 
     private void item_extratosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_extratosActionPerformed
-        Extratos e = new Extratos();
-        Telas.AparecerTelaAumentada(e);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Extratos e = new Extratos();
+            Telas.AparecerTelaAumentada(e);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_extratosActionPerformed
 
     private void item_vendas_processosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_vendas_processosActionPerformed
-        ProcessosVendas pv = new ProcessosVendas();
-        Telas.AparecerTela(pv);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            ProcessosVendas pv = new ProcessosVendas();
+            Telas.AparecerTela(pv);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_vendas_processosActionPerformed
 
     private void item_medicoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_medicoesActionPerformed
@@ -1105,23 +1378,51 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_item_medicoesActionPerformed
 
     private void item_cartoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_cartoesActionPerformed
-        Cartoes c = new Cartoes();
-        Telas.AparecerTela(c);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Cartoes c = new Cartoes();
+            Telas.AparecerTela(c);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_cartoesActionPerformed
 
     private void item_planejamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_planejamentoActionPerformed
-        PlanejamentoFaturamento pf = new PlanejamentoFaturamento();
-        Telas.AparecerTelaAumentada(pf);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            PlanejamentoFaturamento pf = new PlanejamentoFaturamento();
+            Telas.AparecerTelaAumentada(pf);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_planejamentoActionPerformed
 
     private void item_prog_mikeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_prog_mikeActionPerformed
-        ProgramacaoMIKE pm = new ProgramacaoMIKE();
-        Telas.AparecerTelaAumentada(pm);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            ProgramacaoMIKE pm = new ProgramacaoMIKE();
+            Telas.AparecerTelaAumentada(pm);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_prog_mikeActionPerformed
 
     private void item_locaisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_locaisActionPerformed
-        LocaisArmazenagem la = new LocaisArmazenagem();
-        Telas.AparecerTela(la);
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            LocaisArmazenagem la = new LocaisArmazenagem();
+            Telas.AparecerTela(la);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_locaisActionPerformed
 
     private void item_trocar_senhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_trocar_senhaActionPerformed
@@ -1129,29 +1430,61 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         if (resp == 0) {
             String senha = JOptionPane.showInputDialog(null, "Digite a nova senha.", "Nova senha", JOptionPane.YES_NO_OPTION);
             if (senha.length() == 0) {
-                JOptionPane.showMessageDialog(null,"Nenhuma senha digitada.");
+                JOptionPane.showMessageDialog(null, "Nenhuma senha digitada.");
             } else {
                 String conf_senha = JOptionPane.showInputDialog(null, "Confirme a nova senha.", "Confirmar nova senha", JOptionPane.YES_NO_OPTION);
                 if (conf_senha.length() == 0) {
-                    JOptionPane.showMessageDialog(null,"Nenhuma senha de confirmação digitada.");
+                    JOptionPane.showMessageDialog(null, "Nenhuma senha de confirmação digitada.");
                 } else {
                     if (senha.equals(conf_senha)) {
                         UsuariosDAO ud = new UsuariosDAO();
-                        
+
                         ud.updateSenha(senha, Session.nome);
-                        
+
                         TelaPrincipal tp = new TelaPrincipal();
                         tp.dispose();
-                        
+
                         TelaLogin tl = new TelaLogin();
                         tl.setVisible(true);
                     } else {
-                        JOptionPane.showMessageDialog(null,"Senhas diferentes.\nNão foi possível alterar sua senha.");
+                        JOptionPane.showMessageDialog(null, "Senhas diferentes.\nNão foi possível alterar sua senha.");
                     }
                 }
             }
         }
     }//GEN-LAST:event_item_trocar_senhaActionPerformed
+
+    private void item_grupo_clientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_grupo_clientesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_item_grupo_clientesActionPerformed
+
+    private void item_conciliacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_conciliacaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_item_conciliacaoActionPerformed
+
+    private void item_orcamento_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_orcamento_comprasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_item_orcamento_comprasActionPerformed
+
+    private void item_pedido_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_pedido_comprasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_item_pedido_comprasActionPerformed
+
+    private void item_iqfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_iqfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_item_iqfActionPerformed
+
+    private void item_atrasoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_atrasoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_item_atrasoActionPerformed
+
+    private void item_otsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_otsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_item_otsActionPerformed
+
+    private void item_protocolosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_protocolosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_item_protocolosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1183,7 +1516,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btntestemenus;
     private javax.swing.JMenuItem item_atraso;
     public static javax.swing.JMenuItem item_bancos;
     public static javax.swing.JMenuItem item_cap;

@@ -360,6 +360,7 @@ public class OPF_UP extends javax.swing.JInternalFrame {
             fud.update(fub);
 
             F_UP.readops();
+            F_UP.readOSs();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

@@ -14,6 +14,7 @@ import View.financeiro.AdicionarContasAPagar;
 import View.financeiro.AdicionarContasAReceber;
 import View.logistica.RastreamentoDocumentos;
 import View.vendas.CodigoPorCliente;
+import View.vendas.CotacaoVenda;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -22,11 +23,17 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ProcurarCliente extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form ProcurarCliente
-     */
+    static ClientesDAO cd;
+
     String origem;
 
+    static String condicao, representante, vendedor;
+
+    /**
+     * Creates new form ProcurarCliente
+     *
+     * @param origin
+     */
     public ProcurarCliente(String origin) {
         initComponents();
         filltableclientes();
@@ -36,15 +43,15 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
     public static void filltableclientes() {
         DefaultTableModel model = (DefaultTableModel) tableclientes.getModel();
         model.setNumRows(0);
-        ClientesDAO cd = new ClientesDAO();
+        cd = new ClientesDAO();
 
-        for (ClientesBean cb : cd.read()) {
+        cd.read().forEach((cb) -> {
             model.addRow(new Object[]{
                 cb.getId(),
                 cb.getNome(),
                 cb.getRazaosocial()
             });
-        }
+        });
     }
 
     /**
@@ -170,48 +177,49 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
     private void tableclientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableclientesMouseClicked
         if (evt.getClickCount() == 2) {
             String cliente = tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString();
+            cd.readPorNome(cliente).forEach(cb -> {
+                condicao = cb.getCondicaodepagamento();
+                vendedor = cb.getVendedor();
+                representante = cb.getRepresentante();
+            });
             switch (origem) {
                 case "ServiçoCotação":
                     CotacaoServico.txtnomecliente.setText(cliente);
-                    dispose();
                     break;
                 case "ServiçoPedido":
                     PedidoServico.txtclientepedido.setText(cliente);
-                    dispose();
                     break;
-                case "VendaCotação":
+                case "CotacaoVenda":
+                    CotacaoVenda.txtCliente.setText(cliente);
+                    CotacaoVenda.txtCondPag.setText(condicao);
+                    CotacaoVenda.txtRep.setText(representante);
+                    CotacaoVenda.txtVendedor.setText(vendedor);
                     break;
                 case "VendaPedido":
                     break;
                 case "OS":
                     OS.txtcliente.setText(cliente);
-                    dispose();
                     break;
                 case "Rastreamento":
                     RastreamentoDocumentos.txtemitente.setText(cliente);
-                    dispose();
                     break;
                 case "CAR":
                     AdicionarContasAReceber.txtcliente.setText(cliente);
-                    dispose();
                     break;
                 case "CAP":
                     AdicionarContasAPagar.txtemitente.setText(cliente);
-                    dispose();
                     break;
                 case "AdicionarOPFUP":
                     AdicionarOPFUP.txtcliente.setText(cliente);
-                    dispose();
                     break;
                 case "OPF_UP":
                     OPF_UP.txtcliente.setText(cliente);
-                    dispose();
                     break;
                 case "CodigoPorCliente":
                     CodigoPorCliente.txtcliente.setText(cliente);
-                    dispose();
                     break;
             }
+            dispose();
         }
     }//GEN-LAST:event_tableclientesMouseClicked
 

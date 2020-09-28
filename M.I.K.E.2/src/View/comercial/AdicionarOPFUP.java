@@ -9,6 +9,7 @@ import Bean.F_UPBean;
 import Bean.F_UP_HistBean;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
+import DAO.ProcessosServicoDAO;
 import Methods.Dates;
 import Methods.Numeros;
 import Methods.Telas;
@@ -26,9 +27,17 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
      * Creates new form AdicionarOPFUP
      */
     int idcriado;
+    static ProcessosServicoDAO psd = new ProcessosServicoDAO();
 
     public AdicionarOPFUP() {
         initComponents();
+        readProcessosServico();
+    }
+    
+    public static void readProcessosServico() {
+        psd.read().forEach(psb -> {
+            cbprocesso.addItem(psb.getNome());
+        });
     }
 
     /**
@@ -90,7 +99,6 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
 
         txtmaterial.setName("txtmaterial"); // NOI18N
 
-        cbprocesso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Rascunho", "Corte", "Para Canulação", "Em Canulação", "Para Retífica", "Em Retífica", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC", "Para Revestimento", "Em Revestimento", "Terceiros" }));
         cbprocesso.setName("cbprocesso"); // NOI18N
 
         jLabel5.setText("Primeiro Processo");
@@ -345,7 +353,7 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JComboBox<String> cbnivel;
-    public javax.swing.JComboBox<String> cbprocesso;
+    public static javax.swing.JComboBox<String> cbprocesso;
     public com.toedter.calendar.JDateChooser dateentrega;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;

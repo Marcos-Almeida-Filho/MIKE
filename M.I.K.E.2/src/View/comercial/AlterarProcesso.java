@@ -10,6 +10,7 @@ import Bean.F_UP_HistBean;
 import Connection.Session;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
+import DAO.ProcessosServicoDAO;
 import Methods.Dates;
 
 /**
@@ -23,10 +24,19 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
      */
     
     String processo = "";
+    static ProcessosServicoDAO psd = new ProcessosServicoDAO();
     
     public AlterarProcesso(String proc) {
         initComponents();
         processo = proc;
+        readProcessosServico();
+    }
+    
+    public static void readProcessosServico() {
+        psd.read().forEach(psb -> {
+            cbprocesso.addItem(psb.getNome());
+        });
+        cbprocesso.addItem("Encerrado");
     }
 
     /**
@@ -53,7 +63,6 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
         jLabel1.setText("Próximo Processo");
         jLabel1.setName("jLabel1"); // NOI18N
 
-        cbprocesso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Corte", "Para Canulação", "Em Canulação", "Para Retífica", "Em Retífica", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC", "Para Revestimento", "Em Revestimento", "Terceiros", "Gravação", "Inspeção", "Etiquetagem", "Faturamento", "Encerrado" }));
         cbprocesso.setName("cbprocesso"); // NOI18N
 
         jButton1.setText("Alterar");

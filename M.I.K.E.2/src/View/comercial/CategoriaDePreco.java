@@ -5,6 +5,9 @@
  */
 package View.comercial;
 
+import Methods.SoNumeros;
+import Methods.Telas;
+import View.Geral.ProcuraMaterial;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,6 +21,12 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
      */
     public CategoriaDePreco() {
         initComponents();
+        txtImposto.setDocument(new SoNumeros());
+        txtMargem.setDocument(new SoNumeros());
+    }
+
+    public void tableFerramentas() {
+
     }
 
     /**
@@ -43,6 +52,14 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
         jPanel5 = new javax.swing.JPanel();
         txtpesquisaferr = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtImposto = new javax.swing.JTextField();
+        txtMargem = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Categorias de Preço");
@@ -160,31 +177,40 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
+        tableferramentas.setAutoCreateRowSorter(true);
         tableferramentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "ID", "Ferramenta", "D1", "D2", "D3", "D4", "D5", "L1", "L2", "L3", "L4", "L5", "M.P.", "M.O.", "Impostos", "Margem", "Total"
+                "ID", "", "Ferramenta", "D1", "D2", "D3", "D4", "D5", "L1", "L2", "L3", "L4", "L5", "M.P.", "M.O.", "Impostos", "Total"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, true, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false, false, false, false, false, false, false, false, false, true, true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         tableferramentas.setName("tableferramentas"); // NOI18N
+        tableferramentas.setShowHorizontalLines(true);
         jScrollPane2.setViewportView(tableferramentas);
         if (tableferramentas.getColumnModel().getColumnCount() > 0) {
             tableferramentas.getColumnModel().getColumn(0).setMinWidth(0);
             tableferramentas.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableferramentas.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableferramentas.getColumnModel().getColumn(2).setMinWidth(40);
-            tableferramentas.getColumnModel().getColumn(2).setPreferredWidth(40);
-            tableferramentas.getColumnModel().getColumn(2).setMaxWidth(40);
+            tableferramentas.getColumnModel().getColumn(1).setMinWidth(35);
+            tableferramentas.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableferramentas.getColumnModel().getColumn(1).setMaxWidth(35);
             tableferramentas.getColumnModel().getColumn(3).setMinWidth(40);
             tableferramentas.getColumnModel().getColumn(3).setPreferredWidth(40);
             tableferramentas.getColumnModel().getColumn(3).setMaxWidth(40);
@@ -212,18 +238,18 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
             tableferramentas.getColumnModel().getColumn(11).setMinWidth(40);
             tableferramentas.getColumnModel().getColumn(11).setPreferredWidth(40);
             tableferramentas.getColumnModel().getColumn(11).setMaxWidth(40);
-            tableferramentas.getColumnModel().getColumn(12).setMinWidth(60);
-            tableferramentas.getColumnModel().getColumn(12).setPreferredWidth(60);
-            tableferramentas.getColumnModel().getColumn(12).setMaxWidth(60);
+            tableferramentas.getColumnModel().getColumn(12).setMinWidth(40);
+            tableferramentas.getColumnModel().getColumn(12).setPreferredWidth(40);
+            tableferramentas.getColumnModel().getColumn(12).setMaxWidth(40);
             tableferramentas.getColumnModel().getColumn(13).setMinWidth(60);
             tableferramentas.getColumnModel().getColumn(13).setPreferredWidth(60);
             tableferramentas.getColumnModel().getColumn(13).setMaxWidth(60);
-            tableferramentas.getColumnModel().getColumn(14).setMinWidth(70);
-            tableferramentas.getColumnModel().getColumn(14).setPreferredWidth(70);
-            tableferramentas.getColumnModel().getColumn(14).setMaxWidth(70);
-            tableferramentas.getColumnModel().getColumn(15).setMinWidth(60);
-            tableferramentas.getColumnModel().getColumn(15).setPreferredWidth(60);
-            tableferramentas.getColumnModel().getColumn(15).setMaxWidth(60);
+            tableferramentas.getColumnModel().getColumn(14).setMinWidth(60);
+            tableferramentas.getColumnModel().getColumn(14).setPreferredWidth(60);
+            tableferramentas.getColumnModel().getColumn(14).setMaxWidth(60);
+            tableferramentas.getColumnModel().getColumn(15).setMinWidth(70);
+            tableferramentas.getColumnModel().getColumn(15).setPreferredWidth(70);
+            tableferramentas.getColumnModel().getColumn(15).setMaxWidth(70);
             tableferramentas.getColumnModel().getColumn(16).setMinWidth(70);
             tableferramentas.getColumnModel().getColumn(16).setPreferredWidth(70);
             tableferramentas.getColumnModel().getColumn(16).setMaxWidth(70);
@@ -238,7 +264,7 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtpesquisaferr, javax.swing.GroupLayout.DEFAULT_SIZE, 693, Short.MAX_VALUE)
+            .addComponent(txtpesquisaferr, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -253,6 +279,56 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
             }
         });
 
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("% Aplicáveis"));
+        jPanel6.setName("jPanel6"); // NOI18N
+
+        jLabel1.setText("% Imposto");
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jLabel2.setText("% Margem");
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        txtImposto.setName("txtImposto"); // NOI18N
+
+        txtMargem.setName("txtMargem"); // NOI18N
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtImposto, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtMargem, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel1)
+                .addComponent(jLabel2)
+                .addComponent(txtImposto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtMargem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jButton3.setText("Adicionar Ferramenta");
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Salvar");
+        jButton4.setName("jButton4"); // NOI18N
+
+        jButton2.setText("Excluir Ferramenta");
+        jButton2.setName("jButton2"); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -261,23 +337,36 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1148, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -301,38 +390,56 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
         float mp, mo, imp, margem, total;
         if (tableferramentas.getRowCount() < 1) {
             JOptionPane.showMessageDialog(null, "Não existem ferramentas para gerar preço.");
+        } else if (txtImposto.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Sem taxa de impostos.");
+            txtImposto.requestFocus();
+        } else if (txtMargem.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Sem margem de lucro.");
+            txtMargem.requestFocus();
         } else {
             for (int i = 0; i < tableferramentas.getRowCount(); i++) {
-                String mps = tableferramentas.getValueAt(i, 12).toString().replace(",", ".");
+                String mps = tableferramentas.getValueAt(i, 13).toString().replace(",", ".");
                 mp = Float.parseFloat(mps);
-                String mos = tableferramentas.getValueAt(i, 13).toString().replace(",", ".");
+                String mos = tableferramentas.getValueAt(i, 14).toString().replace(",", ".");
                 mo = Float.parseFloat(mos);
-                imp = (float) (mo * 0.3);
+                imp = (float) (mo * Double.parseDouble(txtImposto.getText()) / 100);
                 String imps = String.valueOf(imp).replace(".", ",");
-                tableferramentas.setValueAt(imps, i, 14);
-                String margems = tableferramentas.getValueAt(i, 15).toString().replace(",", ".");
-                margem = Float.parseFloat(margems);
-                total = (float) ((mp + mo + imp) + ((mp + mo + imp) * margem));
+                tableferramentas.setValueAt(imps, i, 15);
+                margem = Float.parseFloat(txtMargem.getText());
+                total = (float) ((mp + mo + imp) * (1 + margem / 100));
                 String totals = String.valueOf(total).replace(".", ",");
                 tableferramentas.setValueAt(totals, i, 16);
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        ProcuraMaterial pm = new ProcuraMaterial(this.getClass().getSimpleName());
+        Telas.AparecerTela(pm);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton2;
+    public javax.swing.JButton jButton3;
+    public javax.swing.JButton jButton4;
     public javax.swing.JComboBox<String> jComboBox1;
+    public javax.swing.JLabel jLabel1;
+    public javax.swing.JLabel jLabel2;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
     public javax.swing.JPanel jPanel4;
     public javax.swing.JPanel jPanel5;
+    public javax.swing.JPanel jPanel6;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JTabbedPane jTabbedPane1;
     public javax.swing.JTable tablecategorias;
-    public javax.swing.JTable tableferramentas;
+    public static javax.swing.JTable tableferramentas;
+    public static javax.swing.JTextField txtImposto;
+    public static javax.swing.JTextField txtMargem;
     public javax.swing.JTextField txtpesquisa;
     public javax.swing.JTextField txtpesquisaferr;
     // End of variables declaration//GEN-END:variables

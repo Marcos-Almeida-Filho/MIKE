@@ -232,29 +232,13 @@
             <Component class="javax.swing.JComboBox" name="cbprocesso">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="16">
-                    <StringItem index="0" value="Todos"/>
-                    <StringItem index="1" value="Rascunho"/>
-                    <StringItem index="2" value="Corte"/>
-                    <StringItem index="3" value="Para Canula&#xe7;&#xe3;o"/>
-                    <StringItem index="4" value="Em Canula&#xe7;&#xe3;o"/>
-                    <StringItem index="5" value="Para Ret&#xed;fica"/>
-                    <StringItem index="6" value="Em Ret&#xed;fica"/>
-                    <StringItem index="7" value="Ponta"/>
-                    <StringItem index="8" value="Desbaste"/>
-                    <StringItem index="9" value="Acabamento"/>
-                    <StringItem index="10" value="Canal"/>
-                    <StringItem index="11" value="Ticar"/>
-                    <StringItem index="12" value="CNC"/>
-                    <StringItem index="13" value="Para Revestimento"/>
-                    <StringItem index="14" value="Em Revestimento"/>
-                    <StringItem index="15" value="Terceiros"/>
-                  </StringArray>
+                  <StringArray count="0"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="cbprocesso" noResource="true"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel5">

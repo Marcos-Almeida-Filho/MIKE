@@ -15,12 +15,13 @@ public class VendasCotacaoItensBean {
     private String cotacao;
     private String codigo;
     private String descricao;
-    private int qtd;
+    private double qtd;
     private double valorunitario;
     private double valortotal;
     private String prazo;
     private String pedido;
     private String dav;
+    private boolean cadastrado;
 
     public int getId() {
         return id;
@@ -54,11 +55,11 @@ public class VendasCotacaoItensBean {
         this.descricao = descricao;
     }
 
-    public int getQtd() {
+    public double getQtd() {
         return qtd;
     }
 
-    public void setQtd(int qtd) {
+    public void setQtd(double qtd) {
         this.qtd = qtd;
     }
 
@@ -100,6 +101,14 @@ public class VendasCotacaoItensBean {
 
     public void setDav(String dav) {
         this.dav = dav;
+    }
+
+    public boolean isCadastrado() {
+        return cadastrado;
+    }
+
+    public void setCadastrado(boolean cadastrado) {
+        this.cadastrado = cadastrado;
     }
 
 }

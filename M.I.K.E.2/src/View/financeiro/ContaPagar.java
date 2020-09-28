@@ -13,6 +13,7 @@ import DAO.CAPObsDAO;
 import Methods.Dates;
 import Methods.Docs;
 import Methods.Telas;
+import View.Geral.AdicionarObs;
 import View.Geral.ProcurarFornecedor;
 import static View.financeiro.ContasPagar.readtablecap;
 import java.text.DecimalFormat;
@@ -87,10 +88,12 @@ public class ContaPagar extends javax.swing.JInternalFrame {
                 cdb.getLocal()
             });
         });
-        
+
         //Adicionar Observações
         cod.read(id).forEach(cob -> {
             modelobs.addRow(new Object[]{
+                cob.getId(),
+                false,
                 cob.getUsuario(),
                 Dates.TransformarDataCurtaDoDB(cob.getData()),
                 cob.getObs()
@@ -244,6 +247,8 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableobs = new javax.swing.JTable();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabledocs = new javax.swing.JTable();
@@ -488,12 +493,19 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Usuário", "Data", "Observação"
+                "ID", "", "Usuário", "Data", "Observação"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -501,13 +513,33 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         });
         jScrollPane2.setViewportView(tableobs);
         if (tableobs.getColumnModel().getColumnCount() > 0) {
-            tableobs.getColumnModel().getColumn(0).setMinWidth(250);
-            tableobs.getColumnModel().getColumn(0).setPreferredWidth(250);
-            tableobs.getColumnModel().getColumn(0).setMaxWidth(250);
-            tableobs.getColumnModel().getColumn(1).setMinWidth(100);
-            tableobs.getColumnModel().getColumn(1).setPreferredWidth(100);
-            tableobs.getColumnModel().getColumn(1).setMaxWidth(100);
+            tableobs.getColumnModel().getColumn(0).setMinWidth(0);
+            tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableobs.getColumnModel().getColumn(1).setMinWidth(35);
+            tableobs.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableobs.getColumnModel().getColumn(1).setMaxWidth(35);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(250);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(250);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(250);
+            tableobs.getColumnModel().getColumn(3).setMinWidth(100);
+            tableobs.getColumnModel().getColumn(3).setPreferredWidth(100);
+            tableobs.getColumnModel().getColumn(3).setMaxWidth(100);
         }
+
+        jButton2.setText("Adicionar Observação");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Excluir Observação");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -515,14 +547,24 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 813, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 813, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3))
                 .addContainerGap())
         );
 
@@ -582,7 +624,7 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -655,7 +697,25 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         CAPBean capb = new CAPBean();
         CAPDAO capd = new CAPDAO();
 
-        if (txtid.getText().equals("")) {
+        if (txtfornecedor.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione um fornecedor primeiro.");
+        } else if (txtnf.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um número de nota fiscal ou documento.");
+            txtnf.requestFocus();
+        } else if (dateemissao.getCalendar() == null) {
+            JOptionPane.showMessageDialog(null, "Escolha uma data de emissão do documento.");
+        } else if (txttotal.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um valor total primeiro.");
+            txttotal.requestFocus();
+        } else if (txtparcela.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Sem número de parcela.");
+            txtparcela.requestFocus();
+        } else if (txtvalorparcela.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Sem valor de parcela.");
+            txtvalorparcela.requestFocus();
+        } else if (datevencimento.getCalendar() == null) {
+            JOptionPane.showMessageDialog(null, "Escolha uma data de vencimento.");
+        } else if (txtid.getText().equals("")) {
             capb.setDatalancamento(txtdatalancamento.getText());
             capb.setFornecedor(txtfornecedor.getText());
             capb.setNumero(txtnf.getText());
@@ -676,8 +736,6 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             //datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, datapagamento, banco, metodo, status
             capd.create(capb);
 
-            ContasPagar.cbstatus.setSelectedIndex(0);
-
             JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
 
             readtablecap();
@@ -694,8 +752,16 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             } else {
                 capb.setDatapagamento(Dates.CriarDataCurtaDBJDateChooser(datepagamento.getDate()));
             }
-            capb.setBanco(cbbanco.getSelectedItem().toString());
-            capb.setMetodo(cbmetodo.getSelectedItem().toString());
+            if (cbbanco.getSelectedIndex() == 0) {
+                capb.setBanco(null);
+            } else {
+                capb.setBanco(cbbanco.getSelectedItem().toString());
+            }
+            if (cbmetodo.getSelectedIndex() == 0) {
+                capb.setMetodo(null);
+            } else {
+                capb.setMetodo(cbmetodo.getSelectedItem().toString());
+            }
             capb.setCheque(txtcheque.getText());
             if (datepagamento.getCalendar() == null) {
                 capb.setStatus("Ativo");
@@ -706,8 +772,6 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
             //fornecedor = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datapagamento = ?, banco = ?, metodo = ?, cheque = ?, status = ? WHERE id = ?
             capd.update(capb);
-
-            ContasPagar.cbstatus.setSelectedIndex(0);
 
             readtablecap();
 
@@ -773,6 +837,34 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tabledocsMouseClicked
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        AdicionarObs ao = new AdicionarObs(this.getClass().getSimpleName());
+        Telas.AparecerTela(ao);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int numTrue = 0;
+        for (int i = 0; i < tableobs.getRowCount(); i++) {
+            if (tableobs.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma observação selecionada.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir a(s) observação(ões) selecionada(s)?", "Excluir Observação", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                CAPObsDAO cod = new CAPObsDAO();
+                for (int i = 0; i < tableobs.getRowCount(); i++) {
+                    if (tableobs.getValueAt(i, 1).equals(true)) {
+                        cod.delete(Integer.parseInt(tableobs.getValueAt(i, 0).toString()));
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnprocurar;
@@ -783,6 +875,8 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     public static com.toedter.calendar.JDateChooser datepagamento;
     public static com.toedter.calendar.JDateChooser datevencimento;
     public static javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton2;
+    public javax.swing.JButton jButton3;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel12;

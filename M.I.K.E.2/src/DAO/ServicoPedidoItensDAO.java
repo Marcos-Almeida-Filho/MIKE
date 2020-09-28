@@ -26,12 +26,32 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class ServicoPedidoItensDAO {
+    
+    Connection con;
+    
+    PreparedStatement stmt;
+    
+    ResultSet rs;
+    
+    List<ServicoPedidoItensBean> listspib;
+    
+    public void conStmt() {
+        con = ConnectionFactory.getConnection();
+        
+        stmt = null;
+    }
+    
+    public void rsList() {
+        conStmt();
+        
+        rs = null;
+        
+        listspib = new ArrayList<>();
+    }
 
     public void create(ServicoPedidoItensBean spib) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO servicos_pedido_itens_orcamento (idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, os, nf) VALUES (?,?,?,?,?,?,?,?,?,?)");
@@ -61,13 +81,7 @@ public class ServicoPedidoItensDAO {
 
     public List<ServicoPedidoItensBean> readitens(String idpedido) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<ServicoPedidoItensBean> listspib = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM servicos_pedido_itens_orcamento WHERE idpedido = ?");
@@ -108,9 +122,7 @@ public class ServicoPedidoItensDAO {
 
     public void update(ServicoPedidoItensBean spib) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?");
@@ -141,9 +153,7 @@ public class ServicoPedidoItensDAO {
 
     public void updatenotacobranca(ServicoPedidoItensBean spib) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET nf = ? WHERE id = ?");
@@ -163,4 +173,22 @@ public class ServicoPedidoItensDAO {
         }
     }
 
+    public void delete(int id) {
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("DELETE FROM servicos_pedido_itens_orcamento WHERE id = " + id);
+            
+            stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null,"Item excluído com sucesso.");
+        } catch (SQLException ex) {
+            Logger.getLogger(ServicoPedidoItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null,"Erro ao excluir item!");
+            SendEmail.EnviarErro2(ex.toString());
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+        
+     }
 }

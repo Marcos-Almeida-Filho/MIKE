@@ -5,11 +5,23 @@
  */
 package View.vendas;
 
+import Connection.Session;
+import DAO.VendasCotacaoDAO;
+import DAO.VendasCotacaoDocsDAO;
+import DAO.VendasCotacaoItensDAO;
+import DAO.VendasCotacaoObsDAO;
+import Methods.Dates;
 import Methods.Telas;
+import Methods.Valores;
+import View.Geral.AdicionarObs;
+import View.Geral.ItemCotacao;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarCondicaoDePagamento;
+import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -17,11 +29,130 @@ import View.Geral.ProcurarVendedor;
  */
 public class CotacaoVenda extends javax.swing.JInternalFrame {
 
+    static int idCotacao = 0;
+
+    static VendasCotacaoDAO vcd = new VendasCotacaoDAO();
+    static VendasCotacaoItensDAO vcid = new VendasCotacaoItensDAO();
+    static VendasCotacaoDocsDAO vcdd = new VendasCotacaoDocsDAO();
+    static VendasCotacaoObsDAO vcod = new VendasCotacaoObsDAO();
+
+    static public boolean cotacaoAtualizada, cotacaoCriada, itensCriados, docsCriados, obsCriadas;
+
     /**
      * Creates new form CotacaoVenda
      */
     public CotacaoVenda() {
         initComponents();
+        status();
+        lerCotacoesAbertas();
+    }
+
+    public static void lerCotacoesAbertas() {
+        DefaultTableModel modelTableCotacoes = (DefaultTableModel) tableCotacoes.getModel();
+        
+        modelTableCotacoes.setNumRows(0);
+        
+        vcd.readCotacoesAbertas().forEach(vcb -> {
+            modelTableCotacoes.addRow(new Object[]{
+                vcb.getId(),
+                false,
+                vcb.getCotacao(),
+                vcb.getCliente(),
+                vcb.getStatus()
+            });
+        });
+    }
+    
+    public static void lerCotacao(String cotacao) {
+        vcd.readCotacao(cotacao).forEach(vcb -> {
+            txtDataAbertura.setText(Dates.TransformarDataCurtaDoDB(vcb.getData_abertura()));
+            txtCliente.setText(vcb.getCliente());
+            txtStatus.setText(vcb.getStatus());
+            if (vcb.isCadastrado()) {
+                radioCadastrado.setSelected(true);
+            } else {
+                radioNaoCadastrado.setSelected(true);
+            }
+            txtVendedor.setText(vcb.getVendedor());
+            txtRep.setText(vcb.getRepresentante());
+            txtCondPag.setText(vcb.getCondicao());
+        });
+    }
+
+    public static void lerItensCotacao(String cotacao) {
+        DefaultTableModel modelItens = (DefaultTableModel) tableItens.getModel();
+        modelItens.setNumRows(0);
+
+        vcid = new VendasCotacaoItensDAO();
+
+        vcid.readItens(cotacao).forEach(vcib -> {
+            modelItens.addRow(new Object[]{
+                vcib.getId(),
+                false,
+                vcib.getCodigo(),
+                vcib.getDescricao(),
+                Valores.TransformarDoubleDBemString(vcib.getQtd()),
+                Valores.TransformarDoubleDBemString(vcib.getValorunitario()),
+                Valores.TransformarDoubleDBemString(vcib.getValortotal()),
+                vcib.getPrazo(),
+                vcib.getPedido(),
+                vcib.getDav()
+            });
+        });
+    }
+    
+    public static void lerDocumentosCotacao(String cotacao) {
+        DefaultTableModel tableDocumentos = (DefaultTableModel) tableDocs.getModel();
+        tableDocumentos.setNumRows(0);
+        
+        vcdd = new VendasCotacaoDocsDAO();
+        
+        vcdd.readDocs(cotacao).forEach(vcdb -> {
+            tableDocumentos.addRow(new Object[]{
+                vcdb.getId(),
+                false,
+                vcdb.getDescricao(),
+                vcdb.getLocal(),
+                ""
+            });
+        });
+    }
+    
+    public static void lerObsCotacao(String cotacao) {
+        DefaultTableModel tableObservacao = (DefaultTableModel) tableObs.getModel();
+        tableObservacao.setNumRows(0);
+        
+        vcod = new VendasCotacaoObsDAO();
+        
+        vcod.readObs(cotacao).forEach(vcob -> {
+            tableObservacao.addRow(new Object[]{
+                vcob.getId(),
+                false,
+                Dates.TransformarDataCurtaDoDB(vcob.getData()),
+                vcob.getUsuario(),
+                vcob.getObs()
+            });
+        });
+    }
+
+    public static void status() {
+        cotacaoAtualizada = false;
+        cotacaoCriada = false;
+        itensCriados = false;
+        docsCriados = false;
+        obsCriadas = false;
+    }
+
+    public static void txtTotal() {
+        double valorItem, valorTotal = 0;
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            String valor = tableItens.getValueAt(i, 6).toString().replace(".", "");
+            String replace = valor.replace(",", ".");
+            valorItem = Double.parseDouble(replace);
+            valorTotal += valorItem;
+            String valorTotalS = Valores.TransformarDoubleDBemString(valorTotal);
+            txtValorTotal.setText(valorTotalS);
+        }
     }
 
     /**
@@ -56,6 +187,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         btnProcurarCliente = new javax.swing.JButton();
         radioCadastrado = new javax.swing.JRadioButton();
         radioNaoCadastrado = new javax.swing.JRadioButton();
+        jLabel8 = new javax.swing.JLabel();
+        txtCotacao = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -82,8 +215,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         tableItens = new javax.swing.JTable();
         jButton12 = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        txtValorTotal = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
+        jButton16 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -110,15 +244,27 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 "ID", "", "Orçamento", "Cliente", "Status"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, false, false, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         tableCotacoes.setName("tableCotacoes"); // NOI18N
+        tableCotacoes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableCotacoesMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(tableCotacoes);
         if (tableCotacoes.getColumnModel().getColumnCount() > 0) {
             tableCotacoes.getColumnModel().getColumn(0).setMinWidth(0);
@@ -229,6 +375,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         txtStatus.setName("txtStatus"); // NOI18N
 
         txtDataAbertura.setEditable(false);
+        txtDataAbertura.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtDataAbertura.setName("txtDataAbertura"); // NOI18N
 
         btnProcurarCliente.setText("Procurar");
@@ -258,14 +405,25 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel8.setText("Cotação");
+        jLabel8.setName("jLabel8"); // NOI18N
+
+        txtCotacao.setEditable(false);
+        txtCotacao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtCotacao.setName("txtCotacao"); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCotacao, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -290,7 +448,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     .addComponent(jLabel6)
                     .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(txtCotacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radioCadastrado)
@@ -359,7 +519,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addGap(61, 61, 61)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(txtRep)
+                        .addComponent(txtRep, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5))
                     .addGroup(jPanel5Layout.createSequentialGroup()
@@ -369,7 +529,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtCondPag, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtCondPag)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4))
         );
@@ -407,15 +567,27 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 "ID", "", "Data", "Usuário", "Observação"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, true, false, false, true
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         tableObs.setName("tableObs"); // NOI18N
+        tableObs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableObsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableObs);
         if (tableObs.getColumnModel().getColumnCount() > 0) {
             tableObs.getColumnModel().getColumn(0).setMinWidth(0);
@@ -434,9 +606,19 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
         jButton8.setText("Adicionar Observação");
         jButton8.setName("jButton8"); // NOI18N
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jButton9.setText("Excluir Observação");
         jButton9.setName("jButton9"); // NOI18N
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -479,9 +661,16 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 "ID", "", "Descrição", "Local", "Local Original"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, false, false, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -503,9 +692,19 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
         jButton10.setText("Adicionar Documento");
         jButton10.setName("jButton10"); // NOI18N
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         jButton11.setText("Excluir Documento");
         jButton11.setName("jButton11"); // NOI18N
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -548,15 +747,27 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 "ID", "", "Código", "Descrição", "Qtd", "Valor Unitário", "Valor Total", "Prazo de Entrega", "Pedido do Cliente", "DAV"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, false, false, false, false, false, false, false, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         tableItens.setName("tableItens"); // NOI18N
+        tableItens.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableItensMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tableItens);
         if (tableItens.getColumnModel().getColumnCount() > 0) {
             tableItens.getColumnModel().getColumn(0).setMinWidth(0);
@@ -590,14 +801,33 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
         jButton12.setText("Adicionar Item");
         jButton12.setName("jButton12"); // NOI18N
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
 
         jButton13.setText("Excluir Item");
         jButton13.setName("jButton13"); // NOI18N
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
 
-        jTextField1.setName("jTextField1"); // NOI18N
+        txtValorTotal.setEditable(false);
+        txtValorTotal.setName("txtValorTotal"); // NOI18N
 
-        jLabel7.setText("Total");
+        jLabel7.setText("Total: R$");
         jLabel7.setName("jLabel7"); // NOI18N
+
+        jButton16.setText("Marcar Todos");
+        jButton16.setName("jButton16"); // NOI18N
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -608,14 +838,15 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1034, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton13)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtValorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -627,8 +858,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton12)
                     .addComponent(jButton13)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
+                    .addComponent(txtValorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(jButton16))
                 .addContainerGap())
         );
 
@@ -636,6 +868,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
         jButton1.setText("Salvar");
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Novo");
         jButton2.setName("jButton2"); // NOI18N
@@ -744,6 +981,239 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         txtCliente.requestFocus();
     }//GEN-LAST:event_radioNaoCadastradoActionPerformed
 
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        ItemCotacao ic = new ItemCotacao(this.getClass().getSimpleName());
+        ic.setTitle("Item Cotação de Venda");
+        Telas.AparecerTela(ic);
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void tableItensMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItensMouseClicked
+        int row = tableItens.getSelectedRow();
+        if (evt.getButton() == 1) {
+            if (evt.getClickCount() == 2) {
+                ItemCotacao ic = new ItemCotacao(this.getClass().getSimpleName());
+
+                if (tableItens.getValueAt(row, 0).equals("")) {
+                    ic.idItemCotacao = 0;
+                } else {
+                    ic.idItemCotacao = Integer.parseInt(tableItens.getValueAt(row, 0).toString());
+                }
+
+                ItemCotacao.txtcodigo.setText(tableItens.getValueAt(row, 2).toString());
+                ItemCotacao.txtdesc.setText(tableItens.getValueAt(row, 3).toString());
+                ItemCotacao.txtqtd.setText(tableItens.getValueAt(row, 4).toString());
+                ItemCotacao.txtvalor.setText(tableItens.getValueAt(row, 5).toString());
+                ItemCotacao.txtpedido.setText(tableItens.getValueAt(row, 7).toString());
+                ItemCotacao.txtprazo.setText(tableItens.getValueAt(row, 8).toString().replace(" dias", ""));
+
+                Telas.AparecerTela(ic);
+            }
+        } else if (evt.getButton() == 3) {
+            JOptionPane.showMessageDialog(null, "Botão direito");
+        }
+    }//GEN-LAST:event_tableItensMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (txtCliente.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Nenhum cliente selecionado.");
+        } else if (txtVendedor.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Nenhum vendedor selecionado.");
+        } else if (txtRep.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Nenhum representante selecionado.");
+        } else if (txtCondPag.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Nenhuma condição de pagamento selecionada.");
+        } else if (idCotacao == 0) {
+            String cotacao = vcd.cotacaoAtual();
+
+            //Criar nova cotação
+            vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+
+            txtCotacao.setText(cotacao);
+            txtStatus.setText("Ativo");
+            
+            //Criar itens da cotação
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                vcid.create(cotacao, tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), radioCadastrado.isSelected());
+            }
+
+            //Criar documentos da cotação
+            for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
+            }
+
+            //Criar observações da cotação
+            for (int i = 0; i < tableObs.getRowCount(); i++) {
+                vcod.create(cotacao, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+            }
+
+            if (cotacaoCriada && itensCriados && docsCriados && obsCriadas) {
+                JOptionPane.showMessageDialog(null, "Cotação criada com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Ops...algo deu errado. Favor entrar em contato com suporte.");
+            }
+
+            status();
+        } else {
+            String cotacao = txtCotacao.getText();
+
+            //Atualizar cotação
+            vcd.update(cotacao, txtCliente.getText(), radioCadastrado.isSelected(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+
+            //Criar itens da cotação que não existiam
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                if (tableItens.getValueAt(i, 0).equals("")) {
+                    vcid.create(cotacao, tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), radioCadastrado.isSelected());
+                } else {
+                    vcid.update(tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 4).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), tableItens.getValueAt(i, 7).toString(), radioCadastrado.isSelected(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                }
+            }
+
+            //Criar documentos da cotação que não existiam
+            for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                if (tableDocs.getValueAt(i, 0).equals("")) {
+                    vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
+                }
+            }
+
+            //Criar observações da cotação
+            for (int i = 0; i < tableObs.getRowCount(); i++) {
+                if (tableObs.getValueAt(i, 0).equals("")) {
+                    vcod.create(cotacao, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                }
+            }
+
+            if (cotacaoAtualizada && itensCriados && docsCriados && obsCriadas) {
+                JOptionPane.showMessageDialog(null, "Cotação atualizada com sucesso!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Ops...algo deu errado. Favor entrar em contato com suporte.");
+            }
+
+            status();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tableCotacoesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCotacoesMouseClicked
+        if (evt.getClickCount() == 2) {
+            idCotacao = Integer.parseInt(tableCotacoes.getValueAt(tableCotacoes.getSelectedRow(), 0).toString());
+
+            tabCotacoes.setSelectedIndex(1);
+
+            txtCotacao.setText(tableCotacoes.getValueAt(tableCotacoes.getSelectedRow(), 2).toString());
+
+            String cotacao = txtCotacao.getText();
+            
+            //Pegar dados da Cotação no DB
+            lerCotacao(cotacao);
+
+            //Pegar itens da Cotação no DB
+            lerItensCotacao(cotacao);
+
+            //Pegar Documentos da Cotação no DB
+            lerDocumentosCotacao(cotacao);
+            
+            //Pegar Observações da Cotação no DB
+            lerObsCotacao(cotacao);
+            
+            txtTotal();
+        }
+    }//GEN-LAST:event_tableCotacoesMouseClicked
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        AdicionarObs ao = new AdicionarObs(this.getClass().getSimpleName());
+        Telas.AparecerTela(ao);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        int numTrue = 0;
+        for (int i = 0; i < tableObs.getRowCount(); i++) {
+            if (tableObs.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+            if (numTrue == 0) {
+                JOptionPane.showMessageDialog(null, "Nenhuma observação selecionada.");
+            } else {
+
+                int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir a observação selecionada?", "Excluir observação", JOptionPane.YES_NO_OPTION);
+                if (resp == 0) {
+                    vcod.delete(Integer.parseInt(tableObs.getValueAt(i, 0).toString()));
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void tableObsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableObsMouseClicked
+        if (tableObs.getSelectedColumn() == 1) {
+            String user = tableObs.getValueAt(tableObs.getSelectedRow(), 3).toString();
+            if (!user.equals(Session.nome)) {
+                JOptionPane.showMessageDialog(null, "Usuário não é dono da observação.");
+                tableObs.setValueAt(false, tableObs.getSelectedRow(), 1);
+            }
+        }
+    }//GEN-LAST:event_tableObsMouseClicked
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        ProcurarDocumento pd = new ProcurarDocumento(this.getClass().getSimpleName());
+        Telas.AparecerTela(pd);
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        int numTrue = 0;
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            if (tableItens.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir o(s) item(ns) selecionado(s)?", "Excluir Item", JOptionPane.YES_NO_OPTION);
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                if (resp == 0) {
+                    if (tableItens.getValueAt(i, 1).equals(true)) {
+                        vcid.delete(Integer.parseInt(tableObs.getValueAt(i, 0).toString()));
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        int numTrue = 0;
+        for (int i = 0; i < tableDocs.getRowCount(); i++) {
+            if (tableDocs.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir o(s) item(ns) selecionado(s)?", "Excluir Item", JOptionPane.YES_NO_OPTION);
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                if (resp == 0) {
+                    if (tableItens.getValueAt(i, 1).equals(true)) {
+                        vcdd.delete(Integer.parseInt(tableObs.getValueAt(i, 0).toString()), tableObs.getValueAt(i, 3).toString());
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        if (jButton16.getText().equals("Marcar Todos")) {
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                tableItens.setValueAt(true, i, 1);
+            }
+            jButton16.setText("Desmarcar Todos");
+        } else {
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                tableItens.setValueAt(false, i, 1);
+            }
+            jButton16.setText("Marcar Todos");
+        }
+    }//GEN-LAST:event_jButton16ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnProcurarCliente;
@@ -755,6 +1225,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton13;
     public javax.swing.JButton jButton14;
     public javax.swing.JButton jButton15;
+    public javax.swing.JButton jButton16;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
@@ -771,6 +1242,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel5;
     public javax.swing.JLabel jLabel6;
     public javax.swing.JLabel jLabel7;
+    public javax.swing.JLabel jLabel8;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel10;
     public javax.swing.JPanel jPanel2;
@@ -785,21 +1257,22 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JScrollPane jScrollPane4;
-    public javax.swing.JTextField jTextField1;
-    public javax.swing.JRadioButton radioCadastrado;
-    public javax.swing.JRadioButton radioNaoCadastrado;
+    public static javax.swing.JRadioButton radioCadastrado;
+    public static javax.swing.JRadioButton radioNaoCadastrado;
     public javax.swing.JTabbedPane tabCotacoes;
     public javax.swing.JTabbedPane tabItens;
-    public javax.swing.JTable tableCotacoes;
-    public javax.swing.JTable tableDocs;
-    public javax.swing.JTable tableItens;
-    public javax.swing.JTable tableObs;
-    public javax.swing.JTextField txtCliente;
-    public javax.swing.JTextField txtCondPag;
-    public javax.swing.JTextField txtDataAbertura;
+    public static javax.swing.JTable tableCotacoes;
+    public static javax.swing.JTable tableDocs;
+    public static javax.swing.JTable tableItens;
+    public static javax.swing.JTable tableObs;
+    public static javax.swing.JTextField txtCliente;
+    public static javax.swing.JTextField txtCondPag;
+    public static javax.swing.JTextField txtCotacao;
+    public static javax.swing.JTextField txtDataAbertura;
     public javax.swing.JTextField txtPesquisa;
-    public javax.swing.JTextField txtRep;
-    public javax.swing.JTextField txtStatus;
-    public javax.swing.JTextField txtVendedor;
+    public static javax.swing.JTextField txtRep;
+    public static javax.swing.JTextField txtStatus;
+    public static javax.swing.JTextField txtValorTotal;
+    public static javax.swing.JTextField txtVendedor;
     // End of variables declaration//GEN-END:variables
 }

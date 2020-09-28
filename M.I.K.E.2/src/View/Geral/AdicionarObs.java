@@ -8,6 +8,8 @@ package View.Geral;
 import Methods.Obs;
 import View.compras.Insumos;
 import View.compras.TiposInsumo;
+import View.financeiro.ContaPagar;
+import View.vendas.CotacaoVenda;
 import View.vendas.VM;
 import View.vendas.VendasMateriais;
 import java.awt.event.KeyEvent;
@@ -47,6 +49,12 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                     break;
                 case "VendasMateriais":
                     Obs.AdicionarObs(VendasMateriais.tableObs, obs);
+                    break;
+                case "ContaPagar":
+                    Obs.AdicionarObs(ContaPagar.tableobs, obs);
+                    break;
+                case "CotacaoVenda":
+                    Obs.AdicionarObs(CotacaoVenda.tableObs, obs);
                     break;
             }
             dispose();

@@ -750,8 +750,18 @@ public class Clientes extends javax.swing.JInternalFrame {
         }
 
         jButton10.setText("Adicionar Contato");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         jButton11.setText("Excluir Contato");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -1059,6 +1069,29 @@ public class Clientes extends javax.swing.JInternalFrame {
             });
         });
     }//GEN-LAST:event_txtpesquisaKeyReleased
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        int numTrue = 0;
+        
+        for (int i = 0; i < tablecontatos.getRowCount(); i++) {
+            if (tablecontatos.getValueAt(i, 0).equals(true)) {
+                numTrue++;
+            }
+        }
+        
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum contato selecionado");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir o(s) contato(s) selecionado(s)?", "Excluir Contato", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                
+            }
+        }
+    }//GEN-LAST:event_jButton11ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

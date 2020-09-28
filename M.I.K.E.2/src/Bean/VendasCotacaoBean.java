@@ -14,6 +14,7 @@ public class VendasCotacaoBean {
     private int id;
     private String cotacao;
     private boolean cadastrado;
+    private String data_abertura;
     private String cliente;
     private String condicao;
     private String representante;
@@ -43,6 +44,14 @@ public class VendasCotacaoBean {
 
     public void setCadastrado(boolean cadastrado) {
         this.cadastrado = cadastrado;
+    }
+
+    public String getData_abertura() {
+        return data_abertura;
+    }
+
+    public void setData_abertura(String data_abertura) {
+        this.data_abertura = data_abertura;
     }
 
     public String getCliente() {

@@ -25,12 +25,32 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class CAPObsDAO {
+    
+    Connection con;
+    
+    PreparedStatement stmt;
+    
+    ResultSet rs;
+    
+    List<CAPObsBean> listcob;
+    
+    public void conStmt() {
+        con = ConnectionFactory.getConnection();
+        
+        stmt = null;
+    }
+    
+    public void rsList() {
+        conStmt();
+        
+        rs = null;
+        
+        listcob = new ArrayList<>();
+    }
 
     public void create(CAPObsBean cob) {
-
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO cap_obs (idcap, usuario, data, obs) VALUES (?,?,?,?)");
@@ -54,14 +74,8 @@ public class CAPObsDAO {
     }
 
     public List<CAPObsBean> read(int idcap) {
-
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<CAPObsBean> listbb = new ArrayList<>();
+        
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM cap_obs WHERE idcap = ?");
@@ -77,7 +91,7 @@ public class CAPObsDAO {
                 rdcb.setData(rs.getString("data"));
                 rdcb.setObs(rs.getString("obs"));
 
-                listbb.add(rdcb);
+                listcob.add(rdcb);
             }
         } catch (SQLException e) {
             Logger.getLogger(CAPObsDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -89,17 +103,13 @@ public class CAPObsDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listcob;
     }
 
     public boolean checkObs(int idcap) {
         boolean obs = false;
-
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
+        
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM cap_obs WHERE idcap = ?");
@@ -122,5 +132,20 @@ public class CAPObsDAO {
         }
 
         return obs;
+    }
+    
+    public void delete(int id) {
+        
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("DELETE FROM cap_obs WHERE id = " + id);
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            SendEmail.EnviarErro2(e.toString() + " - CAPObsDAO(delete)");
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
     }
 }

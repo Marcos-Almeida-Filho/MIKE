@@ -118,6 +118,58 @@ public class ClientesDAO {
         }
         return listcb;
     }
+    
+    public List<ClientesBean> readPorNome(String cliente) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ClientesBean> listcb = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM clientes WHERE nome = '" + cliente + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ClientesBean cb = new ClientesBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setNome(rs.getString("nome"));
+                cb.setRazaosocial(rs.getString("razaosocial"));
+                cb.setCnpj(rs.getString("cnpj"));
+                cb.setIe(rs.getString("ie"));
+                cb.setTelefone(rs.getString("telefone"));
+                cb.setGrupo(rs.getString("grupo"));
+                cb.setVendedor(rs.getString("vendedor"));
+                cb.setIdrepresentante(rs.getInt("idrepresentante"));
+                cb.setRepresentante(rs.getString("representante"));
+                cb.setCondicaodepagamento(rs.getString("condicaodepagamento"));
+                cb.setLogradouro(rs.getString("logradouro"));
+                cb.setNumero(rs.getString("numero"));
+                cb.setComplemento(rs.getString("complemento"));
+                cb.setBairro(rs.getString("bairro"));
+                cb.setCidade(rs.getString("cidade"));
+                cb.setUf(rs.getString("uf"));
+                cb.setCep(rs.getString("cep"));
+                cb.setIm(rs.getString("im"));
+
+                listcb.add(cb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ClientesDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listcb;
+    }
 
     public boolean checkcnpj(String cnpj) {
 

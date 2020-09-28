@@ -9,6 +9,7 @@ import Methods.Arquivos;
 import View.compras.Insumos;
 import View.financeiro.AdicionarContasAPagar;
 import View.servicos.*;
+import View.vendas.CotacaoVenda;
 import View.vendas.VM;
 import View.vendas.VendasMateriais;
 import java.io.File;
@@ -132,8 +133,9 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                     case "VendasMateriais":
                         Arquivos.AdicionarArquivoEmTable(VendasMateriais.tableDocumentos, filestring, this);
                         break;
-                    default:
-                        throw new AssertionError();
+                    case "CotacaoVenda":
+                        Arquivos.AdicionarArquivoEmTable(CotacaoVenda.tableDocs, filestring, this);
+                        break;
                 }
                 dispose();
             }

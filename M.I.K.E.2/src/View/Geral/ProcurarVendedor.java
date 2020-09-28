@@ -7,7 +7,7 @@ package View.Geral;
 
 import View.servicos.*;
 import DAO.UsuariosDAO;
-import View.logistica.RastreamentoDocumentos;
+import View.vendas.CotacaoVenda;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -153,24 +153,21 @@ public class ProcurarVendedor extends javax.swing.JInternalFrame {
 
     private void tablevendedoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablevendedoresMouseClicked
         if (evt.getClickCount() == 2) {
+            String vendedor = tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString();
             switch (origem) {
                 case "ServiçoCotação":
-                    CotacaoServico.txtvendedor.setText(tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    CotacaoServico.txtvendedor.setText(vendedor);
                     break;
                 case "ServiçoPedido":
-                    PedidoServico.txtvendedor.setText(tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    PedidoServico.txtvendedor.setText(vendedor);
                     break;
-                case "VendaCotação":
+                case "CotacaoVenda":
+                    CotacaoVenda.txtVendedor.setText(vendedor);
                     break;
                 case "VendaPedido":
                     break;
-                case "Rastreamento":
-                    RastreamentoDocumentos rd = new RastreamentoDocumentos();
-                    rd.userentrada = tablevendedores.getValueAt(tablevendedores.getSelectedRow(), 1).toString();
-                    break;
             }
+            dispose();
         }
     }//GEN-LAST:event_tablevendedoresMouseClicked
 

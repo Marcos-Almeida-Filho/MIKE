@@ -6,8 +6,8 @@
 package View.Geral;
 
 import View.servicos.*;
-import Bean.CondicaoDePagamentoBean;
 import DAO.CondicaoDePagamentoDAO;
+import View.vendas.CotacaoVenda;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,9 +19,8 @@ public class ProcurarCondicaoDePagamento extends javax.swing.JInternalFrame {
     /**
      * Creates new form ProcurarCondicaoDePagamento
      */
-    
     String origem;
-    
+
     public ProcurarCondicaoDePagamento(String origin) {
         initComponents();
         filltablecondicoes();
@@ -33,12 +32,12 @@ public class ProcurarCondicaoDePagamento extends javax.swing.JInternalFrame {
         model.setNumRows(0);
         CondicaoDePagamentoDAO cpd = new CondicaoDePagamentoDAO();
 
-        for (CondicaoDePagamentoBean cpb : cpd.read()) {
+        cpd.read().forEach((cpb) -> {
             model.addRow(new Object[]{
                 cpb.getId(),
                 cpb.getNome()
             });
-        }
+        });
     }
 
     /**
@@ -151,21 +150,22 @@ public class ProcurarCondicaoDePagamento extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tablecondicaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablecondicaoMouseClicked
+        String condicao = tablecondicao.getValueAt(tablecondicao.getSelectedRow(), 1).toString();
         if (evt.getClickCount() == 2) {
             switch (origem) {
                 case "ServiçoCotação":
-                    CotacaoServico.txtcondicao.setText(tablecondicao.getValueAt(tablecondicao.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    CotacaoServico.txtcondicao.setText(condicao);
                     break;
                 case "ServiçoPedido":
-                    PedidoServico.txtcondicao.setText(tablecondicao.getValueAt(tablecondicao.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    PedidoServico.txtcondicao.setText(condicao);
                     break;
-                case "VendaCotação":
+                case "CotacaoVenda":
+                    CotacaoVenda.txtCondPag.setText(condicao);
                     break;
                 case "VendaPedido":
                     break;
             }
+            dispose();
         }
     }//GEN-LAST:event_tablecondicaoMouseClicked
 

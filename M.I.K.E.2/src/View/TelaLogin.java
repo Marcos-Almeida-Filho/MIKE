@@ -65,7 +65,7 @@ public class TelaLogin extends javax.swing.JFrame {
             TelaPrincipal tela = new TelaPrincipal();
 
             //Setar título da TelaPrincipal
-            tela.setTitle("M.I.K.E. version 1.9.0 - Usuário: " + Session.nome + " - Nível de Acesso: " + Session.nivel);
+            tela.setTitle("M.I.K.E. version 2.2.0 - Usuário: " + Session.nome + " - Nível de Acesso: " + Session.nivel + " - Local: " + cblogin.getSelectedItem().toString());
 
             //Mensagem de boas-vindas
             lblnome.setText("Bem vindo(a) " + Session.nome + "!");

@@ -25,12 +25,32 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class ProcessosServicoDAO {
+    
+    Connection con;
+    
+    PreparedStatement stmt;
+    
+    ResultSet rs;
+    
+    List<ServicoGrupoDeProcessosBean> listpsb;
+    
+    public void conStmt() {
+        con = ConnectionFactory.getConnection();
+        
+        stmt = null;
+    }
+    
+    public void rsList() {
+        conStmt();
+        
+        rs = null;
+        
+        listpsb = new ArrayList<>();
+    }
 
     public void create(ServicoGrupoDeProcessosBean psb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO processosservico (nome) VALUES (?)");
@@ -52,13 +72,7 @@ public class ProcessosServicoDAO {
 
     public List<ServicoGrupoDeProcessosBean> read() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<ServicoGrupoDeProcessosBean> listpsb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM processosservico");
@@ -87,11 +101,7 @@ public class ProcessosServicoDAO {
     
     public int qtdProcessos() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
+        rsList();
         
         int qtd = 0;
 
@@ -103,7 +113,7 @@ public class ProcessosServicoDAO {
                 qtd++;
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ProcessosServicoDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -117,10 +127,8 @@ public class ProcessosServicoDAO {
 
     public void update(ServicoGrupoDeProcessosBean psb) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
+        conStmt();
+        
         try {
 
         } catch (Exception e) {
@@ -130,6 +138,20 @@ public class ProcessosServicoDAO {
             } catch (AWTException | IOException ex) {
                 Logger.getLogger(ProcessosServicoDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void delete(String nome) {
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("DELETE FROM processosservico WHERE nome = '" + nome + "'");
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro ao excluir processo de serviço!\n" + e);
+            SendEmail.EnviarErro2(e.toString() + " - ProcessosServicoDAO - Delete");
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

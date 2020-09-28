@@ -5,9 +5,8 @@
  */
 package View.servicos;
 
-import java.awt.Dimension;
+import Methods.Telas;
 import java.text.DecimalFormat;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -66,7 +65,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
 
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
-        setTitle("Item Orçamento Serviço");
+        setTitle("Item Cotação Serviço");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -92,7 +91,6 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
         jLabel2.setText("Descrição");
 
         txtdesc.setEditable(false);
-        txtdesc.setBackground(new java.awt.Color(255, 255, 255));
 
         btnprocurar.setText("Procurar");
         btnprocurar.addActionListener(new java.awt.event.ActionListener() {
@@ -121,12 +119,10 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
         jLabel7.setText("ID");
 
         txtid.setEditable(false);
-        txtid.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel8.setText("Código");
 
         txtcodigo.setEditable(false);
-        txtcodigo.setBackground(new java.awt.Color(255, 255, 255));
 
         txtrow.setText("jLabel9");
 
@@ -261,13 +257,8 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     private void btnprocurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarActionPerformed
-        JDesktopPane deskn = this.getDesktopPane();
         ProcuraItemServicosOrcamento pis = new ProcuraItemServicosOrcamento();
-        deskn.add(pis);
-        Dimension d = deskn.getSize();
-        Dimension p = pis.getSize();
-        pis.setLocation((d.width - p.width) / 2, (d.height - p.height) / 2);
-        pis.setVisible(true);
+        Telas.AparecerTela(pis);
     }//GEN-LAST:event_btnprocurarActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

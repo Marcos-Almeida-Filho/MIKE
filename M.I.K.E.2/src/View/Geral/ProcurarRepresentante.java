@@ -6,8 +6,8 @@
 package View.Geral;
 
 import View.servicos.*;
-import Bean.RepresentantesBean;
 import DAO.RepresentantesDAO;
+import View.vendas.CotacaoVenda;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,9 +19,8 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
     /**
      * Creates new form ProcurarCliente
      */
-    
     public String origem;
-    
+
     public ProcurarRepresentante(String origin) {
         initComponents();
         filltablerepresentante();
@@ -34,12 +33,12 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
 
         RepresentantesDAO rd = new RepresentantesDAO();
 
-        for (RepresentantesBean rb : rd.read()) {
+        rd.read().forEach((rb) -> {
             model.addRow(new Object[]{
                 rb.getId(),
                 rb.getNome()
             });
-        }
+        });
     }
 
     /**
@@ -153,21 +152,22 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tablerepresentanteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablerepresentanteMouseClicked
+        String rep = tablerepresentante.getValueAt(tablerepresentante.getSelectedRow(), 1).toString();
         if (evt.getClickCount() == 2) {
             switch (origem) {
                 case "ServiçoCotação":
-                    CotacaoServico.txtrepresentante.setText(tablerepresentante.getValueAt(tablerepresentante.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    CotacaoServico.txtrepresentante.setText(rep);
                     break;
                 case "ServiçoPedido":
-                    PedidoServico.txtrepresentante.setText(tablerepresentante.getValueAt(tablerepresentante.getSelectedRow(), 1).toString());
-                    this.dispose();
+                    PedidoServico.txtrepresentante.setText(rep);
                     break;
-                case "VendaCotação":
+                case "CotacaoVenda":
+                    CotacaoVenda.txtRep.setText(rep);
                     break;
                 case "VendaPedido":
                     break;
             }
+            dispose();
         }
     }//GEN-LAST:event_tablerepresentanteMouseClicked
 

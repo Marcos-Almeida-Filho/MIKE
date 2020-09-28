@@ -6,6 +6,8 @@
 package View.Geral;
 
 import DAO.ServicoMateriaisDAO;
+import DAO.VendasMateriaisDAO;
+import View.comercial.CategoriaDePreco;
 import View.servicos.OS;
 import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
@@ -22,11 +24,12 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
     private static String origem;
 
     static ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+    static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
 
     public ProcuraMaterial(String origin) {
         initComponents();
-        readtablemateriais();
         origem = origin;
+        readtablemateriais();
     }
 
     public static void readtablemateriais() {
@@ -35,8 +38,51 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
 
         switch (origem) {
             case "VendasMaterial":
+                vmd.readStatus("Ativo").forEach(vmb -> {
+                    model.addRow(new Object[]{
+                        vmb.getId(),
+                        vmb.getCodigo(),
+                        vmb.getDescricao()
+                    });
+                });
+                break;
+            case "VM":
+                vmd.readStatus("Ativo").forEach(vmb -> {
+                    model.addRow(new Object[]{
+                        vmb.getId(),
+                        vmb.getCodigo(),
+                        vmb.getDescricao()
+                    });
+                });
                 break;
             case "OS":
+                smd.read().forEach(smb -> {
+                    model.addRow(new Object[]{
+                        smb.getId(),
+                        smb.getCodigo(),
+                        smb.getDescricao()
+                    });
+                });
+                break;
+            case "CategoriaDePreco":
+                smd.read().forEach(smb -> {
+                    model.addRow(new Object[]{
+                        smb.getId(),
+                        smb.getCodigo(),
+                        smb.getDescricao()
+                    });
+                });
+                break;
+            case "CotacaoVenda":
+                vmd.readStatus("Ativo").forEach(vmb -> {
+                    model.addRow(new Object[]{
+                        vmb.getId(),
+                        vmb.getCodigo(),
+                        vmb.getDescricao()
+                    });
+                });
+                break;
+            case "CotacaoServico":
                 smd.read().forEach(smb -> {
                     model.addRow(new Object[]{
                         smb.getId(),
@@ -157,17 +203,43 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
 
     private void tablemateriaisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemateriaisMouseClicked
         if (evt.getClickCount() == 2) {
+            String codigo = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString();
+            String desc = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString();
             switch (origem) {
-                case "VendasMaterial":
-                    VM.txtmaterialdeorigem.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
-                    dispose();
+                case "VM":
+                    VM.txtmaterialdeorigem.setText(codigo);
                     break;
                 case "OS":
-                    OS.txtcodigo.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
-                    OS.txtdesc.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString());
-                    dispose();
+                    OS.txtcodigo.setText(codigo);
+                    OS.txtdesc.setText(desc);
+                    break;
+                case "CategoriaDePreco":
+                    DefaultTableModel model = (DefaultTableModel) CategoriaDePreco.tableferramentas.getModel();
+                    model.addRow(new Object[]{
+                        "",
+                        codigo,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",});
+                    break;
+                case "CotacaoVenda":
+                    ItemCotacao.txtcodigo.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
+                    ItemCotacao.txtdesc.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString());
                     break;
             }
+            dispose();
         }
     }//GEN-LAST:event_tablemateriaisMouseClicked
 

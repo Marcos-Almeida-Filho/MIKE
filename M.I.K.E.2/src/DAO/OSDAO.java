@@ -30,13 +30,32 @@ import javax.swing.JOptionPane;
 public class OSDAO {
 
 //    OSBean ob = new OSBean();
-    
     int vezes = 0;
-    
-    public void create(OSBean osb) {
-        Connection con = ConnectionFactory.getConnection();
 
-        PreparedStatement stmt = null;
+    Connection con;
+
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<OSBean> listbb;
+
+    public void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    public void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listbb = new ArrayList<>();
+    }
+
+    public void create(OSBean osb) {
+        conStmt();
 
         try {
             stmt = con.prepareStatement("INSERT INTO os (idtela, dateabertura, dateprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topob, reconstrucaob, completab, desenhob, raio, frontal) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -61,11 +80,11 @@ public class OSDAO {
             stmt.setString(18, osb.getFrontal());
 
             stmt.executeUpdate();
-            
+
             vezes++;
-            
+
             if (vezes == PedidoServico.vezes) {
-                JOptionPane.showMessageDialog(null,"Criado com sucesso!");
+                JOptionPane.showMessageDialog(null, "Criado com sucesso!");
                 PedidoServico.vezes = 0;
                 vezes = 0;
             }
@@ -82,13 +101,7 @@ public class OSDAO {
     }
 
     public List<OSBean> read() {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<OSBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM os");
@@ -140,13 +153,7 @@ public class OSDAO {
     }
 
     public List<OSBean> reademaberto() {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<OSBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM os WHERE status = 'Rascunho' OR status = 'Ativo'");
@@ -198,13 +205,7 @@ public class OSDAO {
     }
 
     public List<OSBean> readstatus(String status) {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<OSBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM os WHERE status = ?");
@@ -256,13 +257,7 @@ public class OSDAO {
     }
 
     public List<OSBean> readcreated(String codigo, String dataabertura) {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<OSBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM os WHERE codigo = ? AND dataabertura = ?");
@@ -293,11 +288,7 @@ public class OSDAO {
     }
 
     public Boolean readnome() throws SQLException {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
+        rsList();
 
         Calendar c = Calendar.getInstance();
         String patterny = "yy";
@@ -329,13 +320,7 @@ public class OSDAO {
     }
 
     public List<OSBean> click(String idtela) {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<OSBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM os WHERE idtela = ?");
@@ -347,6 +332,8 @@ public class OSDAO {
 
                 ob.setDataabertura(rs.getString("dataabertura"));
                 ob.setDataprevisao(rs.getString("dataprevisao"));
+                ob.setDateabertura(rs.getString("dateabertura"));
+                ob.setDateprevisao(rs.getString("dateprevisao"));
                 ob.setStatus(rs.getString("status"));
                 ob.setCliente(rs.getString("cliente"));
                 ob.setDas(rs.getString("das"));
@@ -384,13 +371,7 @@ public class OSDAO {
     }
 
     public List<OSBean> pesquisa(String pesquisa, String status) {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<OSBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM os WHERE idtela LIKE '%" + pesquisa + "%' OR cliente LIKE '%" + pesquisa + "%' OR codigo LIKE '%" + pesquisa + "%' AND status = ?");
@@ -442,13 +423,7 @@ public class OSDAO {
     }
 
     public int osaberta() {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<OSBean> listbb = new ArrayList<>();
+        rsList();
 
         int qtd;
 
@@ -505,9 +480,7 @@ public class OSDAO {
     }
 
     public void update(OSBean bb) {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE os SET cliente = ?, das = ?, codigo = ?, descricao = ?, qtdinicial = ?, qtdok = ?, qtdnaook = ?, notes = ?, topob = ?, reconstrucaob = ?, completab = ?, desenhob = ?, raio = ?, frontal = ? WHERE idtela = ?");
@@ -543,9 +516,7 @@ public class OSDAO {
     }
 
     public void updatestatus(OSBean bb) {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE os SET status = ? WHERE idtela = ?");
@@ -568,9 +539,7 @@ public class OSDAO {
     }
 
     public void updateqtd(OSBean bb) {
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE os SET qtdok = ?, qtdnaook = ? WHERE idtela = ?");
@@ -592,18 +561,18 @@ public class OSDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void delete(String os) {
-        Connection con = ConnectionFactory.getConnection();
-        
-        PreparedStatement stmt = null;
-        
+        conStmt();
+
         try {
             stmt = con.prepareStatement("DELETE FROM os WHERE idtela = '" + os + "'");
-            
+
             stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null,os + " excluída com sucesso.");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro ao excluir.\n" + e);
+            JOptionPane.showMessageDialog(null, "Erro ao excluir a " + os + ".\n" + e);
             SendEmail.EnviarErro2(e.toString());
         } finally {
             ConnectionFactory.closeConnection(con, stmt);

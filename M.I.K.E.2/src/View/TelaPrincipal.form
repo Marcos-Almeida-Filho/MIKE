@@ -57,6 +57,9 @@
                 <Property name="text" type="java.lang.String" value="Protocolos de Atendimento"/>
                 <Property name="name" type="java.lang.String" value="item_protocolos" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="item_protocolosActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="item_prog_mike">
               <Properties>
@@ -240,6 +243,9 @@
                 <Property name="text" type="java.lang.String" value="Grupo de Clientes"/>
                 <Property name="name" type="java.lang.String" value="item_grupo_clientes" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="item_grupo_clientesActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
               </AuxValues>
@@ -389,6 +395,9 @@
                 <Property name="text" type="java.lang.String" value="Concilia&#xe7;&#xe3;o Banc&#xe1;ria"/>
                 <Property name="name" type="java.lang.String" value="item_conciliacao" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="item_conciliacaoActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="item_cartoes">
               <Properties>
@@ -439,6 +448,9 @@
                 <Property name="text" type="java.lang.String" value="Cota&#xe7;&#xe3;o de Compra"/>
                 <Property name="name" type="java.lang.String" value="item_orcamento_compras" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="item_orcamento_comprasActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
               </AuxValues>
@@ -451,6 +463,9 @@
                 <Property name="text" type="java.lang.String" value="Pedido de Compra"/>
                 <Property name="name" type="java.lang.String" value="item_pedido_compras" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="item_pedido_comprasActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
               </AuxValues>
@@ -607,6 +622,9 @@
                 <Property name="text" type="java.lang.String" value="IQF"/>
                 <Property name="name" type="java.lang.String" value="item_iqf" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="item_iqfActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="item_medicoes">
               <Properties>
@@ -660,6 +678,9 @@
                     <Property name="text" type="java.lang.String" value="Atraso/Sa&#xed;da Antecipada"/>
                     <Property name="name" type="java.lang.String" value="item_atraso" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="item_atrasoActionPerformed"/>
+                  </Events>
                 </MenuItem>
               </SubComponents>
             </Menu>
@@ -875,6 +896,9 @@
                 <Property name="text" type="java.lang.String" value="OT&apos;s"/>
                 <Property name="name" type="java.lang.String" value="item_ots" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="item_otsActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -1017,12 +1041,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="lblnome" alignment="0" max="32767" attributes="0"/>
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="540" max="32767" attributes="0"/>
-                  <Component id="btntestemenus" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="522" max="-2" attributes="0"/>
-              </Group>
+              <Component id="lblnome" alignment="0" pref="1161" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -1030,9 +1049,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   <Component id="lblnome" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="btntestemenus" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="267" max="32767" attributes="0"/>
+                  <EmptySpace pref="301" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -1052,14 +1069,6 @@
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
           </AuxValues>
-        </Component>
-        <Component class="javax.swing.JButton" name="btntestemenus">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Teste Menus"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btntestemenusActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

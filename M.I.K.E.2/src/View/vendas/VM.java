@@ -5,15 +5,35 @@
  */
 package View.vendas;
 
+import Bean.VendasMateriaisBean;
+import Connection.Session;
+import DAO.VendasMateriaisCodigoClienteDAO;
+import DAO.VendasMateriaisDAO;
+import DAO.VendasMateriaisDocDAO;
+import DAO.VendasMateriaisMovDAO;
+import DAO.VendasMateriaisObsDAO;
+import Methods.Dates;
 import Methods.Numeros;
+import Methods.SendEmail;
 import Methods.Telas;
 import View.Geral.AdicionarObs;
 import View.Geral.ProcuraMaterial;
 import View.Geral.ProcurarDocumento;
+import View.Geral.ProcurarLocal;
 import View.Geral.ProcurarMateriaPrima;
+import View.servicos.DocumentosPedidoServico;
+import java.awt.AWTException;
+import java.awt.HeadlessException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -21,22 +41,49 @@ import javax.swing.JTextField;
  */
 public class VM extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form Produtos
-     */
-    //Variáveis para criar código
-    String codigo, desc, ferr, tipotopo, cortes, cortesdesc, revchar, revtipo, raio, ichar, idesc, richar, ritipo, weldonchar, weldondesc, extra, comptotal, diamfinal, tipocanal;
+    String codigo, desc, descFerr, ferr, tipotopo, cortes, cortesdesc, revchar, revtipo, raio, ichar, idesc, richar, ritipo, weldonchar, weldondesc, extra, comptotal, diamfinal, tipocanal, tipoCanalChar, materiaPrima, materiaPrimaChar;
 
     String[] riarray = new String[2];
     String[] weldonarray = new String[2];
     String[] iarray = new String[2];
 
-    int idmaterial = 0;
+    static int idmaterial = 0;
 
+    static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
+    static VendasMateriaisBean vmb = new VendasMateriaisBean();
+
+    static VendasMateriaisDocDAO vmdd = new VendasMateriaisDocDAO();
+
+    static VendasMateriaisObsDAO vmod = new VendasMateriaisObsDAO();
+
+    static VendasMateriaisMovDAO vmmd = new VendasMateriaisMovDAO();
+
+    static VendasMateriaisCodigoClienteDAO vmccd = new VendasMateriaisCodigoClienteDAO();
+
+    /**
+     * Creates new form Produtos
+     */
+    //Variáveis para criar código
     public VM() {
         initComponents();
         lblcodigoerro.setVisible(false);
         lbldescricaoerro.setVisible(false);
+        radioVazio.setVisible(false);
+        readProdutos();
+    }
+
+    public static void readProdutos() {
+        DefaultTableModel modelProdutos = (DefaultTableModel) tablemateriaisvendas.getModel();
+        modelProdutos.setNumRows(0);
+
+        vmd.readtodos().forEach(vmb -> {
+            modelProdutos.addRow(new Object[]{
+                vmb.getId(),
+                vmb.getCodigo(),
+                vmb.getDescricao(),
+                vmb.getStatus()
+            });
+        });
     }
 
     public static void cbexcluir() {
@@ -183,7 +230,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         iarray[0] = ichar;
         iarray[1] = idesc;
-        
+
         return iarray;
     }
 
@@ -250,64 +297,44 @@ public class VM extends javax.swing.JInternalFrame {
         }
     }
 
-    public void gerarcodigofresa() {
-        checarrevestimento();
+    public void checarTipoCanal() {
+        String canalSelecionado = cbcanal.getSelectedItem().toString();
 
-        checarraio();
-
-        checarimportada();
-
-        checarri();
-
-        checarweldon();
-
-        //Identificar família da fresa e criar descrição
-        int selection = cbfamilia.getSelectedIndex();
-        switch (selection) {
-            case 1:
-                ferr = "Fresa Topo ";
-                tipotopo = "Reto Metal Duro ";
-                cortes = "2 Cortes ";
+        switch (canalSelecionado) {
+            case "Reto":
+                tipoCanalChar = "R";
+                tipocanal = " Canal Reto";
                 break;
-            case 2:
-                ferr = "Fresa Topo ";
-                tipotopo = "Reto Metal Duro ";
-                cortes = "3 Cortes ";
+            case "Helicoidal":
+                tipoCanalChar = "H";
+                tipocanal = " Canal Helicoidal";
                 break;
-            case 3:
-                ferr = "Fresa Topo ";
-                tipotopo = "Reto Metal Duro ";
-                cortes = "4 Cortes ";
+            case "DC":
+                tipoCanalChar = "DC ";
+                tipocanal = " Corte Duplo";
                 break;
-            case 4:
-                ferr = "Fresa Topo ";
-                tipotopo = "Esférico Metal Duro ";
-                cortes = "2 Cortes ";
-                break;
-            case 5:
-                ferr = "Fresa Topo ";
-                tipotopo = "Esférico Metal Duro ";
-                cortes = "4 Cortes ";
-                break;
-            case 6:
-                ferr = "Fresa Topo ";
-                tipotopo = "Esférico Metal Duro ";
-                cortes = "3 Cortes ";
+            case "FC":
+                tipoCanalChar = "FC ";
+                tipocanal = " Corte Fino";
                 break;
             default:
+                tipocanal = "";
+                tipoCanalChar = "";
                 break;
         }
-
-        //Criar código/descrição
-        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText().substring(0, txtd1.getText().indexOf(",")) + cbtamanho.getSelectedItem().toString() + raio + revchar + riarray[0] + weldonarray[0] + iarray[0];
-        desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
-
-        //Colocar código e descrição nos txt's
-        txtcodigo.setText(codigo);
-        txtdescricao.setText(desc);
     }
 
-    public void gerarcodigofresaespecial() {
+    public void checarMateriaPrima() {
+        if (radioMD.isSelected()) {
+            materiaPrima = "Metal Duro ";
+            materiaPrimaChar = "MD";
+        } else {
+            materiaPrima = "HSS ";
+            materiaPrimaChar = "HSS";
+        }
+    }
+
+    public void checagemGeral() {
         checarrevestimento();
 
         checarraio();
@@ -324,38 +351,95 @@ public class VM extends javax.swing.JInternalFrame {
 
         checarDiamFinal();
 
+        checarTipoCanal();
+
+        checarMateriaPrima();
+    }
+
+    public void gerarcodigofresa() {
+        checagemGeral();
+
+        //Identificar família da fresa e criar descrição
+        int selection = cbfamilia.getSelectedIndex();
+        switch (selection) {
+            case 1:
+                ferr = "Fresa Topo ";
+                tipotopo = "Reto " + materiaPrima;
+                cortes = "2 Cortes ";
+                break;
+            case 2:
+                ferr = "Fresa Topo ";
+                tipotopo = "Reto " + materiaPrima;
+                cortes = "3 Cortes ";
+                break;
+            case 3:
+                ferr = "Fresa Topo ";
+                tipotopo = "Reto " + materiaPrima;
+                cortes = "4 Cortes ";
+                break;
+            case 4:
+                ferr = "Fresa Topo ";
+                tipotopo = "Esférico " + materiaPrima;
+                cortes = "2 Cortes ";
+                break;
+            case 5:
+                ferr = "Fresa Topo ";
+                tipotopo = "Esférico " + materiaPrima;
+                cortes = "4 Cortes ";
+                break;
+            case 6:
+                ferr = "Fresa Topo ";
+                tipotopo = "Esférico " + materiaPrima;
+                cortes = "3 Cortes ";
+                break;
+            default:
+                break;
+        }
+
+        //Criar código/descrição
+        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + cbtamanho.getSelectedItem().toString() + materiaPrimaChar + raio + revchar + riarray[0] + weldonarray[0] + iarray[0];
+        desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
+
+        //Colocar código e descrição nos txt's
+        txtcodigo.setText(codigo);
+        txtdescricao.setText(desc);
+    }
+
+    public void gerarcodigofresaespecial() {
+        checagemGeral();
+
         //Identificar se a fresa tem família ou número de cortes e criar descrição
         if (cbfamilia.getSelectedIndex() != 0) {
             int selection = cbfamilia.getSelectedIndex();
             switch (selection) {
                 case 1:
                     ferr = "Fresa Topo ";
-                    tipotopo = "Reto Metal Duro ";
+                    tipotopo = "Reto " + materiaPrima;
                     cortes = "2 Cortes ";
                     break;
                 case 2:
                     ferr = "Fresa Topo ";
-                    tipotopo = "Reto Metal Duro ";
+                    tipotopo = "Reto " + materiaPrima;
                     cortes = "3 Cortes ";
                     break;
                 case 3:
                     ferr = "Fresa Topo ";
-                    tipotopo = "Reto Metal Duro ";
+                    tipotopo = "Reto " + materiaPrima;
                     cortes = "4 Cortes ";
                     break;
                 case 4:
                     ferr = "Fresa Topo ";
-                    tipotopo = "Esférico Metal Duro ";
+                    tipotopo = "Esférico " + materiaPrima;
                     cortes = "2 Cortes ";
                     break;
                 case 5:
                     ferr = "Fresa Topo ";
-                    tipotopo = "Esférico Metal Duro ";
+                    tipotopo = "Esférico " + materiaPrima;
                     cortes = "4 Cortes ";
                     break;
                 case 6:
                     ferr = "Fresa Topo ";
-                    tipotopo = "Esférico Metal Duro ";
+                    tipotopo = "Esférico " + materiaPrima;
                     cortes = "3 Cortes ";
                     break;
                 default:
@@ -369,7 +453,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         if (!txtcortes.getText().equals("")) {
-            codigo = cbtipo.getSelectedItem().toString() + " " + txtcortes.getText() + "C " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revchar + riarray[0] + weldonarray[0] + iarray[0] + extra;
+            codigo = cbtipo.getSelectedItem().toString() + " " + txtcortes.getText() + "C " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + materiaPrimaChar + raio + revchar + riarray[0] + weldonarray[0] + iarray[0] + extra;
             desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revtipo + riarray[1] + weldonarray[1] + extra;
         } else {
             codigo = cbtipo.getSelectedItem().toString() + " " + cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revchar + riarray[0] + weldonarray[0] + ichar + extra;
@@ -382,47 +466,46 @@ public class VM extends javax.swing.JInternalFrame {
     }
 
     public void gerarcodigobroca() {
-        checarrevestimento();
-
-        checarraio();
-
-        checarimportada();
-
-        checarri();
-
-        checarweldon();
+        checagemGeral();
 
         //Identificar família da broca e criar descrição
         int selection = cbfamilia.getSelectedIndex();
         switch (selection) {
             case 1:
                 ferr = "6539 Diam. ";
+                descFerr = "6539 " + materiaPrima + "Diam. ";
                 break;
             case 2:
                 ferr = "338N Diam. ";
+                descFerr = "338N " + materiaPrima + "Diam. ";
                 break;
             case 3:
                 ferr = "340N Diam. ";
+                descFerr = "340N " + materiaPrima + "Diam. ";
                 break;
             case 4:
                 ferr = "6537KRE Diam. ";
+                descFerr = "6537KRE " + materiaPrima + "Diam. ";
                 break;
             case 5:
                 ferr = "6537KRI Diam. ";
+                descFerr = "6537KRI " + materiaPrima + "Diam. ";
                 break;
             case 6:
                 ferr = "6537LRE Diam. ";
+                descFerr = "6537LRE " + materiaPrima + "Diam. ";
                 break;
             case 7:
                 ferr = "6537LRI Diam. ";
+                descFerr = "6537LRI " + materiaPrima + "Diam. ";
                 break;
             default:
                 break;
         }
 
         //Criar código/descrição
-        codigo = ferr + txtd1.getText() + riarray[0] + raio + revchar + weldonarray[0] + iarray[0];
-        desc = ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + riarray[1] + raio + revtipo + weldonarray[1] + iarray[1];
+        codigo = ferr + txtd1.getText() + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0];
+        desc = descFerr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + riarray[1] + raio + revtipo + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -430,21 +513,7 @@ public class VM extends javax.swing.JInternalFrame {
     }
 
     public void gerarCodigoBrocaEspecial() {
-        checarrevestimento();
-
-        checarraio();
-
-        checarimportada();
-
-        checarri();
-
-        checarweldon();
-
-        checarextra();
-
-        checarComprimentoTotal();
-
-        checarDiamFinal();
+        checagemGeral();
 
         if (!txtcortes.getText().equals("")) {
             cortes = txtcortes.getText() + "C";
@@ -454,15 +523,9 @@ public class VM extends javax.swing.JInternalFrame {
             cortesdesc = "";
         }
 
-        if (cbcanal.getSelectedItem().toString().equals("Selecione")) {
-            tipocanal = "";
-        } else {
-            tipocanal = cbcanal.getSelectedItem().toString();
-        }
-
         //Criar código/descrição
-        codigo = "BMD Diam. " + txtd1.getText() + " " + cortes + riarray[0] + raio + revchar + weldonarray[0] + iarray[0] + extra;
-        desc = "Broca Metal Duro Diam. " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + " " + cortesdesc + tipocanal + riarray[1] + raio + revtipo + weldonarray[1] + iarray[1] + extra;
+        codigo = "B" + materiaPrimaChar + " Diam. " + txtd1.getText() + " " + cortes + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
+        desc = "Broca " + materiaPrima + "Diam. " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + " " + cortesdesc + tipocanal + riarray[1] + raio + revtipo + weldonarray[1] + iarray[1] + extra;
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -470,63 +533,147 @@ public class VM extends javax.swing.JInternalFrame {
     }
 
     public void gerarcodigoalargador() {
-        checarrevestimento();
+        checagemGeral();
 
-        checarraio();
+        //Identificar família da fresa e criar descrição
+        int selection = cbfamilia.getSelectedIndex();
+        switch (selection) {
+            case 1://2111
+                ferr = "Alargador 2111 ";
+                break;
+            case 2://212
+                ferr = "Alargador 212 ";
+                break;
+            default:
+                break;
+        }
 
-        checarimportada();
+        //Criar código/descrição
+        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + tipoCanalChar + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
+        desc = ferr + materiaPrima + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + tipocanal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
 
-        checarri();
-
-        checarweldon();
+        //Colocar código e descrição nos txt's
+        txtcodigo.setText(codigo);
+        txtdescricao.setText(desc);
     }
 
     public void gerarcodigoalargadorespecial() {
-        checarrevestimento();
+        checagemGeral();
 
-        checarraio();
+        //Identificar família da fresa e criar descrição
+        int selection = cbfamilia.getSelectedIndex();
+        switch (selection) {
+            case 1://2111
+                ferr = "Alargador 2111 ";
+                break;
+            case 2://212
+                ferr = "Alargador 212 ";
+                break;
+            default:
+                ferr = "Alargador ";
+                break;
+        }
 
-        checarimportada();
+        //Criar código/descrição
+        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + tipoCanalChar + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
+        desc = ferr + materiaPrima + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + tipocanal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
 
-        checarri();
-
-        checarweldon();
-
-        checarextra();
-
-        checarComprimentoTotal();
-
-        checarDiamFinal();
+        //Colocar código e descrição nos txt's
+        txtcodigo.setText(codigo);
+        txtdescricao.setText(desc);
     }
 
     public void gerarcodigolima() {
-        checarrevestimento();
+        checagemGeral();
 
-        checarraio();
+        //Identificar família da fresa e criar descrição
+        int selection = cbfamilia.getSelectedIndex();
+        switch (selection) {
+            case 14:
+                ferr = "Rebarbador " + materiaPrima + cbfamilia.getSelectedItem().toString() + "-";
+                break;
+            default:
+                ferr = "Lima Rotativa " + materiaPrima + cbfamilia.getSelectedItem().toString() + "-";
+                break;
+        }
 
-        checarimportada();
+        String codigo = "";
 
-        checarri();
+        switch (cbfamilia.getSelectedIndex()) {
+            case 1:
+                codigo = "Cilíndrica";
+                break;
+            case 2:
+                codigo = "Cilíndrica Corte Frontal";
+                break;
+            case 3:
+                codigo = "Cilíndrica Esférica";
+                break;
+            case 4:
+                codigo = "Esférica";
+                break;
+            case 5:
+                codigo = "Oval";
+                break;
+            case 6:
+                codigo = "Árvore Esférica";
+                break;
+            case 7:
+                codigo = "Árvore Aguda";
+                break;
+            case 8:
+                codigo = "Labareda";
+                break;
+            case 9:
+                codigo = "Cônica 60º";
+                break;
+            case 10:
+                codigo = "Cônica 90º";
+                break;
+            case 11:
+                codigo = "Cônica Esférica";
+                break;
+            case 12:
+                codigo = "Cônica";
+                break;
+            case 13:
+                codigo = "Cônica Invertida";
+                break;
+            case 14:
+                codigo = "Rebarbador";
+                break;
+        }
 
-        checarweldon();
+        //Criar código/descrição
+        codigo = codigo + " " + txtd1.getText() + "M " + tipoCanalChar + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
+        desc = ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtd2.getText() + "x" + txtl2.getText() + tipocanal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
+
+        //Colocar código e descrição nos txt's
+        txtcodigo.setText(codigo);
+        txtdescricao.setText(desc);
     }
 
     public void gerarcodigolimaespecial() {
-        checarrevestimento();
+        checagemGeral();
 
-        checarraio();
+        //Identificar família da fresa e criar descrição
+        int selection = cbfamilia.getSelectedIndex();
+        switch (selection) {
+            case 14://2111
+                ferr = "Rebarbador " + materiaPrima + cbfamilia.getSelectedItem().toString();
+                break;
+            default:
+                ferr = "Lima Rotativa " + materiaPrima + cbfamilia.getSelectedItem().toString();
+                break;
+        }
 
-        checarimportada();
+        //Criar código/descrição
+        codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + tipoCanalChar + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
+        desc = ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + diamfinal + "x" + comptotal + tipocanal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
 
-        checarri();
-
-        checarweldon();
-
-        checarextra();
-
-        checarComprimentoTotal();
-
-        checarDiamFinal();
+        //Colocar código e descrição nos txt's
+        txtcodigo.setText(codigo);
+        txtdescricao.setText(desc);
     }
 
     public static void transformarDiam(String diam, JTextField txt) {
@@ -547,22 +694,23 @@ public class VM extends javax.swing.JInternalFrame {
             lblcodigoerro.setVisible(false);
         }
 
-        if (descricao > 120) {
+        if (descricao > 110) {
             lbldescricaoerro.setVisible(true);
         } else {
             lbldescricaoerro.setVisible(false);
         }
     }
-//    public static void travartxt() {
+
+    public static void travartxt() {
 //        for (int i = 0; i < paneldiam.getComponentCount(); i++) {
 //            Component c = paneldiam.getComponent(i);
 //            if (c instanceof JTextField) {
 //                c.setEnabled(false);
 //            }
 //        }
-//    }
-//
-//    public static void txtfresa() {
+    }
+
+    public static void txtfresa() {
 //        //String para procura de texto no nome
 //        String nome = "fresa";
 //
@@ -592,9 +740,9 @@ public class VM extends javax.swing.JInternalFrame {
 //                c.setEnabled(true);
 //            }
 //        }
-//    }
-//
-//    public static void txtfresaespecial() {
+    }
+
+    public static void txtfresaespecial() {
 //        //String para procura de texto no nome
 //        String nome = "fe";
 //
@@ -624,9 +772,9 @@ public class VM extends javax.swing.JInternalFrame {
 //                c.setEnabled(true);
 //            }
 //        }
-//    }
-//
-//    public static void txtbroca() {
+    }
+
+    public static void txtbroca() {
 //        //String para procura de texto no nome
 //        String nome = "broca";
 //
@@ -656,9 +804,9 @@ public class VM extends javax.swing.JInternalFrame {
 //                c.setEnabled(true);
 //            }
 //        }
-//    }
-//
-//    public static void txtbrocaespecial() {
+    }
+
+    public static void txtbrocaespecial() {
 //        //String para procura de texto no nome
 //        String nome = "be";
 //
@@ -688,7 +836,90 @@ public class VM extends javax.swing.JInternalFrame {
 //                c.setEnabled(true);
 //            }
 //        }
-//    }
+    }
+
+    public static void zeraCampos() {
+        idmaterial = 0;
+
+        txtcodigo.setText("");
+        lblcodigoerro.setVisible(false);
+        txtdescricao.setText("");
+        lbldescricaoerro.setVisible(false);
+
+        DefaultTableModel modelObs = (DefaultTableModel) tableobs.getModel();
+        modelObs.setNumRows(0);
+
+        DefaultTableModel modelDoc = (DefaultTableModel) tabledocumentos.getModel();
+        modelDoc.setNumRows(0);
+
+        DefaultTableModel modelDesc = (DefaultTableModel) tabledesccli.getModel();
+        modelDesc.setNumRows(0);
+
+        DefaultTableModel modelMov = (DefaultTableModel) tableMovimentacao.getModel();
+        modelMov.setNumRows(0);
+
+        txtestoque.setText("");
+        txtestoqueminimo.setText("");
+
+        cbtipo.setSelectedIndex(0);
+        cbfamilia.setSelectedIndex(0);
+        cbtamanho.setSelectedIndex(0);
+        txtcortes.setText("");
+        cbtopo.setSelectedIndex(0);
+        cbcanal.setSelectedIndex(0);
+        txtextra.setText("");
+
+        txtd1.setText("");
+        txtd2.setText("");
+        txtd3.setText("");
+        txtd4.setText("");
+        txtd5.setText("");
+        txtl1.setText("");
+        txtl2.setText("");
+        txtl3.setText("");
+        txtl4.setText("");
+        txtl5.setText("");
+
+        txtmaterialdeorigem.setText("");
+
+        checkrevestimento.setSelected(false);
+        cbrevestimento.setSelectedIndex(0);
+        checkraio.setSelected(false);
+        txtraio.setText("");
+        checkimportado.setSelected(false);
+        checkweldon.setSelected(false);
+        checkri.setSelected(false);
+        radioVazio.setSelected(true);
+
+        txthelice.setText("");
+        txtnucleo.setText("");
+        txtconcavidade.setText("");
+        txtaliviotopo1.setText("");
+        txtaliviotopo2.setText("");
+        txtalivio1.setText("");
+        txtalivio2.setText("");
+        txtespfilete.setText("");
+        txtagressividade.setText("");
+        txtfrontal.setText("");
+    }
+
+    public static void revestimento() {
+        if (checkrevestimento.isSelected()) {
+            cbrevestimento.setEnabled(true);
+        } else {
+            cbrevestimento.setEnabled(false);
+            cbrevestimento.setSelectedIndex(0);
+        }
+    }
+
+    public static void raio() {
+        if (checkraio.isSelected()) {
+            txtraio.setEnabled(true);
+        } else {
+            txtraio.setEnabled(false);
+            txtraio.setText("");
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -701,6 +932,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         GroupRevestimento = new javax.swing.ButtonGroup();
         GroupTamanho = new javax.swing.ButtonGroup();
+        GroupMateriaPrima = new javax.swing.ButtonGroup();
         tabmateriais = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel18 = new javax.swing.JPanel();
@@ -762,6 +994,9 @@ public class VM extends javax.swing.JInternalFrame {
         checkri = new javax.swing.JCheckBox();
         checkweldon = new javax.swing.JCheckBox();
         checkimportado = new javax.swing.JCheckBox();
+        radioMD = new javax.swing.JRadioButton();
+        radioHSS = new javax.swing.JRadioButton();
+        radioVazio = new javax.swing.JRadioButton();
         jPanel12 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         paneldadostxt = new javax.swing.JPanel();
@@ -791,11 +1026,6 @@ public class VM extends javax.swing.JInternalFrame {
         txtcortes = new javax.swing.JTextField();
         lbltopo = new javax.swing.JLabel();
         cbtopo = new javax.swing.JComboBox<>();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane8 = new javax.swing.JScrollPane();
-        tablecategoria = new javax.swing.JTable();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
         panelorigem = new javax.swing.JPanel();
         txtmaterialdeorigem = new javax.swing.JTextField();
         jButton8 = new javax.swing.JButton();
@@ -815,13 +1045,17 @@ public class VM extends javax.swing.JInternalFrame {
         jButton5 = new javax.swing.JButton();
         panelmov = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableMovimentacao = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         txtestoque = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         txtestoqueminimo = new javax.swing.JTextField();
+        jPanel4 = new javax.swing.JPanel();
+        txtLocal = new javax.swing.JTextField();
+        jButton7 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Materiais de Venda");
@@ -1003,12 +1237,19 @@ public class VM extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Data", "Usuário", "Observação"
+                "ID", "", "Data", "Usuário", "Observação"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -1019,12 +1260,15 @@ public class VM extends javax.swing.JInternalFrame {
             tableobs.getColumnModel().getColumn(0).setMinWidth(0);
             tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableobs.getColumnModel().getColumn(1).setMinWidth(100);
-            tableobs.getColumnModel().getColumn(1).setPreferredWidth(100);
-            tableobs.getColumnModel().getColumn(1).setMaxWidth(100);
-            tableobs.getColumnModel().getColumn(2).setMinWidth(200);
-            tableobs.getColumnModel().getColumn(2).setPreferredWidth(200);
-            tableobs.getColumnModel().getColumn(2).setMaxWidth(200);
+            tableobs.getColumnModel().getColumn(1).setMinWidth(35);
+            tableobs.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableobs.getColumnModel().getColumn(1).setMaxWidth(35);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(100);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(100);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(100);
+            tableobs.getColumnModel().getColumn(3).setMinWidth(200);
+            tableobs.getColumnModel().getColumn(3).setPreferredWidth(200);
+            tableobs.getColumnModel().getColumn(3).setMaxWidth(200);
         }
 
         jButton1.setText("Adicionar Observação");
@@ -1318,6 +1562,15 @@ public class VM extends javax.swing.JInternalFrame {
 
         checkimportado.setText("Importado");
 
+        GroupMateriaPrima.add(radioMD);
+        radioMD.setText("Metal Duro");
+
+        GroupMateriaPrima.add(radioHSS);
+        radioHSS.setText("HSS");
+
+        GroupMateriaPrima.add(radioVazio);
+        radioVazio.setText("Vazio");
+
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
@@ -1337,7 +1590,13 @@ public class VM extends javax.swing.JInternalFrame {
                     .addGroup(jPanel11Layout.createSequentialGroup()
                         .addComponent(checkweldon)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(checkri)))
+                        .addComponent(checkri))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(radioMD)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioHSS)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioVazio)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
@@ -1351,10 +1610,15 @@ public class VM extends javax.swing.JInternalFrame {
                     .addComponent(checkraio)
                     .addComponent(txtraio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(checkimportado))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(checkweldon)
                     .addComponent(checkri))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(radioMD)
+                    .addComponent(radioHSS)
+                    .addComponent(radioVazio))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1604,75 +1868,10 @@ public class VM extends javax.swing.JInternalFrame {
             }
         });
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Categoria"));
-
-        tablecategoria.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "", "Categoria"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, true, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane8.setViewportView(tablecategoria);
-        if (tablecategoria.getColumnModel().getColumnCount() > 0) {
-            tablecategoria.getColumnModel().getColumn(0).setMinWidth(0);
-            tablecategoria.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tablecategoria.getColumnModel().getColumn(0).setMaxWidth(0);
-            tablecategoria.getColumnModel().getColumn(1).setMinWidth(30);
-            tablecategoria.getColumnModel().getColumn(1).setPreferredWidth(30);
-            tablecategoria.getColumnModel().getColumn(1).setMaxWidth(30);
-        }
-
-        jButton6.setText("Incluir");
-
-        jButton7.setText("Excluir");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(0, 125, Short.MAX_VALUE)
-                .addComponent(jButton7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7)))
-        );
-
         panelorigem.setBackground(new java.awt.Color(255, 255, 255));
         panelorigem.setBorder(javax.swing.BorderFactory.createTitledBorder("Material de Origem"));
 
-        txtmaterialdeorigem.setEnabled(false);
+        txtmaterialdeorigem.setEditable(false);
 
         jButton8.setText("Procurar");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
@@ -1755,9 +1954,7 @@ public class VM extends javax.swing.JInternalFrame {
                                 .addComponent(panelcomp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(panelorigem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1789,16 +1986,15 @@ public class VM extends javax.swing.JInternalFrame {
                 .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(paneldadosLayout.createSequentialGroup()
-                        .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(paneldiam, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(panelcomp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panelorigem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(paneldadosLayout.createSequentialGroup()
-                        .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(paneldadosLayout.createSequentialGroup()
+                                .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(paneldiam, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(panelcomp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panelorigem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btngerarcodigo)
                 .addContainerGap())
@@ -1964,7 +2160,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         panelmov.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tableMovimentacao.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -1980,7 +2176,24 @@ public class VM extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(jTable1);
+        jScrollPane4.setViewportView(tableMovimentacao);
+        if (tableMovimentacao.getColumnModel().getColumnCount() > 0) {
+            tableMovimentacao.getColumnModel().getColumn(0).setMinWidth(100);
+            tableMovimentacao.getColumnModel().getColumn(0).setPreferredWidth(100);
+            tableMovimentacao.getColumnModel().getColumn(0).setMaxWidth(100);
+            tableMovimentacao.getColumnModel().getColumn(1).setMinWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(1).setPreferredWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(1).setMaxWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(2).setMinWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(2).setPreferredWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(2).setMaxWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(3).setMinWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(3).setPreferredWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(3).setMaxWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(4).setMinWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(4).setPreferredWidth(150);
+            tableMovimentacao.getColumnModel().getColumn(4).setMaxWidth(150);
+        }
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Estoque"));
 
@@ -2018,6 +2231,32 @@ public class VM extends javax.swing.JInternalFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Local"));
+
+        txtLocal.setEditable(false);
+
+        jButton7.setText("Procurar Local");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtLocal)
+            .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(txtLocal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton7))
+        );
+
         javax.swing.GroupLayout panelmovLayout = new javax.swing.GroupLayout(panelmov);
         panelmov.setLayout(panelmovLayout);
         panelmovLayout.setHorizontalGroup(
@@ -2026,7 +2265,9 @@ public class VM extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1135, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panelmovLayout.setVerticalGroup(
@@ -2036,6 +2277,8 @@ public class VM extends javax.swing.JInternalFrame {
                 .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelmovLayout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
                 .addContainerGap())
@@ -2050,6 +2293,13 @@ public class VM extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton6.setText("Novo Produto");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -2061,6 +2311,8 @@ public class VM extends javax.swing.JInternalFrame {
                     .addComponent(tabmaterialinfo, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton9)))
                 .addContainerGap())
         );
@@ -2070,9 +2322,11 @@ public class VM extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabmaterialinfo, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                .addComponent(tabmaterialinfo, javax.swing.GroupLayout.PREFERRED_SIZE, 426, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton9)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton9)
+                    .addComponent(jButton6))
                 .addContainerGap())
         );
 
@@ -2449,21 +2703,11 @@ public class VM extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btngerarcodigoActionPerformed
 
     private void checkrevestimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkrevestimentoActionPerformed
-        if (checkrevestimento.isSelected()) {
-            cbrevestimento.setEnabled(true);
-        } else {
-            cbrevestimento.setEnabled(false);
-            cbrevestimento.setSelectedIndex(0);
-        }
+        revestimento();
     }//GEN-LAST:event_checkrevestimentoActionPerformed
 
     private void checkraioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkraioActionPerformed
-        if (checkraio.isSelected()) {
-            txtraio.setEnabled(true);
-        } else {
-            txtraio.setEnabled(false);
-            txtraio.setText("");
-        }
+        raio();
     }//GEN-LAST:event_checkraioActionPerformed
 
     private void cbfamiliaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfamiliaActionPerformed
@@ -2623,7 +2867,15 @@ public class VM extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtfrontalFocusLost
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        if (checkrevestimento.isSelected() || checkraio.isSelected()) {
+        String[] options = new String[2];
+        options[0] = "Produto";
+        options[1] = "Matéria-prima";
+
+        int escolha;
+
+        escolha = JOptionPane.showInternalOptionDialog(null, "Qual origem?", "Escolher Origem", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, iconable);
+
+        if (escolha == 0) {
             ProcuraMaterial pmv = new ProcuraMaterial(this.getClass().getSimpleName());
             Telas.AparecerTela(pmv);
         } else {
@@ -2666,16 +2918,309 @@ public class VM extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        if (idmaterial == 0) {
+        if (txtcodigo.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Produto sem código.");
+        } else if (txtdescricao.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Produto sem descrição.");
+        } else if (lblcodigoerro.isVisible()) {
+            JOptionPane.showMessageDialog(null, "Código muito longo.");
+        } else if (lbldescricaoerro.isVisible()) {
+            JOptionPane.showMessageDialog(null, "Descrição muito longa.");
+        } else if (txtLocal.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Nenhum local de armazenagem selecionado.");
 
+            ProcurarLocal pl = new ProcurarLocal(this.getClass().getSimpleName());
+            Telas.AparecerTela(pl);
+        } else if (txtestoqueminimo.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Sem valor de estoque mínimo.");
+            txtestoqueminimo.requestFocus();
+            tabmaterialinfo.setSelectedIndex(4);
+        } else if (idmaterial == 0) {
+            //Criar material
+            vmd.create(
+                    txtcodigo.getText(),
+                    txtdescricao.getText(),
+                    0,
+                    Double.parseDouble(txtestoqueminimo.getText()),
+                    "Ativo",
+                    txtLocal.getText(),
+                    txtd1.getText(),
+                    txtd2.getText(),
+                    txtd3.getText(),
+                    txtd4.getText(),
+                    txtd5.getText(),
+                    txtl1.getText(),
+                    txtl2.getText(),
+                    txtl3.getText(),
+                    txtl4.getText(),
+                    txtl5.getText(),
+                    txtmaterialdeorigem.getText(),
+                    cbrevestimento.getSelectedItem().toString(),
+                    txtraio.getText(),
+                    checkimportado.isSelected(),
+                    checkweldon.isSelected(),
+                    checkri.isSelected(),
+                    radioMD.isSelected(),
+                    radioHSS.isSelected(),
+                    cbtipo.getSelectedItem().toString(),
+                    cbfamilia.getSelectedItem().toString(),
+                    cbtamanho.getSelectedItem().toString(),
+                    txtcortes.getText(),
+                    cbtopo.getSelectedItem().toString(),
+                    cbcanal.getSelectedItem().toString(),
+                    txtextra.getText(),
+                    txthelice.getText(),
+                    txtnucleo.getText(),
+                    txtconcavidade.getText(),
+                    txtaliviotopo1.getText(),
+                    txtaliviotopo2.getText(),
+                    txtalivio1.getText(),
+                    txtalivio2.getText(),
+                    txtespfilete.getText(),
+                    txtagressividade.getText(),
+                    txtfrontal.getText()
+            );
+
+            //Recuperar id do material
+            idmaterial = vmd.readcreated();
+
+            //Criar observações
+            for (int i = 0; i < tableobs.getRowCount(); i++) {
+                vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
+            }
+
+            //Criar documentos
+            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
+                File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                folder.mkdirs();
+                try {
+                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                } catch (IOException ex) {
+                    Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                    try {
+                        SendEmail.EnviarErro(ex.toString());
+                        JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                    } catch (HeadlessException hex) {
+                        JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                    } catch (AWTException | IOException ex1) {
+                        Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                    }
+                }
+                vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
+            }
+
+            //Criar códigos por clientes
+            for (int i = 0; i < tabledesccli.getRowCount(); i++) {
+                vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
+            }
+
+            //Criar movimentação do material
+            vmmd.create(idmaterial, 0, 0, 0, "Criação", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
         } else {
+            //Atualizar material
+            vmd.update(
+                    //filete = '" + filete + "', agressividade = '" + agressividade + "', frontal = '" + frontal + "' WHERE id = " + id
+                    txtcodigo.getText(),
+                    txtdescricao.getText(),
+                    Double.parseDouble(txtestoqueminimo.getText()),
+                    txtLocal.getText(),
+                    txtd1.getText(),
+                    txtd2.getText(),
+                    txtd3.getText(),
+                    txtd4.getText(),
+                    txtd5.getText(),
+                    txtl1.getText(),
+                    txtl2.getText(),
+                    txtl3.getText(),
+                    txtl4.getText(),
+                    txtl5.getText(),
+                    txtmaterialdeorigem.getText(),
+                    cbrevestimento.getSelectedItem().toString(),
+                    txtraio.getText(),
+                    checkimportado.isSelected(),
+                    checkweldon.isSelected(),
+                    checkri.isSelected(),
+                    radioMD.isSelected(),
+                    radioHSS.isSelected(),
+                    cbtipo.getSelectedItem().toString(),
+                    cbfamilia.getSelectedItem().toString(),
+                    cbtamanho.getSelectedItem().toString(),
+                    txtcortes.getText(),
+                    cbtopo.getSelectedItem().toString(),
+                    cbcanal.getSelectedItem().toString(),
+                    txtextra.getText(),
+                    txthelice.getText(),
+                    txtnucleo.getText(),
+                    txtconcavidade.getText(),
+                    txtaliviotopo1.getText(),
+                    txtaliviotopo2.getText(),
+                    txtalivio1.getText(),
+                    txtalivio2.getText(),
+                    txtespfilete.getText(),
+                    txtagressividade.getText(),
+                    txtfrontal.getText(),
+                    idmaterial
+            );
 
+            //Criar observações que não existiam antes
+            for (int i = 0; i < tableobs.getRowCount(); i++) {
+                if (tableobs.getValueAt(i, 0).equals("")) {
+                    vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
+                }
+            }
+
+            //Criar documentos que não existiam antes
+            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                if (tabledocumentos.getValueAt(i, 0).equals("")) {
+                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                    File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
+                    File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                    folder.mkdirs();
+                    try {
+                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                    } catch (IOException ex) {
+                        Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                        try {
+                            SendEmail.EnviarErro(ex.toString());
+                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                        } catch (HeadlessException hex) {
+                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                        } catch (AWTException | IOException ex1) {
+                            Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                        }
+                    }
+                    vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
+                }
+            }
+
+            //Criar códigos por clientes que não existiam antes
+            for (int i = 0; i < tabledesccli.getRowCount(); i++) {
+                if (tabledesccli.getValueAt(i, 0).equals("")) {
+                    vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
+                }
+            }
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void tablemateriaisvendasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemateriaisvendasMouseClicked
         if (evt.getClickCount() == 2) {
             idmaterial = Integer.parseInt(tablemateriaisvendas.getValueAt(tablemateriaisvendas.getSelectedRow(), 0).toString());
+
+            tabmateriais.setSelectedIndex(1);
+
+            vmd.click(idmaterial).forEach(vmb -> {
+                txtcodigo.setText(vmb.getCodigo());
+                txtdescricao.setText(vmb.getDescricao());
+                txtestoque.setText(String.valueOf(vmb.getEstoque()));
+                txtestoqueminimo.setText(String.valueOf(vmb.getEstoqueMinimo()));
+                txtstatus.setText(vmb.getStatus());
+                txtLocal.setText(vmb.getLocal());
+                txtd1.setText(vmb.getD1());
+                txtd2.setText(vmb.getD2());
+                txtd3.setText(vmb.getD3());
+                txtd4.setText(vmb.getD4());
+                txtd5.setText(vmb.getD5());
+                txtl1.setText(vmb.getL1());
+                txtl2.setText(vmb.getL2());
+                txtl3.setText(vmb.getL3());
+                txtl4.setText(vmb.getL4());
+                txtl5.setText(vmb.getL5());
+                txtmaterialdeorigem.setText(vmb.getMaterialOrigem());
+                if (!vmb.getRev().equals("Selecione")) {
+                    checkrevestimento.setSelected(true);
+                    cbrevestimento.setSelectedItem(vmb.getRev());
+                } else {
+                    checkrevestimento.setSelected(false);
+                    cbrevestimento.setSelectedIndex(0);
+                }
+                if (!vmb.getRaio().equals("")) {
+                    checkraio.setSelected(true);
+                    txtraio.setText(vmb.getRaio());
+                } else {
+                    checkraio.setSelected(false);
+                    txtraio.setText("");
+                }
+                checkimportado.setSelected(vmb.isImportada());
+                checkweldon.setSelected(vmb.isWeldon());
+                checkri.setSelected(vmb.isRi());
+                radioMD.setSelected(vmb.isMd());
+                radioHSS.setSelected(vmb.isHss());
+                cbtipo.setSelectedItem(vmb.getTipo());
+                cbfamilia.setSelectedItem(vmb.getFamilia());
+                cbtamanho.setSelectedItem(vmb.getTamanho());
+                txtcortes.setText(vmb.getCortes());
+                cbtopo.setSelectedItem(vmb.getTopo());
+                cbcanal.setSelectedItem(vmb.getCanal());
+                txtextra.setText(vmb.getExtra());
+                txthelice.setText(vmb.getHelice());
+                txtnucleo.setText(vmb.getNucleo());
+                txtconcavidade.setText(vmb.getConcavidade());
+                txtaliviotopo1.setText(vmb.getTopo1());
+                txtaliviotopo2.setText(vmb.getTopo2());
+                txtalivio1.setText(vmb.getAlivio1());
+                txtalivio2.setText(vmb.getAlivio2());
+                txtespfilete.setText(vmb.getFilete());
+                txtagressividade.setText(vmb.getAgressividade());
+                txtfrontal.setText(vmb.getFrontal());
+            });
+
+            DefaultTableModel modelObs = (DefaultTableModel) tableobs.getModel();
+
+            vmod.read(idmaterial).forEach(vmob -> {
+                modelObs.addRow(new Object[]{
+                    vmob.getId(),
+                    false,
+                    Dates.TransformarDataCurtaDoDB(vmob.getData()),
+                    vmob.getUsuario(),
+                    vmob.getObs()
+                });
+            });
+
+            DefaultTableModel modelDoc = (DefaultTableModel) tabledocumentos.getModel();
+
+            vmdd.read(idmaterial).forEach(vmdb -> {
+                modelDoc.addRow(new Object[]{
+                    vmdb.getId(),
+                    false,
+                    vmdb.getDescricao(),
+                    vmdb.getLocal()
+                });
+            });
+
+            DefaultTableModel modelCodCli = (DefaultTableModel) tabledesccli.getModel();
+
+            vmccd.read(idmaterial).forEach(vmccb -> {
+                modelCodCli.addRow(new Object[]{
+                    vmccb.getId(),
+                    false,
+                    vmccb.getCliente(),
+                    vmccb.getCodigo(),
+                    vmccb.getDescricao()
+                });
+            });
+
+            DefaultTableModel modelMov = (DefaultTableModel) tableMovimentacao.getModel();
+
+            vmmd.read(idmaterial).forEach(vmmb -> {
+                modelMov.addRow(new Object[]{
+                    Dates.TransformarDataCurtaDoDB(vmmb.getData()),
+                    vmmb.getTipo(),
+                    vmmb.getQtdInicial(),
+                    vmmb.getQtdMovimentada(),
+                    vmmb.getSaldo(),
+                    vmmb.getUsuario()
+                });
+            });
+
+            revestimento();
+
+            raio();
         }
     }//GEN-LAST:event_tablemateriaisvendasMouseClicked
 
@@ -2697,7 +3242,7 @@ public class VM extends javax.swing.JInternalFrame {
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir o(s) documento(s) selecionado(s)?", "Excluir Documento", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
-                
+
             }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -2707,8 +3252,21 @@ public class VM extends javax.swing.JInternalFrame {
         Telas.AparecerTela(cpc);
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja cadastrar um novo produto?", "Cadastrar Novo", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            zeraCampos();
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        ProcurarLocal pl = new ProcurarLocal(this.getClass().getSimpleName());
+        Telas.AparecerTela(pl);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.ButtonGroup GroupMateriaPrima;
     public javax.swing.ButtonGroup GroupRevestimento;
     public javax.swing.ButtonGroup GroupTamanho;
     public static javax.swing.JButton btngerarcodigo;
@@ -2722,7 +3280,7 @@ public class VM extends javax.swing.JInternalFrame {
     public static javax.swing.JCheckBox checkraio;
     public static javax.swing.JCheckBox checkrevestimento;
     public static javax.swing.JCheckBox checkri;
-    public javax.swing.JCheckBox checkweldon;
+    public static javax.swing.JCheckBox checkweldon;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
@@ -2776,8 +3334,6 @@ public class VM extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane5;
     public javax.swing.JScrollPane jScrollPane6;
     public javax.swing.JScrollPane jScrollPane7;
-    public javax.swing.JScrollPane jScrollPane8;
-    public javax.swing.JTable jTable1;
     public static javax.swing.JLabel lblcodigoerro;
     public static javax.swing.JLabel lblcortes;
     public static javax.swing.JLabel lbldescricaoerro;
@@ -2795,13 +3351,17 @@ public class VM extends javax.swing.JInternalFrame {
     public javax.swing.JPanel panelmov;
     public javax.swing.JPanel panelobs;
     public javax.swing.JPanel panelorigem;
-    public static javax.swing.JTable tablecategoria;
+    public static javax.swing.JRadioButton radioHSS;
+    public static javax.swing.JRadioButton radioMD;
+    public static javax.swing.JRadioButton radioVazio;
+    public static javax.swing.JTable tableMovimentacao;
     public static javax.swing.JTable tabledesccli;
     public static javax.swing.JTable tabledocumentos;
-    public javax.swing.JTable tablemateriaisvendas;
+    public static javax.swing.JTable tablemateriaisvendas;
     public static javax.swing.JTable tableobs;
     public static javax.swing.JTabbedPane tabmateriais;
     public static javax.swing.JTabbedPane tabmaterialinfo;
+    public static javax.swing.JTextField txtLocal;
     public static javax.swing.JTextField txtagressividade;
     public static javax.swing.JTextField txtalivio1;
     public static javax.swing.JTextField txtalivio2;
@@ -2817,9 +3377,9 @@ public class VM extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtd5;
     public static javax.swing.JTextField txtdescricao;
     public static javax.swing.JTextField txtespfilete;
-    public javax.swing.JTextField txtestoque;
-    public javax.swing.JTextField txtestoqueminimo;
-    public javax.swing.JTextField txtextra;
+    public static javax.swing.JTextField txtestoque;
+    public static javax.swing.JTextField txtestoqueminimo;
+    public static javax.swing.JTextField txtextra;
     public static javax.swing.JTextField txtfrontal;
     public static javax.swing.JTextField txthelice;
     public static javax.swing.JTextField txtl1;

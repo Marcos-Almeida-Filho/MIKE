@@ -80,12 +80,50 @@ public class F_UPDAO {
         }
     }
 
-    public List<F_UPBean> readtable() {
+    public List<F_UPBean> readOPTodos() {
 
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up ORDER BY nivel, dataentrega, dav");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op NOT LIKE 'OS%' ORDER BY nivel, dataentrega, dav");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtable");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readOSTodos() {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op LIKE 'OS%' ORDER BY nivel, dataentrega, dav");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -156,12 +194,126 @@ public class F_UPDAO {
         return listbb;
     }
     
-    public List<F_UPBean> readtableplanejamentoepesquisa(String pesquisa) {
+    public List<F_UPBean> readOPEmAberto() {
 
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op NOT LIKE 'os%' ORDER BY nivel, dataentrega");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readOSEmAberto() {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE 'OS%' ORDER BY nivel, dataentrega");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readOPEmAbertoPesquisa(String pesquisa) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op NOT LIKE 'OS%' AND processo <> 'Encerrado' AND op LIKE '%" + pesquisa + "%' OR op NOT LIKE 'OS%' AND processo <> 'Encerrado' AND dav LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readOSEmAbertoPesquisa(String pesquisa) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE '%" + pesquisa + "%' AND op LIKE 'OS%' OR processo <> 'Encerrado' AND dav LIKE '%" + pesquisa + "%' AND op LIKE 'OS%' ORDER BY nivel, dataentrega");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -194,12 +346,50 @@ public class F_UPDAO {
         return listbb;
     }
 
-    public List<F_UPBean> readtableepesquisa(String pesquisa) {
+    public List<F_UPBean> readOPTodosPesquisa(String pesquisa) {
 
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op LIKE '%" + pesquisa + "%' OR dav LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega, dav");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op LIKE '%" + pesquisa + "%' AND op NOT LIKE 'OS%' OR dav LIKE '%" + pesquisa + "%' AND op NOT LIKE 'OS%' ORDER BY nivel, dataentrega, dav");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtablepesquisa");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readOSTodosPesquisa(String pesquisa) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op LIKE '%" + pesquisa + "%' AND op LIKE 'OS%' OR dav LIKE '%" + pesquisa + "%' AND op LIKE 'OS%' ORDER BY nivel, dataentrega, dav");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -232,13 +422,50 @@ public class F_UPDAO {
         return listbb;
     }
 
-    public List<F_UPBean> readtableporprocesso(String processo) {
+    public List<F_UPBean> readOPPorProcesso(String processo) {
 
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? ORDER BY nivel, dataentrega, dav");
-            stmt.setString(1, processo);
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = '" + processo + "' AND op NOT LIKE 'OS%' ORDER BY nivel, dataentrega, dav");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setDav(rs.getString("dav"));
+                cb.setOp(rs.getString("op"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableporprocesso");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readOSPorProcesso(String processo) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = '" + processo + "' AND op LIKE 'OS%' ORDER BY nivel, dataentrega, dav");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -271,13 +498,50 @@ public class F_UPDAO {
         return listbb;
     }
 
-    public List<F_UPBean> readtableporprocessoepesquisa(String processo, String pesquisa) {
+    public List<F_UPBean> readOPProcessoPesquisa(String processo, String pesquisa) {
 
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = ? AND op LIKE '%" + pesquisa + "%' ORDER BY nivel, dataentrega, dav");
-            stmt.setString(1, processo);
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = '" + processo + "' AND op LIKE '%" + pesquisa + "%' AND op NOT LIKE 'OS%' OR processo = '" + processo + "' AND dav LIKE '%" + pesquisa + "%' AND op NOT LIKE 'OS%' ORDER BY nivel, dataentrega, dav");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                F_UPBean cb = new F_UPBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setMaterial(rs.getString("material"));
+                cb.setOp(rs.getString("op"));
+                cb.setDav(rs.getString("dav"));
+                cb.setDataentrega(rs.getString("dataentrega"));
+                cb.setProcesso(rs.getString("processo"));
+                cb.setNivel(rs.getInt("nivel"));
+                cb.setValor(rs.getDouble("valor"));
+                cb.setObservacao(rs.getString("observacao"));
+                cb.setCliente(rs.getString("cliente"));
+
+                listbb.add(cb);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableporprocessoepesquisa");
+            Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listbb;
+    }
+    
+    public List<F_UPBean> readOSProcessoPesquisa(String processo, String pesquisa) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo = '" + processo + "' AND op LIKE '%" + pesquisa + "%' AND op LIKE 'OS%' OR processo = '" + processo + "' AND dav LIKE '%" + pesquisa + "%' AND op LIKE 'OS%' ORDER BY nivel, dataentrega, dav");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

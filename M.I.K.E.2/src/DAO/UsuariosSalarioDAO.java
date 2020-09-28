@@ -26,8 +26,6 @@ import javax.swing.JOptionPane;
  */
 public class UsuariosSalarioDAO {
     
-    UsuariosSalarioBean usb = new UsuariosSalarioBean();
-    
     public void create(UsuariosSalarioBean ub) {
 
         Connection con = ConnectionFactory.getConnection();
@@ -79,6 +77,7 @@ public class UsuariosSalarioDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
+                UsuariosSalarioBean usb = new UsuariosSalarioBean();
 
                 usb.setId(rs.getInt("id"));
                 usb.setData(rs.getString("data"));

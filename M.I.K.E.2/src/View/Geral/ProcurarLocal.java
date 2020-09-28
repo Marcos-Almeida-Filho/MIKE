@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package View.vendas;
+package View.Geral;
 
-import Bean.LocalBean;
 import DAO.LocalDAO;
+import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -14,17 +14,18 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class ProcurarLocal extends javax.swing.JInternalFrame {
+    
+    private final String origem;
+    private static final LocalDAO LD = new LocalDAO();
 
     /**
-     * Creates new form ProcurarLocal
+     * Creates new form ProcuraMaterialVenda
+     * @param origin
      */
-    
-    static LocalDAO ld = new LocalDAO();
-    static LocalBean lb = new LocalBean();
-    
-    public ProcurarLocal() {
+    public ProcurarLocal(String origin) {
         initComponents();
         readLocal();
+        origem = origin;
     }
     
     public static void readLocal() {
@@ -32,14 +33,14 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
         modelLocal.setNumRows(0);
         
         if (txtPesquisa.getText().length() == 0) {
-            ld.readAtivo().forEach(lb -> {
+            LD.readAtivo().forEach(lb -> {
                 modelLocal.addRow(new Object[]{
                     lb.getId(),
                     lb.getNome()
                 });
             });
         } else {
-            ld.readPesquisaAtivo(txtPesquisa.getText()).forEach(lb -> {
+            LD.readPesquisaAtivo(txtPesquisa.getText()).forEach(lb -> {
                 modelLocal.addRow(new Object[]{
                     lb.getId(),
                     lb.getNome()
@@ -63,8 +64,9 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         txtPesquisa = new javax.swing.JTextField();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
-        setTitle("Procurar Local de Armazenagem");
+        setTitle("Procurar Material");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
@@ -76,7 +78,7 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Local"
+                "ID", "Código"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -125,20 +127,20 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 351, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -156,16 +158,23 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
-        readLocal();
-    }//GEN-LAST:event_txtPesquisaKeyReleased
-
     private void tableLocalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableLocalMouseClicked
         if (evt.getClickCount() == 2) {
-            VendasMateriais.txtLocal.setText(tableLocal.getValueAt(tableLocal.getSelectedRow(), 1).toString());
+            String escolha = tableLocal.getValueAt(tableLocal.getSelectedRow(), 1).toString();
+            switch (origem) {
+                case "VendasMaterial":
+                    break;
+                case "VM":
+                    VM.txtLocal.setText(escolha);
+                    break;
+            }
             dispose();
         }
     }//GEN-LAST:event_tableLocalMouseClicked
+
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        
+    }//GEN-LAST:event_txtPesquisaKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

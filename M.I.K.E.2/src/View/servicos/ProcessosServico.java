@@ -16,6 +16,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ProcessosServico extends javax.swing.JInternalFrame {
 
+    static ProcessosServicoDAO psd = new ProcessosServicoDAO();
+    static ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
+
     /**
      * Creates new form ProcessosServico
      */
@@ -28,14 +31,12 @@ public class ProcessosServico extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tableprocessosservico.getModel();
         model.setNumRows(0);
 
-        ProcessosServicoDAO psd = new ProcessosServicoDAO();
-
-        for (ServicoGrupoDeProcessosBean psb : psd.read()) {
+        psd.read().forEach((psb) -> {
             model.addRow(new Object[]{
                 false,
                 psb.getNome()
             });
-        }
+        });
     }
 
     /**
@@ -127,6 +128,11 @@ public class ProcessosServico extends javax.swing.JInternalFrame {
         });
 
         jButton2.setText("Excluir");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -174,13 +180,34 @@ public class ProcessosServico extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String n = JOptionPane.showInputDialog(rootPane, "Qual o nome do novo processo?", "Adicionar novo processo", JOptionPane.OK_OPTION);
-        ProcessosServicoDAO psd = new ProcessosServicoDAO();
-        ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
 
         psb.setNome(n);
         psd.create(psb);
         readtable();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int numtrue = 0;
+
+        for (int i = 0; i < tableprocessosservico.getRowCount(); i++) {
+            if (tableprocessosservico.getValueAt(i, 0).equals(true)) {
+                numtrue++;
+            }
+        }
+
+        if (numtrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum registro selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja realmente excluir o(s) processo(s) selecionado(s)?", "Excluir Processo Serviço", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                for (int i = 0; i < tableprocessosservico.getRowCount(); i++) {
+                    if (tableprocessosservico.getValueAt(i, 0).equals(true)) {
+                        psd.delete(tableprocessosservico.getValueAt(i, 1).toString());
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
