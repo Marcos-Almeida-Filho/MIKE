@@ -95,7 +95,7 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
 
             //Criar Alteração Inicial
             String data = Dates.CriarDataCompletaParaDB();
-            ad.create(id, tipo, data, user, "Criação do Registro", "", "");
+            ad.create(String.valueOf(id), tipo, data, user, "Criação do Registro", "", "");
 
             //Criar Observações, caso existam
             for (int i = 0; i < tableObs.getRowCount(); i++) {
@@ -179,19 +179,19 @@ public class VendasMateriais extends javax.swing.JInternalFrame {
             String data = Dates.CriarDataCompletaParaDB();
 
             if (!VendasMateriaisValoresOriginais.codigo.equals(txtCodigo.getText())) {
-                ad.create(id, tipo, data, user, "Código", VendasMateriaisValoresOriginais.codigo, txtCodigo.getText());
+                ad.create(String.valueOf(id), tipo, data, user, "Código", VendasMateriaisValoresOriginais.codigo, txtCodigo.getText());
             }
             if (!VendasMateriaisValoresOriginais.descricao.equals(txtDesc.getText())) {
-                ad.create(id, tipo, data, user, "Descrição", VendasMateriaisValoresOriginais.descricao, txtDesc.getText());
+                ad.create(String.valueOf(id), tipo, data, user, "Descrição", VendasMateriaisValoresOriginais.descricao, txtDesc.getText());
             }
             if (!VendasMateriaisValoresOriginais.local.equals(txtLocal.getText())) {
-                ad.create(id, tipo, data, user, "Local de Armazenagem", VendasMateriaisValoresOriginais.local, txtLocal.getText());
+                ad.create(String.valueOf(id), tipo, data, user, "Local de Armazenagem", VendasMateriaisValoresOriginais.local, txtLocal.getText());
             }
             if (VendasMateriaisValoresOriginais.docs != tableDocumentos.getRowCount()) {
-                ad.create(id, tipo, data, user, "Número de Documentos", String.valueOf(VendasMateriaisValoresOriginais.docs), String.valueOf(tableDocumentos.getRowCount()));
+                ad.create(String.valueOf(id), tipo, data, user, "Número de Documentos", String.valueOf(VendasMateriaisValoresOriginais.docs), String.valueOf(tableDocumentos.getRowCount()));
             }
             if (VendasMateriaisValoresOriginais.codclis != tableCodigoPorCliente.getRowCount()) {
-                ad.create(id, tipo, data, user, "Número de Códigos por Cliente", String.valueOf(VendasMateriaisValoresOriginais.codclis), String.valueOf(tableCodigoPorCliente.getRowCount()));
+                ad.create(String.valueOf(id), tipo, data, user, "Número de Códigos por Cliente", String.valueOf(VendasMateriaisValoresOriginais.codclis), String.valueOf(tableCodigoPorCliente.getRowCount()));
             }
         }
         readMateriais();

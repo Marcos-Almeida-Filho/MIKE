@@ -3,9 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/vendas/CotacaoVenda.java</file>
-            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/DAO/VendasCotacaoDAO.java</file>
-            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/DAO/VendasCotacaoItensDAO.java</file>
+            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/DAO/VendasPedidoItensDAO.java</file>
+            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/vendas/PedidoVenda.java</file>
+            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/DAO/VendasPedidoDAO.java</file>
         </group>
     </open-files>
 </project-private>

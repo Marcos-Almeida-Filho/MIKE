@@ -105,7 +105,7 @@ public class F_UP extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tablefup.getModel();
         model.setNumRows(0);
 
-        String processo = cbfiltro.getSelectedItem().toString();
+        String processo = cbStatusOP.getSelectedItem().toString();
 
         if (txtpesquisa.getText().equals("")) {
             switch (processo) {
@@ -304,8 +304,10 @@ public class F_UP extends javax.swing.JInternalFrame {
     public static void statusOS() {
         psd.read().forEach(sgdpd -> {
             cbStatusOS.addItem(sgdpd.getNome());
+            cbStatusOP.addItem(sgdpd.getNome());
         });
         cbStatusOS.addItem("Encerrado");
+        cbStatusOP.addItem("Encerrado");
     }
 
     /**
@@ -323,7 +325,7 @@ public class F_UP extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         txtpesquisa = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
-        cbfiltro = new javax.swing.JComboBox<>();
+        cbStatusOP = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablefup = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
@@ -371,12 +373,12 @@ public class F_UP extends javax.swing.JInternalFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtro"));
         jPanel2.setName("jPanel2"); // NOI18N
 
-        cbfiltro.setMaximumRowCount(10);
-        cbfiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Todos", "Rascunho", "Separação de Material", "Corte", "Para Canulação", "Em Canulação", "Para Retífica", "Em Retífica", "Ponta", "Desbaste", "Acabamento", "Canal", "Ticar", "CNC", "Para Revestimento", "Em Revestimento", "Terceiros", "Gravação", "Inspeção", "Etiquetagem", "Faturamento", "Encerrado" }));
-        cbfiltro.setName("cbfiltro"); // NOI18N
-        cbfiltro.addActionListener(new java.awt.event.ActionListener() {
+        cbStatusOP.setMaximumRowCount(10);
+        cbStatusOP.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Todos", "Rascunho" }));
+        cbStatusOP.setName("cbStatusOP"); // NOI18N
+        cbStatusOP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbfiltroActionPerformed(evt);
+                cbStatusOPActionPerformed(evt);
             }
         });
 
@@ -384,11 +386,11 @@ public class F_UP extends javax.swing.JInternalFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cbfiltro, javax.swing.GroupLayout.Alignment.TRAILING, 0, 216, Short.MAX_VALUE)
+            .addComponent(cbStatusOP, javax.swing.GroupLayout.Alignment.TRAILING, 0, 216, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cbfiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(cbStatusOP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -515,7 +517,7 @@ public class F_UP extends javax.swing.JInternalFrame {
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtro"));
         jPanel7.setName("jPanel7"); // NOI18N
 
-        cbStatusOS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Todos" }));
+        cbStatusOS.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Todos", "Rascunho" }));
         cbStatusOS.setName("cbStatusOS"); // NOI18N
         cbStatusOS.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -649,10 +651,10 @@ public class F_UP extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tablefupMouseClicked
 
-    private void cbfiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbfiltroActionPerformed
+    private void cbStatusOPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusOPActionPerformed
         //txtpesquisa.setText("");
         readops();
-    }//GEN-LAST:event_cbfiltroActionPerformed
+    }//GEN-LAST:event_cbStatusOPActionPerformed
 
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
         readops();
@@ -683,8 +685,8 @@ public class F_UP extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JComboBox<String> cbStatusOP;
     public static javax.swing.JComboBox<String> cbStatusOS;
-    public static javax.swing.JComboBox<String> cbfiltro;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JPanel jPanel1;

@@ -8,6 +8,7 @@ package View.Geral;
 import View.servicos.*;
 import DAO.UsuariosDAO;
 import View.vendas.CotacaoVenda;
+import View.vendas.PedidoVenda;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -164,7 +165,8 @@ public class ProcurarVendedor extends javax.swing.JInternalFrame {
                 case "CotacaoVenda":
                     CotacaoVenda.txtVendedor.setText(vendedor);
                     break;
-                case "VendaPedido":
+                case "PedidoVenda":
+                    PedidoVenda.txtVendedor.setText(vendedor);
                     break;
             }
             dispose();

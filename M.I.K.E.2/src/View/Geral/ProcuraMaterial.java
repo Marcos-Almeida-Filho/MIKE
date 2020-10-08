@@ -91,6 +91,15 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
                     });
                 });
                 break;
+            case "PedidoVenda":
+                vmd.readStatus("Ativo").forEach(vmb -> {
+                    model.addRow(new Object[]{
+                        vmb.getId(),
+                        vmb.getCodigo(),
+                        vmb.getDescricao()
+                    });
+                });
+                break;
         }
     }
 
@@ -154,6 +163,11 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
         jPanel2.setName("jPanel2"); // NOI18N
 
         txtpesquisa.setName("txtpesquisa"); // NOI18N
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -235,13 +249,56 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
                         "",});
                     break;
                 case "CotacaoVenda":
-                    ItemCotacao.txtcodigo.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
-                    ItemCotacao.txtdesc.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString());
+                    ItemCotacao.txtcodigo.setText(codigo);
+                    ItemCotacao.txtdesc.setText(desc);
+                    break;
+                case "CotacaoServico":
+                    ItemCotacao.txtcodigo.setText(codigo);
+                    ItemCotacao.txtdesc.setText(desc);
+                    break;
+                case "PedidoVenda":
+                    ItemPedido.txtcodigo.setText(codigo);
+                    ItemPedido.txtdesc.setText(desc);
                     break;
             }
             dispose();
         }
     }//GEN-LAST:event_tablemateriaisMouseClicked
+
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        DefaultTableModel model = (DefaultTableModel) tablemateriais.getModel();
+        model.setNumRows(0);
+        
+        switch (origem) {
+            case "CotacaoServico":
+                smd.pesquisa(txtpesquisa.getText()).forEach(smb -> {
+                    model.addRow(new Object[]{
+                        smb.getId(),
+                        smb.getCodigo(),
+                        smb.getDescricao()
+                    });
+                });
+                break;
+            case "CotacaoVenda":
+                vmd.readTodosPesquisa(txtpesquisa.getText()).forEach(vmb -> {
+                    model.addRow(new Object[]{
+                        vmb.getId(),
+                        vmb.getCodigo(),
+                        vmb.getDescricao()
+                    });
+                });
+                break;
+            case "PedidoVenda":
+                vmd.readTodosPesquisa(txtpesquisa.getText()).forEach(vmb -> {
+                    model.addRow(new Object[]{
+                        vmb.getId(),
+                        vmb.getCodigo(),
+                        vmb.getDescricao()
+                    });
+                });
+                break;
+        }
+    }//GEN-LAST:event_txtpesquisaKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

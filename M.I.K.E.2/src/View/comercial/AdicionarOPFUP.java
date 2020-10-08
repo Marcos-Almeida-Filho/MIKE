@@ -99,6 +99,7 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
 
         txtmaterial.setName("txtmaterial"); // NOI18N
 
+        cbprocesso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Rascunho" }));
         cbprocesso.setName("cbprocesso"); // NOI18N
 
         jLabel5.setText("Primeiro Processo");
@@ -291,9 +292,6 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
             txtmaterial.requestFocus();
         } else if (dateentrega.getCalendar() == null) {
             JOptionPane.showMessageDialog(null, "Selecione uma data.");
-        } else if (cbprocesso.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(null, "Selecione o primeiro processo.");
-            cbprocesso.showPopup();
         } else if (cbnivel.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Selecione um nível.");
             cbnivel.showPopup();

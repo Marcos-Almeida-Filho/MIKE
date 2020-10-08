@@ -45,6 +45,7 @@ import View.financeiro.Extratos;
 import View.fiscal.NotasFiscais;
 import View.logistica.LocaisArmazenagem;
 import View.vendas.CotacaoVenda;
+import View.vendas.PedidoVenda;
 import View.vendas.ProcessosVendas;
 import View.vendas.VM;
 import java.awt.Toolkit;
@@ -958,7 +959,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         String menuItemName = menuItem.getName();
 
         if (gupd.readPerm(Session.idnivel, menuItemName)) {
-
+            PedidoVenda pv = new PedidoVenda();
+            Telas.AparecerTelaAumentada(pv);
         } else {
             JOptionPane.showMessageDialog(null, "Acesso não permitido.");
         }

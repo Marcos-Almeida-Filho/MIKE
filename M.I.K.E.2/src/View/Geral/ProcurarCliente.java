@@ -6,7 +6,6 @@
 package View.Geral;
 
 import View.servicos.*;
-import Bean.ClientesBean;
 import DAO.ClientesDAO;
 import View.comercial.AdicionarOPFUP;
 import View.comercial.OPF_UP;
@@ -15,6 +14,7 @@ import View.financeiro.AdicionarContasAReceber;
 import View.logistica.RastreamentoDocumentos;
 import View.vendas.CodigoPorCliente;
 import View.vendas.CotacaoVenda;
+import View.vendas.PedidoVenda;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -195,7 +195,11 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                     CotacaoVenda.txtRep.setText(representante);
                     CotacaoVenda.txtVendedor.setText(vendedor);
                     break;
-                case "VendaPedido":
+                case "PedidoVenda":
+                    PedidoVenda.txtCliente.setText(cliente);
+                    PedidoVenda.txtCondPag.setText(condicao);
+                    PedidoVenda.txtRep.setText(representante);
+                    PedidoVenda.txtVendedor.setText(vendedor);
                     break;
                 case "OS":
                     OS.txtcliente.setText(cliente);
@@ -226,15 +230,15 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
         DefaultTableModel model = (DefaultTableModel) tableclientes.getModel();
         model.setNumRows(0);
-        ClientesDAO cd = new ClientesDAO();
+        cd = new ClientesDAO();
 
-        for (ClientesBean cb : cd.pesquisa(txtpesquisa.getText())) {
+        cd.pesquisa(txtpesquisa.getText()).forEach((cb) -> {
             model.addRow(new Object[]{
                 cb.getId(),
                 cb.getNome(),
                 cb.getRazaosocial()
             });
-        }
+        });
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
 

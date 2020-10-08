@@ -5,7 +5,6 @@
  */
 package View.servicos;
 
-import Bean.ServicoMateriaisBean;
 import DAO.ServicoMateriaisDAO;
 import javax.swing.table.DefaultTableModel;
 
@@ -14,6 +13,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class ProcuraItemServicosOrcamento extends javax.swing.JInternalFrame {
+    
+    static ServicoMateriaisDAO smd;
 
     /**
      * Creates new form ProcuraItemServicos
@@ -26,15 +27,16 @@ public class ProcuraItemServicosOrcamento extends javax.swing.JInternalFrame {
     public static void readtable() {
         DefaultTableModel model = (DefaultTableModel) tableitemservico.getModel();
         model.setNumRows(0);
-        ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
-
-        for (ServicoMateriaisBean smb : smd.read()) {
+        
+        smd = new ServicoMateriaisDAO();
+        
+        smd.read().forEach((smb) -> {
             model.addRow(new Object[]{
                 smb.getId(),
                 smb.getCodigo(),
                 smb.getDescricao()
             });
-        }
+        });
     }
 
     /**
@@ -74,6 +76,9 @@ public class ProcuraItemServicosOrcamento extends javax.swing.JInternalFrame {
         jLabel1.setText("Pesquisa");
 
         txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtpesquisaKeyReleased(evt);
             }
@@ -87,7 +92,7 @@ public class ProcuraItemServicosOrcamento extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtpesquisa, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                .addComponent(txtpesquisa)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -96,7 +101,7 @@ public class ProcuraItemServicosOrcamento extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tableitemservico.setModel(new javax.swing.table.DefaultTableModel(
@@ -122,9 +127,9 @@ public class ProcuraItemServicosOrcamento extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tableitemservico);
         if (tableitemservico.getColumnModel().getColumnCount() > 0) {
-            tableitemservico.getColumnModel().getColumn(0).setMinWidth(50);
-            tableitemservico.getColumnModel().getColumn(0).setPreferredWidth(50);
-            tableitemservico.getColumnModel().getColumn(0).setMaxWidth(50);
+            tableitemservico.getColumnModel().getColumn(0).setMinWidth(0);
+            tableitemservico.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableitemservico.getColumnModel().getColumn(0).setMaxWidth(0);
         }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -134,10 +139,8 @@ public class ProcuraItemServicosOrcamento extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 128, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 643, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -176,16 +179,32 @@ public class ProcuraItemServicosOrcamento extends javax.swing.JInternalFrame {
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
         DefaultTableModel model = (DefaultTableModel) tableitemservico.getModel();
         model.setNumRows(0);
-        ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
+        
+        smd = new ServicoMateriaisDAO();
 
-        for (ServicoMateriaisBean smb : smd.pesquisa(txtpesquisa.getText())) {
+        smd.pesquisa(txtpesquisa.getText()).forEach((smb) -> {
             model.addRow(new Object[]{
                 smb.getId(),
                 smb.getCodigo(),
                 smb.getDescricao()
             });
-        }
+        });
     }//GEN-LAST:event_txtpesquisaKeyReleased
+
+    private void txtpesquisaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyPressed
+        DefaultTableModel model = (DefaultTableModel) tableitemservico.getModel();
+        model.setNumRows(0);
+        
+        smd = new ServicoMateriaisDAO();
+
+        smd.pesquisa(txtpesquisa.getText()).forEach((smb) -> {
+            model.addRow(new Object[]{
+                smb.getId(),
+                smb.getCodigo(),
+                smb.getDescricao()
+            });
+        });
+    }//GEN-LAST:event_txtpesquisaKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

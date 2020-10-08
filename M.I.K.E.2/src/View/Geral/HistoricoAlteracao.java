@@ -8,6 +8,7 @@ package View.Geral;
 import View.comercial.*;
 import DAO.AltDAO;
 import Methods.Dates;
+import View.vendas.CotacaoVenda;
 import View.vendas.VendasMateriais;
 import javax.swing.table.DefaultTableModel;
 
@@ -39,7 +40,7 @@ public class HistoricoAlteracao extends javax.swing.JInternalFrame {
         //Verificar origem e mostrar resultado correto.
         switch (origem) {
             case "Fornecedores":
-                ad.read(Fornecedores.id, "Fornecedores").forEach((ab) -> {
+                ad.read(String.valueOf(Fornecedores.id), "Fornecedores").forEach((ab) -> {
                     model.addRow(new Object[]{
                         Dates.TransformarDataCompletaDoDB(ab.getData()),
                         ab.getUser(),
@@ -52,7 +53,18 @@ public class HistoricoAlteracao extends javax.swing.JInternalFrame {
             case "HistDoc":
                 break;
             case "VendasMateriais":
-                ad.read(VendasMateriais.id, "VendasMateriais").forEach(ab -> {
+                ad.read(String.valueOf(VendasMateriais.id), "VendasMateriais").forEach(ab -> {
+                    model.addRow(new Object[]{
+                        Dates.TransformarDataCompletaDoDB(ab.getData()),
+                        ab.getUser(),
+                        ab.getValor(),
+                        ab.getValoranterior(),
+                        ab.getValornovo()
+                    });
+                });
+                break;
+            case "CotacaoVenda":
+                ad.read(CotacaoVenda.txtCotacao.getText(), "CotacaoVenda").forEach(ab -> {
                     model.addRow(new Object[]{
                         Dates.TransformarDataCompletaDoDB(ab.getData()),
                         ab.getUser(),

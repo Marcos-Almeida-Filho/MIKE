@@ -122,7 +122,7 @@ public class VendasCotacaoObsDAO {
             stmt = con.prepareStatement("UPDATE vendas_cotacao_obs SET data = '" + data + "', obs = '" + obs + "' WHERE id = " + id);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            String msg = "Erro ao atualizar item da cotação de venda";
+            String msg = "Erro ao atualizar observação da Cotação de Venda!";
             JOptionPane.showMessageDialog(null, msg);
             SendEmail.EnviarErro2(msg + "\n" + e);
         } finally {

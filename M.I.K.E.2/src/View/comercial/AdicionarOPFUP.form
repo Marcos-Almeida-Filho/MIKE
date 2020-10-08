@@ -232,7 +232,9 @@
             <Component class="javax.swing.JComboBox" name="cbprocesso">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="0"/>
+                  <StringArray count="1">
+                    <StringItem index="0" value="Rascunho"/>
+                  </StringArray>
                 </Property>
                 <Property name="name" type="java.lang.String" value="cbprocesso" noResource="true"/>
               </Properties>

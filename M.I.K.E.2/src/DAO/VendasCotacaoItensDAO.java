@@ -87,6 +87,7 @@ public class VendasCotacaoItensDAO {
             while (rs.next()) {
                 vcib = new VendasCotacaoItensBean();
 
+                vcib.setId(rs.getInt("id"));
                 vcib.setCodigo(rs.getString("codigo"));
                 vcib.setDescricao(rs.getString("descricao"));
                 vcib.setQtd(rs.getDouble("qtd"));
@@ -168,6 +169,27 @@ public class VendasCotacaoItensDAO {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar item da cotação de venda");
             SendEmail.EnviarErro2("Erro ao atualizar item da cotação de venda! - " + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updateDAV(String pedido, int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_cotacao_itens SET dav = '" + pedido + "' WHERE id = " + id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao lançar Pedido do item da cotação de venda";
+            JOptionPane.showMessageDialog(null, msg);
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

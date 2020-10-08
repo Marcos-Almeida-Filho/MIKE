@@ -8,6 +8,7 @@ package View.Geral;
 import View.servicos.*;
 import DAO.CondicaoDePagamentoDAO;
 import View.vendas.CotacaoVenda;
+import View.vendas.PedidoVenda;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -162,7 +163,8 @@ public class ProcurarCondicaoDePagamento extends javax.swing.JInternalFrame {
                 case "CotacaoVenda":
                     CotacaoVenda.txtCondPag.setText(condicao);
                     break;
-                case "VendaPedido":
+                case "PedidoVenda":
+                    PedidoVenda.txtCondPag.setText(condicao);
                     break;
             }
             dispose();

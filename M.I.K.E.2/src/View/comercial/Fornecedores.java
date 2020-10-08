@@ -1135,7 +1135,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                 }
 
                 //Salvar criação do Fornecedor nas alterações
-                ad.create(idcriado, tipo, data, user, "Criação de Registro", "", data);
+                ad.create(String.valueOf(idcriado), tipo, data, user, "Criação de Registro", "", data);
 
                 //Zerar campos
                 zeracampos();
@@ -1253,97 +1253,97 @@ public class Fornecedores extends javax.swing.JInternalFrame {
 
                 //Verificar alterações e salvar caso seja necessário
                 if (!txtnomefornecedor.getText().equals(FornecedoresValoresOriginais.nome)) {
-                    ad.create(id, tipo, data, user, "Nome", FornecedoresValoresOriginais.nome, txtnomefornecedor.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Nome", FornecedoresValoresOriginais.nome, txtnomefornecedor.getText());
                 }
                 if (!txtrazao.getText().equals(FornecedoresValoresOriginais.razao)) {
-                    ad.create(id, tipo, data, user, "Razão Social", FornecedoresValoresOriginais.razao, txtrazao.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Razão Social", FornecedoresValoresOriginais.razao, txtrazao.getText());
                 }
                 if (!txtcnpj.getText().equals(FornecedoresValoresOriginais.cnpj)) {
-                    ad.create(id, tipo, data, user, "CNPJ", FornecedoresValoresOriginais.cnpj, txtcnpj.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "CNPJ", FornecedoresValoresOriginais.cnpj, txtcnpj.getText());
                 }
                 if (!txtie.getText().equals(FornecedoresValoresOriginais.ie)) {
-                    ad.create(id, tipo, data, user, "Inscrição Estadual", FornecedoresValoresOriginais.ie, txtie.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Inscrição Estadual", FornecedoresValoresOriginais.ie, txtie.getText());
                 }
                 if (!txttelefone.getText().equals(FornecedoresValoresOriginais.tel)) {
-                    ad.create(id, tipo, data, user, "Telefone", FornecedoresValoresOriginais.tel, txttelefone.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Telefone", FornecedoresValoresOriginais.tel, txttelefone.getText());
                 }
                 if (!txtnfe.getText().equals(FornecedoresValoresOriginais.nfe)) {
-                    ad.create(id, tipo, data, user, "E-mail de nfe", FornecedoresValoresOriginais.nfe, txtnfe.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "E-mail de nfe", FornecedoresValoresOriginais.nfe, txtnfe.getText());
                 }
                 if (!txtlogradouro.getText().equals(FornecedoresValoresOriginais.rua)) {
-                    ad.create(id, tipo, data, user, "Logradouro", FornecedoresValoresOriginais.rua, txtlogradouro.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Logradouro", FornecedoresValoresOriginais.rua, txtlogradouro.getText());
                 }
                 if (!txtnumero.getText().equals(FornecedoresValoresOriginais.num)) {
-                    ad.create(id, tipo, data, user, "Número", FornecedoresValoresOriginais.num, txtnumero.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Número", FornecedoresValoresOriginais.num, txtnumero.getText());
                 }
                 if (!txtcomplemento.getText().equals(FornecedoresValoresOriginais.comp)) {
-                    ad.create(id, tipo, data, user, "Complemento", FornecedoresValoresOriginais.comp, txtcomplemento.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Complemento", FornecedoresValoresOriginais.comp, txtcomplemento.getText());
                 }
                 if (!txtbairro.getText().equals(FornecedoresValoresOriginais.bairro)) {
-                    ad.create(id, tipo, data, user, "Bairro", FornecedoresValoresOriginais.bairro, txtbairro.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Bairro", FornecedoresValoresOriginais.bairro, txtbairro.getText());
                 }
                 if (!txtcidade.getText().equals(FornecedoresValoresOriginais.cidade)) {
-                    ad.create(id, tipo, data, user, "Cidade", FornecedoresValoresOriginais.cidade, txtcidade.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "Cidade", FornecedoresValoresOriginais.cidade, txtcidade.getText());
                 }
                 if (!cbuf.getSelectedItem().toString().equals(FornecedoresValoresOriginais.uf)) {
-                    ad.create(id, tipo, data, user, "Estado", FornecedoresValoresOriginais.uf, cbuf.getSelectedItem().toString());
+                    ad.create(String.valueOf(id), tipo, data, user, "Estado", FornecedoresValoresOriginais.uf, cbuf.getSelectedItem().toString());
                 }
                 if (!txtcep.getText().equals(FornecedoresValoresOriginais.cep)) {
-                    ad.create(id, tipo, data, user, "CEP", FornecedoresValoresOriginais.cep, txtcep.getText());
+                    ad.create(String.valueOf(id), tipo, data, user, "CEP", FornecedoresValoresOriginais.cep, txtcep.getText());
                 }
                 boolean mpn = (boolean) tabletipo.getValueAt(0, 0);
                 if (mpn != FornecedoresValoresOriginais.mp) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Matéria Prima", String.valueOf(FornecedoresValoresOriginais.mp), String.valueOf(mpn));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Matéria Prima", String.valueOf(FornecedoresValoresOriginais.mp), String.valueOf(mpn));
                 }
                 boolean ferrn = (boolean) tabletipo.getValueAt(1, 0);
                 if (ferrn != FornecedoresValoresOriginais.ferr) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Ferramentas", String.valueOf(FornecedoresValoresOriginais.ferr), String.valueOf(ferrn));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Ferramentas", String.valueOf(FornecedoresValoresOriginais.ferr), String.valueOf(ferrn));
                 }
                 boolean rebolon = (boolean) tabletipo.getValueAt(2, 0);
                 if (rebolon != FornecedoresValoresOriginais.reb) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Rebolo", String.valueOf(FornecedoresValoresOriginais.reb), String.valueOf(rebolon));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Rebolo", String.valueOf(FornecedoresValoresOriginais.reb), String.valueOf(rebolon));
                 }
                 boolean oleon = (boolean) tabletipo.getValueAt(3, 0);
                 if (oleon != FornecedoresValoresOriginais.oleo) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Óleo", String.valueOf(FornecedoresValoresOriginais.oleo), String.valueOf(oleon));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Óleo", String.valueOf(FornecedoresValoresOriginais.oleo), String.valueOf(oleon));
                 }
                 boolean gravn = (boolean) tabletipo.getValueAt(4, 0);
                 if (gravn != FornecedoresValoresOriginais.grav) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Material para Gravação", String.valueOf(FornecedoresValoresOriginais.grav), String.valueOf(gravn));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Material para Gravação", String.valueOf(FornecedoresValoresOriginais.grav), String.valueOf(gravn));
                 }
                 boolean embn = (boolean) tabletipo.getValueAt(5, 0);
                 if (embn != FornecedoresValoresOriginais.emb) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Embalagem", String.valueOf(FornecedoresValoresOriginais.emb), String.valueOf(embn));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Embalagem", String.valueOf(FornecedoresValoresOriginais.emb), String.valueOf(embn));
                 }
                 boolean caln = (boolean) tabletipo.getValueAt(6, 0);
                 if (caln != FornecedoresValoresOriginais.cal) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Calibração", String.valueOf(FornecedoresValoresOriginais.cal), String.valueOf(caln));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Calibração", String.valueOf(FornecedoresValoresOriginais.cal), String.valueOf(caln));
                 }
                 boolean manutencaon = (boolean) tabletipo.getValueAt(7, 0);
                 if (manutencaon != FornecedoresValoresOriginais.man) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Manutenção", String.valueOf(FornecedoresValoresOriginais.man), String.valueOf(manutencaon));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Manutenção", String.valueOf(FornecedoresValoresOriginais.man), String.valueOf(manutencaon));
                 }
                 boolean escritorion = (boolean) tabletipo.getValueAt(8, 0);
                 if (escritorion != FornecedoresValoresOriginais.esc) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Material para Escritório", String.valueOf(FornecedoresValoresOriginais.esc), String.valueOf(escritorion));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Material para Escritório", String.valueOf(FornecedoresValoresOriginais.esc), String.valueOf(escritorion));
                 }
                 boolean limpezan = (boolean) tabletipo.getValueAt(9, 0);
                 if (limpezan != FornecedoresValoresOriginais.lim) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Material de Limpeza", String.valueOf(FornecedoresValoresOriginais.lim), String.valueOf(limpezan));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Material de Limpeza", String.valueOf(FornecedoresValoresOriginais.lim), String.valueOf(limpezan));
                 }
                 boolean revestn = (boolean) tabletipo.getValueAt(10, 0);
                 if (revestn != FornecedoresValoresOriginais.rev) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Revestimento", String.valueOf(FornecedoresValoresOriginais.rev), String.valueOf(revestn));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Revestimento", String.valueOf(FornecedoresValoresOriginais.rev), String.valueOf(revestn));
                 }
                 boolean retn = (boolean) tabletipo.getValueAt(11, 0);
                 if (retn != FornecedoresValoresOriginais.ret) {
-                    ad.create(id, tipo, data, user, "Fornecedor de Retífica", String.valueOf(FornecedoresValoresOriginais.ret), String.valueOf(retn));
+                    ad.create(String.valueOf(id), tipo, data, user, "Fornecedor de Retífica", String.valueOf(FornecedoresValoresOriginais.ret), String.valueOf(retn));
                 }
                 if (tabledocumentos.getRowCount() != FornecedoresValoresOriginais.rcdoc) {
-                    ad.create(id, tipo, data, user, "Número de Documentos", String.valueOf(FornecedoresValoresOriginais.rcdoc), String.valueOf(tabledocumentos.getRowCount()));
+                    ad.create(String.valueOf(id), tipo, data, user, "Número de Documentos", String.valueOf(FornecedoresValoresOriginais.rcdoc), String.valueOf(tabledocumentos.getRowCount()));
                 }
                 if (tablecontatos.getRowCount() != FornecedoresValoresOriginais.rccont) {
-                    ad.create(id, tipo, data, user, "Número de Contatos", String.valueOf(FornecedoresValoresOriginais.rccont), String.valueOf(tablecontatos.getRowCount()));
+                    ad.create(String.valueOf(id), tipo, data, user, "Número de Contatos", String.valueOf(FornecedoresValoresOriginais.rccont), String.valueOf(tablecontatos.getRowCount()));
                 }
                 JOptionPane.showMessageDialog(null, "Fornecedor atualizado com sucesso!");
 

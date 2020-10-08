@@ -85,6 +85,97 @@ public class VendasCotacaoDAO {
         rsList();
 
         try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status <> 'Fechado' AND status <> 'Desativado'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vcb = new VendasCotacaoBean();
+
+                vcb.setId(rs.getInt("id"));
+                vcb.setCotacao(rs.getString("cotacao"));
+                vcb.setCliente(rs.getString("cliente"));
+                vcb.setStatus(rs.getString("status"));
+
+                listvc.add(vcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler cotações abertas.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvc;
+    }
+    
+    public List<VendasCotacaoBean> readCotacoesFechadas() {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status = 'Fechado'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vcb = new VendasCotacaoBean();
+
+                vcb.setId(rs.getInt("id"));
+                vcb.setCotacao(rs.getString("cotacao"));
+                vcb.setCliente(rs.getString("cliente"));
+                vcb.setStatus(rs.getString("status"));
+
+                listvc.add(vcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler cotações fechadas.";
+            JOptionPane.showMessageDialog(null, msg);
+            SendEmail.EnviarErro2(msg + "\n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvc;
+    }
+    
+    public List<VendasCotacaoBean> readCotacoesDesativadas() {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status = 'Desativado'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vcb = new VendasCotacaoBean();
+
+                vcb.setId(rs.getInt("id"));
+                vcb.setCotacao(rs.getString("cotacao"));
+                vcb.setCliente(rs.getString("cliente"));
+                vcb.setStatus(rs.getString("status"));
+
+                listvc.add(vcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler cotações abertas.";
+            JOptionPane.showMessageDialog(null, msg);
+            SendEmail.EnviarErro2(msg + "\n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvc;
+    }
+    
+    public List<VendasCotacaoBean> readCotacoes() {
+        rsList();
+
+        try {
             stmt = con.prepareStatement("SELECT * FROM vendas_cotacao");
             rs = stmt.executeQuery();
 
@@ -145,6 +236,29 @@ public class VendasCotacaoDAO {
         return listvc;
     }
 
+    public String readMotivo(String cotacao) {
+        rsList();
+
+        String motivo = "";
+        
+        try {
+            stmt = con.prepareStatement("SELECT motivo FROM vendas_cotacao WHERE cotacao = '" + cotacao + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                motivo = rs.getString("motivo");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler cotação selecionada.";
+            JOptionPane.showMessageDialog(null, msg);
+            SendEmail.EnviarErro2(msg + "\n" + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return motivo;
+    }
+    
     public Boolean readnome() throws SQLException {
 
         rsList();
@@ -256,6 +370,52 @@ public class VendasCotacaoDAO {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar Cotação de Venda");
             SendEmail.EnviarErro2("Erro ao atualizar Cotação de Venda! - " + e);
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updateStatus(String cotacao, String status) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_cotacao SET status = '" + status + "' WHERE cotacao = '" + cotacao + "'");
+            stmt.executeUpdate();
+
+            CotacaoVenda.cotacaoAtualizada = true;
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da Cotação de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void desativarCotacao(String cotacao, String motivo) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_cotacao SET status = 'Desativado', motivo = '" + motivo + "' WHERE cotacao = '" + cotacao + "'");
+            stmt.executeUpdate();
+
+            CotacaoVenda.cotacaoAtualizada = true;
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da Cotação de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

@@ -51,7 +51,7 @@ public class AltDAO {
     /**
      * Método para criar alterações em qualquer item.
      * 
-     * @param id Int contendo o ID do item
+     * @param id String contendo o ID do item
      * @param tipo String do tipo do item
      * @param data String com data completa invertida para o Banco de Dados
      * @param user String com o nome do usuário fazendo a alteração
@@ -59,12 +59,12 @@ public class AltDAO {
      * @param valoranterior String com o valor original
      * @param valornovo String com o novo valor que foi inserido
      */
-    public void create(int id, String tipo, String data, String user, String valor, String valoranterior, String valornovo) {
+    public void create(String id, String tipo, String data, String user, String valor, String valoranterior, String valornovo) {
 
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO alteracoes (iditem, tipo, data, user, valor, valoranterior, valornovo) VALUES (" + id + ",'" + tipo + "','" + data + "','" + user + "','" + valor + "','" + valoranterior + "','" + valornovo + "')");
+            stmt = con.prepareStatement("INSERT INTO alteracoes (iditem, tipo, data, user, valor, valoranterior, valornovo) VALUES ('" + id + "','" + tipo + "','" + data + "','" + user + "','" + valor + "','" + valoranterior + "','" + valornovo + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -82,17 +82,16 @@ public class AltDAO {
     /**
      * Método para leitura de todas as modificações de qualquer item.
      * 
-     * @param id Int contendo o id do item a ser procuradas as alterações
+     * @param id String contendo o id do item a ser procuradas as alterações
      * @param tipo String com o tipo do item para achar as alterações
      * @return List<> com todas as alterações do item.
      */
-    public List<AltBean> read(int id, String tipo) {
+    public List<AltBean> read(String id, String tipo) {
 
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM alteracoes WHERE iditem = " + id + " AND tipo = '" + tipo + "'");
-
+            stmt = con.prepareStatement("SELECT * FROM alteracoes WHERE iditem = '" + id + "' AND tipo = '" + tipo + "'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

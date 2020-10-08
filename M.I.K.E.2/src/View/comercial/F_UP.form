@@ -177,50 +177,30 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="cbfiltro" alignment="1" pref="216" max="32767" attributes="0"/>
+                          <Component id="cbStatusOP" alignment="1" pref="216" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="cbfiltro" min="-2" max="-2" attributes="0"/>
+                          <Component id="cbStatusOP" min="-2" max="-2" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JComboBox" name="cbfiltro">
+                    <Component class="javax.swing.JComboBox" name="cbStatusOP">
                       <Properties>
                         <Property name="maximumRowCount" type="int" value="10"/>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="23">
+                          <StringArray count="3">
                             <StringItem index="0" value="Em Aberto"/>
                             <StringItem index="1" value="Todos"/>
                             <StringItem index="2" value="Rascunho"/>
-                            <StringItem index="3" value="Separa&#xe7;&#xe3;o de Material"/>
-                            <StringItem index="4" value="Corte"/>
-                            <StringItem index="5" value="Para Canula&#xe7;&#xe3;o"/>
-                            <StringItem index="6" value="Em Canula&#xe7;&#xe3;o"/>
-                            <StringItem index="7" value="Para Ret&#xed;fica"/>
-                            <StringItem index="8" value="Em Ret&#xed;fica"/>
-                            <StringItem index="9" value="Ponta"/>
-                            <StringItem index="10" value="Desbaste"/>
-                            <StringItem index="11" value="Acabamento"/>
-                            <StringItem index="12" value="Canal"/>
-                            <StringItem index="13" value="Ticar"/>
-                            <StringItem index="14" value="CNC"/>
-                            <StringItem index="15" value="Para Revestimento"/>
-                            <StringItem index="16" value="Em Revestimento"/>
-                            <StringItem index="17" value="Terceiros"/>
-                            <StringItem index="18" value="Grava&#xe7;&#xe3;o"/>
-                            <StringItem index="19" value="Inspe&#xe7;&#xe3;o"/>
-                            <StringItem index="20" value="Etiquetagem"/>
-                            <StringItem index="21" value="Faturamento"/>
-                            <StringItem index="22" value="Encerrado"/>
                           </StringArray>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="cbfiltro" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="cbStatusOP" noResource="true"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbfiltroActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbStatusOPActionPerformed"/>
                       </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -442,9 +422,10 @@
                     <Component class="javax.swing.JComboBox" name="cbStatusOS">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="2">
+                          <StringArray count="3">
                             <StringItem index="0" value="Em Aberto"/>
                             <StringItem index="1" value="Todos"/>
+                            <StringItem index="2" value="Rascunho"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="cbStatusOS" noResource="true"/>

@@ -10,6 +10,7 @@ import View.compras.Insumos;
 import View.compras.TiposInsumo;
 import View.financeiro.ContaPagar;
 import View.vendas.CotacaoVenda;
+import View.vendas.PedidoVenda;
 import View.vendas.VM;
 import View.vendas.VendasMateriais;
 import java.awt.event.KeyEvent;
@@ -55,6 +56,9 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                     break;
                 case "CotacaoVenda":
                     Obs.AdicionarObs(CotacaoVenda.tableObs, obs);
+                    break;
+                case "PedidoVenda":
+                    Obs.AdicionarObs(PedidoVenda.tableObs, obs);
                     break;
             }
             dispose();

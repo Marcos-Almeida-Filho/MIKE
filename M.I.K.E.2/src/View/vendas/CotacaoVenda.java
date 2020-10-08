@@ -6,20 +6,32 @@
 package View.vendas;
 
 import Connection.Session;
+import DAO.AltDAO;
 import DAO.VendasCotacaoDAO;
 import DAO.VendasCotacaoDocsDAO;
 import DAO.VendasCotacaoItensDAO;
 import DAO.VendasCotacaoObsDAO;
+import DAO.VendasPedidoDAO;
+import DAO.VendasPedidoItensDAO;
 import Methods.Dates;
+import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
 import View.Geral.AdicionarObs;
+import View.Geral.HistoricoAlteracao;
 import View.Geral.ItemCotacao;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarCondicaoDePagamento;
 import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
+import View.comercial.DocumentosFornecedores;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -35,8 +47,14 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     static VendasCotacaoItensDAO vcid = new VendasCotacaoItensDAO();
     static VendasCotacaoDocsDAO vcdd = new VendasCotacaoDocsDAO();
     static VendasCotacaoObsDAO vcod = new VendasCotacaoObsDAO();
+    static VendasPedidoDAO vpd = new VendasPedidoDAO();
+    static VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
+    static AltDAO ad = new AltDAO();
 
     static public boolean cotacaoAtualizada, cotacaoCriada, itensCriados, docsCriados, obsCriadas;
+
+    public String clienteOriginal, condicaoOriginal, representanteOriginal, vendedorOriginal;
+    public int numDocsOriginal, numObsOriginal, numItensOriginal;
 
     /**
      * Creates new form CotacaoVenda
@@ -44,25 +62,92 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public CotacaoVenda() {
         initComponents();
         status();
-        lerCotacoesAbertas();
+        lerCotacoes();
+        btnMotivo.setVisible(false);
     }
 
-    public static void lerCotacoesAbertas() {
-        DefaultTableModel modelTableCotacoes = (DefaultTableModel) tableCotacoes.getModel();
-        
-        modelTableCotacoes.setNumRows(0);
-        
-        vcd.readCotacoesAbertas().forEach(vcb -> {
-            modelTableCotacoes.addRow(new Object[]{
-                vcb.getId(),
-                false,
-                vcb.getCotacao(),
-                vcb.getCliente(),
-                vcb.getStatus()
-            });
-        });
+    public static void cotacaoDesativada() {
+        if (txtStatus.getText().equals("Desativado")) {
+            txtCliente.setEditable(false);
+            btnProcurarCliente.setEnabled(false);
+            btnCondPag.setEnabled(false);
+            btnRep.setEnabled(false);
+            btnVendedor.setEnabled(false);
+            btnAddObs.setEnabled(false);
+            btnDelObs.setEnabled(false);
+            btnAddDoc.setEnabled(false);
+            btnDelDoc.setEnabled(false);
+            btnAddItem.setEnabled(false);
+            btnDelItem.setEnabled(false);
+            btnAddPedido.setEnabled(false);
+            btnSalvar.setEnabled(false);
+            btnSendCotacao.setEnabled(false);
+            btnMarcarTodos.setEnabled(false);
+            radioCadastrado.setEnabled(false);
+            radioNaoCadastrado.setEnabled(false);
+            tableObs.setEnabled(false);
+            tableDocs.setEnabled(false);
+            tableItens.setEnabled(false);
+        }
     }
-    
+
+    public static void lerCotacoes() {
+        DefaultTableModel modelTableCotacoes = (DefaultTableModel) tableCotacoes.getModel();
+
+        modelTableCotacoes.setNumRows(0);
+
+        if (txtPesquisa.getText().equals("")) {
+            switch (cbStatus.getSelectedItem().toString()) {
+                case "Em Aberto":
+                    vcd.readCotacoesAbertas().forEach(vcb -> {
+                        modelTableCotacoes.addRow(new Object[]{
+                            vcb.getId(),
+                            false,
+                            vcb.getCotacao(),
+                            vcb.getCliente(),
+                            vcb.getStatus()
+                        });
+                    });
+                    break;
+                case "Fechado":
+                    vcd.readCotacoesFechadas().forEach(vcb -> {
+                        modelTableCotacoes.addRow(new Object[]{
+                            vcb.getId(),
+                            false,
+                            vcb.getCotacao(),
+                            vcb.getCliente(),
+                            vcb.getStatus()
+                        });
+                    });
+                    break;
+                case "Desativado":
+                    vcd.readCotacoesDesativadas().forEach(vcb -> {
+                        modelTableCotacoes.addRow(new Object[]{
+                            vcb.getId(),
+                            false,
+                            vcb.getCotacao(),
+                            vcb.getCliente(),
+                            vcb.getStatus()
+                        });
+                    });
+                    break;
+                case "Todos":
+                    vcd.readCotacoes().forEach(vcb -> {
+                        modelTableCotacoes.addRow(new Object[]{
+                            vcb.getId(),
+                            false,
+                            vcb.getCotacao(),
+                            vcb.getCliente(),
+                            vcb.getStatus()
+                        });
+                    });
+                    break;
+            }
+        } else {
+
+        }
+    }
+
     public static void lerCotacao(String cotacao) {
         vcd.readCotacao(cotacao).forEach(vcb -> {
             txtDataAbertura.setText(Dates.TransformarDataCurtaDoDB(vcb.getData_abertura()));
@@ -77,6 +162,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             txtRep.setText(vcb.getRepresentante());
             txtCondPag.setText(vcb.getCondicao());
         });
+
+        if (txtStatus.getText().equals("Desativado")) {
+            btnMotivo.setVisible(true);
+        }
     }
 
     public static void lerItensCotacao(String cotacao) {
@@ -88,6 +177,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         vcid.readItens(cotacao).forEach(vcib -> {
             modelItens.addRow(new Object[]{
                 vcib.getId(),
+                vcib.isCadastrado(),
                 false,
                 vcib.getCodigo(),
                 vcib.getDescricao(),
@@ -100,13 +190,13 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             });
         });
     }
-    
+
     public static void lerDocumentosCotacao(String cotacao) {
         DefaultTableModel tableDocumentos = (DefaultTableModel) tableDocs.getModel();
         tableDocumentos.setNumRows(0);
-        
+
         vcdd = new VendasCotacaoDocsDAO();
-        
+
         vcdd.readDocs(cotacao).forEach(vcdb -> {
             tableDocumentos.addRow(new Object[]{
                 vcdb.getId(),
@@ -117,13 +207,13 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             });
         });
     }
-    
+
     public static void lerObsCotacao(String cotacao) {
         DefaultTableModel tableObservacao = (DefaultTableModel) tableObs.getModel();
         tableObservacao.setNumRows(0);
-        
+
         vcod = new VendasCotacaoObsDAO();
-        
+
         vcod.readObs(cotacao).forEach(vcob -> {
             tableObservacao.addRow(new Object[]{
                 vcob.getId(),
@@ -155,6 +245,34 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         }
     }
 
+    public static void clienteCadastrado() {
+        if (radioCadastrado.isSelected()) {
+            btnProcurarCliente.setEnabled(true);
+            txtCliente.setEditable(false);
+        } else {
+            btnProcurarCliente.setEnabled(false);
+            txtCliente.setEditable(true);
+            txtCliente.requestFocus();
+        }
+    }
+
+    public static void zerarCampos() {
+        txtCotacao.setText("");
+        txtDataAbertura.setText("");
+        txtStatus.setText("");
+        txtCliente.setText("");
+        radioCadastrado.setSelected(true);
+        txtCondPag.setText("");
+        txtVendedor.setText("");
+        txtRep.setText("");
+        DefaultTableModel modelObs = (DefaultTableModel) tableObs.getModel();
+        modelObs.setNumRows(0);
+        DefaultTableModel modelDocs = (DefaultTableModel) tableDocs.getModel();
+        modelDocs.setNumRows(0);
+        DefaultTableModel modelItens = (DefaultTableModel) tableItens.getModel();
+        modelItens.setNumRows(0);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -170,12 +288,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tableCotacoes = new javax.swing.JTable();
-        jButton7 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         txtPesquisa = new javax.swing.JTextField();
         jPanel10 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbStatus = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -189,6 +306,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         radioNaoCadastrado = new javax.swing.JRadioButton();
         jLabel8 = new javax.swing.JLabel();
         txtCotacao = new javax.swing.JTextField();
+        btnMotivo = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -196,31 +314,32 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         txtCondPag = new javax.swing.JTextField();
         txtRep = new javax.swing.JTextField();
         txtVendedor = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnCondPag = new javax.swing.JButton();
+        btnRep = new javax.swing.JButton();
+        btnVendedor = new javax.swing.JButton();
         tabItens = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableObs = new javax.swing.JTable();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        btnAddObs = new javax.swing.JButton();
+        btnDelObs = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableDocs = new javax.swing.JTable();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
+        btnAddDoc = new javax.swing.JButton();
+        btnDelDoc = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableItens = new javax.swing.JTable();
-        jButton12 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
+        btnAddItem = new javax.swing.JButton();
+        btnDelItem = new javax.swing.JButton();
         txtValorTotal = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jButton16 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnMarcarTodos = new javax.swing.JButton();
+        btnAddPedido = new javax.swing.JButton();
+        btnSalvar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnSendCotacao = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
 
         setClosable(true);
@@ -275,11 +394,13 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             tableCotacoes.getColumnModel().getColumn(1).setMaxWidth(35);
         }
 
-        jButton7.setText("Novo Orçamento");
-        jButton7.setName("jButton7"); // NOI18N
-
-        jButton15.setText("Desativar Orçamento");
+        jButton15.setText("Desativar Cotação");
         jButton15.setName("jButton15"); // NOI18N
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
         jPanel9.setName("jPanel9"); // NOI18N
@@ -300,19 +421,24 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
         jPanel10.setName("jPanel10"); // NOI18N
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Fechado", "Desativado", "Todos" }));
-        jComboBox1.setName("jComboBox1"); // NOI18N
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Fechado", "Desativado", "Todos" }));
+        cbStatus.setName("cbStatus"); // NOI18N
+        cbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbStatusActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jComboBox1, 0, 128, Short.MAX_VALUE)
+            .addComponent(cbStatus, 0, 128, Short.MAX_VALUE)
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -323,16 +449,14 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1046, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton15)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton7))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1137, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton15)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -345,9 +469,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton7)
-                    .addComponent(jButton15))
+                .addComponent(jButton15)
                 .addContainerGap())
         );
 
@@ -372,6 +494,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         txtCliente.setName("txtCliente"); // NOI18N
 
         txtStatus.setEditable(false);
+        txtStatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtStatus.setName("txtStatus"); // NOI18N
 
         txtDataAbertura.setEditable(false);
@@ -412,6 +535,14 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         txtCotacao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtCotacao.setName("txtCotacao"); // NOI18N
 
+        btnMotivo.setText("Motivo");
+        btnMotivo.setName("btnMotivo"); // NOI18N
+        btnMotivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMotivoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -425,6 +556,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnMotivo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -450,7 +583,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     .addComponent(jLabel5)
                     .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
-                    .addComponent(txtCotacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCotacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMotivo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radioCadastrado)
@@ -484,27 +618,27 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         txtVendedor.setEditable(false);
         txtVendedor.setName("txtVendedor"); // NOI18N
 
-        jButton4.setText("Procurar");
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnCondPag.setText("Procurar");
+        btnCondPag.setName("btnCondPag"); // NOI18N
+        btnCondPag.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnCondPagActionPerformed(evt);
             }
         });
 
-        jButton5.setText("Procurar");
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnRep.setText("Procurar");
+        btnRep.setName("btnRep"); // NOI18N
+        btnRep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnRepActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Procurar");
-        jButton6.setName("jButton6"); // NOI18N
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnVendedor.setText("Procurar");
+        btnVendedor.setName("btnVendedor"); // NOI18N
+        btnVendedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnVendedorActionPerformed(evt);
             }
         });
 
@@ -521,17 +655,17 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(txtRep, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5))
+                        .addComponent(btnRep))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(txtVendedor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6))))
+                        .addComponent(btnVendedor))))
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtCondPag)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4))
+                .addComponent(btnCondPag))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -539,15 +673,15 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(txtCondPag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
+                    .addComponent(btnCondPag))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtRep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5))
+                    .addComponent(btnRep))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
+                    .addComponent(btnVendedor)
                     .addComponent(txtVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -604,19 +738,19 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             tableObs.getColumnModel().getColumn(3).setMaxWidth(250);
         }
 
-        jButton8.setText("Adicionar Observação");
-        jButton8.setName("jButton8"); // NOI18N
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        btnAddObs.setText("Adicionar Observação");
+        btnAddObs.setName("btnAddObs"); // NOI18N
+        btnAddObs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                btnAddObsActionPerformed(evt);
             }
         });
 
-        jButton9.setText("Excluir Observação");
-        jButton9.setName("jButton9"); // NOI18N
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
+        btnDelObs.setText("Excluir Observação");
+        btnDelObs.setName("btnDelObs"); // NOI18N
+        btnDelObs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
+                btnDelObsActionPerformed(evt);
             }
         });
 
@@ -629,10 +763,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton9)
+                        .addComponent(btnDelObs)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton8))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1034, Short.MAX_VALUE))
+                        .addComponent(btnAddObs))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1125, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -642,8 +776,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton8)
-                    .addComponent(jButton9))
+                    .addComponent(btnAddObs)
+                    .addComponent(btnDelObs))
                 .addContainerGap())
         );
 
@@ -690,19 +824,19 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             tableDocs.getColumnModel().getColumn(4).setMaxWidth(0);
         }
 
-        jButton10.setText("Adicionar Documento");
-        jButton10.setName("jButton10"); // NOI18N
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
+        btnAddDoc.setText("Adicionar Documento");
+        btnAddDoc.setName("btnAddDoc"); // NOI18N
+        btnAddDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+                btnAddDocActionPerformed(evt);
             }
         });
 
-        jButton11.setText("Excluir Documento");
-        jButton11.setName("jButton11"); // NOI18N
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        btnDelDoc.setText("Excluir Documento");
+        btnDelDoc.setName("btnDelDoc"); // NOI18N
+        btnDelDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+                btnDelDocActionPerformed(evt);
             }
         });
 
@@ -715,10 +849,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton11)
+                        .addComponent(btnDelDoc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton10))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1034, Short.MAX_VALUE))
+                        .addComponent(btnAddDoc))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1125, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -728,8 +862,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton10)
-                    .addComponent(jButton11))
+                    .addComponent(btnAddDoc)
+                    .addComponent(btnDelDoc))
                 .addContainerGap())
         );
 
@@ -744,14 +878,14 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Código", "Descrição", "Qtd", "Valor Unitário", "Valor Total", "Prazo de Entrega", "Pedido do Cliente", "DAV"
+                "ID", "Cadastrado", "", "Código", "Descrição", "Qtd", "Valor Unitário", "Valor Total", "Prazo de Entrega", "Pedido do Cliente", "DAV"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, false, false, false, false, false, false
+                false, false, true, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -773,59 +907,71 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             tableItens.getColumnModel().getColumn(0).setMinWidth(0);
             tableItens.getColumnModel().getColumn(0).setPreferredWidth(0);
             tableItens.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableItens.getColumnModel().getColumn(1).setMinWidth(35);
-            tableItens.getColumnModel().getColumn(1).setPreferredWidth(35);
-            tableItens.getColumnModel().getColumn(1).setMaxWidth(35);
-            tableItens.getColumnModel().getColumn(2).setMinWidth(150);
-            tableItens.getColumnModel().getColumn(2).setPreferredWidth(150);
-            tableItens.getColumnModel().getColumn(2).setMaxWidth(150);
-            tableItens.getColumnModel().getColumn(4).setMinWidth(60);
-            tableItens.getColumnModel().getColumn(4).setPreferredWidth(60);
-            tableItens.getColumnModel().getColumn(4).setMaxWidth(60);
-            tableItens.getColumnModel().getColumn(5).setMinWidth(100);
-            tableItens.getColumnModel().getColumn(5).setPreferredWidth(100);
-            tableItens.getColumnModel().getColumn(5).setMaxWidth(100);
+            tableItens.getColumnModel().getColumn(1).setMinWidth(0);
+            tableItens.getColumnModel().getColumn(1).setPreferredWidth(0);
+            tableItens.getColumnModel().getColumn(1).setMaxWidth(0);
+            tableItens.getColumnModel().getColumn(2).setMinWidth(35);
+            tableItens.getColumnModel().getColumn(2).setPreferredWidth(35);
+            tableItens.getColumnModel().getColumn(2).setMaxWidth(35);
+            tableItens.getColumnModel().getColumn(3).setMinWidth(150);
+            tableItens.getColumnModel().getColumn(3).setPreferredWidth(150);
+            tableItens.getColumnModel().getColumn(3).setMaxWidth(150);
+            tableItens.getColumnModel().getColumn(5).setMinWidth(60);
+            tableItens.getColumnModel().getColumn(5).setPreferredWidth(60);
+            tableItens.getColumnModel().getColumn(5).setMaxWidth(60);
             tableItens.getColumnModel().getColumn(6).setMinWidth(100);
             tableItens.getColumnModel().getColumn(6).setPreferredWidth(100);
             tableItens.getColumnModel().getColumn(6).setMaxWidth(100);
-            tableItens.getColumnModel().getColumn(7).setMinWidth(110);
-            tableItens.getColumnModel().getColumn(7).setPreferredWidth(110);
-            tableItens.getColumnModel().getColumn(7).setMaxWidth(110);
+            tableItens.getColumnModel().getColumn(7).setMinWidth(100);
+            tableItens.getColumnModel().getColumn(7).setPreferredWidth(100);
+            tableItens.getColumnModel().getColumn(7).setMaxWidth(100);
             tableItens.getColumnModel().getColumn(8).setMinWidth(110);
             tableItens.getColumnModel().getColumn(8).setPreferredWidth(110);
             tableItens.getColumnModel().getColumn(8).setMaxWidth(110);
-            tableItens.getColumnModel().getColumn(9).setMinWidth(80);
-            tableItens.getColumnModel().getColumn(9).setPreferredWidth(80);
-            tableItens.getColumnModel().getColumn(9).setMaxWidth(80);
+            tableItens.getColumnModel().getColumn(9).setMinWidth(110);
+            tableItens.getColumnModel().getColumn(9).setPreferredWidth(110);
+            tableItens.getColumnModel().getColumn(9).setMaxWidth(110);
+            tableItens.getColumnModel().getColumn(10).setMinWidth(80);
+            tableItens.getColumnModel().getColumn(10).setPreferredWidth(80);
+            tableItens.getColumnModel().getColumn(10).setMaxWidth(80);
         }
 
-        jButton12.setText("Adicionar Item");
-        jButton12.setName("jButton12"); // NOI18N
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
+        btnAddItem.setText("Adicionar Item");
+        btnAddItem.setName("btnAddItem"); // NOI18N
+        btnAddItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
+                btnAddItemActionPerformed(evt);
             }
         });
 
-        jButton13.setText("Excluir Item");
-        jButton13.setName("jButton13"); // NOI18N
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
+        btnDelItem.setText("Excluir Item");
+        btnDelItem.setName("btnDelItem"); // NOI18N
+        btnDelItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
+                btnDelItemActionPerformed(evt);
             }
         });
 
         txtValorTotal.setEditable(false);
+        txtValorTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtValorTotal.setName("txtValorTotal"); // NOI18N
 
         jLabel7.setText("Total: R$");
         jLabel7.setName("jLabel7"); // NOI18N
 
-        jButton16.setText("Marcar Todos");
-        jButton16.setName("jButton16"); // NOI18N
-        jButton16.addActionListener(new java.awt.event.ActionListener() {
+        btnMarcarTodos.setText("Marcar Todos");
+        btnMarcarTodos.setName("btnMarcarTodos"); // NOI18N
+        btnMarcarTodos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton16ActionPerformed(evt);
+                btnMarcarTodosActionPerformed(evt);
+            }
+        });
+
+        btnAddPedido.setText("Criar Pedido de Venda");
+        btnAddPedido.setName("btnAddPedido"); // NOI18N
+        btnAddPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddPedidoActionPerformed(evt);
             }
         });
 
@@ -836,13 +982,15 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1034, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1125, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jButton16)
+                        .addComponent(btnMarcarTodos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton13)
+                        .addComponent(btnAddPedido)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton12)
+                        .addComponent(btnDelItem)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAddItem)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -856,32 +1004,48 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton12)
-                    .addComponent(jButton13)
+                    .addComponent(btnAddItem)
+                    .addComponent(btnDelItem)
                     .addComponent(txtValorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addComponent(jButton16))
+                    .addComponent(btnMarcarTodos)
+                    .addComponent(btnAddPedido))
                 .addContainerGap())
         );
 
         tabItens.addTab("Itens", jPanel8);
 
-        jButton1.setText("Salvar");
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSalvar.setText("Salvar");
+        btnSalvar.setName("btnSalvar"); // NOI18N
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSalvarActionPerformed(evt);
             }
         });
 
         jButton2.setText("Novo");
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Enviar Orçamento");
-        jButton3.setName("jButton3"); // NOI18N
+        btnSendCotacao.setText("Enviar Cotação");
+        btnSendCotacao.setName("btnSendCotacao"); // NOI18N
+        btnSendCotacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendCotacaoActionPerformed(evt);
+            }
+        });
 
         jButton14.setText("Alterações");
         jButton14.setName("jButton14"); // NOI18N
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -894,11 +1058,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3)
+                        .addComponent(btnSendCotacao)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
+                        .addComponent(btnSalvar))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -916,9 +1080,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addComponent(tabItens)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(btnSalvar)
                     .addComponent(jButton2)
-                    .addComponent(jButton3)
+                    .addComponent(btnSendCotacao)
                     .addComponent(jButton14))
                 .addContainerGap())
         );
@@ -950,20 +1114,20 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnCondPagActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCondPagActionPerformed
         ProcurarCondicaoDePagamento pcp = new ProcurarCondicaoDePagamento(this.getClass().getSimpleName());
         Telas.AparecerTela(pcp);
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnCondPagActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void btnRepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRepActionPerformed
         ProcurarRepresentante pr = new ProcurarRepresentante(this.getClass().getSimpleName());
         Telas.AparecerTela(pr);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnRepActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btnVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendedorActionPerformed
         ProcurarVendedor pv = new ProcurarVendedor(this.getClass().getSimpleName());
         Telas.AparecerTela(pv);
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btnVendedorActionPerformed
 
     private void btnProcurarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcurarClienteActionPerformed
         ProcurarCliente pc = new ProcurarCliente(this.getClass().getSimpleName());
@@ -971,21 +1135,20 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnProcurarClienteActionPerformed
 
     private void radioCadastradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioCadastradoActionPerformed
-        btnProcurarCliente.setEnabled(true);
-        txtCliente.setEditable(false);
+        clienteCadastrado();
+        txtCliente.setText("");
     }//GEN-LAST:event_radioCadastradoActionPerformed
 
     private void radioNaoCadastradoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioNaoCadastradoActionPerformed
-        btnProcurarCliente.setEnabled(false);
-        txtCliente.setEditable(true);
-        txtCliente.requestFocus();
+        clienteCadastrado();
+        txtCliente.setText("");
     }//GEN-LAST:event_radioNaoCadastradoActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+    private void btnAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddItemActionPerformed
         ItemCotacao ic = new ItemCotacao(this.getClass().getSimpleName());
         ic.setTitle("Item Cotação de Venda");
         Telas.AparecerTela(ic);
-    }//GEN-LAST:event_jButton12ActionPerformed
+    }//GEN-LAST:event_btnAddItemActionPerformed
 
     private void tableItensMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItensMouseClicked
         int row = tableItens.getSelectedRow();
@@ -1013,7 +1176,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableItensMouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         if (txtCliente.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Nenhum cliente selecionado.");
         } else if (txtVendedor.getText().equals("")) {
@@ -1030,14 +1193,38 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
             txtCotacao.setText(cotacao);
             txtStatus.setText("Ativo");
-            
+
             //Criar itens da cotação
             for (int i = 0; i < tableItens.getRowCount(); i++) {
-                vcid.create(cotacao, tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), radioCadastrado.isSelected());
+                vcid.create(cotacao, tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
             }
 
             //Criar documentos da cotação
             for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                //Localicação do documento original
+                File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                //Pasta que será colocar o documento
+                File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
+                //Documento copiado do original
+                File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                //Criar pasta no caso de já não existir
+                folder.mkdirs();
+                try {
+                    //Criar o documento copiado na pasta
+                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                } catch (IOException ex) {
+                    Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(ex.toString());
+                        }
+                    }.start();
+                }
+
                 vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
             }
 
@@ -1062,9 +1249,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             //Criar itens da cotação que não existiam
             for (int i = 0; i < tableItens.getRowCount(); i++) {
                 if (tableItens.getValueAt(i, 0).equals("")) {
-                    vcid.create(cotacao, tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), radioCadastrado.isSelected());
+                    vcid.create(cotacao, tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
                 } else {
-                    vcid.update(tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 4).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), tableItens.getValueAt(i, 7).toString(), radioCadastrado.isSelected(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                    vcid.update(tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 7).toString())), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
                 }
             }
 
@@ -1082,15 +1269,38 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 }
             }
 
-            if (cotacaoAtualizada && itensCriados && docsCriados && obsCriadas) {
-                JOptionPane.showMessageDialog(null, "Cotação atualizada com sucesso!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Ops...algo deu errado. Favor entrar em contato com suporte.");
+            status();
+
+            //Verificar alterações
+            String id = txtCotacao.getText();
+            String tipo = this.getClass().getSimpleName();
+            String data = Dates.CriarDataCompletaParaDB();
+            String user = Session.nome;
+            if (!txtCliente.getText().equals(clienteOriginal)) {
+                ad.create(id, tipo, data, user, "Cliente", clienteOriginal, txtCliente.getText());
+            }
+            if (!txtCondPag.getText().equals(condicaoOriginal)) {
+                ad.create(id, tipo, data, user, "Condição de Pagamento", condicaoOriginal, txtCondPag.getText());
+            }
+            if (!txtRep.getText().equals(representanteOriginal)) {
+                ad.create(id, tipo, data, user, "Representante", representanteOriginal, txtRep.getText());
+            }
+            if (!txtVendedor.getText().equals(condicaoOriginal)) {
+                ad.create(id, tipo, data, user, "Vendedor", vendedorOriginal, txtVendedor.getText());
+            }
+            if (numDocsOriginal != tableDocs.getRowCount()) {
+                ad.create(id, tipo, data, user, "Número de Documentos", String.valueOf(numDocsOriginal), String.valueOf(tableDocs.getRowCount()));
+            }
+            if (numObsOriginal != tableObs.getRowCount()) {
+                ad.create(id, tipo, data, user, "Número de Observações", String.valueOf(numObsOriginal), String.valueOf(tableObs.getRowCount()));
+            }
+            if (numItensOriginal != tableItens.getRowCount()) {
+                ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
             }
 
-            status();
+            lerCotacoes();
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void tableCotacoesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCotacoesMouseClicked
         if (evt.getClickCount() == 2) {
@@ -1101,7 +1311,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             txtCotacao.setText(tableCotacoes.getValueAt(tableCotacoes.getSelectedRow(), 2).toString());
 
             String cotacao = txtCotacao.getText();
-            
+
             //Pegar dados da Cotação no DB
             lerCotacao(cotacao);
 
@@ -1110,36 +1320,54 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
             //Pegar Documentos da Cotação no DB
             lerDocumentosCotacao(cotacao);
-            
+
             //Pegar Observações da Cotação no DB
             lerObsCotacao(cotacao);
-            
+
             txtTotal();
+
+            clienteCadastrado();
+
+            cotacaoDesativada();
+
+            clienteOriginal = txtCliente.getText();
+            condicaoOriginal = txtCondPag.getText();
+            representanteOriginal = txtRep.getText();
+            vendedorOriginal = txtVendedor.getText();
+            numObsOriginal = tableObs.getRowCount();
+            numDocsOriginal = tableDocs.getRowCount();
+            numItensOriginal = tableItens.getRowCount();
         }
     }//GEN-LAST:event_tableCotacoesMouseClicked
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void btnAddObsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddObsActionPerformed
         AdicionarObs ao = new AdicionarObs(this.getClass().getSimpleName());
         Telas.AparecerTela(ao);
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_btnAddObsActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    private void btnDelObsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelObsActionPerformed
         int numTrue = 0;
         for (int i = 0; i < tableObs.getRowCount(); i++) {
             if (tableObs.getValueAt(i, 1).equals(true)) {
                 numTrue++;
             }
-            if (numTrue == 0) {
-                JOptionPane.showMessageDialog(null, "Nenhuma observação selecionada.");
-            } else {
+        }
 
-                int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir a observação selecionada?", "Excluir observação", JOptionPane.YES_NO_OPTION);
-                if (resp == 0) {
-                    vcod.delete(Integer.parseInt(tableObs.getValueAt(i, 0).toString()));
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma observação selecionada.");
+        } else {
+
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir a observação selecionada?", "Excluir observação", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                for (int i = 0; i < tableObs.getRowCount(); i++) {
+                    if (tableObs.getValueAt(i, 1).equals(true)) {
+                        vcod.delete(Integer.parseInt(tableObs.getValueAt(i, 0).toString()));
+                    }
                 }
+                lerObsCotacao(txtCotacao.getText());
             }
         }
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }//GEN-LAST:event_btnDelObsActionPerformed
 
     private void tableObsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableObsMouseClicked
         if (tableObs.getSelectedColumn() == 1) {
@@ -1151,12 +1379,12 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableObsMouseClicked
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+    private void btnAddDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDocActionPerformed
         ProcurarDocumento pd = new ProcurarDocumento(this.getClass().getSimpleName());
         Telas.AparecerTela(pd);
-    }//GEN-LAST:event_jButton10ActionPerformed
+    }//GEN-LAST:event_btnAddDocActionPerformed
 
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+    private void btnDelItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelItemActionPerformed
         int numTrue = 0;
         for (int i = 0; i < tableItens.getRowCount(); i++) {
             if (tableItens.getValueAt(i, 1).equals(true)) {
@@ -1168,17 +1396,21 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir o(s) item(ns) selecionado(s)?", "Excluir Item", JOptionPane.YES_NO_OPTION);
-            for (int i = 0; i < tableItens.getRowCount(); i++) {
-                if (resp == 0) {
+            if (resp == 0) {
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
                     if (tableItens.getValueAt(i, 1).equals(true)) {
-                        vcid.delete(Integer.parseInt(tableObs.getValueAt(i, 0).toString()));
+                        vcid.delete(Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
                     }
                 }
+                //Pegar itens da Cotação no DB
+                lerItensCotacao(txtCotacao.getText());
+
+                txtTotal();
             }
         }
-    }//GEN-LAST:event_jButton13ActionPerformed
+    }//GEN-LAST:event_btnDelItemActionPerformed
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+    private void btnDelDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelDocActionPerformed
         int numTrue = 0;
         for (int i = 0; i < tableDocs.getRowCount(); i++) {
             if (tableDocs.getValueAt(i, 1).equals(true)) {
@@ -1190,51 +1422,178 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir o(s) item(ns) selecionado(s)?", "Excluir Item", JOptionPane.YES_NO_OPTION);
-            for (int i = 0; i < tableItens.getRowCount(); i++) {
-                if (resp == 0) {
-                    if (tableItens.getValueAt(i, 1).equals(true)) {
-                        vcdd.delete(Integer.parseInt(tableObs.getValueAt(i, 0).toString()), tableObs.getValueAt(i, 3).toString());
+            if (resp == 0) {
+                for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                    if (tableDocs.getValueAt(i, 1).equals(true)) {
+                        vcdd.delete(Integer.parseInt(tableDocs.getValueAt(i, 0).toString()), tableDocs.getValueAt(i, 3).toString());
                     }
                 }
+                //Pegar Observações da Cotação no DB
+                lerDocumentosCotacao(txtCotacao.getText());
             }
         }
-    }//GEN-LAST:event_jButton11ActionPerformed
+    }//GEN-LAST:event_btnDelDocActionPerformed
 
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        if (jButton16.getText().equals("Marcar Todos")) {
+    private void btnMarcarTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarcarTodosActionPerformed
+        if (btnMarcarTodos.getText().equals("Marcar Todos")) {
             for (int i = 0; i < tableItens.getRowCount(); i++) {
                 tableItens.setValueAt(true, i, 1);
             }
-            jButton16.setText("Desmarcar Todos");
+            btnMarcarTodos.setText("Desmarcar Todos");
         } else {
             for (int i = 0; i < tableItens.getRowCount(); i++) {
                 tableItens.setValueAt(false, i, 1);
             }
-            jButton16.setText("Marcar Todos");
+            btnMarcarTodos.setText("Marcar Todos");
         }
-    }//GEN-LAST:event_jButton16ActionPerformed
+    }//GEN-LAST:event_btnMarcarTodosActionPerformed
+
+    private void btnSendCotacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendCotacaoActionPerformed
+        JOptionPane.showMessageDialog(null, "Em Breve!");
+    }//GEN-LAST:event_btnSendCotacaoActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        if (txtCotacao.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione ou salve uma cotação primeiro.");
+        } else {
+            HistoricoAlteracao ha = new HistoricoAlteracao(this.getClass().getSimpleName());
+            Telas.AparecerTela(ha);
+        }
+    }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void btnAddPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPedidoActionPerformed
+        int numTrue = 0, numNaoCadastrado = 0;
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            if (tableItens.getValueAt(i, 2).equals(true)) {
+                numTrue++;
+                if (tableItens.getValueAt(i, 1).equals(false)) {
+                    numNaoCadastrado++;
+                }
+            }
+        }
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
+        } else if (radioNaoCadastrado.isSelected()) {
+            JOptionPane.showMessageDialog(null, "Não é possível criar pedidos de clientes não cadastrados.");
+        } else if (numNaoCadastrado > 0) {
+            JOptionPane.showMessageDialog(null, "Não é possível criar pedidos com produtos não cadastrados.");
+        } else if (!txtCliente.getText().equals(clienteOriginal) || !txtCondPag.getText().equals(condicaoOriginal) || !txtRep.getText().equals(representanteOriginal) || !txtVendedor.getText().equals(vendedorOriginal) || numDocsOriginal != tableDocs.getRowCount() || numObsOriginal != tableObs.getRowCount() || numItensOriginal != tableItens.getRowCount()) {
+            JOptionPane.showMessageDialog(null, "Salve a cotação para que as alterações entrem em vigor primeiro.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja criar um pedido com os itens selecionados?", "Criar Pedido", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                String dav = vpd.pedidoAtual();
+                vpd.create(dav, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+                    if (tableItens.getValueAt(i, 1).equals(true)) {
+                        vcid.updateDAV(dav, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+
+                        vpid.create(dav, tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), "", "");
+                    }
+                }
+            }
+            String cotacao = txtCotacao.getText();
+            if (numTrue == tableItens.getRowCount()) {
+                vcd.updateStatus(cotacao, "Fechado");
+            } else {
+                vcd.updateStatus(cotacao, "Parcialmente Fechado");
+            }
+
+            lerCotacao(cotacao);
+            lerItensCotacao(cotacao);
+        }
+    }//GEN-LAST:event_btnAddPedidoActionPerformed
+
+    private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
+        lerCotacoes();
+    }//GEN-LAST:event_cbStatusActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        zerarCampos();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        int numTrue = 0, desativados = 0;
+        for (int i = 0; i < tableCotacoes.getRowCount(); i++) {
+            if (tableCotacoes.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+            if (tableCotacoes.getValueAt(i, 4).equals("Desativado")) {
+                desativados++;
+            }
+        }
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma Cotação selecionada.");
+        } else if (desativados > 0) {
+            JOptionPane.showMessageDialog(null, "Cotações desativadas selecionadas.");
+        } else {
+            String tipo = this.getClass().getSimpleName();
+            String data = Dates.CriarDataCompletaParaDB();
+            String user = Session.nome;
+            if (numTrue == 1) {
+                int resp = JOptionPane.showConfirmDialog(null, "Quer mesmo desativar a Cotação de Venda selecionada?", "Desativar Cotação", JOptionPane.YES_NO_OPTION);
+                if (resp == 0) {
+                    for (int i = 0; i < tableCotacoes.getRowCount(); i++) {
+                        if (tableCotacoes.getValueAt(i, 1).equals(true)) {
+                            String id = tableCotacoes.getValueAt(i, 2).toString();
+                            String motivo = JOptionPane.showInputDialog(null, "Qual o motivo para a desativação da Cotação " + id + "?", "Motivo", JOptionPane.YES_NO_OPTION);
+                            if (motivo.length() > 0) {
+                                vcd.desativarCotacao(tableCotacoes.getValueAt(i, 2).toString(), motivo);
+                                ad.create(id, tipo, data, user, "Status", tableCotacoes.getValueAt(i, 4).toString(), "Desativado");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Sem motivo digitado.");
+                            }
+                        }
+                    }
+                }
+            } else {
+                int resp = JOptionPane.showConfirmDialog(null, "Quer mesmo desativar as Cotações de Venda selecionadas?", "Desativar Cotações", JOptionPane.YES_NO_OPTION);
+                if (resp == 0) {
+                    for (int i = 0; i < tableCotacoes.getRowCount(); i++) {
+                        if (tableCotacoes.getValueAt(i, 1).equals(true)) {
+                            String id = tableCotacoes.getValueAt(i, 2).toString();
+                            String motivo = JOptionPane.showInputDialog(null, "Qual o motivo para a desativação da Cotação " + id + "?", "Motivo", JOptionPane.YES_NO_OPTION);
+                            if (motivo.length() > 0) {
+                                vcd.desativarCotacao(tableCotacoes.getValueAt(i, 2).toString(), motivo);
+                                ad.create(id, tipo, data, user, "Status", tableCotacoes.getValueAt(i, 4).toString(), "Desativado");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Sem motivo digitado.");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        lerCotacoes();
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void btnMotivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMotivoActionPerformed
+        JOptionPane.showMessageDialog(null, vcd.readMotivo(txtCotacao.getText()));
+    }//GEN-LAST:event_btnMotivoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton btnProcurarCliente;
+    public static javax.swing.JButton btnAddDoc;
+    public static javax.swing.JButton btnAddItem;
+    public static javax.swing.JButton btnAddObs;
+    public static javax.swing.JButton btnAddPedido;
+    public static javax.swing.JButton btnCondPag;
+    public static javax.swing.JButton btnDelDoc;
+    public static javax.swing.JButton btnDelItem;
+    public static javax.swing.JButton btnDelObs;
+    public static javax.swing.JButton btnMarcarTodos;
+    public static javax.swing.JButton btnMotivo;
+    public static javax.swing.JButton btnProcurarCliente;
+    public static javax.swing.JButton btnRep;
+    public static javax.swing.JButton btnSalvar;
+    public static javax.swing.JButton btnSendCotacao;
+    public static javax.swing.JButton btnVendedor;
     public javax.swing.ButtonGroup buttonGroup1;
-    public javax.swing.JButton jButton1;
-    public javax.swing.JButton jButton10;
-    public javax.swing.JButton jButton11;
-    public javax.swing.JButton jButton12;
-    public javax.swing.JButton jButton13;
+    public static javax.swing.JComboBox<String> cbStatus;
     public javax.swing.JButton jButton14;
     public javax.swing.JButton jButton15;
-    public javax.swing.JButton jButton16;
     public javax.swing.JButton jButton2;
-    public javax.swing.JButton jButton3;
-    public javax.swing.JButton jButton4;
-    public javax.swing.JButton jButton5;
-    public javax.swing.JButton jButton6;
-    public javax.swing.JButton jButton7;
-    public javax.swing.JButton jButton8;
-    public javax.swing.JButton jButton9;
-    public javax.swing.JComboBox<String> jComboBox1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -1269,7 +1628,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtCondPag;
     public static javax.swing.JTextField txtCotacao;
     public static javax.swing.JTextField txtDataAbertura;
-    public javax.swing.JTextField txtPesquisa;
+    public static javax.swing.JTextField txtPesquisa;
     public static javax.swing.JTextField txtRep;
     public static javax.swing.JTextField txtStatus;
     public static javax.swing.JTextField txtValorTotal;

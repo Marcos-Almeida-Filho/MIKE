@@ -326,7 +326,7 @@ public class ServicoMateriaisDAO {
         List<ServicoMateriaisBean> listub = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM servicos_materiais WHERE id LIKE '%" + pesquisa + "%' OR codigo LIKE '%" + pesquisa + "%' OR descricao LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM servicos_materiais WHERE codigo LIKE '%" + pesquisa + "%' OR descricao LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

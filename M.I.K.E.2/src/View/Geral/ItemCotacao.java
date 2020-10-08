@@ -313,6 +313,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                         DefaultTableModel modelVenda = (DefaultTableModel) CotacaoVenda.tableItens.getModel();
                         modelVenda.addRow(new Object[]{
                             "",
+                            radioCadastrado.isSelected(),
                             false,
                             txtcodigo.getText(),
                             txtdesc.getText(),

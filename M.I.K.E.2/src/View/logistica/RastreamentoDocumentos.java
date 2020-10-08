@@ -1402,15 +1402,19 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
             //aprovacaouser = ?, aprovacaodata = ? WHERE iddoc = ?
             rdd.createaprovacao(rdb);
 
-            JOptionPane.showMessageDialog(null, "Aprovado com sucesso!");
+            JOptionPane.showMessageDialog(null, "Aprovado com sucesso!\nEnviando e-mail para o financeiro.");
 
             readdocumentosdodocumento();
             readhist();
             readtabledocumentos();
 
-            JOptionPane.showMessageDialog(null, "Enviando e-mail para o financeiro.");
+            new Thread() {
 
-            SendEmail.EnviarAviso("financeiro@speedcut.com.br, alexandre.almeida@speedcut.com.br", "Documento aprovado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi aprovado e necessita de lançamento no CAP.");
+                @Override
+                public void run() {
+                    SendEmail.EnviarAviso("financeiro@speedcut.com.br, alexandre.almeida@speedcut.com.br, samuel.almeida@speedcut.com.br", "Documento aprovado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi aprovado e necessita de lançamento no CAP.");
+                }
+            }.start();
         }
     }//GEN-LAST:event_btnaprovarActionPerformed
 

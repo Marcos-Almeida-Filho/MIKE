@@ -24,7 +24,6 @@ import javax.activation.FileDataSource;
 import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.swing.JOptionPane;
 
 /*
  * @author Marcos Filho
@@ -112,10 +111,7 @@ public class SendEmail {
              * Método para enviar a mensagem criada*
              */
             Transport.send(message);
-
-            JOptionPane.showMessageDialog(null, "E-mail enviado com sucesso!");
         } catch (MessagingException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao enviar e-mail.\n" + e);
             throw new RuntimeException(e);
         }
     }
@@ -195,7 +191,7 @@ public class SendEmail {
     }
 
     public static void EnviarErro2(String erro) {
-        JOptionPane.showMessageDialog(null,"Enviando e-mail para suporte.");
+//        JOptionPane.showMessageDialog(null,"Enviando e-mail para suporte.");
 //        SplashScreen ss = new SplashScreen(3000);
 //        ss.showSplash();
         
@@ -267,7 +263,7 @@ public class SendEmail {
             Transport.send(message);
 
 //            ss.dispose();
-            JOptionPane.showMessageDialog(null,"E-mail enviado com sucesso para suporte.");
+//            JOptionPane.showMessageDialog(null,"E-mail enviado com sucesso para suporte.");
             temp.delete();
         } catch (MessagingException e) {
             throw new RuntimeException(e);
