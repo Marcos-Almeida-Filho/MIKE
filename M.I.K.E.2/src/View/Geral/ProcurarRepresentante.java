@@ -34,12 +34,22 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
 
         RepresentantesDAO rd = new RepresentantesDAO();
 
-        rd.read().forEach((rb) -> {
-            model.addRow(new Object[]{
-                rb.getId(),
-                rb.getNome()
+        if (txtPesquisa.getText().equals("")) {
+            rd.read().forEach((rb) -> {
+                model.addRow(new Object[]{
+                    rb.getId(),
+                    rb.getNome()
+                });
             });
-        });
+        } else {
+            rd.pesquisa(txtPesquisa.getText()).forEach((rb) -> {
+                model.addRow(new Object[]{
+                    rb.getId(),
+                    rb.getNome()
+                });
+            });
+        }
+
     }
 
     /**
@@ -56,7 +66,7 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
         tablerepresentante = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtPesquisa = new javax.swing.JTextField();
 
         setClosable(true);
         setTitle("Procurar Representante");
@@ -96,6 +106,12 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
 
         jLabel1.setText("Pesquisa");
 
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -104,7 +120,7 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1)
+                .addComponent(txtPesquisa)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -113,7 +129,7 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -173,13 +189,17 @@ public class ProcurarRepresentante extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tablerepresentanteMouseClicked
 
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        filltablerepresentante();
+    }//GEN-LAST:event_txtPesquisaKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    public static javax.swing.JTextField jTextField1;
     public static javax.swing.JTable tablerepresentante;
+    public static javax.swing.JTextField txtPesquisa;
     // End of variables declaration//GEN-END:variables
 }

@@ -7,7 +7,6 @@ package View.Geral;
 
 import DAO.VendasPedidoItensDAO;
 import Methods.Telas;
-import View.vendas.CotacaoVenda;
 import View.vendas.PedidoVenda;
 import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
@@ -234,7 +233,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
 
                 switch (origin) {
                     case "PedidoVenda":
-                        DefaultTableModel modelVenda = (DefaultTableModel) CotacaoVenda.tableItens.getModel();
+                        DefaultTableModel modelVenda = (DefaultTableModel) PedidoVenda.tableItens.getModel();
                         modelVenda.addRow(new Object[]{
                             "",
                             false,
@@ -244,6 +243,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                             txtvalor.getText(),
                             totf,
                             txtprazo.getText() + " dias",
+                            txtpedido.getText(),
                             "",
                             ""
                         });
@@ -253,15 +253,17 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                 dispose();
             }
         } else {
-            int qtd = Integer.parseInt(txtqtd.getText());
+            double qtd = Double.parseDouble(txtqtd.getText().replace(",","."));
             String v = txtvalor.getText().replace(".", "");
-            float valor = Float.parseFloat(v.replace(",", "."));
-            float tot = qtd * valor;
+            double valor = Double.parseDouble(v.replace(",", "."));
+            double tot = qtd * valor;
             String nprazo = txtprazo.getText().replace(" dias", "");
 
             switch (origin) {
                 case "PedidoVenda":
-                    vpid.update(txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo, txtpedido.getText(), idItemCotacao);
+                    vpid.update(txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo + " dias", txtpedido.getText(), idItemCotacao);
+                    PedidoVenda.lerItensPedido(PedidoVenda.txtPedido.getText());
+                    PedidoVenda.txtTotal();
                     break;
             }
 

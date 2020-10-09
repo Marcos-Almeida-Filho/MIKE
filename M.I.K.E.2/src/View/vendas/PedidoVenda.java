@@ -58,24 +58,78 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     public PedidoVenda() {
         initComponents();
         status();
-        lerCotacoesAbertas();
+        lerPedidosAbertos();
         pedidoDesativado();
     }
 
-    public static void lerCotacoesAbertas() {
-        DefaultTableModel modelTableCotacoes = (DefaultTableModel) tablePedidos.getModel();
+    public static void lerPedidosAbertos() {
+        DefaultTableModel modelTablePedidos = (DefaultTableModel) tablePedidos.getModel();
 
-        modelTableCotacoes.setNumRows(0);
+        modelTablePedidos.setNumRows(0);
 
-        vpd.readPedidosAbertos().forEach(vpb -> {
-            modelTableCotacoes.addRow(new Object[]{
-                vpb.getId(),
-                false,
-                vpb.getPedido(),
-                vpb.getCliente(),
-                vpb.getStatus()
-            });
-        });
+        String status = cbStatus.getSelectedItem().toString();
+
+        if (txtPesquisa.getText().equals("")) {
+            switch (status) {
+                case "Em Aberto":
+                    vpd.readPedidosAbertos().forEach(vpb -> {
+                        modelTablePedidos.addRow(new Object[]{
+                            vpb.getId(),
+                            false,
+                            vpb.getPedido(),
+                            vpb.getCliente(),
+                            vpb.getStatus()
+                        });
+                    });
+                    break;
+                case "Parcialmente Faturado":
+                    vpd.readPedidosStatus(status).forEach(vpb -> {
+                        modelTablePedidos.addRow(new Object[]{
+                            vpb.getId(),
+                            false,
+                            vpb.getPedido(),
+                            vpb.getCliente(),
+                            vpb.getStatus()
+                        });
+                    });
+                    break;
+                case "Desativado":
+                    vpd.readPedidosStatus(status).forEach(vpb -> {
+                        modelTablePedidos.addRow(new Object[]{
+                            vpb.getId(),
+                            false,
+                            vpb.getPedido(),
+                            vpb.getCliente(),
+                            vpb.getStatus()
+                        });
+                    });
+                    break;
+                case "Fechado":
+                    vpd.readPedidosStatus(status).forEach(vpb -> {
+                        modelTablePedidos.addRow(new Object[]{
+                            vpb.getId(),
+                            false,
+                            vpb.getPedido(),
+                            vpb.getCliente(),
+                            vpb.getStatus()
+                        });
+                    });
+                    break;
+                case "Todos":
+                    vpd.readPedidos().forEach(vpb -> {
+                        modelTablePedidos.addRow(new Object[]{
+                            vpb.getId(),
+                            false,
+                            vpb.getPedido(),
+                            vpb.getCliente(),
+                            vpb.getStatus()
+                        });
+                    });
+                    break;
+            }
+        } else {
+
+        }
     }
 
     public static void lerPedido(String pedido) {
@@ -240,7 +294,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jPanel9 = new javax.swing.JPanel();
         txtPesquisa = new javax.swing.JTextField();
         jPanel10 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbStatus = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -290,7 +344,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jButton14 = new javax.swing.JButton();
 
         setClosable(true);
-        setTitle("Cotações de Venda");
+        setTitle("Pedidos de Venda");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
@@ -353,6 +407,11 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jPanel9.setName("jPanel9"); // NOI18N
 
         txtPesquisa.setName("txtPesquisa"); // NOI18N
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -368,19 +427,24 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
         jPanel10.setName("jPanel10"); // NOI18N
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Fechado", "Desativado", "Todos" }));
-        jComboBox1.setName("jComboBox1"); // NOI18N
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Parcialmente Faturado", "Fechado", "Desativado", "Todos" }));
+        cbStatus.setName("cbStatus"); // NOI18N
+        cbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbStatusActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jComboBox1, 0, 128, Short.MAX_VALUE)
+            .addComponent(cbStatus, 0, 128, Short.MAX_VALUE)
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1108,7 +1172,6 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             vpd.create(pedido, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
             txtPedido.setText(pedido);
-            txtStatus.setText("Ativo");
 
             //Criar itens do Pedido
             for (int i = 0; i < tableItens.getRowCount(); i++) {
@@ -1214,8 +1277,9 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                 ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
             }
 
-            lerCotacoesAbertas();
+            lerPedidosAbertos();
         }
+        lerPedido(txtPedido.getText());
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void tablePedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePedidosMouseClicked
@@ -1476,6 +1540,14 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnNFActionPerformed
 
+    private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
+        lerPedidosAbertos();
+    }//GEN-LAST:event_cbStatusActionPerformed
+
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        lerPedidosAbertos();
+    }//GEN-LAST:event_txtPesquisaKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddDoc;
@@ -1495,10 +1567,10 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     public static javax.swing.JButton btnSendPedido;
     public static javax.swing.JButton btnVendedor;
     public javax.swing.ButtonGroup buttonGroup1;
+    public static javax.swing.JComboBox<String> cbStatus;
     public javax.swing.JButton jButton14;
     public javax.swing.JButton jButton15;
     public javax.swing.JButton jButton2;
-    public javax.swing.JComboBox<String> jComboBox1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -1531,7 +1603,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtCondPag;
     public static javax.swing.JTextField txtDataAbertura;
     public static javax.swing.JTextField txtPedido;
-    public javax.swing.JTextField txtPesquisa;
+    public static javax.swing.JTextField txtPesquisa;
     public static javax.swing.JTextField txtRep;
     public static javax.swing.JTextField txtStatus;
     public static javax.swing.JTextField txtValorTotal;

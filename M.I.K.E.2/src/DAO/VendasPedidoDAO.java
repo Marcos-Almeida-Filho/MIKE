@@ -80,12 +80,80 @@ public class VendasPedidoDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    public List<VendasPedidoBean> readPedidos() {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vpb = new VendasPedidoBean();
+
+                vpb.setId(rs.getInt("id"));
+                vpb.setPedido(rs.getString("pedido"));
+                vpb.setCliente(rs.getString("cliente"));
+                vpb.setStatus(rs.getString("status"));
+
+                listvp.add(vpb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Pedidos abertos.";
+            JOptionPane.showMessageDialog(null, msg);
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvp;
+    }
 
     public List<VendasPedidoBean> readPedidosAbertos() {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_pedido");
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status <> 'Fechado' AND status <> 'Desativado'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vpb = new VendasPedidoBean();
+
+                vpb.setId(rs.getInt("id"));
+                vpb.setPedido(rs.getString("pedido"));
+                vpb.setCliente(rs.getString("cliente"));
+                vpb.setStatus(rs.getString("status"));
+
+                listvp.add(vpb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Pedidos abertos.";
+            JOptionPane.showMessageDialog(null, msg);
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvp;
+    }
+    
+    public List<VendasPedidoBean> readPedidosStatus(String status) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status = '" + status + "'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
