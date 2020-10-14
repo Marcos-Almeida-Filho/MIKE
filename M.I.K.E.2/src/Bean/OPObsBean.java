@@ -14,7 +14,7 @@ public class OPObsBean {
     private int id;
     private int idop;
     private String data;
-    private String funcionario;
+    private String usuario;
     private String obs;
 
     public int getId() {
@@ -41,12 +41,12 @@ public class OPObsBean {
         this.data = data;
     }
 
-    public String getFuncionario() {
-        return funcionario;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setFuncionario(String funcionario) {
-        this.funcionario = funcionario;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getObs() {

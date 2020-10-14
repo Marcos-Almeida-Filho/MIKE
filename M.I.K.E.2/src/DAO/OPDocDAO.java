@@ -7,11 +7,14 @@ package DAO;
 
 import Bean.OPDocBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -39,5 +42,28 @@ public class OPDocDAO {
         rs = null;
 
         listob = new ArrayList<>();
+    }
+    
+    public void create (String op, String descricao, String local) {
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ()");
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao criar documento da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
     }
 }
