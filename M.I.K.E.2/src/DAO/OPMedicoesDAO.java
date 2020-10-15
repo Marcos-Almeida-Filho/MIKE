@@ -7,11 +7,14 @@ package DAO;
 
 import Bean.OPMedicoesBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -39,5 +42,64 @@ public class OPMedicoesDAO {
         rs = null;
 
         listob = new ArrayList<>();
+    }
+
+    public void create(int idprocesso, String medida, String maior, String menor, String instrumento) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("INSERT INTO op_medicoes (idprocesso, medida, maior, menor, instrumento) VALUES (" + idprocesso + ", '" + medida + "', '" + maior + "', '" + menor + "', '" + instrumento + "')");
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao criar medições do Processo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public List<OPMedicoesBean> readMedicoes(int idprocesso) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op_medicoes WHERE idprocesso = " + idprocesso);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OPMedicoesBean omb = new OPMedicoesBean();
+
+                omb.setId(rs.getInt("id"));
+                omb.setInstrumento(rs.getString("instrumento"));
+                omb.setMaior(rs.getString("maior"));
+                omb.setMenor(rs.getString("menor"));
+                omb.setMedida(rs.getString("medida"));
+
+                listob.add(omb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler medições do processo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listob;
     }
 }

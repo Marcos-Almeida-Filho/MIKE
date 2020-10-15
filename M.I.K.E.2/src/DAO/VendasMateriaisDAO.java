@@ -287,6 +287,36 @@ public class VendasMateriaisDAO {
         return lastid;
     }
 
+    public int idProduto(String codigo) {
+        int produto = 0;
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT id FROM vendas_materiais WHERE codigo = '" + codigo + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                produto = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler id do produto.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return produto;
+    }
+
     public List<VendasMateriaisBean> click(int id) {
 
         rsList();

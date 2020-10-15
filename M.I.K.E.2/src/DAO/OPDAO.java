@@ -12,7 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -30,13 +32,13 @@ public class OPDAO {
 
     List<OPBean> listob;
 
-    public void conStmt() {
+    private void conStmt() {
         con = ConnectionFactory.getConnection();
 
         stmt = null;
     }
 
-    public void rsList() {
+    private void rsList() {
         conStmt();
 
         rs = null;
@@ -118,6 +120,75 @@ public class OPDAO {
         }
 
         return listob;
+    }
+
+    private String readLastOP() {
+        rsList();
+
+        String last = "";
+
+        try {
+            stmt = con.prepareStatement("SELECT op FROM op ORDER BY id DESC LIMIT 1");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                last = rs.getString("op");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler última OP criada.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return last;
+    }
+
+    public String opAtual() {
+
+        rsList();
+
+        Calendar c = Calendar.getInstance();
+        String patterny = "yy";
+        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+        String year = simpleDateFormaty.format(c.getTime());
+        String idtela = "OP" + year + "-0001";
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op WHERE op = '" + idtela + "'");
+            rs = stmt.executeQuery();
+
+            //checking if ResultSet is empty
+            if (rs.next()) {
+                String last = readLastOP();
+                int yearint = Integer.parseInt(last.replace("OP" + year + "-", ""));
+                int yearnovo = yearint + 1;
+                idtela = "OP" + year + "-" + String.format("%04d", yearnovo);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao verificar próxima OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return idtela;
     }
 
     /**

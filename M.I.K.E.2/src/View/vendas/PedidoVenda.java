@@ -7,6 +7,10 @@ package View.vendas;
 
 import Connection.Session;
 import DAO.AltDAO;
+import DAO.OPDAO;
+import DAO.OPDocDAO;
+import DAO.OPProcessosDAO;
+import DAO.VendasMateriaisDAO;
 import DAO.VendasPedidoDAO;
 import DAO.VendasPedidoDocsDAO;
 import DAO.VendasPedidoItensDAO;
@@ -1440,20 +1444,41 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void btnOpenOPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenOPActionPerformed
-        int numTrue = 0;
+        int numTrue = 0, numOp = 0;
         for (int i = 0; i < tableItens.getRowCount(); i++) {
             if (tableItens.getValueAt(i, 2).equals(true)) {
                 numTrue++;
             }
+            if (!tableItens.getValueAt(i, 9).equals("") || tableItens.getValueAt(i, 9) != null) {
+                numOp++;
+            }
         }
         if (numTrue == 0) {
             JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
+        } else if (numOp > 0) {
+            JOptionPane.showMessageDialog(null, "Itens com OP selecionados.");
         } else if (!txtCliente.getText().equals(clienteOriginal) || !txtCondPag.getText().equals(condicaoOriginal) || !txtRep.getText().equals(representanteOriginal) || !txtVendedor.getText().equals(condicaoOriginal) || numDocsOriginal != tableDocs.getRowCount() || numObsOriginal != tableObs.getRowCount() || numItensOriginal != tableItens.getRowCount()) {
             JOptionPane.showMessageDialog(null, "Salve o Pedido para que as alterações entrem em vigor primeiro.");
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja abrir OPs para os itens selecionados?", "Criar OPs", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
+                OPDAO od = new OPDAO();
+                OPDocDAO odd = new OPDocDAO();
+                OPProcessosDAO opd = new OPProcessosDAO();
+                VendasMateriaisDAO vmd = new VendasMateriaisDAO();
 
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+                    if (tableItens.getValueAt(i, 1).equals(true)) {
+                        String op = od.opAtual();
+                        double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString());
+                        int produto = vmd.idProduto(tableItens.getValueAt(i, 2).toString());
+
+                        od.create(op, Dates.CriarDataCurtaDBSemDataExistente(), Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 7).toString().replace(" dias", ""))), txtCliente.getText(), txtPedido.getText(), produto, qtd, "Rascunho");
+
+                        opd.create(op, "Separação de Material", qtd);
+
+                    }
+                }
             }
         }
     }//GEN-LAST:event_btnOpenOPActionPerformed

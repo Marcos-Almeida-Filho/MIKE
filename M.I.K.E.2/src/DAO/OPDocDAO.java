@@ -43,20 +43,42 @@ public class OPDocDAO {
 
         listob = new ArrayList<>();
     }
-    
-    public void create (String op, String descricao, String local) {
+
+    public void create(String op, String descricao, String local) {
         conStmt();
-        
+
         try {
             stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ()");
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             String msg = "Erro ao criar documento da OP.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void delete(int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM op_docs WHERE id = " + id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao excluir documento da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg + "\n" + e);

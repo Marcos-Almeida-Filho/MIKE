@@ -259,39 +259,6 @@ public class VendasCotacaoDAO {
         return motivo;
     }
     
-    public Boolean readnome() throws SQLException {
-
-        rsList();
-
-        Calendar c = Calendar.getInstance();
-        String patterny = "yy";
-        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-        String year = simpleDateFormaty.format(c.getTime());
-        String idtela = "CV" + year + "-0001";
-
-        Boolean resp = false;
-
-        try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE idtela = ?");
-            stmt.setString(1, idtela);
-            rs = stmt.executeQuery();
-
-            // checking if ResultSet is empty
-            resp = rs.next();
-        } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt, rs);
-        }
-
-        return resp;
-    }
-    
     public String readLastCreated() {
         rsList();
         
