@@ -5,12 +5,15 @@
  */
 package View.vendas;
 
+import Bean.F_UPBean;
 import Connection.Session;
 import DAO.AltDAO;
+import DAO.F_UPDAO;
 import DAO.OPDAO;
 import DAO.OPDocDAO;
 import DAO.OPProcessosDAO;
 import DAO.VendasMateriaisDAO;
+import DAO.VendasMateriaisDocDAO;
 import DAO.VendasPedidoDAO;
 import DAO.VendasPedidoDocsDAO;
 import DAO.VendasPedidoItensDAO;
@@ -1446,10 +1449,10 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     private void btnOpenOPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenOPActionPerformed
         int numTrue = 0, numOp = 0;
         for (int i = 0; i < tableItens.getRowCount(); i++) {
-            if (tableItens.getValueAt(i, 2).equals(true)) {
+            if (tableItens.getValueAt(i, 1).equals(true)) {
                 numTrue++;
             }
-            if (!tableItens.getValueAt(i, 9).equals("") || tableItens.getValueAt(i, 9) != null) {
+            if (!tableItens.getValueAt(i, 9).equals("")) {
                 numOp++;
             }
         }
@@ -1457,7 +1460,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
         } else if (numOp > 0) {
             JOptionPane.showMessageDialog(null, "Itens com OP selecionados.");
-        } else if (!txtCliente.getText().equals(clienteOriginal) || !txtCondPag.getText().equals(condicaoOriginal) || !txtRep.getText().equals(representanteOriginal) || !txtVendedor.getText().equals(condicaoOriginal) || numDocsOriginal != tableDocs.getRowCount() || numObsOriginal != tableObs.getRowCount() || numItensOriginal != tableItens.getRowCount()) {
+        } else if (!txtCliente.getText().equals(clienteOriginal) || !txtCondPag.getText().equals(condicaoOriginal) || !txtRep.getText().equals(representanteOriginal) || !txtVendedor.getText().equals(vendedorOriginal) || numDocsOriginal != tableDocs.getRowCount() || numObsOriginal != tableObs.getRowCount() || numItensOriginal != tableItens.getRowCount()) {
             JOptionPane.showMessageDialog(null, "Salve o Pedido para que as alterações entrem em vigor primeiro.");
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja abrir OPs para os itens selecionados?", "Criar OPs", JOptionPane.YES_NO_OPTION);
@@ -1466,19 +1469,69 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                 OPDocDAO odd = new OPDocDAO();
                 OPProcessosDAO opd = new OPProcessosDAO();
                 VendasMateriaisDAO vmd = new VendasMateriaisDAO();
+                VendasMateriaisDocDAO vmdd = new VendasMateriaisDocDAO();
+                F_UPDAO fud = new F_UPDAO();
 
                 for (int i = 0; i < tableItens.getRowCount(); i++) {
                     if (tableItens.getValueAt(i, 1).equals(true)) {
                         String op = od.opAtual();
-                        double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString());
-                        int produto = vmd.idProduto(tableItens.getValueAt(i, 2).toString());
+                        double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString().replace(".", "").replace(",", "."));
+                        int idProduto = vmd.idProduto(tableItens.getValueAt(i, 2).toString());
+                        String dataEntrega = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 7).toString().replace(" dias", "")));
+                        String material = tableItens.getValueAt(i, 2).toString();
+                        String dataCriacao = Dates.CriarDataCurtaDBSemDataExistente();
 
-                        od.create(op, Dates.CriarDataCurtaDBSemDataExistente(), Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 7).toString().replace(" dias", ""))), txtCliente.getText(), txtPedido.getText(), produto, qtd, "Rascunho");
+                        od.create(op, dataCriacao, dataEntrega, txtCliente.getText(), txtPedido.getText(), material, tableItens.getValueAt(i, 3).toString(), qtd, "Rascunho");
 
                         opd.create(op, "Separação de Material", qtd);
 
+                        F_UPBean fub = new F_UPBean();
+
+                        fub.setDav(txtPedido.getText());
+                        fub.setOp(op);
+                        fub.setDataentrega(dataEntrega);
+                        fub.setMaterial(material);
+                        fub.setProcesso("Separação de Material");
+                        fub.setDatacriacao(dataCriacao);
+                        fub.setNivel(5);
+                        fub.setValor(Double.parseDouble(tableItens.getValueAt(i, 6).toString().replace(".", "").replace(",", ".")));//
+                        fub.setObservacao("");
+                        fub.setCliente(txtCliente.getText());
+
+                        //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
+                        fud.create(fub);
+
+                        vpid.updateOP(op, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+
+                        vmdd.read(idProduto).forEach(vmdb -> {
+                            //Localicação do documento original
+                            File fileoriginal = new File(vmdb.getLocal());
+                            //Pasta que será colocar o documento
+                            File folder = new File("Q:/MIKE_ERP/op_arq/" + String.valueOf(op));
+                            //Documento copiado do original
+                            File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                            //Criar pasta no caso de já não existir
+                            folder.mkdirs();
+                            try {
+                                //Criar o documento copiado na pasta
+                                Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                            } catch (IOException ex) {
+                                Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
+                                JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        SendEmail.EnviarErro2(ex.toString());
+                                    }
+                                }.start();
+                            }
+                            odd.create(op, vmdb.getDescricao(), filecopy.toString());
+                        });
                     }
                 }
+                lerItensPedido(txtPedido.getText());
             }
         }
     }//GEN-LAST:event_btnOpenOPActionPerformed

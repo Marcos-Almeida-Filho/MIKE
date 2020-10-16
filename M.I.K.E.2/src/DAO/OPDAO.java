@@ -53,15 +53,16 @@ public class OPDAO {
      * @param dataprevista
      * @param cliente
      * @param dav
-     * @param produto
+     * @param codigo
+     * @param descricao
      * @param qtd
      * @param status
      */
-    public void create(String op, String dataabertura, String dataprevista, String cliente, String dav, int produto, double qtd, String status) {
+    public void create(String op, String dataabertura, String dataprevista, String cliente, String dav, String codigo, String descricao, double qtd, String status) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO op (op, dataabertura, dataprevista, cliente, dav, produto, qtd, status) VALUES ('" + op + "', '" + dataabertura + "', '" + dataprevista + "', '" + cliente + "', '" + dav + "', " + produto + ", " + qtd + ", '" + status + "')");
+            stmt = con.prepareStatement("INSERT INTO op (op, dataabertura, dataprevista, cliente, dav, codigo, descricao, qtd, status) VALUES ('" + op + "', '" + dataabertura + "', '" + dataprevista + "', '" + cliente + "', '" + dav + "', '" + codigo + "', '" + descricao + "', " + qtd + ", '" + status + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -99,7 +100,8 @@ public class OPDAO {
                 ob.setDataabertura(rs.getString("dataabertura"));
                 ob.setDataprevista(rs.getString("dataprevista"));
                 ob.setCliente(rs.getString("cliente"));
-                ob.setProduto(rs.getInt("procuto"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
                 ob.setStatus(rs.getString("status"));
 
                 listob.add(ob);
@@ -212,7 +214,8 @@ public class OPDAO {
                 ob.setDataprevista(rs.getString("dataprevista"));
                 ob.setCliente(rs.getString("cliente"));
                 ob.setDav(rs.getString("dav"));
-                ob.setProduto(rs.getInt("procuto"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
                 ob.setQtd(rs.getDouble("qtd"));
                 ob.setQtdok(rs.getDouble("qtdok"));
                 ob.setQtdnaook(rs.getDouble("qtdnaook"));
@@ -242,14 +245,15 @@ public class OPDAO {
      *
      * @param op
      * @param cliente
-     * @param produto
+     * @param codigo
+     * @param descricao
      * @param qtd
      */
-    public void updateOP(String op, String cliente, int produto, double qtd) {
+    public void updateOP(String op, String cliente, String codigo, String descricao, double qtd) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', produto = " + produto + ", qtd = " + qtd + " WHERE op = '" + op + "'");
+            stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + " WHERE op = '" + op + "'");
 
             stmt.executeUpdate();
         } catch (SQLException e) {

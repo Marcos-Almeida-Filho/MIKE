@@ -48,7 +48,7 @@ public class OPDocDAO {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ()");
+            stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ('" + op + "', '" + descricao + "', '" + local + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {

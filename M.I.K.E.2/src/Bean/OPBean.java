@@ -17,7 +17,8 @@ public class OPBean {
     private String dataprevista;
     private String cliente;
     private String dav;
-    private int produto;
+    private String codigo;
+    private String descricao;
     private double qtd;
     private double qtdok;
     private double qtdnaook;
@@ -71,12 +72,20 @@ public class OPBean {
         this.dav = dav;
     }
 
-    public int getProduto() {
-        return produto;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setProduto(int produto) {
-        this.produto = produto;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     public double getQtd() {
