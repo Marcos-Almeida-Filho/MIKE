@@ -6,9 +6,11 @@
 package View.vendas;
 
 import Bean.F_UPBean;
+import Bean.F_UP_HistBean;
 import Connection.Session;
 import DAO.AltDAO;
 import DAO.F_UPDAO;
+import DAO.F_UP_HistDAO;
 import DAO.OPDAO;
 import DAO.OPDocDAO;
 import DAO.OPProcessosDAO;
@@ -53,6 +55,13 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     static VendasPedidoDocsDAO vpdd = new VendasPedidoDocsDAO();
     static VendasPedidoObsDAO vpod = new VendasPedidoObsDAO();
     static AltDAO ad = new AltDAO();
+    static OPDAO od = new OPDAO();
+    static OPDocDAO odd = new OPDocDAO();
+    static OPProcessosDAO opd = new OPProcessosDAO();
+    static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
+    static VendasMateriaisDocDAO vmdd = new VendasMateriaisDocDAO();
+    static F_UPDAO fud = new F_UPDAO();
+    static F_UP_HistDAO fuhd = new F_UP_HistDAO();
 
     static public boolean pedidoAtualizado, pedidoCriado, itensCriados, docsCriados, obsCriadas;
 
@@ -675,6 +684,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
         tabItens.setName("tabItens"); // NOI18N
 
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -744,22 +754,18 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnDelObs)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddObs))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1099, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(818, Short.MAX_VALUE)
+                .addComponent(btnDelObs)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddObs)
                 .addContainerGap())
+            .addComponent(jScrollPane1)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddObs)
@@ -769,6 +775,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
         tabItens.addTab("Observações", jPanel6);
 
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setName("jPanel7"); // NOI18N
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
@@ -830,22 +837,18 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnDelDoc)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddDoc))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1099, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap(822, Short.MAX_VALUE)
+                .addComponent(btnDelDoc)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddDoc)
                 .addContainerGap())
+            .addComponent(jScrollPane2)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddDoc)
@@ -855,6 +858,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
         tabItens.addTab("Documentos", jPanel7);
 
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
         jPanel8.setName("jPanel8"); // NOI18N
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
@@ -974,30 +978,25 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1099, Short.MAX_VALUE)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(btnMarcarTodos)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnNF)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnOpenOP)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelItem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnAddItem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtValorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addComponent(btnMarcarTodos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 476, Short.MAX_VALUE)
+                .addComponent(btnNF)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnOpenOP)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDelItem)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAddItem)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtValorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jScrollPane3)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddItem)
@@ -1451,9 +1450,9 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         for (int i = 0; i < tableItens.getRowCount(); i++) {
             if (tableItens.getValueAt(i, 1).equals(true)) {
                 numTrue++;
-            }
-            if (!tableItens.getValueAt(i, 9).equals("")) {
-                numOp++;
+                if (!tableItens.getValueAt(i, 9).equals("")) {
+                    numOp++;
+                }
             }
         }
         if (numTrue == 0) {
@@ -1465,13 +1464,6 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja abrir OPs para os itens selecionados?", "Criar OPs", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
-                OPDAO od = new OPDAO();
-                OPDocDAO odd = new OPDocDAO();
-                OPProcessosDAO opd = new OPProcessosDAO();
-                VendasMateriaisDAO vmd = new VendasMateriaisDAO();
-                VendasMateriaisDocDAO vmdd = new VendasMateriaisDocDAO();
-                F_UPDAO fud = new F_UPDAO();
-
                 for (int i = 0; i < tableItens.getRowCount(); i++) {
                     if (tableItens.getValueAt(i, 1).equals(true)) {
                         String op = od.opAtual();
@@ -1500,6 +1492,14 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
                         //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
                         fud.create(fub);
+
+                        F_UP_HistBean fuhb = new F_UP_HistBean();
+
+                        fuhb.setIdfup(fud.getId(op));
+                        fuhb.setProcesso("Separação de Material");
+
+                        //idfup, processo
+                        fuhd.create(fuhb);
 
                         vpid.updateOP(op, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
 

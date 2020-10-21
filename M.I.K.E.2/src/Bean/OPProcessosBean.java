@@ -21,6 +21,8 @@ public class OPProcessosBean {
     private String datainicio;
     private String datafim;
     private String obs;
+    private int ordem;
+    private double qtddisponivel;
 
     public int getId() {
         return id;
@@ -100,6 +102,22 @@ public class OPProcessosBean {
 
     public void setObs(String obs) {
         this.obs = obs;
+    }
+
+    public int getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
+    }
+
+    public double getQtddisponivel() {
+        return qtddisponivel;
+    }
+
+    public void setQtddisponivel(double qtddisponivel) {
+        this.qtddisponivel = qtddisponivel;
     }
 
 }

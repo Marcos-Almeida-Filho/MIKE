@@ -327,8 +327,6 @@ public class AdicionarOPFUP extends javax.swing.JInternalFrame {
 
             fhb.setIdfup(idcriado);
             fhb.setProcesso(cbprocesso.getSelectedItem().toString());
-            fhb.setFuncionario(null);
-            fhb.setData(null);
 
             //idfup, processo, funcionario, data
             fhd.create(fhb);

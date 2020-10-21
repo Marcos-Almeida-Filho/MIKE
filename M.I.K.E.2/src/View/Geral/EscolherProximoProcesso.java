@@ -158,8 +158,6 @@ public class EscolherProximoProcesso extends javax.swing.JInternalFrame {
                     
                     fuhb.setIdfup(fud.getId(OS.txtnumeroos.getText()));
                     fuhb.setProcesso(OS.tableprocessos.getValueAt(OS.tableprocessos.getRowCount() - 1, 2).toString());
-                    fuhb.setFuncionario(null);
-                    fuhb.setData(null);
                     
                     //idfup, processo, funcionario, data
                     fuhd.create(fuhb);

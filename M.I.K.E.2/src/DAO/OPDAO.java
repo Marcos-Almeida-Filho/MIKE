@@ -240,6 +240,43 @@ public class OPDAO {
 
         return listob;
     }
+    
+    public List<OPBean> readOPPorStatus(String status) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op WHERE status = '" + status + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OPBean ob = new OPBean();
+
+                ob.setId(rs.getInt("id"));
+                ob.setOp(rs.getString("op"));
+                ob.setDataprevista(rs.getString("dataprevista"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setStatus(rs.getString("status"));
+
+                listob.add(ob);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listob;
+    }
 
     /**
      *

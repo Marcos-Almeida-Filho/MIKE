@@ -53,12 +53,10 @@ public class F_UP_HistDAO {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO f_up_hist (idfup, processo, funcionario, data) VALUES (?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO f_up_hist (idfup, processo) VALUES (?,?)");
 
             stmt.setInt(1, fhb.getIdfup());
             stmt.setString(2, fhb.getProcesso());
-            stmt.setString(3, fhb.getFuncionario());
-            stmt.setString(4, fhb.getData());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

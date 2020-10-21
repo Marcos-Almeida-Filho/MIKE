@@ -130,8 +130,6 @@ public class AlterarProcesso extends javax.swing.JInternalFrame {
         
         fuhb.setIdfup(id);
         fuhb.setProcesso(cbprocesso.getSelectedItem().toString());
-        fuhb.setFuncionario(null);
-        fuhb.setData(null);
         
         //idfup, processo, funcionario, data
         fuhd.create(fuhb);

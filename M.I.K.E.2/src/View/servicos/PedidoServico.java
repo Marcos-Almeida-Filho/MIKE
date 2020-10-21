@@ -1892,8 +1892,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
                     fuhb.setIdfup(fd.getId(idos));
                     fuhb.setProcesso(processo);
-                    fuhb.setFuncionario(null);
-                    fuhb.setData(null);
 
                     //idfup, processo, funcionario, data
                     fuhd.create(fuhb);
