@@ -11,7 +11,7 @@ import DAO.GrupoDeUsuariosPermDAO;
 import DAO.UsuariosDAO;
 import View.comercial.Clientes;
 import View.servicos.CotacaoServico;
-import View.vendas.OPs;
+import View.vendas.OP;
 import View.arquivo.Email;
 import Methods.Telas;
 import View.RH.SolicitacaoHoraExtra;
@@ -935,7 +935,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         String menuItemName = menuItem.getName();
 
         if (gupd.readPerm(Session.idnivel, menuItemName)) {
-            OPs ops = new OPs();
+            OP ops = new OP();
             Telas.AparecerTelaAumentada(ops);
         } else {
             JOptionPane.showMessageDialog(null, "Acesso não permitido.");

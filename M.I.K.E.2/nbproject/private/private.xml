@@ -3,12 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/servicos/ProcessoOS.java</file>
             <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/vendas/PedidoVenda.java</file>
-            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/vendas/OPs.java</file>
-            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/DAO/F_UP_HistDAO.java</file>
-            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/vendas/ProcessoOP.java</file>
-            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/servicos/OS.java</file>
+            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/vendas/CotacaoVenda.java</file>
+            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/vendas/VM.java</file>
+            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/DAO/OPMPDAO.java</file>
+            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/View/vendas/OP.java</file>
+            <file>file:/C:/Users/marco/OneDrive/Documentos/GitHub/MIKE/M.I.K.E.2/src/Bean/OPMPBean.java</file>
         </group>
     </open-files>
 </project-private>

@@ -12,6 +12,7 @@ package Bean;
 public class VendasPedidoItensBean {
 
     private int id;
+    private int idMaterial;
     private String pedido;
     private String codigo;
     private String descricao;
@@ -28,6 +29,14 @@ public class VendasPedidoItensBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdMaterial() {
+        return idMaterial;
+    }
+
+    public void setIdMaterial(int idMaterial) {
+        this.idMaterial = idMaterial;
     }
 
     public String getPedido() {

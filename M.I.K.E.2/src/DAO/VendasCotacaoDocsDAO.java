@@ -58,8 +58,10 @@ public class VendasCotacaoDocsDAO {
     public void create(String cotacao, String descricao, String local) {
         conStmt();
 
+        String local2 = local.replace("\\", "\\\\");
+
         try {
-            stmt = con.prepareStatement("INSERT INTO vendas_cotacao_docs (cotacao, descricao, local) VALUES ('" + cotacao + "','" + descricao + "','" + local + "')");
+            stmt = con.prepareStatement("INSERT INTO vendas_cotacao_docs (cotacao, descricao, local) VALUES ('" + cotacao + "','" + descricao + "','" + local2 + "')");
 
             stmt.executeUpdate();
 
@@ -111,10 +113,10 @@ public class VendasCotacaoDocsDAO {
         try {
             stmt = con.prepareStatement("DELETE FROM vendas_cotacao_docs WHERE id = " + id);
             stmt.executeUpdate();
-            
+
             File file = new File(location);
             file.delete();
-            
+
             JOptionPane.showMessageDialog(null, "Arquivo excluído com sucesso!");
         } catch (SQLException e) {
             String msg = "Erro ao excluir documento da cotação de venda.";

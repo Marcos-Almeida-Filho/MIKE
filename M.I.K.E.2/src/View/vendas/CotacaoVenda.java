@@ -14,6 +14,7 @@ import DAO.VendasCotacaoObsDAO;
 import DAO.VendasPedidoDAO;
 import DAO.VendasPedidoItensDAO;
 import Methods.Dates;
+import Methods.Docs;
 import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
@@ -150,6 +151,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
     public static void lerCotacao(String cotacao) {
         vcd.readCotacao(cotacao).forEach(vcb -> {
+            idCotacao = vcb.getId();
             txtDataAbertura.setText(Dates.TransformarDataCurtaDoDB(vcb.getData_abertura()));
             txtCliente.setText(vcb.getCliente());
             txtStatus.setText(vcb.getStatus());
@@ -186,7 +188,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 Valores.TransformarDoubleDBemString(vcib.getValortotal()),
                 vcib.getPrazo(),
                 vcib.getPedido(),
-                vcib.getDav()
+                vcib.getDav(),
+                vcib.getIdmaterial()
             });
         });
     }
@@ -236,7 +239,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public static void txtTotal() {
         double valorItem, valorTotal = 0;
         for (int i = 0; i < tableItens.getRowCount(); i++) {
-            String valor = tableItens.getValueAt(i, 6).toString().replace(".", "");
+            String valor = tableItens.getValueAt(i, 7).toString().replace(".", "");
             String replace = valor.replace(",", ".");
             valorItem = Double.parseDouble(replace);
             valorTotal += valorItem;
@@ -271,6 +274,38 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         modelDocs.setNumRows(0);
         DefaultTableModel modelItens = (DefaultTableModel) tableItens.getModel();
         modelItens.setNumRows(0);
+    }
+
+    public static void criarDocumentosCotacao(String cotacao) {
+        for (int i = 0; i < tableDocs.getRowCount(); i++) {
+            if (tableDocs.getValueAt(i, 0).equals("")) {
+                //Localicação do documento original
+                File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                //Pasta que será colocar o documento
+                File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
+                //Documento copiado do original
+                File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                //Criar pasta no caso de já não existir
+                folder.mkdirs();
+                try {
+                    //Criar o documento copiado na pasta
+                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                } catch (IOException ex) {
+                    Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(ex.toString());
+                        }
+                    }.start();
+                }
+
+                vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
+            }
+        }
     }
 
     /**
@@ -449,7 +484,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1137, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1251, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -560,7 +595,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jLabel4)
@@ -766,7 +801,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                         .addComponent(btnDelObs)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddObs))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1125, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1239, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -811,6 +846,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             }
         });
         tableDocs.setName("tableDocs"); // NOI18N
+        tableDocs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDocsMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tableDocs);
         if (tableDocs.getColumnModel().getColumnCount() > 0) {
             tableDocs.getColumnModel().getColumn(0).setMinWidth(0);
@@ -852,7 +892,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                         .addComponent(btnDelDoc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddDoc))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1125, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1239, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -878,14 +918,14 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Cadastrado", "", "Código", "Descrição", "Qtd", "Valor Unitário", "Valor Total", "Prazo de Entrega", "Pedido do Cliente", "DAV"
+                "ID", "Cadastrado", "", "Código", "Descrição", "Qtd", "Valor Unitário", "Valor Total", "Prazo de Entrega", "Pedido do Cliente", "DAV", "idMaterial"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true, false, false, false, false, false, false, false, false
+                false, false, true, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -934,6 +974,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             tableItens.getColumnModel().getColumn(10).setMinWidth(80);
             tableItens.getColumnModel().getColumn(10).setPreferredWidth(80);
             tableItens.getColumnModel().getColumn(10).setMaxWidth(80);
+            tableItens.getColumnModel().getColumn(11).setMinWidth(0);
+            tableItens.getColumnModel().getColumn(11).setPreferredWidth(0);
+            tableItens.getColumnModel().getColumn(11).setMaxWidth(0);
         }
 
         btnAddItem.setText("Adicionar Item");
@@ -982,7 +1025,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1125, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1239, Short.MAX_VALUE)
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(btnMarcarTodos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1196,50 +1239,23 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
             //Criar itens da cotação
             for (int i = 0; i < tableItens.getRowCount(); i++) {
-                vcid.create(cotacao, tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+                vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
             }
 
             //Criar documentos da cotação
-            for (int i = 0; i < tableDocs.getRowCount(); i++) {
-                //Localicação do documento original
-                File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
-                //Pasta que será colocar o documento
-                File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
-                //Documento copiado do original
-                File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                //Criar pasta no caso de já não existir
-                folder.mkdirs();
-                try {
-                    //Criar o documento copiado na pasta
-                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                } catch (IOException ex) {
-                    Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(ex.toString());
-                        }
-                    }.start();
-                }
-
-                vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
-            }
+            criarDocumentosCotacao(cotacao);
 
             //Criar observações da cotação
             for (int i = 0; i < tableObs.getRowCount(); i++) {
                 vcod.create(cotacao, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
             }
 
-            if (cotacaoCriada && itensCriados && docsCriados && obsCriadas) {
-                JOptionPane.showMessageDialog(null, "Cotação criada com sucesso!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Ops...algo deu errado. Favor entrar em contato com suporte.");
-            }
-
             status();
+
+            lerCotacao(cotacao);
+            lerDocumentosCotacao(cotacao);
+            lerItensCotacao(cotacao);
+            lerObsCotacao(cotacao);
         } else {
             String cotacao = txtCotacao.getText();
 
@@ -1249,18 +1265,14 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             //Criar itens da cotação que não existiam
             for (int i = 0; i < tableItens.getRowCount(); i++) {
                 if (tableItens.getValueAt(i, 0).equals("")) {
-                    vcid.create(cotacao, tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+                    vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
                 } else {
-                    vcid.update(tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 7).toString())), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                    vcid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 7).toString())), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
                 }
             }
 
             //Criar documentos da cotação que não existiam
-            for (int i = 0; i < tableDocs.getRowCount(); i++) {
-                if (tableDocs.getValueAt(i, 0).equals("")) {
-                    vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
-                }
-            }
+            criarDocumentosCotacao(cotacao);
 
             //Criar observações da cotação
             for (int i = 0; i < tableObs.getRowCount(); i++) {
@@ -1299,6 +1311,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             }
 
             lerCotacoes();
+
+            lerCotacao(cotacao);
+            lerDocumentosCotacao(cotacao);
+            lerItensCotacao(cotacao);
+            lerObsCotacao(cotacao);
         }
     }//GEN-LAST:event_btnSalvarActionPerformed
 
@@ -1437,12 +1454,12 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     private void btnMarcarTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarcarTodosActionPerformed
         if (btnMarcarTodos.getText().equals("Marcar Todos")) {
             for (int i = 0; i < tableItens.getRowCount(); i++) {
-                tableItens.setValueAt(true, i, 1);
+                tableItens.setValueAt(true, i, 2);
             }
             btnMarcarTodos.setText("Desmarcar Todos");
         } else {
             for (int i = 0; i < tableItens.getRowCount(); i++) {
-                tableItens.setValueAt(false, i, 1);
+                tableItens.setValueAt(false, i, 2);
             }
             btnMarcarTodos.setText("Marcar Todos");
         }
@@ -1486,10 +1503,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 vpd.create(dav, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
                 for (int i = 0; i < tableItens.getRowCount(); i++) {
-                    if (tableItens.getValueAt(i, 1).equals(true)) {
+                    if (tableItens.getValueAt(i, 2).equals(true)) {
                         vcid.updateDAV(dav, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
 
-                        vpid.create(dav, tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), "", "");
+                        vpid.create(dav, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), "", "");
                     }
                 }
             }
@@ -1571,6 +1588,12 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     private void btnMotivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMotivoActionPerformed
         JOptionPane.showMessageDialog(null, vcd.readMotivo(txtCotacao.getText()));
     }//GEN-LAST:event_btnMotivoActionPerformed
+
+    private void tableDocsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDocsMouseClicked
+        if (evt.getClickCount() == 2) {
+            Docs.open(tableDocs.getValueAt(tableDocs.getSelectedRow(), 3).toString());
+        }
+    }//GEN-LAST:event_tableDocsMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

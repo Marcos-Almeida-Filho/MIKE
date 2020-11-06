@@ -12,6 +12,7 @@ package Bean;
 public class VendasCotacaoItensBean {
 
     private int id;
+    private int idmaterial;
     private String cotacao;
     private String codigo;
     private String descricao;
@@ -29,6 +30,14 @@ public class VendasCotacaoItensBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdmaterial() {
+        return idmaterial;
+    }
+
+    public void setIdmaterial(int idmaterial) {
+        this.idmaterial = idmaterial;
     }
 
     public String getCotacao() {

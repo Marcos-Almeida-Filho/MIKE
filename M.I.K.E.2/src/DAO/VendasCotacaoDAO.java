@@ -101,7 +101,7 @@ public class VendasCotacaoDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler cotações abertas.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
 
                 @Override
@@ -115,7 +115,7 @@ public class VendasCotacaoDAO {
 
         return listvc;
     }
-    
+
     public List<VendasCotacaoBean> readCotacoesFechadas() {
         rsList();
 
@@ -143,7 +143,7 @@ public class VendasCotacaoDAO {
 
         return listvc;
     }
-    
+
     public List<VendasCotacaoBean> readCotacoesDesativadas() {
         rsList();
 
@@ -171,7 +171,7 @@ public class VendasCotacaoDAO {
 
         return listvc;
     }
-    
+
     public List<VendasCotacaoBean> readCotacoes() {
         rsList();
 
@@ -199,7 +199,7 @@ public class VendasCotacaoDAO {
 
         return listvc;
     }
-    
+
     /**
      *
      * @param cotacao
@@ -215,6 +215,7 @@ public class VendasCotacaoDAO {
             while (rs.next()) {
                 vcb = new VendasCotacaoBean();
 
+                vcb.setId(rs.getInt("id"));
                 vcb.setData_abertura(rs.getString("data_abertura"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setCadastrado(rs.getBoolean("cadastrado"));
@@ -240,7 +241,7 @@ public class VendasCotacaoDAO {
         rsList();
 
         String motivo = "";
-        
+
         try {
             stmt = con.prepareStatement("SELECT motivo FROM vendas_cotacao WHERE cotacao = '" + cotacao + "'");
             rs = stmt.executeQuery();
@@ -258,16 +259,16 @@ public class VendasCotacaoDAO {
 
         return motivo;
     }
-    
+
     public String readLastCreated() {
         rsList();
-        
+
         String last = "";
-        
+
         try {
-            stmt = con.prepareStatement("SELECT cotacao FROM vendas_cotacao ORDER BY id DESC LIMIT 1");
+            stmt = con.prepareStatement("SELECT cotacao FROM vendas_cotacao WHERE cotacao <> '' ORDER BY id DESC LIMIT 1");
             rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 last = rs.getString("cotacao");
             }
@@ -278,7 +279,7 @@ public class VendasCotacaoDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        
+
         return last;
     }
 
@@ -341,7 +342,7 @@ public class VendasCotacaoDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void updateStatus(String cotacao, String status) {
         conStmt();
 
@@ -364,7 +365,7 @@ public class VendasCotacaoDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void desativarCotacao(String cotacao, String motivo) {
         conStmt();
 

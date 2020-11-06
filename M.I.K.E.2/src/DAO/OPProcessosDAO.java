@@ -192,15 +192,17 @@ public class OPProcessosDAO {
      * @param qtdok
      * @param qtdnaook
      * @param obs
+     * @param motivo
      */
-    public void fecharProcesso(int id, String dataFim, double qtdok, double qtdnaook, String obs) {
+    public void fecharProcesso(int id, String dataFim, double qtdok, double qtdnaook, String obs, String motivo) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE op_processo SET datafim = '" + dataFim + "', qtdok = " + qtdok + ", qtdnaook = " + qtdnaook + ", obs = '" + obs + "' WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE op_processo SET datafim = '" + dataFim + "', qtdok = " + qtdok + ", qtdnaook = " + qtdnaook + ", obs = '" + obs + "', motivo = '" + motivo + "' WHERE id = " + id);
+
             stmt.executeUpdate();
         } catch (SQLException e) {
-            String msg = "Erro ao fechar processo.";
+            String msg = "Erro ao fechar processo da OP.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
@@ -211,7 +213,7 @@ public class OPProcessosDAO {
                 }
             }.start();
         } finally {
-
+            ConnectionFactory.closeConnection(con, stmt);
         }
     }
 }

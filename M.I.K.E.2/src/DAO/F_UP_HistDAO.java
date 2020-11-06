@@ -25,29 +25,29 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class F_UP_HistDAO {
-    
+
     Connection con;
 
     PreparedStatement stmt;
-    
+
     ResultSet rs;
 
     List<F_UP_HistBean> listbb;
-    
+
     public void conStmt() {
         con = ConnectionFactory.getConnection();
-        
+
         stmt = null;
     }
-    
+
     public void rsList() {
         conStmt();
-        
+
         rs = null;
-        
+
         listbb = new ArrayList<>();
     }
-    
+
     public void create(F_UP_HistBean fhb) {
 
         conStmt();
@@ -60,18 +60,21 @@ public class F_UP_HistDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - create");
-            JOptionPane.showMessageDialog(null, "Erro ao salvar OP no Follow Up!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(F_UP_HistDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao salvar OP no Follow Up!";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public List<F_UP_HistBean> click(int id) {
 
         rsList();
@@ -92,7 +95,7 @@ public class F_UP_HistDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - click");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - click");
             Logger.getLogger(F_UP_HistDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -104,31 +107,31 @@ public class F_UP_HistDAO {
         }
         return listbb;
     }
-    
+
     public int getId(int idfup, String processo) {
         rsList();
-        
+
         int id = 0;
-        
+
         try {
             stmt = con.prepareStatement("SELECT * FROM f_up_hist WHERE idfup = " + idfup + " AND processo = '" + processo + "'");
-            
+
             rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 id = rs.getInt("id");
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - getId");
-            JOptionPane.showMessageDialog(null,"Erro ao resgatar id do F-UP.");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - getId");
+            JOptionPane.showMessageDialog(null, "Erro ao resgatar id do F-UP.");
             SendEmail.EnviarErro2(e.toString());
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        
+
         return id;
     }
-    
+
     public void update(String funcionario, String data, int idfup, String processo) {
 
         conStmt();
@@ -138,7 +141,7 @@ public class F_UP_HistDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - update");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - update");
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());

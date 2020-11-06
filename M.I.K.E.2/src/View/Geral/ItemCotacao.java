@@ -21,6 +21,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
 
     private final String origin;
     public int idItemCotacao = 0;
+    public static int idMaterial;
 
     VendasCotacaoItensDAO vcid = new VendasCotacaoItensDAO();
 
@@ -322,7 +323,8 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                             totf,
                             txtprazo.getText() + " dias",
                             txtpedido.getText(),
-                            ""
+                            "",
+                            idMaterial
                         });
                         CotacaoVenda.txtTotal();
                         break;
@@ -343,7 +345,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
 
                     break;
                 case "CotacaoVenda":
-                    vcid.update(txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo, radioCadastrado.isSelected(), idItemCotacao);
+                    vcid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo, radioCadastrado.isSelected(), idItemCotacao);
                     break;
                 default:
                     throw new AssertionError();

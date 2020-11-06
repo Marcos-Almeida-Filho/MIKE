@@ -53,16 +53,18 @@ public class OPDAO {
      * @param dataprevista
      * @param cliente
      * @param dav
+     * @param idMaterial
      * @param codigo
      * @param descricao
      * @param qtd
+     * @param qtdOk
      * @param status
      */
-    public void create(String op, String dataabertura, String dataprevista, String cliente, String dav, String codigo, String descricao, double qtd, String status) {
+    public void create(String op, String dataabertura, String dataprevista, String cliente, String dav, int idMaterial, String codigo, String descricao, double qtd, double qtdOk, String status) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO op (op, dataabertura, dataprevista, cliente, dav, codigo, descricao, qtd, status) VALUES ('" + op + "', '" + dataabertura + "', '" + dataprevista + "', '" + cliente + "', '" + dav + "', '" + codigo + "', '" + descricao + "', " + qtd + ", '" + status + "')");
+            stmt = con.prepareStatement("INSERT INTO op (op, dataabertura, dataprevista, cliente, dav, idmaterial, codigo, descricao, qtd, qtdok, status) VALUES ('" + op + "', '" + dataabertura + "', '" + dataprevista + "', '" + cliente + "', '" + dav + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + qtdOk + "', " + status + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -209,6 +211,7 @@ public class OPDAO {
                 OPBean ob = new OPBean();
 
                 ob.setId(rs.getInt("id"));
+                ob.setIdmaterial(rs.getInt("idmaterial"));
                 ob.setOp(rs.getString("op"));
                 ob.setDataabertura(rs.getString("dataabertura"));
                 ob.setDataprevista(rs.getString("dataprevista"));
@@ -240,7 +243,7 @@ public class OPDAO {
 
         return listob;
     }
-    
+
     public List<OPBean> readOPPorStatus(String status) {
         rsList();
 
@@ -291,6 +294,29 @@ public class OPDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + " WHERE op = '" + op + "'");
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateOPQtd(String op, double qtdOk, double qtdNaoOk) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op SET qtdok = '" + qtdOk + "', qtdnaook = '" + qtdNaoOk + "' WHERE op = '" + op + "'");
 
             stmt.executeUpdate();
         } catch (SQLException e) {

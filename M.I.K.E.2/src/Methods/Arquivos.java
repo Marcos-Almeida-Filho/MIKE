@@ -38,7 +38,6 @@ public class Arquivos {
             fileoriginal
         });
         jif.dispose();
-        JOptionPane.showMessageDialog(null, "Incluído com sucesso!");
     }
 
     /**

@@ -5,17 +5,220 @@
  */
 package View.vendas;
 
+import Bean.F_UP_HistBean;
+import Connection.Session;
+import DAO.F_UPDAO;
+import DAO.F_UP_HistDAO;
+import DAO.OPDAO;
+import DAO.OPMedicoesDAO;
+import DAO.OPProcessosDAO;
+import DAO.ProcessosServicoDAO;
+import DAO.VendasMateriaisDAO;
+import DAO.VendasMateriaisMovDAO;
+import Methods.Dates;
+import Methods.SoNumeros;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Marcos Filho
  */
 public class ProcessoOP extends javax.swing.JInternalFrame {
 
+    static OPDAO od = new OPDAO();
+    static OPProcessosDAO opd = new OPProcessosDAO();
+    static OPMedicoesDAO omd = new OPMedicoesDAO();
+    static ProcessosServicoDAO psd = new ProcessosServicoDAO();
+    static F_UP_HistDAO fuhd = new F_UP_HistDAO();
+    static F_UPDAO fud = new F_UPDAO();
+    static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
+    static VendasMateriaisMovDAO vmmd = new VendasMateriaisMovDAO();
+
+    static double qtdTotalProcesso = 0;
+    static double qtdFinalOP = 0;
+    static int idProcesso;
+
+    static int iP = 0;
+
+    static double qtdOkOP = 0;
+    static double qtdNaoOkOP = 0;
+
     /**
      * Creates new form ProcessoOP
+     *
+     * @param idProcesso
+     * @param qtdTotalProcesso
      */
-    public ProcessoOP() {
+    public ProcessoOP(int idProcesso, double qtdTotalProcesso) {
         initComponents();
+        txtOk.setDocument(new SoNumeros());
+        txtNaoOk.setDocument(new SoNumeros());
+        ProcessoOP.idProcesso = idProcesso;
+        ProcessoOP.qtdTotalProcesso = qtdTotalProcesso;
+    }
+
+    public static void readProcesso(int id) {
+        opd.readProcesso(id).forEach(opb -> {
+            txtProcesso.setText(opb.getProcesso());
+            txtFuncionario.setText(opb.getUser());
+            txtOk.setText(String.valueOf(opb.getQtdok()));
+            txtNaoOk.setText(String.valueOf(opb.getQtdnaook()));
+            txtMotivoNaoOk.setText(opb.getMotivo());
+            txtObs.setText(opb.getObs());
+            txtInicio.setText(Dates.TransformarDataCompletaDoDB(opb.getDatainicio()));
+            txtTermino.setText(Dates.TransformarDataCompletaDoDB(opb.getDatafim()));
+            qtdTotalProcesso = opb.getQtdtotal();
+        });
+
+        DefaultTableModel modelInspecao = (DefaultTableModel) tableInspecoes.getModel();
+        modelInspecao.setNumRows(0);
+
+        omd.readMedicoes(id).forEach(omb -> {
+            modelInspecao.addRow(new Object[]{
+                omb.getId(),
+                omb.getMedida(),
+                omb.getMaior(),
+                omb.getMenor(),
+                omb.getInstrumento()
+            });
+        });
+    }
+
+    public static void quantidades() {
+        String ok = "0", naoOk = "0";
+        if (!txtOk.getText().equals("")) {
+            ok = txtOk.getText();
+        }
+        if (!txtNaoOk.getText().equals("")) {
+            naoOk = txtNaoOk.getText();
+        }
+        double qtdOk = Double.parseDouble(ok);
+        double qtdNaoOk = Double.parseDouble(naoOk);
+
+        if (qtdOk + qtdNaoOk > qtdTotalProcesso) {
+            JOptionPane.showMessageDialog(null, "Quantidades Conforme e Não Conforme maiores que a quantidade total do processo.");
+            txtOk.setText("0");
+            txtNaoOk.setText("0");
+        } else if (qtdNaoOk > 0) {
+            String motivo = JOptionPane.showInputDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION);
+            txtMotivoNaoOk.setText(motivo);
+        }
+    }
+
+    public static void criarOutroProcessoIgual() {
+        double qtdOk = Double.parseDouble(txtOk.getText());
+        double qtdNaoOk = Double.parseDouble(txtNaoOk.getText());
+        double qtdTotal = qtdTotalProcesso - (qtdOk + qtdNaoOk);
+
+        opd.create(OP.TxtNumOP.getText(), txtProcesso.getText(), qtdTotal);
+
+        //Criar novo histórico no F-UP
+        F_UP_HistBean fuhb = new F_UP_HistBean();
+        fuhb.setIdfup(fud.getId(OP.TxtNumOP.getText()));
+        fuhb.setProcesso(txtProcesso.getText());
+
+        //idfup, processo
+        fuhd.create(fuhb);
+    }
+
+    public static void criarProximoProcesso() {
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja encerrar a OP?", "Encerrar OP", JOptionPane.YES_NO_OPTION);
+
+        if (resp == 0) {
+            od.updateStatus(OP.TxtNumOP.getText(), "Finalizado");
+
+            int idMaterial = OP.idMaterial;
+
+            double estoqueAtual = vmd.readEstoque(idMaterial);
+
+            od.readOP(OP.TxtNumOP.getText()).forEach(od -> {
+                qtdFinalOP = od.getQtdok();
+            });
+
+            double estoque = estoqueAtual + qtdFinalOP;
+
+            vmd.updateEstoque(estoque, idMaterial);
+
+            vmmd.create(idMaterial, estoqueAtual, qtdFinalOP, estoque, "OP", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+        } else {
+            double qtdTotal = Double.parseDouble(OP.TxtQtde.getText().replace(",", "."));
+
+            JComboBox cbProcessos = new JComboBox();
+
+            psd.read().forEach(psb -> {
+                cbProcessos.addItem(psb.getNome());
+                iP++;
+            });
+
+            JOptionPane.showMessageDialog(null, cbProcessos, "Selecione o Próximo Processo", JOptionPane.QUESTION_MESSAGE);
+
+            for (int i = 0; i < OP.tableProcessos.getRowCount(); i++) {
+                qtdTotal -= Double.parseDouble(OP.tableProcessos.getValueAt(i, 6).toString());
+            }
+
+            opd.create(OP.TxtNumOP.getText(), cbProcessos.getSelectedItem().toString(), qtdTotal);
+
+            //Criar novo histórico no F-UP
+            F_UP_HistBean fuhb = new F_UP_HistBean();
+            fuhb.setIdfup(fud.getId(OP.TxtNumOP.getText()));
+            fuhb.setProcesso(cbProcessos.getSelectedItem().toString());
+
+            //idfup, processo
+            fuhd.create(fuhb);
+        }
+    }
+
+    public static void fecharProcesso(double qtdOk, double qtdNaoOk, String obs, String motivo) {
+        String data = Dates.CriarDataCompletaParaDB();
+        if (tableInspecoes.getRowCount() == 0) {
+            int resp = JOptionPane.showConfirmDialog(null, "Sem inspeções lançadas. Isto está correto?", "Sem Inspeções", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                opd.fecharProcesso(ProcessoOP.idProcesso, data, qtdOk, qtdNaoOk, obs, motivo);
+
+                od.readOP(OP.TxtNumOP.getText()).forEach(ob -> {
+                    qtdNaoOkOP = ob.getQtdnaook() + Double.parseDouble(txtNaoOk.getText());
+                    qtdOkOP = ob.getQtd() - qtdNaoOkOP;
+                });
+
+                od.updateOPQtd(OP.TxtNumOP.getText(), qtdOkOP, qtdNaoOkOP);
+
+                fuhd.update(Session.nome, Dates.CriarDataCurtaDBSemDataExistente(), fud.getId(OP.TxtNumOP.getText()), txtProcesso.getText());
+
+                if (qtdOk + qtdNaoOk < qtdTotalProcesso) {
+                    criarOutroProcessoIgual();
+                } else {
+                    criarProximoProcesso();
+                }
+            }
+        } else {
+            opd.fecharProcesso(ProcessoOP.idProcesso, data, qtdOk, qtdNaoOk, obs, motivo);
+
+            od.readOP(OP.TxtNumOP.getText()).forEach(ob -> {
+                qtdNaoOkOP = ob.getQtdnaook() + Double.parseDouble(txtNaoOk.getText());
+                qtdOkOP = ob.getQtd() - qtdNaoOkOP;
+            });
+
+            od.updateOPQtd(OP.TxtNumOP.getText(), qtdOkOP, qtdNaoOkOP);
+
+            fuhd.update(Session.nome, Dates.CriarDataCurtaDBSemDataExistente(), fud.getId(OP.TxtNumOP.getText()), txtProcesso.getText());
+
+            if (qtdOk + qtdNaoOk < qtdTotalProcesso) {
+                criarOutroProcessoIgual();
+            } else {
+                criarProximoProcesso();
+            }
+
+            for (int i = 0; i < tableInspecoes.getRowCount(); i++) {
+                String medida = tableInspecoes.getValueAt(i, 1).toString();
+                String maior = tableInspecoes.getValueAt(i, 2).toString();
+                String menor = tableInspecoes.getValueAt(i, 3).toString();
+                String instrumento = tableInspecoes.getValueAt(i, 4).toString();
+
+                omd.create(idProcesso, medida, maior, menor, instrumento);
+            }
+        }
     }
 
     /**
@@ -28,27 +231,32 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnSalvar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtProcesso = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtFuncionario = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        txtInicio = new javax.swing.JTextField();
+        txtTermino = new javax.swing.JTextField();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton2 = new javax.swing.JButton();
+        tableInspecoes = new javax.swing.JTable();
+        btnAddInspecao = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtObs = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtOk = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        txtNaoOk = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
+        txtMotivoNaoOk = new javax.swing.JTextArea();
+        jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
         setTitle("Processo OP");
@@ -56,8 +264,13 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jButton1.setText("Salvar");
-        jButton1.setName("jButton1"); // NOI18N
+        btnSalvar.setText("Salvar");
+        btnSalvar.setName("btnSalvar"); // NOI18N
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Processo"));
         jPanel3.setName("jPanel3"); // NOI18N
@@ -65,41 +278,66 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         jLabel1.setText("Processo");
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jTextField1.setText("jTextField1");
-        jTextField1.setName("jTextField1"); // NOI18N
+        txtProcesso.setEditable(false);
+        txtProcesso.setName("txtProcesso"); // NOI18N
 
-        jLabel2.setText("jLabel2");
+        jLabel2.setText("Funcionário");
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jTextField2.setText("jTextField2");
-        jTextField2.setName("jTextField2"); // NOI18N
+        txtFuncionario.setEditable(false);
+        txtFuncionario.setName("txtFuncionario"); // NOI18N
+
+        jLabel6.setText("Início");
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        jLabel7.setText("Término");
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        txtInicio.setEditable(false);
+        txtInicio.setName("txtInicio"); // NOI18N
+
+        txtTermino.setEditable(false);
+        txtTermino.setName("txtTermino"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 97, Short.MAX_VALUE))
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtFuncionario))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtProcesso, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtInicio, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTermino))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtProcesso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtTermino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -110,39 +348,49 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tableInspecoes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Medida", "Maior", "Menor", "Instrumento"
             }
-        ));
-        jTable1.setName("jTable1"); // NOI18N
-        jScrollPane2.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
 
-        jButton2.setText("Adicionar Inspeção");
-        jButton2.setName("jButton2"); // NOI18N
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableInspecoes.setName("tableInspecoes"); // NOI18N
+        jScrollPane2.setViewportView(tableInspecoes);
+        if (tableInspecoes.getColumnModel().getColumnCount() > 0) {
+            tableInspecoes.getColumnModel().getColumn(0).setMinWidth(0);
+            tableInspecoes.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableInspecoes.getColumnModel().getColumn(0).setMaxWidth(0);
+        }
+
+        btnAddInspecao.setText("Adicionar Inspeção");
+        btnAddInspecao.setName("btnAddInspecao"); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(btnAddInspecao)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2))
+                .addComponent(btnAddInspecao))
         );
 
         jTabbedPane1.addTab("Inspeções", jPanel4);
@@ -151,10 +399,10 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setName("jTextArea1"); // NOI18N
-        jScrollPane1.setViewportView(jTextArea1);
+        txtObs.setColumns(20);
+        txtObs.setRows(5);
+        txtObs.setName("txtObs"); // NOI18N
+        jScrollPane1.setViewportView(txtObs);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -162,14 +410,14 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -181,48 +429,72 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         jLabel3.setText("Qtde Conforme");
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jTextField3.setText("jTextField3");
-        jTextField3.setName("jTextField3"); // NOI18N
+        txtOk.setName("txtOk"); // NOI18N
+        txtOk.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtOkFocusGained(evt);
+            }
+        });
 
         jLabel4.setText("Qtde Não Conforme");
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jTextField4.setText("jTextField4");
-        jTextField4.setName("jTextField4"); // NOI18N
+        txtNaoOk.setName("txtNaoOk"); // NOI18N
+        txtNaoOk.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtNaoOkFocusGained(evt);
+            }
+        });
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jTextArea2.setName("jTextArea2"); // NOI18N
-        jScrollPane3.setViewportView(jTextArea2);
+        txtMotivoNaoOk.setEditable(false);
+        txtMotivoNaoOk.setColumns(20);
+        txtMotivoNaoOk.setLineWrap(true);
+        txtMotivoNaoOk.setRows(5);
+        txtMotivoNaoOk.setWrapStyleWord(true);
+        txtMotivoNaoOk.setName("txtMotivoNaoOk"); // NOI18N
+        jScrollPane3.setViewportView(txtMotivoNaoOk);
+
+        jLabel5.setText("Motivo das Peças Mortas");
+        jLabel5.setName("jLabel5"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addGap(32, 32, 32)))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtOk, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                                .addComponent(txtNaoOk))))
+                    .addComponent(jLabel5))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtOk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNaoOk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -235,10 +507,10 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
                     .addComponent(jTabbedPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSalvar))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -246,13 +518,15 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(btnSalvar)
                 .addContainerGap())
         );
 
@@ -270,14 +544,65 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        double qtdNaoOk = Double.parseDouble(txtNaoOk.getText());
+        double qtdOk = Double.parseDouble(txtOk.getText());
+        String obs = txtObs.getText();
+        String motivo = txtMotivoNaoOk.getText();
+        if (qtdOk + qtdNaoOk > qtdTotalProcesso) {
+            JOptionPane.showMessageDialog(null, "Quantidades digitadas maiores do que a quantidade do processo.");
+        } else if (qtdNaoOk > 0) {
+            for (;;) {
+                message:
+                {
+                    try {
+                        String motivoDialog = JOptionPane.showInputDialog(null, "Qual o motivo gerador das peças não conforme?", "Peças Não Conforme", JOptionPane.YES_NO_OPTION);
+                        if (motivoDialog.length() < 15) {
+                            JOptionPane.showMessageDialog(null, "Motivo digitado muito curto. Explique melhor o ocorrido.");
+                            break message;
+                        } else {
+                            txtMotivoNaoOk.setText(motivoDialog);
+                        }
+                    } catch (NullPointerException e) {
+                        JOptionPane.showMessageDialog(null, "Nenhum motivo digitado.");
+                        break message;
+                    }
+                    break;
+                }
+            }
+            fecharProcesso(qtdOk, qtdNaoOk, obs, motivo);
+
+            OP.lerOP(OP.TxtNumOP.getText());
+            OP.lerProcessos();
+            dispose();
+        } else {
+            fecharProcesso(qtdOk, qtdNaoOk, obs, motivo);
+
+            OP.lerOP(OP.TxtNumOP.getText());
+            OP.lerProcessos();
+            dispose();
+        }
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void txtOkFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOkFocusGained
+        txtOk.selectAll();
+    }//GEN-LAST:event_txtOkFocusGained
+
+    private void txtNaoOkFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNaoOkFocusGained
+        txtNaoOk.selectAll();
+    }//GEN-LAST:event_txtNaoOkFocusGained
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton jButton1;
-    public javax.swing.JButton jButton2;
+    public javax.swing.JButton btnAddInspecao;
+    public javax.swing.JButton btnSalvar;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
+    public javax.swing.JLabel jLabel5;
+    public javax.swing.JLabel jLabel6;
+    public javax.swing.JLabel jLabel7;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
@@ -287,12 +612,14 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JTabbedPane jTabbedPane1;
-    public javax.swing.JTable jTable1;
-    public javax.swing.JTextArea jTextArea1;
-    public javax.swing.JTextArea jTextArea2;
-    public javax.swing.JTextField jTextField1;
-    public javax.swing.JTextField jTextField2;
-    public javax.swing.JTextField jTextField3;
-    public javax.swing.JTextField jTextField4;
+    public static javax.swing.JTable tableInspecoes;
+    public static javax.swing.JTextField txtFuncionario;
+    public static javax.swing.JTextField txtInicio;
+    public static javax.swing.JTextArea txtMotivoNaoOk;
+    public static javax.swing.JTextField txtNaoOk;
+    public static javax.swing.JTextArea txtObs;
+    public static javax.swing.JTextField txtOk;
+    public static javax.swing.JTextField txtProcesso;
+    public static javax.swing.JTextField txtTermino;
     // End of variables declaration//GEN-END:variables
 }

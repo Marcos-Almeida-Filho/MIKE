@@ -86,6 +86,10 @@ public class VM extends javax.swing.JInternalFrame {
         });
     }
 
+    public static Double multiply(double a, double b) {
+        return a * b;
+    }
+
     public static void cbexcluir() {
         cbfamilia.removeAllItems();
         cbfamilia.addItem("Selecione");
@@ -1054,6 +1058,9 @@ public class VM extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         txtLocal = new javax.swing.JTextField();
         jButton7 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel20 = new javax.swing.JLabel();
+        txtQtdOp = new javax.swing.JTextField();
         jButton9 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
 
@@ -2257,6 +2264,27 @@ public class VM extends javax.swing.JInternalFrame {
                 .addComponent(jButton7))
         );
 
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("OP"));
+
+        jLabel20.setText("Quantidade Mínima");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jLabel20)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(txtQtdOp)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jLabel20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtQtdOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         javax.swing.GroupLayout panelmovLayout = new javax.swing.GroupLayout(panelmov);
         panelmov.setLayout(panelmovLayout);
         panelmovLayout.setHorizontalGroup(
@@ -2267,7 +2295,8 @@ public class VM extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panelmovLayout.setVerticalGroup(
@@ -2279,6 +2308,8 @@ public class VM extends javax.swing.JInternalFrame {
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
                 .addContainerGap())
@@ -3303,6 +3334,7 @@ public class VM extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel18;
     public javax.swing.JLabel jLabel19;
     public javax.swing.JLabel jLabel2;
+    public javax.swing.JLabel jLabel20;
     public javax.swing.JLabel jLabel25;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel36;
@@ -3327,6 +3359,7 @@ public class VM extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel3;
     public javax.swing.JPanel jPanel4;
     public javax.swing.JPanel jPanel5;
+    public javax.swing.JPanel jPanel6;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
@@ -3362,6 +3395,7 @@ public class VM extends javax.swing.JInternalFrame {
     public static javax.swing.JTabbedPane tabmateriais;
     public static javax.swing.JTabbedPane tabmaterialinfo;
     public static javax.swing.JTextField txtLocal;
+    public static javax.swing.JTextField txtQtdOp;
     public static javax.swing.JTextField txtagressividade;
     public static javax.swing.JTextField txtalivio1;
     public static javax.swing.JTextField txtalivio2;

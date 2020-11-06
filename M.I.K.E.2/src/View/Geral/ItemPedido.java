@@ -20,6 +20,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
 
     private final String origin;
     public int idItemCotacao = 0;
+    public static int idMaterial;
 
     VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
 
@@ -245,7 +246,8 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                             txtprazo.getText() + " dias",
                             txtpedido.getText(),
                             "",
-                            ""
+                            "",
+                            idMaterial
                         });
                         PedidoVenda.txtTotal();
                         break;
@@ -253,7 +255,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                 dispose();
             }
         } else {
-            double qtd = Double.parseDouble(txtqtd.getText().replace(",","."));
+            double qtd = Double.parseDouble(txtqtd.getText().replace(",", "."));
             String v = txtvalor.getText().replace(".", "");
             double valor = Double.parseDouble(v.replace(",", "."));
             double tot = qtd * valor;
@@ -261,7 +263,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
 
             switch (origin) {
                 case "PedidoVenda":
-                    vpid.update(txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo + " dias", txtpedido.getText(), idItemCotacao);
+                    vpid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo + " dias", txtpedido.getText(), idItemCotacao);
                     PedidoVenda.lerItensPedido(PedidoVenda.txtPedido.getText());
                     PedidoVenda.txtTotal();
                     break;

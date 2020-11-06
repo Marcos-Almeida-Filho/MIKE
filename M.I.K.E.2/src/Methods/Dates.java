@@ -49,7 +49,7 @@ public class Dates {
 
         return data;
     }
-    
+
     public static String CriarDataCurtaDBSemDataExistente() {
         date = Calendar.getInstance();
         String pattern = "yyyy-MM-dd";
@@ -78,7 +78,7 @@ public class Dates {
         String year = simpleDateFormaty.format(ca.getTime());
 
         String idos = "OS" + year + "-0001S";
-        
+
         try { //Tentar achar primeira OS do ano para poder dar nome
             if (od.readnome()) {
                 String hua = "";
@@ -114,11 +114,13 @@ public class Dates {
 
     public static String TransformarDataCompletaDoDB(String datadb) {
         datanormal = "";
-        String dia = datadb.substring(8, 10);
-        String mes = datadb.substring(5, 7);
-        String ano = datadb.substring(0, 4);
-        String hora = datadb.substring(11, 19);
-        datanormal = dia + "/" + mes + "/" + ano + " " + hora;
+        if (datadb != null) {
+            String dia = datadb.substring(8, 10);
+            String mes = datadb.substring(5, 7);
+            String ano = datadb.substring(0, 4);
+            String hora = datadb.substring(11, 19);
+            datanormal = dia + "/" + mes + "/" + ano + " " + hora;
+        }
 
         return datanormal;
     }

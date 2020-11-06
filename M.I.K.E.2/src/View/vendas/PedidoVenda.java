@@ -6,7 +6,6 @@
 package View.vendas;
 
 import Bean.F_UPBean;
-import Bean.F_UP_HistBean;
 import Connection.Session;
 import DAO.AltDAO;
 import DAO.F_UPDAO;
@@ -33,13 +32,16 @@ import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
 import View.comercial.DocumentosFornecedores;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -177,7 +179,8 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                 vpib.getPrazo(),
                 vpib.getPedido(),
                 vpib.getOp(),
-                vpib.getNf()
+                vpib.getNf(),
+                vpib.getIdMaterial()
             });
         });
     }
@@ -302,7 +305,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        tabCotacoes = new javax.swing.JTabbedPane();
+        tabPedidos = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tablePedidos = new javax.swing.JTable();
@@ -365,7 +368,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
 
-        tabCotacoes.setName("tabCotacoes"); // NOI18N
+        tabPedidos.setName("tabPedidos"); // NOI18N
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
@@ -495,7 +498,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        tabCotacoes.addTab("Pedidos", jPanel2);
+        tabPedidos.addTab("Pedidos", jPanel2);
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setName("jPanel3"); // NOI18N
@@ -868,14 +871,14 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Código", "Descrição", "Qtd", "Valor Unitário", "Valor Total", "Prazo de Entrega", "Pedido do Cliente", "OP", "NF"
+                "ID", "", "Código", "Descrição", "Qtd", "Valor Unitário", "Valor Total", "Prazo de Entrega", "Pedido do Cliente", "OP", "NF", "IdMaterial"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, false, false, false, false, false, false, false
+                false, true, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -890,6 +893,9 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         tableItens.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableItensMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tableItensMouseReleased(evt);
             }
         });
         jScrollPane3.setViewportView(tableItens);
@@ -924,6 +930,9 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             tableItens.getColumnModel().getColumn(10).setMinWidth(80);
             tableItens.getColumnModel().getColumn(10).setPreferredWidth(80);
             tableItens.getColumnModel().getColumn(10).setMaxWidth(80);
+            tableItens.getColumnModel().getColumn(11).setMinWidth(0);
+            tableItens.getColumnModel().getColumn(11).setPreferredWidth(0);
+            tableItens.getColumnModel().getColumn(11).setMaxWidth(0);
         }
 
         btnAddItem.setText("Adicionar Item");
@@ -1083,17 +1092,17 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        tabCotacoes.addTab("Pedido", jPanel3);
+        tabPedidos.addTab("Pedido", jPanel3);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabCotacoes)
+            .addComponent(tabPedidos)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabCotacoes)
+            .addComponent(tabPedidos)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1158,7 +1167,32 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                 Telas.AparecerTela(ip);
             }
         } else if (evt.getButton() == 3) {
-            JOptionPane.showMessageDialog(null, "Botão direito");
+            JPopupMenu menu = new JPopupMenu();
+            JMenuItem abrirOP = new JMenuItem("Abrir OP");
+            JMenuItem abrirNF = new JMenuItem("Abrir NF");
+
+            abrirOP.addActionListener((ActionEvent e) -> {
+                String op = tableItens.getValueAt(tableItens.getSelectedRow(), 9).toString();
+                if (op.length() == 0) {
+                    JOptionPane.showMessageDialog(null, "Sem OP no produto.");
+                } else {
+                    OP opjif = new OP();
+                    OP.TxtNumOP.setText(op);
+                    OP.tabOPS.setSelectedIndex(1);
+                    OP.lerOP(op);
+                    Telas.AparecerTelaAumentada(opjif);
+                }
+            });
+
+            abrirNF.addActionListener((ActionEvent ae) -> {
+                String nf = tableItens.getValueAt(tableItens.getSelectedRow(), 10).toString();
+                JOptionPane.showMessageDialog(null, "Em Breve");
+            });
+
+            menu.add(abrirOP);
+            menu.add(abrirNF);
+
+            menu.show(evt.getComponent(), evt.getPoint().x, evt.getPoint().y);
         }
     }//GEN-LAST:event_tableItensMouseClicked
 
@@ -1181,7 +1215,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
             //Criar itens do Pedido
             for (int i = 0; i < tableItens.getRowCount(); i++) {
-                vpid.create(pedido, tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
+                vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
             }
 
             //Criar documentos da cotação
@@ -1234,9 +1268,9 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             //Criar itens da cotação que não existiam
             for (int i = 0; i < tableItens.getRowCount(); i++) {
                 if (tableItens.getValueAt(i, 0).equals("")) {
-                    vpid.create(pedido, tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
+                    vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
                 } else {
-                    vpid.update(tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 4).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                    vpid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 4).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
                 }
             }
 
@@ -1292,7 +1326,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             idCotacao = Integer.parseInt(tablePedidos.getValueAt(tablePedidos.getSelectedRow(), 0).toString());
 
-            tabCotacoes.setSelectedIndex(1);
+            tabPedidos.setSelectedIndex(1);
 
             txtPedido.setText(tablePedidos.getValueAt(tablePedidos.getSelectedRow(), 2).toString());
 
@@ -1470,12 +1504,11 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                         double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString().replace(".", "").replace(",", "."));
                         int idProduto = vmd.idProduto(tableItens.getValueAt(i, 2).toString());
                         String dataEntrega = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 7).toString().replace(" dias", "")));
+                        int idMaterial = Integer.parseInt(tableItens.getValueAt(i, 11).toString());
                         String material = tableItens.getValueAt(i, 2).toString();
                         String dataCriacao = Dates.CriarDataCurtaDBSemDataExistente();
 
-                        od.create(op, dataCriacao, dataEntrega, txtCliente.getText(), txtPedido.getText(), material, tableItens.getValueAt(i, 3).toString(), qtd, "Rascunho");
-
-                        opd.create(op, "Separação de Material", qtd);
+                        od.create(op, dataCriacao, dataEntrega, txtCliente.getText(), txtPedido.getText(), idMaterial, material, tableItens.getValueAt(i, 3).toString(), qtd, qtd, "Rascunho");
 
                         F_UPBean fub = new F_UPBean();
 
@@ -1492,14 +1525,6 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
                         //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
                         fud.create(fub);
-
-                        F_UP_HistBean fuhb = new F_UP_HistBean();
-
-                        fuhb.setIdfup(fud.getId(op));
-                        fuhb.setProcesso("Separação de Material");
-
-                        //idfup, processo
-                        fuhd.create(fuhb);
 
                         vpid.updateOP(op, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
 
@@ -1626,6 +1651,15 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         lerPedidosAbertos();
     }//GEN-LAST:event_txtPesquisaKeyReleased
 
+    private void tableItensMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItensMouseReleased
+        int r = tableItens.rowAtPoint(evt.getPoint());
+        if (r >= 0 && r < tableItens.getRowCount()) {
+            tableItens.setRowSelectionInterval(r, r);
+        } else {
+            tableItens.clearSelection();
+        }
+    }//GEN-LAST:event_tableItensMouseReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddDoc;
@@ -1671,8 +1705,8 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JScrollPane jScrollPane4;
-    public javax.swing.JTabbedPane tabCotacoes;
     public static javax.swing.JTabbedPane tabItens;
+    public static javax.swing.JTabbedPane tabPedidos;
     public static javax.swing.JTable tableDocs;
     public static javax.swing.JTable tableItens;
     public static javax.swing.JTable tableObs;

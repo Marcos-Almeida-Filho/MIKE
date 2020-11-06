@@ -23,6 +23,7 @@ public class OPProcessosBean {
     private String obs;
     private int ordem;
     private double qtddisponivel;
+    private String motivo;
 
     public int getId() {
         return id;
@@ -118,6 +119,14 @@ public class OPProcessosBean {
 
     public void setQtddisponivel(double qtddisponivel) {
         this.qtddisponivel = qtddisponivel;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
     }
 
 }

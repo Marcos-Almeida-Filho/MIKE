@@ -6,6 +6,7 @@
 package View.Geral;
 
 import DAO.InsumosDAO;
+import View.vendas.OP;
 import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
 
@@ -25,13 +26,13 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
         readtablemateriais();
         origem = origin;
     }
-    
+
     public static void readtablemateriais() {
         DefaultTableModel model = (DefaultTableModel) tablemateriais.getModel();
         model.setNumRows(0);
-        
+
         InsumosDAO id = new InsumosDAO();
-        
+
         id.read().forEach(ib -> {
             model.addRow(new Object[]{
                 ib.getId(),
@@ -150,10 +151,23 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
 
     private void tablemateriaisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemateriaisMouseClicked
         if (evt.getClickCount() == 2) {
+            String codigo = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString();
+            String desc = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString();
             switch (origem) {
                 case "VendasMaterial":
-                    VM.txtmaterialdeorigem.setText(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString());
+                    VM.txtmaterialdeorigem.setText(codigo);
                     dispose();
+                    break;
+                case "OP":
+                    DefaultTableModel modelOP = (DefaultTableModel) OP.tableMP.getModel();
+                    modelOP.addRow(new Object[]{
+                        "",
+                        false,
+                        codigo,
+                        desc,
+                        0,
+                        false
+                    });
                     break;
             }
         }

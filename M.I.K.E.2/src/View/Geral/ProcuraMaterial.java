@@ -9,6 +9,7 @@ import DAO.ServicoMateriaisDAO;
 import DAO.VendasMateriaisDAO;
 import View.comercial.CategoriaDePreco;
 import View.servicos.OS;
+import View.vendas.OP;
 import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
 
@@ -246,7 +247,8 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
                         "",
                         "",
                         "",
-                        "",});
+                        ""
+                    });
                     break;
                 case "CotacaoVenda":
                     ItemCotacao.txtcodigo.setText(codigo);
@@ -259,8 +261,21 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
                 case "PedidoVenda":
                     ItemPedido.txtcodigo.setText(codigo);
                     ItemPedido.txtdesc.setText(desc);
+                    ItemPedido.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
+                    break;
+                case "OP":
+                    DefaultTableModel modelOP = (DefaultTableModel) OP.tableMP.getModel();
+                    modelOP.addRow(new Object[]{
+                        "",
+                        false,
+                        codigo,
+                        desc,
+                        0,
+                        false
+                    });
                     break;
             }
+            ItemCotacao.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
             dispose();
         }
     }//GEN-LAST:event_tablemateriaisMouseClicked
@@ -268,7 +283,7 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
         DefaultTableModel model = (DefaultTableModel) tablemateriais.getModel();
         model.setNumRows(0);
-        
+
         switch (origem) {
             case "CotacaoServico":
                 smd.pesquisa(txtpesquisa.getText()).forEach(smb -> {

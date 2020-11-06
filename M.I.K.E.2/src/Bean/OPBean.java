@@ -12,6 +12,7 @@ package Bean;
 public class OPBean {
 
     private int id;
+    private int idmaterial;
     private String op;
     private String dataabertura;
     private String dataprevista;
@@ -22,6 +23,8 @@ public class OPBean {
     private double qtd;
     private double qtdok;
     private double qtdnaook;
+    private String materia_prima;
+    private double qtdmp;
     private String status;
 
     public int getId() {
@@ -30,6 +33,14 @@ public class OPBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdmaterial() {
+        return idmaterial;
+    }
+
+    public void setIdmaterial(int idmaterial) {
+        this.idmaterial = idmaterial;
     }
 
     public String getOp() {
@@ -110,6 +121,22 @@ public class OPBean {
 
     public void setQtdnaook(double qtdnaook) {
         this.qtdnaook = qtdnaook;
+    }
+
+    public String getMateria_prima() {
+        return materia_prima;
+    }
+
+    public void setMateria_prima(String materia_prima) {
+        this.materia_prima = materia_prima;
+    }
+
+    public double getQtdmp() {
+        return qtdmp;
+    }
+
+    public void setQtdmp(double qtdmp) {
+        this.qtdmp = qtdmp;
     }
 
     public String getStatus() {

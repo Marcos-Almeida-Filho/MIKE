@@ -286,6 +286,32 @@ public class VendasMateriaisDAO {
         }
         return lastid;
     }
+    
+    public double readEstoque(int idMaterial) {
+
+        rsList();
+
+        double estoque = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT estoque FROM vendas_materiais WHERE id = " + idMaterial);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                estoque = rs.getDouble("estoque");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return estoque;
+    }
 
     public int idProduto(String codigo) {
         int produto = 0;
@@ -428,24 +454,26 @@ public class VendasMateriaisDAO {
         }
     }
 
-    public void updateEstoque(VendasMateriaisBean vmb) {
+    public void updateEstoque(double estoque, int id) {
 
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE vendas_materiais SET estoque = ? WHERE id = ?");
-
-            stmt.setDouble(1, vmb.getEstoque());
-            stmt.setInt(2, vmb.getId());
+            stmt = con.prepareStatement("UPDATE vendas_materiais SET estoque = " + estoque + " WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar estoque!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar estoque!";
+
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
