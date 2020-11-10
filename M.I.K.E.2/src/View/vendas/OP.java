@@ -11,6 +11,7 @@ import DAO.F_UP_HistDAO;
 import DAO.OPDAO;
 import DAO.OPDocDAO;
 import DAO.OPMPDAO;
+import DAO.OPMedicoesDAO;
 import DAO.OPObsDAO;
 import DAO.OPProcessosDAO;
 import DAO.ProcessosServicoDAO;
@@ -43,14 +44,15 @@ public class OP extends javax.swing.JInternalFrame {
 
     static OPDAO od = new OPDAO();
     static OPProcessosDAO opd = new OPProcessosDAO();
+    static OPMPDAO omd = new OPMPDAO();
+    static OPDocDAO odd = new OPDocDAO();
+    static OPObsDAO ood = new OPObsDAO();
+    static OPMedicoesDAO omed = new OPMedicoesDAO();
     static F_UP_HistDAO fuhd = new F_UP_HistDAO();
     static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
     static VendasMateriaisMovDAO vmmd = new VendasMateriaisMovDAO();
     static ProcessosServicoDAO psd = new ProcessosServicoDAO();
     static F_UPDAO fud = new F_UPDAO();
-    static OPMPDAO omd = new OPMPDAO();
-    static OPDocDAO odd = new OPDocDAO();
-    static OPObsDAO ood = new OPObsDAO();
 
     static int idMaterial = 0;
     static int iP = 0;
@@ -115,11 +117,11 @@ public class OP extends javax.swing.JInternalFrame {
         });
     }
 
-    public static void lerProcessos() {
+    public static void lerProcessos(String op) {
         DefaultTableModel modelProcessos = (DefaultTableModel) tableProcessos.getModel();
         modelProcessos.setNumRows(0);
 
-        opd.readProcessos(TxtNumOP.getText()).forEach(opb -> {
+        opd.readProcessos(op).forEach(opb -> {
             modelProcessos.addRow(new Object[]{
                 opb.getId(),
                 false,
@@ -150,6 +152,73 @@ public class OP extends javax.swing.JInternalFrame {
         });
     }
 
+    public static void lerMP(String op) {
+        DefaultTableModel modelMP = (DefaultTableModel) tableMP.getModel();
+
+        modelMP.setNumRows(0);
+
+        omd.readMP(op).forEach(omb -> {
+            modelMP.addRow(new Object[]{
+                omb.getId(),
+                false,
+                omb.getCodigo(),
+                omb.getDescricao(),
+                omb.getQtd(),
+                omb.isBaixa()
+            });
+        });
+    }
+
+    public static void lerObs(String op) {
+        DefaultTableModel modelObs = (DefaultTableModel) tableObs.getModel();
+
+        modelObs.setNumRows(0);
+
+        ood.readObs(op).forEach(oob -> {
+            modelObs.addRow(new Object[]{
+                oob.getId(),
+                false,
+                Dates.TransformarDataCurtaDoDB(oob.getData()),
+                oob.getUsuario(),
+                oob.getObs()
+            });
+        });
+    }
+
+    public static void lerInspecoes(String op) {
+        DefaultTableModel modelIns = (DefaultTableModel) tableInspecao.getModel();
+
+        modelIns.setNumRows(0);
+
+        for (int i = 0; i < tableProcessos.getRowCount(); i++) {
+            final String Processo = tableProcessos.getValueAt(i, 3).toString();
+            omed.readMedicoes(Integer.parseInt(tableProcessos.getValueAt(i, 0).toString())).forEach(omeb -> {
+                modelIns.addRow(new Object[]{
+                    Processo,
+                    omeb.getMedida(),
+                    omeb.getMaior(),
+                    omeb.getMenor(),
+                    omeb.getInstrumento()
+                });
+            });
+        }
+    }
+
+    public static void lerDocs(String op) {
+        DefaultTableModel modelDoc = (DefaultTableModel) tableDocs.getModel();
+
+        modelDoc.setNumRows(0);
+
+        odd.read(op).forEach(odb -> {
+            modelDoc.addRow(new Object[]{
+                odb.getId(),
+                false,
+                odb.getDescricao(),
+                odb.getLocal()
+            });
+        });
+    }
+
     public static void camposPorStatus() {
         String status = txtStatus.getText();
 
@@ -157,19 +226,31 @@ public class OP extends javax.swing.JInternalFrame {
             case "Rascunho":
                 TxtQtde.setEditable(true);
                 btnProcurarCliente.setEnabled(true);
+                btnProcurarProduto.setEnabled(true);
+                btnBaixaMP.setEnabled(true);
                 break;
             default:
                 TxtQtde.setEditable(false);
                 btnProcurarCliente.setEnabled(false);
+                btnProcurarProduto.setEnabled(false);
+                btnBaixaMP.setEnabled(false);
                 break;
         }
     }
 
-    public static void salvarOp() {
+    public static void criarOP() {
         String op = od.opAtual();
         idMaterial = vmd.idProduto(TxtCodigo.getText());
 
         od.create(op, Dates.CriarDataCurtaDBSemDataExistente(), Dates.CriarDataCurtaDBJDateChooser(txtDataEntrega.getDate()), TxtCliente.getText(), txtDav.getText(), idMaterial, TxtCodigo.getText(), TxtDescricao.getText(), Double.parseDouble(TxtQtde.getText()), Double.parseDouble(TxtQtde.getText()), "Rascunho");
+
+        TxtNumOP.setText(op);
+    }
+
+    public static void updateOP(String op) {
+        idMaterial = vmd.idProduto(TxtCodigo.getText());
+
+        od.updateOP(op, TxtCliente.getText(), idMaterial, TxtCodigo.getText(), TxtDescricao.getText(), Double.parseDouble(TxtQtde.getText()));
     }
 
     public static void salvarDocs(String op) {
@@ -256,7 +337,7 @@ public class OP extends javax.swing.JInternalFrame {
         TxtCodigo = new javax.swing.JTextField();
         TxtDescricao = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnProcurarProduto = new javax.swing.JButton();
         jTabbedPane3 = new javax.swing.JTabbedPane();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -533,7 +614,7 @@ public class OP extends javax.swing.JInternalFrame {
 
         jLabel6.setText("Descrição:");
 
-        jButton1.setText("Procurar");
+        btnProcurarProduto.setText("Procurar");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -544,7 +625,7 @@ public class OP extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(TxtDescricao)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1))
+                .addComponent(btnProcurarProduto))
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -562,7 +643,7 @@ public class OP extends javax.swing.JInternalFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(TxtDescricao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(btnProcurarProduto))
                 .addGap(14, 14, 14))
         );
 
@@ -954,11 +1035,11 @@ public class OP extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Medida", "Valor Maior", "Valor Menor", "Instrumento"
+                "Processo", "Medida", "Valor Maior", "Valor Menor", "Instrumento"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, false, true
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -983,26 +1064,51 @@ public class OP extends javax.swing.JInternalFrame {
         jPanel11.setBackground(new java.awt.Color(255, 255, 255));
 
         jButton3.setText("Adicionar Arquivo");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         tableDocs.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Nome", "Localização"
+                "ID", "", "Descrição", "Local"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, true
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
         jScrollPane8.setViewportView(tableDocs);
+        if (tableDocs.getColumnModel().getColumnCount() > 0) {
+            tableDocs.getColumnModel().getColumn(0).setMinWidth(0);
+            tableDocs.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableDocs.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableDocs.getColumnModel().getColumn(1).setMinWidth(35);
+            tableDocs.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableDocs.getColumnModel().getColumn(1).setMaxWidth(35);
+        }
 
         jButton8.setText("Excluir Arquivo");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -1037,9 +1143,16 @@ public class OP extends javax.swing.JInternalFrame {
                 "ID", "", "Código", "Descrição", "Quantidade", "Baixa"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, false, false, true, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -1252,16 +1365,44 @@ public class OP extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Em breve!");
+        if (TxtNumOP.getText().equals("")) {
+            criarOP();
+
+            String op = TxtNumOP.getText();
+
+            salvarDocs(op);
+
+            salvarMP(op);
+
+            salvarObs(op);
+        } else {
+            String op = TxtNumOP.getText();
+
+            updateOP(op);
+
+            salvarDocs(op);
+
+            salvarMP(op);
+
+            salvarObs(op);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tableOPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableOPMouseClicked
         if (evt.getClickCount() == 2) {
             tabOPS.setSelectedIndex(1);
             TxtNumOP.setText(tableOP.getValueAt(tableOP.rowAtPoint(evt.getPoint()), 2).toString());
-            lerOP(TxtNumOP.getText());
+            
+            String op = TxtNumOP.getText();
+            lerOP(op);
 
-            lerProcessos();
+            lerProcessos(op);
+            
+            lerDocs(op);
+            
+            lerObs(op);
+            
+            lerInspecoes(op);
 
             lerMedidasMaterial(idMaterial);
         }
@@ -1284,7 +1425,7 @@ public class OP extends javax.swing.JInternalFrame {
                 if (resp == 0) {
                     opd.inicioProcesso(Integer.parseInt(tableProcessos.getValueAt(tableProcessos.getSelectedRow(), 0).toString()), Dates.CriarDataCompletaParaDB(), Session.nome);
 
-                    lerProcessos();
+                    lerProcessos(TxtNumOP.getText());
                 }
             } else {
                 int id = Integer.parseInt(tableProcessos.getValueAt(tableProcessos.getSelectedRow(), 0).toString());
@@ -1484,7 +1625,28 @@ public class OP extends javax.swing.JInternalFrame {
         } else {
             for (int i = 0; i < rows; i++) {
                 if (tableMP.getValueAt(i, 5).equals(false)) {
-                    //dar baixa de estoque do material
+                    String material = tableMP.getValueAt(i, 2).toString();
+                    int idmaterial = vmd.idProduto(material);
+                    double estoqueAtual = vmd.readEstoque(idmaterial);
+                    double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString());
+                    if (qtd > estoqueAtual) {
+                        JOptionPane.showMessageDialog(null, "Estoque do item " + material + " é inferior ao selecionado para dar baixa.");
+                    } else {
+                        double estoque = estoqueAtual - qtd;
+
+                        vmd.updateEstoque(estoque, idmaterial);
+
+                        vmmd.create(idmaterial, estoqueAtual, qtd, estoque, TxtNumOP.getText() + " - baixa de MP", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+
+                        String op = TxtNumOP.getText();
+
+                        od.updateStatus(op, "Ativo");
+
+                        omd.updateBaixa(idmaterial);
+
+                        lerOP(op);
+
+                    }
                 }
             }
         }
@@ -1497,6 +1659,14 @@ public class OP extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableMPMouseClicked
 
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private static javax.swing.JTextField TxtCliente;
@@ -1505,11 +1675,11 @@ public class OP extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField TxtNumOP;
     public static javax.swing.JTextField TxtQtde;
     private javax.swing.JButton btnAddMP;
-    private javax.swing.JButton btnBaixaMP;
+    private static javax.swing.JButton btnBaixaMP;
     private javax.swing.JButton btnExcluirMP;
     private static javax.swing.JButton btnProcurarCliente;
+    private static javax.swing.JButton btnProcurarProduto;
     private static javax.swing.JComboBox<String> cbStatus;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -1564,7 +1734,7 @@ public class OP extends javax.swing.JInternalFrame {
     public static javax.swing.JPanel paneldadostxt;
     public static javax.swing.JTabbedPane tabOPS;
     private static javax.swing.JTable tableDocs;
-    private javax.swing.JTable tableInspecao;
+    private static javax.swing.JTable tableInspecao;
     public static javax.swing.JTable tableMP;
     private static javax.swing.JTable tableOP;
     private static javax.swing.JTable tableObs;

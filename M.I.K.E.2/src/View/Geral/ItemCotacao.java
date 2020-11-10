@@ -50,7 +50,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                         txtqtd.setText(String.valueOf(vcib.getQtd()));
                         txtvalor.setText(String.valueOf(vcib.getValorunitario()));
                         txtpedido.setText(vcib.getPedido());
-                        txtprazo.setText(vcib.getPrazo().replace(" dias", ""));
+                        txtprazo.setText(vcib.getPrazo().replace(" dias úteis", ""));
                     });
                     break;
                 default:
@@ -304,7 +304,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                             qtdf,
                             txtvalor.getText(),
                             totf,
-                            txtprazo.getText() + " dias",
+                            txtprazo.getText() + " dias úteis",
                             txtpedido.getText(),
                             ""
                         });
@@ -321,7 +321,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                             txtqtd.getText(),
                             txtvalor.getText(),
                             totf,
-                            txtprazo.getText() + " dias",
+                            txtprazo.getText() + " dias úteis",
                             txtpedido.getText(),
                             "",
                             idMaterial
@@ -338,7 +338,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
             String v = txtvalor.getText().replace(".", "");
             float valor = Float.parseFloat(v.replace(",", "."));
             float tot = qtd * valor;
-            String nprazo = txtprazo.getText().replace(" dias", "");
+            String nprazo = txtprazo.getText().replace(" dias úteis", "");
 
             switch (origin) {
                 case "CotacaoServico":

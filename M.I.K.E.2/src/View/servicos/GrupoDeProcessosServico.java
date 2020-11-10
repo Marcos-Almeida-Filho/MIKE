@@ -5,7 +5,7 @@
  */
 package View.servicos;
 
-import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ProcessosServicoBean;
 import Bean.ServicoGrupoDeProcessosItensBean;
 import DAO.ServicoGrupoDeProcessosDAO;
 import DAO.ServicoGrupoDeProcessosItensDAO;
@@ -34,7 +34,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
         model.setNumRows(0);
         ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
 
-        for (ServicoGrupoDeProcessosBean sgpb : sgpd.read()) {
+        for (ProcessosServicoBean sgpb : sgpd.read()) {
             model.addRow(new Object[]{
                 sgpb.getId(),
                 sgpb.getNome()
@@ -320,7 +320,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
         } else if (txtid.getText().equals("")) {
             //Criar o Grupo de processos
             ServicoGrupoDeProcessosDAO gpsd = new ServicoGrupoDeProcessosDAO();
-            ServicoGrupoDeProcessosBean gpsb = new ServicoGrupoDeProcessosBean();
+            ProcessosServicoBean gpsb = new ProcessosServicoBean();
 
             gpsb.setNome(txtnome.getText());
             //nome
@@ -328,7 +328,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
 
             //Pegar o número do ID do grupo criado e colocar no txtid
             int idcriado = 0;
-            for (ServicoGrupoDeProcessosBean sgpb : gpsd.readcreated(txtnome.getText())) {
+            for (ProcessosServicoBean sgpb : gpsd.readcreated(txtnome.getText())) {
                 idcriado = sgpb.getId();
             }
 
@@ -350,7 +350,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
         } else {
             //Criar o Grupo de processos
             ServicoGrupoDeProcessosDAO gpsd = new ServicoGrupoDeProcessosDAO();
-            ServicoGrupoDeProcessosBean gpsb = new ServicoGrupoDeProcessosBean();
+            ProcessosServicoBean gpsb = new ProcessosServicoBean();
 
             gpsb.setNome(txtnome.getText());
             gpsb.setId(Integer.parseInt(txtid.getText()));
@@ -391,7 +391,7 @@ public class GrupoDeProcessosServico extends javax.swing.JInternalFrame {
             ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
             ServicoGrupoDeProcessosItensDAO sgpid = new ServicoGrupoDeProcessosItensDAO();
 
-            for (ServicoGrupoDeProcessosBean sgpb : sgpd.click(Integer.parseInt(txtid.getText()))) {
+            for (ProcessosServicoBean sgpb : sgpd.click(Integer.parseInt(txtid.getText()))) {
                 txtnome.setText(sgpb.getNome());
             }
 

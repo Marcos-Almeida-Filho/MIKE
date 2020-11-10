@@ -5,7 +5,7 @@
  */
 package DAO;
 
-import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ProcessosServicoBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.awt.AWTException;
@@ -32,7 +32,7 @@ public class ProcessosServicoDAO {
     
     ResultSet rs;
     
-    List<ServicoGrupoDeProcessosBean> listpsb;
+    List<ProcessosServicoBean> listpsb;
     
     public void conStmt() {
         con = ConnectionFactory.getConnection();
@@ -48,7 +48,7 @@ public class ProcessosServicoDAO {
         listpsb = new ArrayList<>();
     }
 
-    public void create(ServicoGrupoDeProcessosBean psb) {
+    public void create(ProcessosServicoBean psb) {
 
         conStmt();
 
@@ -70,7 +70,7 @@ public class ProcessosServicoDAO {
         }
     }
 
-    public List<ServicoGrupoDeProcessosBean> read() {
+    public List<ProcessosServicoBean> read() {
 
         rsList();
 
@@ -79,7 +79,7 @@ public class ProcessosServicoDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
+                ProcessosServicoBean psb = new ProcessosServicoBean();
 
                 psb.setId(rs.getInt("id"));
                 psb.setNome(rs.getString("nome"));
@@ -125,7 +125,7 @@ public class ProcessosServicoDAO {
         return qtd;
     }
 
-    public void update(ServicoGrupoDeProcessosBean psb) {
+    public void update(ProcessosServicoBean psb) {
 
         conStmt();
         

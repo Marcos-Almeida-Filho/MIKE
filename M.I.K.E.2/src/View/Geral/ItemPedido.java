@@ -243,7 +243,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                             txtqtd.getText(),
                             txtvalor.getText(),
                             totf,
-                            txtprazo.getText() + " dias",
+                            txtprazo.getText() + " dias úteis",
                             txtpedido.getText(),
                             "",
                             "",
@@ -259,11 +259,11 @@ public class ItemPedido extends javax.swing.JInternalFrame {
             String v = txtvalor.getText().replace(".", "");
             double valor = Double.parseDouble(v.replace(",", "."));
             double tot = qtd * valor;
-            String nprazo = txtprazo.getText().replace(" dias", "");
+            String nprazo = txtprazo.getText().replace(" dias úteis", "");
 
             switch (origin) {
                 case "PedidoVenda":
-                    vpid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo + " dias", txtpedido.getText(), idItemCotacao);
+                    vpid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo + " dias úteis", txtpedido.getText(), idItemCotacao);
                     PedidoVenda.lerItensPedido(PedidoVenda.txtPedido.getText());
                     PedidoVenda.txtTotal();
                     break;

@@ -5,6 +5,8 @@
  */
 package View.vendas;
 
+import DAO.ProcessosVendasDAO;
+import DAO.ProcessosVendasMedicoesDAO;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -15,11 +17,52 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ProcessosVendas extends javax.swing.JInternalFrame {
 
+    private int idProcesso = 0;
+
+    static ProcessosVendasDAO pvd = new ProcessosVendasDAO();
+    static ProcessosVendasMedicoesDAO pvmd = new ProcessosVendasMedicoesDAO();
+
     /**
      * Creates new form ProcessosVendas
      */
     public ProcessosVendas() {
         initComponents();
+        lerProcessosDeVenda();
+    }
+
+    public static void lerProcessosDeVenda() {
+        DefaultTableModel model = (DefaultTableModel) tableProcessos.getModel();
+        model.setNumRows(0);
+
+        pvd.readTodos().forEach(pvb -> {
+            model.addRow(new Object[]{
+                pvb.getId(),
+                false,
+                pvb.getNome()
+            });
+        });
+    }
+
+    public void lerProcesso(int idProcesso) {
+        tabprocessos.setSelectedIndex(1);
+
+        this.idProcesso = idProcesso;
+
+        pvd.readProcesso(idProcesso).forEach(pvb -> {
+            txtNome.setText(pvb.getNome());
+            txtStatus.setText(pvb.getStatus());
+        });
+
+        DefaultTableModel model = (DefaultTableModel) tableMedicoes.getModel();
+        model.setNumRows(0);
+
+        pvmd.readMedidas(idProcesso).forEach(pvmb -> {
+            model.addRow(new Object[]{
+                pvmb.getId(),
+                false,
+                pvmb.getMedida()
+            });
+        });
     }
 
     /**
@@ -34,22 +77,23 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         tabprocessos = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tableprocessos = new javax.swing.JTable();
+        tableProcessos = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
-        txtpesquisa = new javax.swing.JTextField();
+        txtPesquisa = new javax.swing.JTextField();
+        jButton5 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtid = new javax.swing.JTextField();
-        txtnome = new javax.swing.JTextField();
-        txtstatus = new javax.swing.JTextField();
+        txtNome = new javax.swing.JTextField();
+        txtStatus = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tablemedicoes = new javax.swing.JTable();
+        tableMedicoes = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -65,7 +109,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        tableprocessos.setModel(new javax.swing.table.DefaultTableModel(
+        tableProcessos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -81,15 +125,20 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableprocessos.setName("tableprocessos"); // NOI18N
-        jScrollPane2.setViewportView(tableprocessos);
-        if (tableprocessos.getColumnModel().getColumnCount() > 0) {
-            tableprocessos.getColumnModel().getColumn(0).setMinWidth(0);
-            tableprocessos.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tableprocessos.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableprocessos.getColumnModel().getColumn(1).setMinWidth(40);
-            tableprocessos.getColumnModel().getColumn(1).setPreferredWidth(40);
-            tableprocessos.getColumnModel().getColumn(1).setMaxWidth(40);
+        tableProcessos.setName("tableProcessos"); // NOI18N
+        tableProcessos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableProcessosMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tableProcessos);
+        if (tableProcessos.getColumnModel().getColumnCount() > 0) {
+            tableProcessos.getColumnModel().getColumn(0).setMinWidth(0);
+            tableProcessos.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableProcessos.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableProcessos.getColumnModel().getColumn(1).setMinWidth(40);
+            tableProcessos.getColumnModel().getColumn(1).setPreferredWidth(40);
+            tableProcessos.getColumnModel().getColumn(1).setMaxWidth(40);
         }
 
         jButton3.setText("Novo");
@@ -103,17 +152,44 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
         jPanel4.setName("jPanel4"); // NOI18N
 
-        txtpesquisa.setName("txtpesquisa"); // NOI18N
+        txtPesquisa.setName("txtPesquisa"); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtpesquisa, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+            .addComponent(txtPesquisa)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        jButton5.setText("Desativar");
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
+        jPanel6.setName("jPanel6"); // NOI18N
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ativo", "Desativado", "Todos" }));
+        jComboBox1.setName("jComboBox1"); // NOI18N
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jComboBox1, 0, 132, Short.MAX_VALUE)
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -124,23 +200,29 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
+                    .addComponent(jButton5))
                 .addContainerGap())
         );
 
@@ -152,60 +234,54 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados"));
         jPanel3.setName("jPanel3"); // NOI18N
 
-        jLabel1.setText("ID");
-        jLabel1.setName("jLabel1"); // NOI18N
-
         jLabel2.setText("Nome");
         jLabel2.setName("jLabel2"); // NOI18N
 
         jLabel3.setText("Status");
         jLabel3.setName("jLabel3"); // NOI18N
 
-        txtid.setEnabled(false);
-        txtid.setName("txtid"); // NOI18N
+        txtNome.setName("txtNome"); // NOI18N
 
-        txtnome.setName("txtnome"); // NOI18N
-
-        txtstatus.setEnabled(false);
-        txtstatus.setName("txtstatus"); // NOI18N
+        txtStatus.setEnabled(false);
+        txtStatus.setName("txtStatus"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtnome, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
+                .addComponent(txtNome)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtnome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel1)
-                .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jLabel3)
-                .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(jLabel2))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel3)
+                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jButton4.setText("Salvar");
         jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Medições")));
         jPanel5.setName("jPanel5"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        tablemedicoes.setModel(new javax.swing.table.DefaultTableModel(
+        tableMedicoes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -221,15 +297,15 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tablemedicoes.setName("tablemedicoes"); // NOI18N
-        jScrollPane1.setViewportView(tablemedicoes);
-        if (tablemedicoes.getColumnModel().getColumnCount() > 0) {
-            tablemedicoes.getColumnModel().getColumn(0).setMinWidth(0);
-            tablemedicoes.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tablemedicoes.getColumnModel().getColumn(0).setMaxWidth(0);
-            tablemedicoes.getColumnModel().getColumn(1).setMinWidth(40);
-            tablemedicoes.getColumnModel().getColumn(1).setPreferredWidth(40);
-            tablemedicoes.getColumnModel().getColumn(1).setMaxWidth(40);
+        tableMedicoes.setName("tableMedicoes"); // NOI18N
+        jScrollPane1.setViewportView(tableMedicoes);
+        if (tableMedicoes.getColumnModel().getColumnCount() > 0) {
+            tableMedicoes.getColumnModel().getColumn(0).setMinWidth(0);
+            tableMedicoes.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableMedicoes.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableMedicoes.getColumnModel().getColumn(1).setMinWidth(40);
+            tableMedicoes.getColumnModel().getColumn(1).setPreferredWidth(40);
+            tableMedicoes.getColumnModel().getColumn(1).setMaxWidth(40);
         }
 
         jButton1.setText("Adicionar Medição");
@@ -237,6 +313,11 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
 
         jButton2.setText("Excluir Medição");
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -247,7 +328,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,10 +383,10 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int resp = JOptionPane.showConfirmDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION);
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja lançar um novo Processo de Vendas?", "Novo Processo de Vendas", JOptionPane.YES_NO_OPTION);
         if (resp == 0) {
             tabprocessos.setSelectedIndex(1);
-            DefaultTableModel model = (DefaultTableModel) tablemedicoes.getModel();
+            DefaultTableModel model = (DefaultTableModel) tableMedicoes.getModel();
             model.setNumRows(0);
             for (int i = 0; i < jPanel3.getComponentCount(); i++) {
                 if (jPanel3.getComponent(i) instanceof JTextField) {
@@ -316,13 +397,95 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableProcessos.getRowCount(); i++) {
+            if (tableProcessos.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum processo selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja desativar os processos selecionados?", "Desativar Processos", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                for (int i = 0; i < tableProcessos.getRowCount(); i++) {
+                    if (tableProcessos.getValueAt(i, 1).equals(true)) {
+                        pvd.desativarProcesso(Integer.parseInt(tableProcessos.getValueAt(i, 0).toString()));
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void tableProcessosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProcessosMouseClicked
+        if (evt.getClickCount() == 2) {
+            lerProcesso(Integer.parseInt(tableProcessos.getValueAt(tableProcessos.getSelectedRow(), 0).toString()));
+        }
+    }//GEN-LAST:event_tableProcessosMouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if (idProcesso == 0) {
+            pvd.create(txtNome.getText());
+
+            idProcesso = pvd.idProcesso(txtNome.getText());
+
+            for (int i = 0; i < tableMedicoes.getRowCount(); i++) {
+                pvmd.create(idProcesso, tableMedicoes.getValueAt(i, 2).toString());
+            }
+        } else {
+            pvd.updateProcesso(idProcesso, txtNome.getText());
+
+            for (int i = 0; i < tableMedicoes.getRowCount(); i++) {
+                if (tableMedicoes.getValueAt(i, 0).equals("")) {
+                    pvmd.create(idProcesso, tableMedicoes.getValueAt(i, 2).toString());
+                }
+            }
+        }
+
+        lerProcesso(idProcesso);
+        lerProcessosDeVenda();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableMedicoes.getRowCount(); i++) {
+            if (tableMedicoes.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum medida selecionada.");
+        } else if (idProcesso == 0) {
+            JOptionPane.showMessageDialog(null, "Salve o Processo ou selecione um Processo primeiro.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir as medidas selecionadas?", "Excluir Medidas", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                for (int i = 0; i < tableMedicoes.getRowCount(); i++) {
+                    if (tableMedicoes.getValueAt(i, 1).equals(true)) {
+                        pvmd.delete(Integer.parseInt(tableMedicoes.getValueAt(i, 0).toString()));
+                    }
+                }
+            }
+
+            lerProcesso(idProcesso);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
-    public javax.swing.JLabel jLabel1;
+    public javax.swing.JButton jButton5;
+    public javax.swing.JComboBox<String> jComboBox1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JPanel jPanel1;
@@ -330,14 +493,14 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel3;
     public javax.swing.JPanel jPanel4;
     public javax.swing.JPanel jPanel5;
+    public javax.swing.JPanel jPanel6;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
-    public javax.swing.JTable tablemedicoes;
-    public javax.swing.JTable tableprocessos;
+    public javax.swing.JTable tableMedicoes;
+    public static javax.swing.JTable tableProcessos;
     public javax.swing.JTabbedPane tabprocessos;
-    public javax.swing.JTextField txtid;
-    public javax.swing.JTextField txtnome;
-    public javax.swing.JTextField txtpesquisa;
-    public javax.swing.JTextField txtstatus;
+    public javax.swing.JTextField txtNome;
+    public javax.swing.JTextField txtPesquisa;
+    public javax.swing.JTextField txtStatus;
     // End of variables declaration//GEN-END:variables
 }

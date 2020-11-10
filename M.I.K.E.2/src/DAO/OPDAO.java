@@ -285,15 +285,16 @@ public class OPDAO {
      *
      * @param op
      * @param cliente
+     * @param idMaterial
      * @param codigo
      * @param descricao
      * @param qtd
      */
-    public void updateOP(String op, String cliente, String codigo, String descricao, double qtd) {
+    public void updateOP(String op, String cliente, int idMaterial, String codigo, String descricao, double qtd) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + " WHERE op = '" + op + "'");
+            stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + " WHERE op = '" + op + "'");
 
             stmt.executeUpdate();
         } catch (SQLException e) {

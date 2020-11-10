@@ -44,6 +44,7 @@ import View.financeiro.Cartoes;
 import View.financeiro.Extratos;
 import View.fiscal.NotasFiscais;
 import View.logistica.LocaisArmazenagem;
+import View.qualidade.Medicoes;
 import View.vendas.CotacaoVenda;
 import View.vendas.PedidoVenda;
 import View.vendas.ProcessosVendas;
@@ -1376,7 +1377,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_item_vendas_processosActionPerformed
 
     private void item_medicoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_medicoesActionPerformed
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
 
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Medicoes m = new Medicoes();
+            Telas.AparecerTela(m);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_medicoesActionPerformed
 
     private void item_cartoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_cartoesActionPerformed

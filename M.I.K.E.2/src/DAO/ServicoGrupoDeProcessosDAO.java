@@ -5,7 +5,7 @@
  */
 package DAO;
 
-import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ProcessosServicoBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.awt.AWTException;
@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
  */
 public class ServicoGrupoDeProcessosDAO {
 
-    public void create(ServicoGrupoDeProcessosBean psb) {
+    public void create(ProcessosServicoBean psb) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -50,7 +50,7 @@ public class ServicoGrupoDeProcessosDAO {
         }
     }
 
-    public List<ServicoGrupoDeProcessosBean> read() {
+    public List<ProcessosServicoBean> read() {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -58,14 +58,14 @@ public class ServicoGrupoDeProcessosDAO {
 
         ResultSet rs = null;
 
-        List<ServicoGrupoDeProcessosBean> listpsb = new ArrayList<>();
+        List<ProcessosServicoBean> listpsb = new ArrayList<>();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM servicos_grupo_processos");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
+                ProcessosServicoBean psb = new ProcessosServicoBean();
 
                 psb.setId(rs.getInt("id"));
                 psb.setNome(rs.getString("nome"));
@@ -85,7 +85,7 @@ public class ServicoGrupoDeProcessosDAO {
         return listpsb;
     }
 
-    public List<ServicoGrupoDeProcessosBean> readidgrupo(String nome) {
+    public List<ProcessosServicoBean> readidgrupo(String nome) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -93,7 +93,7 @@ public class ServicoGrupoDeProcessosDAO {
 
         ResultSet rs = null;
 
-        List<ServicoGrupoDeProcessosBean> listpsb = new ArrayList<>();
+        List<ProcessosServicoBean> listpsb = new ArrayList<>();
 
         try {
             stmt = con.prepareStatement("SELECT id FROM servicos_grupo_processos WHERE nome = ?");
@@ -101,7 +101,7 @@ public class ServicoGrupoDeProcessosDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
+                ProcessosServicoBean psb = new ProcessosServicoBean();
 
                 psb.setId(rs.getInt("id"));
 
@@ -120,7 +120,7 @@ public class ServicoGrupoDeProcessosDAO {
         return listpsb;
     }
 
-    public List<ServicoGrupoDeProcessosBean> click(int id) {
+    public List<ProcessosServicoBean> click(int id) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -128,7 +128,7 @@ public class ServicoGrupoDeProcessosDAO {
 
         ResultSet rs = null;
 
-        List<ServicoGrupoDeProcessosBean> listpsb = new ArrayList<>();
+        List<ProcessosServicoBean> listpsb = new ArrayList<>();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM servicos_grupo_processos WHERE id = ?");
@@ -136,7 +136,7 @@ public class ServicoGrupoDeProcessosDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
+                ProcessosServicoBean psb = new ProcessosServicoBean();
 
                 psb.setId(rs.getInt("id"));
                 psb.setNome(rs.getString("nome"));
@@ -156,7 +156,7 @@ public class ServicoGrupoDeProcessosDAO {
         return listpsb;
     }
 
-    public List<ServicoGrupoDeProcessosBean> readcreated(String nome) {
+    public List<ProcessosServicoBean> readcreated(String nome) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -164,7 +164,7 @@ public class ServicoGrupoDeProcessosDAO {
 
         ResultSet rs = null;
 
-        List<ServicoGrupoDeProcessosBean> listpsb = new ArrayList<>();
+        List<ProcessosServicoBean> listpsb = new ArrayList<>();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM servicos_grupo_processos WHERE nome = ?");
@@ -172,7 +172,7 @@ public class ServicoGrupoDeProcessosDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
+                ProcessosServicoBean psb = new ProcessosServicoBean();
 
                 psb.setId(rs.getInt("id"));
 
@@ -191,7 +191,7 @@ public class ServicoGrupoDeProcessosDAO {
         return listpsb;
     }
 
-    public List<ServicoGrupoDeProcessosBean> pesquisa(String pesquisa) {
+    public List<ProcessosServicoBean> pesquisa(String pesquisa) {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -199,14 +199,14 @@ public class ServicoGrupoDeProcessosDAO {
 
         ResultSet rs = null;
 
-        List<ServicoGrupoDeProcessosBean> listub = new ArrayList<>();
+        List<ProcessosServicoBean> listub = new ArrayList<>();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM usuarios WHERE id LIKE '%" + pesquisa + "%' OR nome LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ServicoGrupoDeProcessosBean ub = new ServicoGrupoDeProcessosBean();
+                ProcessosServicoBean ub = new ProcessosServicoBean();
 
                 ub.setId(rs.getInt("id"));
                 ub.setNome(rs.getString("nome"));
@@ -226,7 +226,7 @@ public class ServicoGrupoDeProcessosDAO {
         return listub;
     }
 
-    public void update(ServicoGrupoDeProcessosBean psb) {
+    public void update(ProcessosServicoBean psb) {
 
         Connection con = ConnectionFactory.getConnection();
 

@@ -5,7 +5,9 @@
  */
 package View.qualidade;
 
+import DAO.MedicoesDAO;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,11 +15,28 @@ import javax.swing.JOptionPane;
  */
 public class Medicoes extends javax.swing.JInternalFrame {
 
+    static MedicoesDAO md = new MedicoesDAO();
+
     /**
      * Creates new form Medicoes
      */
     public Medicoes() {
         initComponents();
+        lerMedicoes();
+    }
+
+    public static void lerMedicoes() {
+        DefaultTableModel model = (DefaultTableModel) tablemedicoes.getModel();
+        model.setNumRows(0);
+
+        md.read().forEach(mb -> {
+            model.addRow(new Object[]{
+                mb.getId(),
+                false,
+                mb.getNome(),
+                mb.getUnidade()
+            });
+        });
     }
 
     /**
@@ -46,6 +65,11 @@ public class Medicoes extends javax.swing.JInternalFrame {
 
         jButton1.setText("Adicionar");
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Excluir");
         jButton2.setName("jButton2"); // NOI18N
@@ -177,12 +201,16 @@ public class Medicoes extends javax.swing.JInternalFrame {
             if (resp == 0) {
                 for (int i = 0; i < tablemedicoes.getRowCount(); i++) {
                     if (tablemedicoes.getValueAt(i, 1).equals(true)) {
-                        
+
                     }
                 }
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -192,7 +220,7 @@ public class Medicoes extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
     public javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable tablemedicoes;
+    public static javax.swing.JTable tablemedicoes;
     public javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables
 }

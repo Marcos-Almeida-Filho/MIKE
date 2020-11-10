@@ -1162,7 +1162,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                 ItemPedido.txtqtd.setText(tableItens.getValueAt(row, 4).toString());
                 ItemPedido.txtvalor.setText(tableItens.getValueAt(row, 5).toString());
                 ItemPedido.txtpedido.setText(tableItens.getValueAt(row, 8).toString());
-                ItemPedido.txtprazo.setText(tableItens.getValueAt(row, 7).toString().replace(" dias", ""));
+                ItemPedido.txtprazo.setText(tableItens.getValueAt(row, 7).toString().replace(" dias úteis", ""));
 
                 Telas.AparecerTela(ip);
             }
@@ -1503,7 +1503,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                         String op = od.opAtual();
                         double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString().replace(".", "").replace(",", "."));
                         int idProduto = vmd.idProduto(tableItens.getValueAt(i, 2).toString());
-                        String dataEntrega = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 7).toString().replace(" dias", "")));
+                        String dataEntrega = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 7).toString().replace(" dias úteis", "")));
                         int idMaterial = Integer.parseInt(tableItens.getValueAt(i, 11).toString());
                         String material = tableItens.getValueAt(i, 2).toString();
                         String dataCriacao = Dates.CriarDataCurtaDBSemDataExistente();
@@ -1552,7 +1552,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                                     }
                                 }.start();
                             }
-                            odd.create(op, vmdb.getDescricao(), filecopy.toString());
+                            odd.create(op, vmdb.getDescricao(), filecopy.toString().replace("//", "////"));
                         });
                     }
                 }

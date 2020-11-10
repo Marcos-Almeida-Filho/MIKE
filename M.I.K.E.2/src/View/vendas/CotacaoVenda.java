@@ -1210,7 +1210,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 ItemCotacao.txtqtd.setText(tableItens.getValueAt(row, 4).toString());
                 ItemCotacao.txtvalor.setText(tableItens.getValueAt(row, 5).toString());
                 ItemCotacao.txtpedido.setText(tableItens.getValueAt(row, 7).toString());
-                ItemCotacao.txtprazo.setText(tableItens.getValueAt(row, 8).toString().replace(" dias", ""));
+                ItemCotacao.txtprazo.setText(tableItens.getValueAt(row, 8).toString().replace(" dias úteis", ""));
 
                 Telas.AparecerTela(ic);
             }

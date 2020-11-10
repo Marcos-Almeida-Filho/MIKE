@@ -6,7 +6,7 @@
 package View.servicos;
 
 import Bean.OSProcessosBean;
-import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ProcessosServicoBean;
 import Bean.ServicoGrupoDeProcessosItensBean;
 import DAO.OSProcessosDAO;
 import DAO.ServicoGrupoDeProcessosDAO;
@@ -33,7 +33,7 @@ public class ProcuraGrupoDeProcessosOS extends javax.swing.JInternalFrame {
 
         ServicoGrupoDeProcessosDAO sgpd = new ServicoGrupoDeProcessosDAO();
 
-        for (ServicoGrupoDeProcessosBean sgpb : sgpd.read()) {
+        for (ProcessosServicoBean sgpb : sgpd.read()) {
             model.addRow(new Object[]{
                 sgpb.getId(),
                 sgpb.getNome()
@@ -171,7 +171,7 @@ public class ProcuraGrupoDeProcessosOS extends javax.swing.JInternalFrame {
 
             //Pegar o id do grupo
             int id = 0;
-            for (ServicoGrupoDeProcessosBean b : d.readidgrupo(nome)) {
+            for (ProcessosServicoBean b : d.readidgrupo(nome)) {
                 id = b.getId();
             }
 

@@ -5,7 +5,7 @@
  */
 package View.servicos;
 
-import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ProcessosServicoBean;
 import Bean.UsuariosBean;
 import DAO.ServicoGrupoDeProcessosDAO;
 import DAO.UsuariosDAO;
@@ -30,7 +30,7 @@ public class ProcurarGrupoDeProcessosServico extends javax.swing.JInternalFrame 
         model.setNumRows(0);
         ServicoGrupoDeProcessosDAO sgdpd = new ServicoGrupoDeProcessosDAO();
 
-        for (ServicoGrupoDeProcessosBean sgdpb : sgdpd.read()) {
+        for (ProcessosServicoBean sgdpb : sgdpd.read()) {
             model.addRow(new Object[]{
                 sgdpb.getId(),
                 sgdpb.getNome()
@@ -167,7 +167,7 @@ public class ProcurarGrupoDeProcessosServico extends javax.swing.JInternalFrame 
             model.setNumRows(0);
             ServicoGrupoDeProcessosDAO ud = new ServicoGrupoDeProcessosDAO();
 
-            for (ServicoGrupoDeProcessosBean ub : ud.pesquisa(txtpesquisa.getText())) {
+            for (ProcessosServicoBean ub : ud.pesquisa(txtpesquisa.getText())) {
                 model.addRow(new Object[]{
                     ub.getId(),
                     ub.getNome()
@@ -178,7 +178,7 @@ public class ProcurarGrupoDeProcessosServico extends javax.swing.JInternalFrame 
             model.setNumRows(0);
             ServicoGrupoDeProcessosDAO ud = new ServicoGrupoDeProcessosDAO();
 
-            for (ServicoGrupoDeProcessosBean ub : ud.pesquisa(txtpesquisa.getText())) {
+            for (ProcessosServicoBean ub : ud.pesquisa(txtpesquisa.getText())) {
                 model.addRow(new Object[]{
                     ub.getId(),
                     ub.getNome()

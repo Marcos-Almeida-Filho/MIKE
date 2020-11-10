@@ -5,7 +5,7 @@
  */
 package DAO;
 
-import Bean.OPDocBean;
+import Bean.MedicoesBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.sql.Connection;
@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  *
  * @author Marcos Filho
  */
-public class OPDocDAO {
+public class MedicoesDAO {
 
     Connection con;
 
@@ -28,33 +28,33 @@ public class OPDocDAO {
 
     ResultSet rs;
 
-    List<OPDocBean> listob;
+    List<MedicoesBean> listmb;
 
-    OPDocBean odb;
+    MedicoesBean mb;
 
-    public void conStmt() {
+    private void conStmt() {
         con = ConnectionFactory.getConnection();
 
         stmt = null;
     }
 
-    public void rsList() {
+    private void rsList() {
         conStmt();
 
         rs = null;
 
-        listob = new ArrayList<>();
+        listmb = new ArrayList<>();
     }
 
-    public void create(String op, String descricao, String local) {
+    public void create(String nome, String unidade) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ('" + op + "', '" + descricao + "', '" + local + "')");
+            stmt = con.prepareStatement("INSERT INTO medicoes (nome, unidade) VALUES ('" + nome + "', '" + unidade + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            String msg = "Erro ao criar documento da OP.";
+            String msg = "Erro ao criar Medida.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
@@ -69,25 +69,24 @@ public class OPDocDAO {
         }
     }
 
-    public List<OPDocBean> read(String op) {
+    public List<MedicoesBean> read() {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM op_docs WHERE op = '" + op + "'");
+            stmt = con.prepareStatement("SELECT * FROM medicoes");
 
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                odb = new OPDocBean();
+                mb = new MedicoesBean();
 
-                odb.setId(rs.getInt("id"));
-                odb.setDescricao(rs.getString("descricao"));
-                odb.setLocal(rs.getString("local"));
+                mb.setNome(rs.getString("nome"));
+                mb.setUnidade(rs.getString("unidade"));
 
-                listob.add(odb);
+                listmb.add(mb);
             }
         } catch (SQLException e) {
-            String msg = "Erro ao ler Arquivos da OP.";
+            String msg = "Erro ao ler Medições.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
@@ -101,17 +100,41 @@ public class OPDocDAO {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
 
-        return listob;
+        return listmb;
+    }
+
+    public void update(int id, String nome, String unidade) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE medicoes SET nome = '" + nome + "', unidade = '" + unidade + "' WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar Medida.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
     }
 
     public void delete(int id) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("DELETE FROM op_docs WHERE id = " + id);
+            stmt = con.prepareStatement("DELETE FROM medicoes WHERE id = " + id);
+
             stmt.executeUpdate();
         } catch (SQLException e) {
-            String msg = "Erro ao excluir documento da OP.";
+            String msg = "Erro ao excluir Medida.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {

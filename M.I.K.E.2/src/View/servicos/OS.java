@@ -10,7 +10,7 @@ import Bean.F_UP_HistBean;
 import Bean.OSBean;
 import Bean.OSDocumentosBean;
 import Bean.OSProcessosBean;
-import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ProcessosServicoBean;
 import Bean.ServicoMateriaisBean;
 import Bean.ServicoMateriaisMovimentacaoBean;
 import Bean.ServicoPedidoBean;
@@ -917,7 +917,7 @@ public class OS extends javax.swing.JInternalFrame {
 
                         int i = 0;
 
-                        for (ServicoGrupoDeProcessosBean psb : psd.read()) {
+                        for (ProcessosServicoBean psb : psd.read()) {
                             processos[i] = psb.getNome();
                             i++;
                         }
@@ -2026,7 +2026,7 @@ public class OS extends javax.swing.JInternalFrame {
 
                 int i = 0;
 
-                for (ServicoGrupoDeProcessosBean psb : psd.read()) {
+                for (ProcessosServicoBean psb : psd.read()) {
                     processos[i] = psb.getNome();
                     i++;
                 }

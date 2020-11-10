@@ -9,10 +9,11 @@ package Bean;
  *
  * @author Marcos Filho
  */
-public class ServicoGrupoDeProcessos {
+public class ProcessosVendasBean {
 
     private int id;
     private String nome;
+    private String status;
 
     public int getId() {
         return id;
@@ -28,6 +29,14 @@ public class ServicoGrupoDeProcessos {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

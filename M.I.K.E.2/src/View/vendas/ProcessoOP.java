@@ -572,14 +572,16 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
             }
             fecharProcesso(qtdOk, qtdNaoOk, obs, motivo);
 
-            OP.lerOP(OP.TxtNumOP.getText());
-            OP.lerProcessos();
+            String op = OP.TxtNumOP.getText();
+            OP.lerOP(op);
+            OP.lerProcessos(op);
             dispose();
         } else {
             fecharProcesso(qtdOk, qtdNaoOk, obs, motivo);
 
-            OP.lerOP(OP.TxtNumOP.getText());
-            OP.lerProcessos();
+            String op = OP.TxtNumOP.getText();
+            OP.lerOP(op);
+            OP.lerProcessos(op);
             dispose();
         }
     }//GEN-LAST:event_btnSalvarActionPerformed

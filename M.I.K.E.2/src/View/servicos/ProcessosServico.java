@@ -5,7 +5,7 @@
  */
 package View.servicos;
 
-import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ProcessosServicoBean;
 import DAO.ProcessosServicoDAO;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
 public class ProcessosServico extends javax.swing.JInternalFrame {
 
     static ProcessosServicoDAO psd = new ProcessosServicoDAO();
-    static ServicoGrupoDeProcessosBean psb = new ServicoGrupoDeProcessosBean();
+    static ProcessosServicoBean psb = new ProcessosServicoBean();
 
     /**
      * Creates new form ProcessosServico

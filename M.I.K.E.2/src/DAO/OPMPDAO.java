@@ -101,6 +101,29 @@ public class OPMPDAO {
         return listopmp;
     }
 
+    public void updateBaixa(int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op_mp SET baixa = true WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar matéria prima da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
     public void delete(int id) {
         conStmt();
 

@@ -5,7 +5,7 @@
  */
 package View.servicos;
 
-import Bean.ServicoGrupoDeProcessosBean;
+import Bean.ProcessosServicoBean;
 import DAO.ProcessosServicoDAO;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -30,7 +30,7 @@ public class ProcessosServicoEscolha extends javax.swing.JInternalFrame {
 
         ProcessosServicoDAO psd = new ProcessosServicoDAO();
 
-        for (ServicoGrupoDeProcessosBean psb : psd.read()) {
+        for (ProcessosServicoBean psb : psd.read()) {
             model.addRow(new Object[]{
                 false,
                 psb.getNome()

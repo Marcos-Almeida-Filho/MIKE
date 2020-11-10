@@ -9,7 +9,7 @@ package Bean;
  *
  * @author Marcos Filho
  */
-public class ServicoGrupoDeProcessosBean {
+public class ProcessosServicoBean {
 
     private int id;
     private String nome;
