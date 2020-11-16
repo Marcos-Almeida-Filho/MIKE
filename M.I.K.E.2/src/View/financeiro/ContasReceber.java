@@ -72,28 +72,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         CARDAO card = new CARDAO();
 
         switch (cbstatus.getSelectedIndex()) {
-            case 0:
-                card.readaberto().forEach((carb) -> {
-                    String datapagamento;
-                    if (carb.getDatarecebimento() == null) {
-                        datapagamento = carb.getDatarecebimento();
-                    } else {
-                        datapagamento = Dates.TransformarDataCurtaDoDB(carb.getDatarecebimento());
-                    }
-                    model.addRow(new Object[]{
-                        false,
-                        carb.getId(),
-                        carb.getNotafiscal(),
-                        carb.getCliente(),
-                        carb.getParcela(),
-                        Valores.TransformarValorFloatEmDinheiro(String.valueOf(carb.getValorparcela())),
-                        Dates.TransformarDataCurtaDoDB(carb.getDataparcela()),
-                        datapagamento,
-                        carb.getStatus()
-                    });
-                });
-                break;
-            case 6:
+            case 3:
                 card.readtodos().forEach((carb) -> {
                     String datapagamento;
                     if (carb.getDatarecebimento() == null) {
@@ -107,7 +86,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                         carb.getNotafiscal(),
                         carb.getCliente(),
                         carb.getParcela(),
-                        carb.getValorparcela(),
+                        Valores.TransformarDoubleDBemDinheiro(carb.getValorparcela()),
                         Dates.TransformarDataCurtaDoDB(carb.getDataparcela()),
                         datapagamento,
                         carb.getStatus()
@@ -128,7 +107,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                         carb.getNotafiscal(),
                         carb.getCliente(),
                         carb.getParcela(),
-                        carb.getValorparcela(),
+                        Valores.TransformarDoubleDBemDinheiro(carb.getValorparcela()),
                         Dates.TransformarDataCurtaDoDB(carb.getDataparcela()),
                         datapagamento,
                         carb.getStatus()
@@ -266,7 +245,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtro Status"));
         jPanel4.setName("jPanel4"); // NOI18N
 
-        cbstatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Ativo", "Lançado", "Aprovado", "Automático", "Pago", "Todos" }));
+        cbstatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pendente", "Cancelado", "Pago", "Todos" }));
         cbstatus.setName("cbstatus"); // NOI18N
         cbstatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

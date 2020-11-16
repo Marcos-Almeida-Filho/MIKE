@@ -67,4 +67,13 @@ public class Valores {
 
         return valor;
     }
+    
+    public static String TransformarDoubleDBemDinheiro(double valordb) {
+        String valor;
+
+        DecimalFormat formatter = new DecimalFormat("#,###.00");
+        valor = "R$ " + formatter.format(valordb);
+
+        return valor;
+    }
 }

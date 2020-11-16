@@ -80,6 +80,7 @@ public class ProcessosVendasDAO {
             while (rs.next()) {
                 pvb = new ProcessosVendasBean();
 
+                pvb.setId(rs.getInt("id"));
                 pvb.setNome(rs.getString("nome"));
                 pvb.setStatus(rs.getString("status"));
 
@@ -144,9 +145,9 @@ public class ProcessosVendasDAO {
 
         try {
             stmt = con.prepareStatement("SELECT id FROM processos_vendas WHERE nome = '" + nome + "'");
-            
+
             rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 id = rs.getInt("id");
             }
@@ -164,7 +165,7 @@ public class ProcessosVendasDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
-        
+
         return id;
     }
 

@@ -135,6 +135,7 @@ public class OPProcessosDAO {
                 opb.setQtdok(rs.getDouble("qtdok"));
                 opb.setQtdnaook(rs.getDouble("qtdnaook"));
                 opb.setObs(rs.getString("obs"));
+                opb.setMotivo(rs.getString("motivo"));
 
                 listob.add(opb);
             }
@@ -154,6 +155,37 @@ public class OPProcessosDAO {
         }
 
         return listob;
+    }
+
+    public int idUltimoProcesso(String op, String processo) {
+        rsList();
+
+        int id = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT id FROM op_processo WHERE op = '" + op + "' AND processo = '" + processo + "'");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler ID do processo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return id;
     }
 
     /**
@@ -192,13 +224,35 @@ public class OPProcessosDAO {
      * @param qtdok
      * @param qtdnaook
      * @param obs
-     * @param motivo
      */
-    public void fecharProcesso(int id, String dataFim, double qtdok, double qtdnaook, String obs, String motivo) {
+    public void fecharProcesso(int id, String dataFim, double qtdok, double qtdnaook, String obs) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE op_processo SET datafim = '" + dataFim + "', qtdok = " + qtdok + ", qtdnaook = " + qtdnaook + ", obs = '" + obs + "', motivo = '" + motivo + "' WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE op_processo SET datafim = '" + dataFim + "', qtdok = " + qtdok + ", qtdnaook = " + qtdnaook + ", obs = '" + obs + "' WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao fechar processo da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void lancarMotivo(int id, String motivo) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op_processo SET motivo = '" + motivo + "' WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

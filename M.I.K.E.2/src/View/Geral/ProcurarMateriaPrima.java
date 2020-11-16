@@ -6,6 +6,7 @@
 package View.Geral;
 
 import DAO.InsumosDAO;
+import DAO.OPMPDAO;
 import View.vendas.OP;
 import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
@@ -15,6 +16,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
+
+    static OPMPDAO ompd = new OPMPDAO();
 
     /**
      * Creates new form ProcuraMaterialVenda
@@ -159,15 +162,9 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
                     dispose();
                     break;
                 case "OP":
-                    DefaultTableModel modelOP = (DefaultTableModel) OP.tableMP.getModel();
-                    modelOP.addRow(new Object[]{
-                        "",
-                        false,
-                        codigo,
-                        desc,
-                        0,
-                        false
-                    });
+                    String op = OP.txtNumOP.getText();
+                    ompd.create(op, codigo, desc, 0);
+                    OP.lerMP(op);
                     break;
             }
         }

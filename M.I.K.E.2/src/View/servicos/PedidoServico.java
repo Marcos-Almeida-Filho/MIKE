@@ -1743,7 +1743,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     ob.setIdtela(idos);
                     String data = Dates.CriarDataCompletaParaDB();
                     ob.setDateabertura(data);
-                    int days = Integer.parseInt(tableitensorcamento.getValueAt(i, 7).toString().replace(" dias", ""));
+                    int days = Integer.parseInt(tableitensorcamento.getValueAt(i, 7).toString().replace(" dias úteis", ""));
                     String dataPrevisao = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(days);
                     ob.setDateprevisao(dataPrevisao);
                     ob.setStatus("Rascunho");

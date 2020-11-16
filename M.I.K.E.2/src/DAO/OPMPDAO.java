@@ -101,11 +101,11 @@ public class OPMPDAO {
         return listopmp;
     }
 
-    public void updateBaixa(int id) {
+    public void updateBaixa(int id, double qtd) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE op_mp SET baixa = true WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE op_mp SET baixa = " + true + ", qtd = " + qtd + " WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

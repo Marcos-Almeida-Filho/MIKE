@@ -1177,7 +1177,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "Sem OP no produto.");
                 } else {
                     OP opjif = new OP();
-                    OP.TxtNumOP.setText(op);
+                    OP.txtNumOP.setText(op);
                     OP.tabOPS.setSelectedIndex(1);
                     OP.lerOP(op);
                     Telas.AparecerTelaAumentada(opjif);

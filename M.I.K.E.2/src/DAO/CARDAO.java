@@ -8,16 +8,12 @@ package DAO;
 import Bean.CARBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.awt.AWTException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,33 +22,49 @@ import javax.swing.JOptionPane;
  */
 public class CARDAO {
 
-    public void create(CARBean capb) {
+    Connection con;
 
-        Connection con = ConnectionFactory.getConnection();
+    PreparedStatement stmt;
 
-        PreparedStatement stmt = null;
+    ResultSet rs;
+
+    List<CARBean> listcb;
+
+    CARBean cb;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listcb = new ArrayList<>();
+    }
+
+    public void create(String dataLancamento, String cliente, int notaFiscal, String dataEmissao, double total, String parcela, double valorParcela, String dataParcela) {
+
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO car (datalancamento, cliente, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, status) VALUES (?,?,?,?,?,?,?,?,?)");
-
-            stmt.setString(1, capb.getDatalancamento());
-            stmt.setString(2, capb.getCliente());
-            stmt.setInt(3, capb.getNotafiscal());
-            stmt.setString(4, capb.getDataemissao());
-            stmt.setDouble(5, capb.getTotal());
-            stmt.setString(6, capb.getParcela());
-            stmt.setDouble(7, capb.getValorparcela());
-            stmt.setString(8, capb.getDataparcela());
-            stmt.setString(9, capb.getStatus());
+            stmt = con.prepareStatement("INSERT INTO car (datalancamento, cliente, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, status) VALUES ('" + dataLancamento + "', '" + cliente + "', " + notaFiscal + ", '" + dataEmissao + "', " + total + ", '" + parcela + "', " + valorParcela + ", '" + dataParcela + "', 'Pendente')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar CAR!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao criar Conta a Receber.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -60,105 +72,97 @@ public class CARDAO {
 
     public List<CARBean> readtodos() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<CARBean> listcapb = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM car");
+            stmt = con.prepareStatement("SELECT * FROM car ORDER BY dataparcela");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                CARBean capb = new CARBean();
+                cb = new CARBean();
 
-                capb.setId(rs.getInt("id"));
-                capb.setDatalancamento(rs.getString("datalancamento"));
-                capb.setCliente(rs.getString("cliente"));
-                capb.setNotafiscal(rs.getInt("notafiscal"));
-                capb.setDataemissao(rs.getString("dataemissao"));
-                capb.setTotal(rs.getDouble("total"));
-                capb.setParcela(rs.getString("parcela"));
-                capb.setValorparcela(rs.getDouble("valorparcela"));
-                capb.setDataparcela(rs.getString("dataparcela"));
-                capb.setDatarecebimento(rs.getString("datarecebimento"));
-                capb.setBanco(rs.getString("banco"));
-                capb.setMetodo(rs.getString("metodo"));
-                capb.setStatus(rs.getString("status"));
+                cb.setId(rs.getInt("id"));
+                cb.setDatalancamento(rs.getString("datalancamento"));
+                cb.setCliente(rs.getString("cliente"));
+                cb.setNotafiscal(rs.getInt("notafiscal"));
+                cb.setDataemissao(rs.getString("dataemissao"));
+                cb.setTotal(rs.getDouble("total"));
+                cb.setParcela(rs.getString("parcela"));
+                cb.setValorparcela(rs.getDouble("valorparcela"));
+                cb.setDataparcela(rs.getString("dataparcela"));
+                cb.setDatarecebimento(rs.getString("datarecebimento"));
+                cb.setBanco(rs.getString("banco"));
+                cb.setMetodo(rs.getString("metodo"));
+                cb.setStatus(rs.getString("status"));
 
-                listcapb.add(capb);
+                listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler CAR.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listcapb;
+        return listcb;
     }
-    
+
     public List<CARBean> readaberto() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<CARBean> listcapb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM car WHERE datarecebimento IS NULL ORDER BY dataparcela");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                CARBean capb = new CARBean();
+                cb = new CARBean();
 
-                capb.setId(rs.getInt("id"));
-                capb.setDatalancamento(rs.getString("datalancamento"));
-                capb.setCliente(rs.getString("cliente"));
-                capb.setNotafiscal(rs.getInt("notafiscal"));
-                capb.setDataemissao(rs.getString("dataemissao"));
-                capb.setTotal(rs.getDouble("total"));
-                capb.setParcela(rs.getString("parcela"));
-                capb.setValorparcela(rs.getDouble("valorparcela"));
-                capb.setDataparcela(rs.getString("dataparcela"));
-                capb.setDatarecebimento(rs.getString("datarecebimento"));
-                capb.setBanco(rs.getString("banco"));
-                capb.setMetodo(rs.getString("metodo"));
-                capb.setStatus(rs.getString("status"));
+                cb.setId(rs.getInt("id"));
+                cb.setDatalancamento(rs.getString("datalancamento"));
+                cb.setCliente(rs.getString("cliente"));
+                cb.setNotafiscal(rs.getInt("notafiscal"));
+                cb.setDataemissao(rs.getString("dataemissao"));
+                cb.setTotal(rs.getDouble("total"));
+                cb.setParcela(rs.getString("parcela"));
+                cb.setValorparcela(rs.getDouble("valorparcela"));
+                cb.setDataparcela(rs.getString("dataparcela"));
+                cb.setDatarecebimento(rs.getString("datarecebimento"));
+                cb.setBanco(rs.getString("banco"));
+                cb.setMetodo(rs.getString("metodo"));
+                cb.setStatus(rs.getString("status"));
 
-                listcapb.add(capb);
+                listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler CAR.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listcapb;
+        return listcb;
     }
-    
+
     public List<CARBean> readcreated(String data) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<CARBean> listcapb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM car WHERE datalancamento = ?");
@@ -166,80 +170,77 @@ public class CARDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                CARBean capb = new CARBean();
+                cb = new CARBean();
 
-                capb.setId(rs.getInt("id"));
+                cb.setId(rs.getInt("id"));
 
-                listcapb.add(capb);
+                listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler último CAR lançado.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listcapb;
+        return listcb;
     }
 
     public List<CARBean> readstatus(String status) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<CARBean> listcapb = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM car WHERE status = ?");
+            stmt = con.prepareStatement("SELECT * FROM car WHERE status = ? ORDER BY dataparcela");
             stmt.setString(1, status);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                CARBean capb = new CARBean();
+                cb = new CARBean();
 
-                capb.setId(rs.getInt("id"));
-                capb.setDatalancamento(rs.getString("datalancamento"));
-                capb.setCliente(rs.getString("cliente"));
-                capb.setNotafiscal(rs.getInt("notafiscal"));
-                capb.setDataemissao(rs.getString("dataemissao"));
-                capb.setTotal(rs.getDouble("total"));
-                capb.setParcela(rs.getString("parcela"));
-                capb.setValorparcela(rs.getDouble("valorparcela"));
-                capb.setDataparcela(rs.getString("dataparcela"));
-                capb.setDatarecebimento(rs.getString("datarecebimento"));
-                capb.setBanco(rs.getString("banco"));
-                capb.setMetodo(rs.getString("metodo"));
+                cb.setId(rs.getInt("id"));
+                cb.setDatalancamento(rs.getString("datalancamento"));
+                cb.setCliente(rs.getString("cliente"));
+                cb.setNotafiscal(rs.getInt("notafiscal"));
+                cb.setDataemissao(rs.getString("dataemissao"));
+                cb.setTotal(rs.getDouble("total"));
+                cb.setParcela(rs.getString("parcela"));
+                cb.setValorparcela(rs.getDouble("valorparcela"));
+                cb.setDataparcela(rs.getString("dataparcela"));
+                cb.setDatarecebimento(rs.getString("datarecebimento"));
+                cb.setBanco(rs.getString("banco"));
+                cb.setMetodo(rs.getString("metodo"));
+                cb.setStatus(rs.getString("status"));
 
-                listcapb.add(capb);
+                listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler CAR.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listcapb;
+        return listcb;
     }
 
     public List<CARBean> click(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<CARBean> listcapb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM car WHERE id = ?");
@@ -247,92 +248,105 @@ public class CARDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                CARBean capb = new CARBean();
+                cb = new CARBean();
 
-                capb.setId(rs.getInt("id"));
-                capb.setDatalancamento(rs.getString("datalancamento"));
-                capb.setCliente(rs.getString("cliente"));
-                capb.setNotafiscal(rs.getInt("notafiscal"));
-                capb.setDataemissao(rs.getString("dataemissao"));
-                capb.setTotal(rs.getDouble("total"));
-                capb.setParcela(rs.getString("parcela"));
-                capb.setValorparcela(rs.getDouble("valorparcela"));
-                capb.setDataparcela(rs.getString("dataparcela"));
-                capb.setDatarecebimento(rs.getString("datarecebimento"));
+                cb.setId(rs.getInt("id"));
+                cb.setDatalancamento(rs.getString("datalancamento"));
+                cb.setCliente(rs.getString("cliente"));
+                cb.setNotafiscal(rs.getInt("notafiscal"));
+                cb.setDataemissao(rs.getString("dataemissao"));
+                cb.setTotal(rs.getDouble("total"));
+                cb.setParcela(rs.getString("parcela"));
+                cb.setValorparcela(rs.getDouble("valorparcela"));
+                cb.setDataparcela(rs.getString("dataparcela"));
+                cb.setDatarecebimento(rs.getString("datarecebimento"));
 
-                listcapb.add(capb);
+                listcb.add(cb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler CAR.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listcapb;
+        return listcb;
     }
 
-    public void update(CARBean capb) {
+    public void update(String cliente, int notaFiscal, double total, String parcela, double valorParcela, String dataParcela, String dataRecebimento, String banco, String metodo, int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE car SET cliente = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datarecebimento = ?, banco = ?, metodo = ?, status = ? WHERE id = ?");
-
-            stmt.setString(1, capb.getCliente());
-            stmt.setInt(2, capb.getNotafiscal());
-            stmt.setString(3, capb.getDataemissao());
-            stmt.setDouble(4, capb.getTotal());
-            stmt.setString(5, capb.getParcela());
-            stmt.setDouble(6, capb.getValorparcela());
-            stmt.setString(7, capb.getDataparcela());
-            stmt.setString(8, capb.getDatarecebimento());
-            stmt.setString(9, capb.getBanco());
-            stmt.setString(10, capb.getMetodo());
-            stmt.setString(11, capb.getStatus());
-            stmt.setInt(12, capb.getId());
+            stmt = con.prepareStatement("UPDATE car SET cliente = '" + cliente + "', notafiscal = " + notaFiscal + ", total = " + total + ", parcela = '" + parcela + "', valorparcela = " + valorParcela + ", dataparcela = '" + dataParcela + "', datarecebimento = '" + dataRecebimento + "', banco = '" + banco + "', metodo = '" + metodo + "' WHERE id =" + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar CAR!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar CAR.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
 
-    public void updaterecebimento(CARBean capb) {
+    public void updaterecebimento(String dataRecebimento, String banco, String metodo, int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE car SET datarecebimento = ?, banco = ?, metodo = ?, status = ? WHERE id = ?");
-
-            stmt.setString(1, capb.getDatarecebimento());
-            stmt.setString(2, capb.getBanco());
-            stmt.setString(3, capb.getMetodo());
-            stmt.setString(4, capb.getStatus());
-            stmt.setInt(5, capb.getId());
+            stmt = con.prepareStatement("UPDATE car SET datarecebimento = '" + dataRecebimento + "', banco = '" + banco + "', metodo = '" + metodo + "', status = 'Pago' WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar CAR!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(CARDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar CAR.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void cancelarConta(int notaFiscal) {
+
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE car SET status = 'Cancelado' WHERE notafiscal = " + notaFiscal);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar CAR.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

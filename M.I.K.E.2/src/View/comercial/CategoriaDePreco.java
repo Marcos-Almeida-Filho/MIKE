@@ -7,7 +7,7 @@ package View.comercial;
 
 import Methods.SoNumeros;
 import Methods.Telas;
-import View.Geral.ProcuraMaterial;
+import View.Geral.ProcurarMaterial;
 import javax.swing.JOptionPane;
 
 /**
@@ -414,7 +414,7 @@ public class CategoriaDePreco extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        ProcuraMaterial pm = new ProcuraMaterial(this.getClass().getSimpleName());
+        ProcurarMaterial pm = new ProcurarMaterial(this.getClass().getSimpleName());
         Telas.AparecerTela(pm);
     }//GEN-LAST:event_jButton3ActionPerformed
 

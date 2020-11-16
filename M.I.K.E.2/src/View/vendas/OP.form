@@ -247,12 +247,13 @@
                     <Component class="javax.swing.JComboBox" name="cbStatus">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="5">
-                            <StringItem index="0" value="Rascunho"/>
-                            <StringItem index="1" value="Ativo"/>
-                            <StringItem index="2" value="Cancelado"/>
-                            <StringItem index="3" value="Finalizado"/>
-                            <StringItem index="4" value="Todos"/>
+                          <StringArray count="6">
+                            <StringItem index="0" value="Em Aberto"/>
+                            <StringItem index="1" value="Rascunho"/>
+                            <StringItem index="2" value="Ativo"/>
+                            <StringItem index="3" value="Cancelado"/>
+                            <StringItem index="4" value="Finalizado"/>
+                            <StringItem index="5" value="Todos"/>
                           </StringArray>
                         </Property>
                       </Properties>
@@ -350,7 +351,7 @@
                           <Group type="102" attributes="0">
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="TxtNumOP" min="-2" pref="86" max="-2" attributes="0"/>
+                              <Component id="txtNumOP" min="-2" pref="86" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -367,7 +368,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="TxtCliente" min="-2" pref="303" max="-2" attributes="0"/>
+                              <Component id="txtCliente" min="-2" pref="303" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnProcurarCliente" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
@@ -380,7 +381,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="TxtNumOP" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtNumOP" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="txtStatus" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -391,7 +392,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="TxtCliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtCliente" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="btnProcurarCliente" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="103" groupAlignment="3" attributes="0">
@@ -405,7 +406,7 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JTextField" name="TxtNumOP">
+                    <Component class="javax.swing.JTextField" name="txtNumOP">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                         <Property name="horizontalAlignment" type="int" value="0"/>
@@ -440,12 +441,12 @@
                         <Property name="text" type="java.lang.String" value="Cliente:"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="TxtCliente">
+                    <Component class="javax.swing.JTextField" name="txtCliente">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
                       </Properties>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                       </AuxValues>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel4">
@@ -474,6 +475,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Procurar"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProcurarClienteActionPerformed"/>
+                      </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
                       </AuxValues>
@@ -566,6 +570,9 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="Procurar"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProcurarProdutoActionPerformed"/>
+                      </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
                       </AuxValues>
@@ -668,8 +675,11 @@
                                   <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                                 </Property>
                               </Properties>
+                              <Events>
+                                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tableObsMouseClicked"/>
+                              </Events>
                               <AuxValues>
-                                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                               </AuxValues>
                             </Component>
                           </SubComponents>
@@ -686,6 +696,9 @@
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Excluir Observa&#xe7;&#xe3;o"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton7ActionPerformed"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -1315,11 +1328,12 @@
                             <Component class="javax.swing.JTable" name="tableDocs">
                               <Properties>
                                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                                  <Table columnCount="4" rowCount="0">
+                                  <Table columnCount="5" rowCount="0">
                                     <Column editable="false" title="ID" type="java.lang.Object"/>
                                     <Column editable="true" title="" type="java.lang.Boolean"/>
                                     <Column editable="false" title="Descri&#xe7;&#xe3;o" type="java.lang.Object"/>
                                     <Column editable="false" title="Local" type="java.lang.Object"/>
+                                    <Column editable="false" title="Local Original" type="java.lang.Object"/>
                                   </Table>
                                 </Property>
                                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
@@ -1344,14 +1358,22 @@
                                       <Editor/>
                                       <Renderer/>
                                     </Column>
+                                    <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
+                                      <Title/>
+                                      <Editor/>
+                                      <Renderer/>
+                                    </Column>
                                   </TableColumnModel>
                                 </Property>
                                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                                   <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
                                 </Property>
                               </Properties>
+                              <Events>
+                                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tableDocsMouseClicked"/>
+                              </Events>
                               <AuxValues>
-                                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                               </AuxValues>
                             </Component>
                           </SubComponents>
@@ -1495,6 +1517,9 @@
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddMPActionPerformed"/>
                           </Events>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                          </AuxValues>
                         </Component>
                         <Component class="javax.swing.JButton" name="btnExcluirMP">
                           <Properties>
@@ -1503,6 +1528,9 @@
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExcluirMPActionPerformed"/>
                           </Events>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                          </AuxValues>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -1577,7 +1605,7 @@
                         <Property name="horizontalAlignment" type="int" value="0"/>
                       </Properties>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                       </AuxValues>
                     </Component>
                     <Component class="javax.swing.JTextField" name="txtMortas">
@@ -1586,7 +1614,7 @@
                         <Property name="horizontalAlignment" type="int" value="0"/>
                       </Properties>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                       </AuxValues>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel8">

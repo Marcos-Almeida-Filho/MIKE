@@ -17,7 +17,7 @@ import Methods.Numeros;
 import Methods.SendEmail;
 import Methods.Telas;
 import View.Geral.AdicionarObs;
-import View.Geral.ProcuraMaterial;
+import View.Geral.ProcurarMaterial;
 import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarLocal;
 import View.Geral.ProcurarMateriaPrima;
@@ -925,6 +925,74 @@ public class VM extends javax.swing.JInternalFrame {
         }
     }
 
+    private void gerarCodigo() {
+        int selection = cbtipo.getSelectedIndex();
+
+        switch (selection) {
+            case 1://Fresa
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else if (cbtamanho.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha um tamanho primeiro!");
+                } else {
+                    gerarcodigofresa();
+                }
+                break;
+            case 2://Fresa Especial
+                if (cbfamilia.getSelectedIndex() == 0 & txtcortes.getText().equals("")) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família ou número de cortes primeiro!");
+                } else if (!txtcortes.getText().equals("") && cbtopo.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Selecione um tipo de topo primeiro!");
+                } else {
+                    gerarcodigofresaespecial();
+                }
+                break;
+            case 3://Broca
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigobroca();
+                }
+                break;
+            case 4://Broca Especial
+                gerarCodigoBrocaEspecial();
+                break;
+            case 5://Alargador
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigoalargador();
+                }
+                break;
+            case 6://Alargador Especial
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigoalargadorespecial();
+                }
+                break;
+            case 7://Lima
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigolima();
+                }
+                break;
+            case 8://Lima Especial
+                if (cbfamilia.getSelectedIndex() == 0) {
+                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
+                } else {
+                    gerarcodigolimaespecial();
+                }
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Escolha um tipo de ferramenta primeiro!");
+                break;
+        }
+
+        checarCaracteres();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -989,7 +1057,6 @@ public class VM extends javax.swing.JInternalFrame {
         lblfamilia = new javax.swing.JLabel();
         lbltamanho = new javax.swing.JLabel();
         cbtamanho = new javax.swing.JComboBox<>();
-        btngerarcodigo = new javax.swing.JButton();
         jPanel11 = new javax.swing.JPanel();
         checkrevestimento = new javax.swing.JCheckBox();
         cbrevestimento = new javax.swing.JComboBox<>();
@@ -1524,14 +1591,6 @@ public class VM extends javax.swing.JInternalFrame {
         cbtamanho.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
         cbtamanho.setEnabled(false);
 
-        btngerarcodigo.setText("Gerar Código/Descrição");
-        btngerarcodigo.setEnabled(false);
-        btngerarcodigo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btngerarcodigoActionPerformed(evt);
-            }
-        });
-
         jPanel11.setBackground(new java.awt.Color(255, 255, 255));
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Especificações"));
 
@@ -1963,11 +2022,7 @@ public class VM extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneldadosLayout.createSequentialGroup()
-                                .addGap(463, 463, 463)
-                                .addComponent(btngerarcodigo)))))
+                        .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         paneldadosLayout.setVerticalGroup(
@@ -1991,7 +2046,6 @@ public class VM extends javax.swing.JInternalFrame {
                     .addComponent(txtextra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(paneldadosLayout.createSequentialGroup()
                         .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(paneldadosLayout.createSequentialGroup()
@@ -2001,9 +2055,8 @@ public class VM extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(panelorigem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btngerarcodigo)
+                        .addGap(0, 28, Short.MAX_VALUE))
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -2353,7 +2406,7 @@ public class VM extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabmaterialinfo, javax.swing.GroupLayout.PREFERRED_SIZE, 426, Short.MAX_VALUE)
+                .addComponent(tabmaterialinfo, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton9)
@@ -2414,7 +2467,7 @@ public class VM extends javax.swing.JInternalFrame {
                 cbtamanho.addItem("S");
                 cbtamanho.addItem("L");
                 cbtamanho.addItem("X");
-                btngerarcodigo.setEnabled(true);
+
                 break;
             case 2://Fresa Especial
 
@@ -2443,7 +2496,6 @@ public class VM extends javax.swing.JInternalFrame {
                 cbcanal.addItem("À Esquerda");
                 cbcanal.addItem("Reto");
 
-                btngerarcodigo.setEnabled(true);
                 break;
             case 3://Broca
 
@@ -2471,7 +2523,6 @@ public class VM extends javax.swing.JInternalFrame {
                 txtl4.setEnabled(false);
                 txtl5.setEnabled(false);
 
-                btngerarcodigo.setEnabled(true);
                 break;
             case 4://Broca Especial
 
@@ -2496,7 +2547,6 @@ public class VM extends javax.swing.JInternalFrame {
                 cbcanal.addItem("À Esquerda");
                 cbcanal.addItem("Reto");
 
-                btngerarcodigo.setEnabled(true);
                 break;
             case 5://Alargador
 
@@ -2527,7 +2577,6 @@ public class VM extends javax.swing.JInternalFrame {
                 cbcanal.addItem("À Esquerda");
                 cbcanal.addItem("Reto");
 
-                btngerarcodigo.setEnabled(true);
                 break;
             case 6://Alargador Especial
 
@@ -2552,7 +2601,6 @@ public class VM extends javax.swing.JInternalFrame {
                 cbcanal.addItem("À Esquerda");
                 cbcanal.addItem("Reto");
 
-                btngerarcodigo.setEnabled(true);
                 break;
             case 7://Lima
 
@@ -2585,7 +2633,6 @@ public class VM extends javax.swing.JInternalFrame {
                 cbcanal.addItem("DC");
                 cbcanal.addItem("FC");
 
-                btngerarcodigo.setEnabled(true);
                 break;
             case 8://Lima Especial
 
@@ -2612,7 +2659,6 @@ public class VM extends javax.swing.JInternalFrame {
                 cbcanal.addItem("DC");
                 cbcanal.addItem("FC");
 
-                btngerarcodigo.setEnabled(true);
                 break;
             case 9://Ferramenta Especial
 
@@ -2639,7 +2685,6 @@ public class VM extends javax.swing.JInternalFrame {
                 cbcanal.addItem("À Esquerda");
                 cbcanal.addItem("Reto");
 
-                btngerarcodigo.setEnabled(false);
                 break;
             default:
                 //Itens para habilitar/desabilitar
@@ -2660,78 +2705,9 @@ public class VM extends javax.swing.JInternalFrame {
                     panelcomp.getComponent(i).setEnabled(false);
                 }
 
-                btngerarcodigo.setEnabled(false);
                 break;
         }
     }//GEN-LAST:event_cbtipoActionPerformed
-
-    private void btngerarcodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btngerarcodigoActionPerformed
-        int selection = cbtipo.getSelectedIndex();
-
-        switch (selection) {
-            case 1://Fresa
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else if (cbtamanho.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha um tamanho primeiro!");
-                } else {
-                    gerarcodigofresa();
-                }
-                break;
-            case 2://Fresa Especial
-                if (cbfamilia.getSelectedIndex() == 0 & txtcortes.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família ou número de cortes primeiro!");
-                } else if (!txtcortes.getText().equals("") && cbtopo.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Selecione um tipo de topo primeiro!");
-                } else {
-                    gerarcodigofresaespecial();
-                }
-                break;
-            case 3://Broca
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigobroca();
-                }
-                break;
-            case 4://Broca Especial
-                gerarCodigoBrocaEspecial();
-                break;
-            case 5://Alargador
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigoalargador();
-                }
-                break;
-            case 6://Alargador Especial
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigoalargadorespecial();
-                }
-                break;
-            case 7://Lima
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigolima();
-                }
-                break;
-            case 8://Lima Especial
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigolimaespecial();
-                }
-                break;
-            default:
-                JOptionPane.showMessageDialog(null, "Escolha um tipo de ferramenta primeiro!");
-                break;
-        }
-
-        checarCaracteres();
-    }//GEN-LAST:event_btngerarcodigoActionPerformed
 
     private void checkrevestimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkrevestimentoActionPerformed
         revestimento();
@@ -2907,7 +2883,7 @@ public class VM extends javax.swing.JInternalFrame {
         escolha = JOptionPane.showInternalOptionDialog(null, "Qual origem?", "Escolher Origem", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, iconable);
 
         if (escolha == 0) {
-            ProcuraMaterial pmv = new ProcuraMaterial(this.getClass().getSimpleName());
+            ProcurarMaterial pmv = new ProcurarMaterial(this.getClass().getSimpleName());
             Telas.AparecerTela(pmv);
         } else {
             ProcurarMateriaPrima pmp = new ProcurarMateriaPrima(this.getClass().getSimpleName());
@@ -2967,6 +2943,8 @@ public class VM extends javax.swing.JInternalFrame {
             txtestoqueminimo.requestFocus();
             tabmaterialinfo.setSelectedIndex(4);
         } else if (idmaterial == 0) {
+            gerarCodigo();
+
             //Criar material
             vmd.create(
                     txtcodigo.getText(),
@@ -3137,6 +3115,7 @@ public class VM extends javax.swing.JInternalFrame {
                 }
             }
         }
+        readProdutos();
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void tablemateriaisvendasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemateriaisvendasMouseClicked
@@ -3300,7 +3279,6 @@ public class VM extends javax.swing.JInternalFrame {
     public javax.swing.ButtonGroup GroupMateriaPrima;
     public javax.swing.ButtonGroup GroupRevestimento;
     public javax.swing.ButtonGroup GroupTamanho;
-    public static javax.swing.JButton btngerarcodigo;
     public static javax.swing.JComboBox<String> cbcanal;
     public static javax.swing.JComboBox<String> cbfamilia;
     public static javax.swing.JComboBox<String> cbrevestimento;

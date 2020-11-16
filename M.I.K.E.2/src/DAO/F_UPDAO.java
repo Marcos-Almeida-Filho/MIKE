@@ -69,7 +69,6 @@ public class F_UPDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar OP no Follow Up!\n" + e);
-            e.printStackTrace();
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
@@ -105,7 +104,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtable");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtable");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -117,7 +116,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOSTodos() {
 
         rsList();
@@ -143,7 +142,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtable");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtable");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -181,7 +180,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -193,7 +192,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOPEmAberto() {
 
         rsList();
@@ -219,7 +218,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -231,7 +230,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOSEmAberto() {
 
         rsList();
@@ -257,7 +256,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -269,7 +268,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOPEmAbertoPesquisa(String pesquisa) {
 
         rsList();
@@ -295,7 +294,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -307,7 +306,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOSEmAbertoPesquisa(String pesquisa) {
 
         rsList();
@@ -333,7 +332,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableplanejamento");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -371,7 +370,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtablepesquisa");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtablepesquisa");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -383,7 +382,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOSTodosPesquisa(String pesquisa) {
 
         rsList();
@@ -409,7 +408,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtablepesquisa");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtablepesquisa");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -447,7 +446,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableporprocesso");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableporprocesso");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -459,7 +458,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOSPorProcesso(String processo) {
 
         rsList();
@@ -485,7 +484,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableporprocesso");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableporprocesso");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -523,7 +522,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableporprocessoepesquisa");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableporprocessoepesquisa");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -535,7 +534,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOSProcessoPesquisa(String processo, String pesquisa) {
 
         rsList();
@@ -561,7 +560,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readtableporprocessoepesquisa");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readtableporprocessoepesquisa");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -600,7 +599,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - readcreated");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - readcreated");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -639,7 +638,7 @@ public class F_UPDAO {
                 listbb.add(cb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - click");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - click");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -666,7 +665,7 @@ public class F_UPDAO {
                 id = rs.getInt("id");
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - getId");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - getId");
             Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -700,7 +699,7 @@ public class F_UPDAO {
 
             JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - update");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - update");
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -724,7 +723,7 @@ public class F_UPDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - updateProcessoById");
+            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - updateProcessoById");
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
@@ -748,13 +747,16 @@ public class F_UPDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro em " + this.getClass().getSimpleName() + " - updateProcessoByOs");
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar F-UP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

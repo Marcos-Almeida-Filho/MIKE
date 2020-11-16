@@ -5,6 +5,7 @@
  */
 package View.vendas;
 
+import Bean.F_UPBean;
 import Bean.F_UP_HistBean;
 import Connection.Session;
 import DAO.F_UPDAO;
@@ -12,11 +13,13 @@ import DAO.F_UP_HistDAO;
 import DAO.OPDAO;
 import DAO.OPMedicoesDAO;
 import DAO.OPProcessosDAO;
-import DAO.ProcessosServicoDAO;
+import DAO.ProcessosVendasDAO;
+import DAO.ProcessosVendasMedicoesDAO;
 import DAO.VendasMateriaisDAO;
 import DAO.VendasMateriaisMovDAO;
 import Methods.Dates;
 import Methods.SoNumeros;
+import Methods.Telas;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -30,11 +33,12 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
     static OPDAO od = new OPDAO();
     static OPProcessosDAO opd = new OPProcessosDAO();
     static OPMedicoesDAO omd = new OPMedicoesDAO();
-    static ProcessosServicoDAO psd = new ProcessosServicoDAO();
+    static ProcessosVendasDAO pvd = new ProcessosVendasDAO();
     static F_UP_HistDAO fuhd = new F_UP_HistDAO();
     static F_UPDAO fud = new F_UPDAO();
     static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
     static VendasMateriaisMovDAO vmmd = new VendasMateriaisMovDAO();
+    static ProcessosVendasMedicoesDAO pvmd = new ProcessosVendasMedicoesDAO();
 
     static double qtdTotalProcesso = 0;
     static double qtdFinalOP = 0;
@@ -72,6 +76,25 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
             qtdTotalProcesso = opb.getQtdtotal();
         });
 
+        readMedicoesDoProcesso(id);
+        camposPorStatus();
+    }
+
+    public static void camposPorStatus() {
+        if (txtTermino.getText().equals("")) {
+            txtOk.setEditable(true);
+            txtNaoOk.setEditable(true);
+            txtObs.setEditable(true);
+            btnSalvar.setEnabled(true);
+        } else {
+            txtOk.setEditable(false);
+            txtNaoOk.setEditable(false);
+            txtObs.setEditable(false);
+            btnSalvar.setEnabled(false);
+        }
+    }
+
+    public static void readMedicoesDoProcesso(int id) {
         DefaultTableModel modelInspecao = (DefaultTableModel) tableInspecoes.getModel();
         modelInspecao.setNumRows(0);
 
@@ -87,23 +110,47 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
     }
 
     public static void quantidades() {
-        String ok = "0", naoOk = "0";
-        if (!txtOk.getText().equals("")) {
-            ok = txtOk.getText();
-        }
-        if (!txtNaoOk.getText().equals("")) {
-            naoOk = txtNaoOk.getText();
-        }
-        double qtdOk = Double.parseDouble(ok);
-        double qtdNaoOk = Double.parseDouble(naoOk);
+        double qtdOk, qtdNaoOk, qtdProcesso;
+        qtdOk = Double.parseDouble(txtOk.getText());
+        qtdNaoOk = Double.parseDouble(txtNaoOk.getText());
+        qtdProcesso = qtdOk + qtdNaoOk;
 
-        if (qtdOk + qtdNaoOk > qtdTotalProcesso) {
-            JOptionPane.showMessageDialog(null, "Quantidades Conforme e Não Conforme maiores que a quantidade total do processo.");
+        if (qtdProcesso > qtdTotalProcesso) {
+            JOptionPane.showMessageDialog(null, "Quantidades digitadas maiores do que as disponíveis na OP.");
             txtOk.setText("0");
             txtNaoOk.setText("0");
-        } else if (qtdNaoOk > 0) {
-            String motivo = JOptionPane.showInputDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION);
-            txtMotivoNaoOk.setText(motivo);
+            txtOk.requestFocus();
+        }
+    }
+
+    public static void qtdNaoOk(double qtdNaoOk) {
+        if (qtdNaoOk > 0) {
+            for (;;) {
+                message:
+                {
+                    try {
+                        String motivo = JOptionPane.showInputDialog(null, "Qual o motivo gerador das peças não conforme?", "Peças Não Conforme", JOptionPane.YES_NO_OPTION);
+                        if (motivo.length() < 15) {
+                            JOptionPane.showMessageDialog(null, "Motivo digitado muito curto. Explique melhor o ocorrido.");
+                            break message;
+                        } else {
+                            txtMotivoNaoOk.setText(motivo);
+                            opd.lancarMotivo(idProcesso, motivo);
+                        }
+                    } catch (NullPointerException e) {
+                        JOptionPane.showMessageDialog(null, "Nenhum motivo digitado.");
+                        break message;
+                    }
+                    break;
+                }
+            }
+        } else if (qtdNaoOk == 0) {
+            txtMotivoNaoOk.setText("");
+            opd.lancarMotivo(iP, "");
+        } else {
+            txtNaoOk.setText("0");
+            txtMotivoNaoOk.setText("");
+            opd.lancarMotivo(iP, "");
         }
     }
 
@@ -112,11 +159,27 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         double qtdNaoOk = Double.parseDouble(txtNaoOk.getText());
         double qtdTotal = qtdTotalProcesso - (qtdOk + qtdNaoOk);
 
-        opd.create(OP.TxtNumOP.getText(), txtProcesso.getText(), qtdTotal);
+        String processo = txtProcesso.getText();
+
+        opd.create(OP.txtNumOP.getText(), processo, qtdTotal);
+
+        int id = opd.idUltimoProcesso(OP.txtNumOP.getText(), processo);
+
+        int id2 = pvd.idProcesso(processo);
+        pvmd.readMedidas(id2).forEach(pvmb -> {
+            omd.create(id, pvmb.getMedida(), "", "", "");
+        });
+
+        F_UPBean fub = new F_UPBean();
+        fub.setProcesso(processo);
+        fub.setOp(OP.txtNumOP.getText());
+
+        //processo = ? WHERE op = ?
+        fud.updateProcessoByOs(fub);
 
         //Criar novo histórico no F-UP
         F_UP_HistBean fuhb = new F_UP_HistBean();
-        fuhb.setIdfup(fud.getId(OP.TxtNumOP.getText()));
+        fuhb.setIdfup(fud.getId(OP.txtNumOP.getText()));
         fuhb.setProcesso(txtProcesso.getText());
 
         //idfup, processo
@@ -127,42 +190,59 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         int resp = JOptionPane.showConfirmDialog(null, "Deseja encerrar a OP?", "Encerrar OP", JOptionPane.YES_NO_OPTION);
 
         if (resp == 0) {
-            od.updateStatus(OP.TxtNumOP.getText(), "Finalizado");
+            od.updateStatus(OP.txtNumOP.getText(), "Finalizado");
 
             int idMaterial = OP.idMaterial;
 
             double estoqueAtual = vmd.readEstoque(idMaterial);
 
-            od.readOP(OP.TxtNumOP.getText()).forEach(od -> {
+            od.readOP(OP.txtNumOP.getText()).forEach(od -> {
                 qtdFinalOP = od.getQtdok();
             });
+
+            F_UPBean fub = new F_UPBean();
+            fub.setProcesso("Encerrado");
+            fub.setOp(OP.txtNumOP.getText());
+
+            //processo = ? WHERE op = ?
+            fud.updateProcessoByOs(fub);
 
             double estoque = estoqueAtual + qtdFinalOP;
 
             vmd.updateEstoque(estoque, idMaterial);
 
-            vmmd.create(idMaterial, estoqueAtual, qtdFinalOP, estoque, "OP", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+            vmmd.create(idMaterial, estoqueAtual, qtdFinalOP, estoque, OP.txtNumOP.getText(), Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
         } else {
-            double qtdTotal = Double.parseDouble(OP.TxtQtde.getText().replace(",", "."));
-
             JComboBox cbProcessos = new JComboBox();
 
-            psd.read().forEach(psb -> {
+            pvd.readTodos().forEach(psb -> {
                 cbProcessos.addItem(psb.getNome());
                 iP++;
             });
 
             JOptionPane.showMessageDialog(null, cbProcessos, "Selecione o Próximo Processo", JOptionPane.QUESTION_MESSAGE);
 
-            for (int i = 0; i < OP.tableProcessos.getRowCount(); i++) {
-                qtdTotal -= Double.parseDouble(OP.tableProcessos.getValueAt(i, 6).toString());
-            }
+            String processo = cbProcessos.getSelectedItem().toString();
 
-            opd.create(OP.TxtNumOP.getText(), cbProcessos.getSelectedItem().toString(), qtdTotal);
+            opd.create(OP.txtNumOP.getText(), processo, qtdOkOP);
+
+            int id = opd.idUltimoProcesso(OP.txtNumOP.getText(), processo);
+
+            int id2 = pvd.idProcesso(processo);
+            pvmd.readMedidas(id2).forEach(pvmb -> {
+                omd.create(id, pvmb.getMedida(), "", "", "");
+            });
+
+            F_UPBean fub = new F_UPBean();
+            fub.setProcesso(processo);
+            fub.setOp(OP.txtNumOP.getText());
+
+            //processo = ? WHERE op = ?
+            fud.updateProcessoByOs(fub);
 
             //Criar novo histórico no F-UP
             F_UP_HistBean fuhb = new F_UP_HistBean();
-            fuhb.setIdfup(fud.getId(OP.TxtNumOP.getText()));
+            fuhb.setIdfup(fud.getId(OP.txtNumOP.getText()));
             fuhb.setProcesso(cbProcessos.getSelectedItem().toString());
 
             //idfup, processo
@@ -170,39 +250,30 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void fecharProcesso(double qtdOk, double qtdNaoOk, String obs, String motivo) {
+    public void fecharProcesso(double qtdOk, double qtdNaoOk, String obs) {
         String data = Dates.CriarDataCompletaParaDB();
-        if (tableInspecoes.getRowCount() == 0) {
-            int resp = JOptionPane.showConfirmDialog(null, "Sem inspeções lançadas. Isto está correto?", "Sem Inspeções", JOptionPane.YES_NO_OPTION);
-            if (resp == 0) {
-                opd.fecharProcesso(ProcessoOP.idProcesso, data, qtdOk, qtdNaoOk, obs, motivo);
 
-                od.readOP(OP.TxtNumOP.getText()).forEach(ob -> {
-                    qtdNaoOkOP = ob.getQtdnaook() + Double.parseDouble(txtNaoOk.getText());
-                    qtdOkOP = ob.getQtd() - qtdNaoOkOP;
-                });
+        int numVazio = 0;
 
-                od.updateOPQtd(OP.TxtNumOP.getText(), qtdOkOP, qtdNaoOkOP);
-
-                fuhd.update(Session.nome, Dates.CriarDataCurtaDBSemDataExistente(), fud.getId(OP.TxtNumOP.getText()), txtProcesso.getText());
-
-                if (qtdOk + qtdNaoOk < qtdTotalProcesso) {
-                    criarOutroProcessoIgual();
-                } else {
-                    criarProximoProcesso();
-                }
+        for (int i = 0; i < tableInspecoes.getRowCount(); i++) {
+            if (tableInspecoes.getValueAt(i, 2).equals("") || tableInspecoes.getValueAt(i, 3).equals("") || tableInspecoes.getValueAt(i, 4).equals("")) {
+                numVazio++;
             }
-        } else {
-            opd.fecharProcesso(ProcessoOP.idProcesso, data, qtdOk, qtdNaoOk, obs, motivo);
+        }
 
-            od.readOP(OP.TxtNumOP.getText()).forEach(ob -> {
+        if (numVazio > 0) {
+            JOptionPane.showMessageDialog(null, "Inspeções sem valor lançado.\nFavor lançar as medidas ou Instrumento antes de salvar.");
+        } else {
+            opd.fecharProcesso(ProcessoOP.idProcesso, data, qtdOk, qtdNaoOk, obs);
+
+            od.readOP(OP.txtNumOP.getText()).forEach(ob -> {
                 qtdNaoOkOP = ob.getQtdnaook() + Double.parseDouble(txtNaoOk.getText());
                 qtdOkOP = ob.getQtd() - qtdNaoOkOP;
             });
 
-            od.updateOPQtd(OP.TxtNumOP.getText(), qtdOkOP, qtdNaoOkOP);
+            od.updateOPQtd(OP.txtNumOP.getText(), qtdOkOP, qtdNaoOkOP);
 
-            fuhd.update(Session.nome, Dates.CriarDataCurtaDBSemDataExistente(), fud.getId(OP.TxtNumOP.getText()), txtProcesso.getText());
+            fuhd.update(Session.nome, Dates.CriarDataCurtaDBSemDataExistente(), fud.getId(OP.txtNumOP.getText()), txtProcesso.getText());
 
             if (qtdOk + qtdNaoOk < qtdTotalProcesso) {
                 criarOutroProcessoIgual();
@@ -210,14 +281,11 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
                 criarProximoProcesso();
             }
 
-            for (int i = 0; i < tableInspecoes.getRowCount(); i++) {
-                String medida = tableInspecoes.getValueAt(i, 1).toString();
-                String maior = tableInspecoes.getValueAt(i, 2).toString();
-                String menor = tableInspecoes.getValueAt(i, 3).toString();
-                String instrumento = tableInspecoes.getValueAt(i, 4).toString();
-
-                omd.create(idProcesso, medida, maior, menor, instrumento);
-            }
+            String op = OP.txtNumOP.getText();
+            OP.lerOP(op);
+            OP.lerProcessos(op);
+            OP.lerInspecoes(op);
+            dispose();
         }
     }
 
@@ -294,9 +362,11 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         jLabel7.setName("jLabel7"); // NOI18N
 
         txtInicio.setEditable(false);
+        txtInicio.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtInicio.setName("txtInicio"); // NOI18N
 
         txtTermino.setEditable(false);
+        txtTermino.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtTermino.setName("txtTermino"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -365,6 +435,11 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
             }
         });
         tableInspecoes.setName("tableInspecoes"); // NOI18N
+        tableInspecoes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableInspecoesMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tableInspecoes);
         if (tableInspecoes.getColumnModel().getColumnCount() > 0) {
             tableInspecoes.getColumnModel().getColumn(0).setMinWidth(0);
@@ -374,6 +449,11 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
 
         btnAddInspecao.setText("Adicionar Inspeção");
         btnAddInspecao.setName("btnAddInspecao"); // NOI18N
+        btnAddInspecao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddInspecaoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -435,6 +515,11 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
                 txtOkFocusGained(evt);
             }
         });
+        txtOk.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtOkKeyReleased(evt);
+            }
+        });
 
         jLabel4.setText("Qtde Não Conforme");
         jLabel4.setName("jLabel4"); // NOI18N
@@ -443,6 +528,11 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         txtNaoOk.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtNaoOkFocusGained(evt);
+            }
+        });
+        txtNaoOk.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtNaoOkKeyReleased(evt);
             }
         });
 
@@ -548,42 +638,9 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         double qtdNaoOk = Double.parseDouble(txtNaoOk.getText());
         double qtdOk = Double.parseDouble(txtOk.getText());
         String obs = txtObs.getText();
-        String motivo = txtMotivoNaoOk.getText();
-        if (qtdOk + qtdNaoOk > qtdTotalProcesso) {
-            JOptionPane.showMessageDialog(null, "Quantidades digitadas maiores do que a quantidade do processo.");
-        } else if (qtdNaoOk > 0) {
-            for (;;) {
-                message:
-                {
-                    try {
-                        String motivoDialog = JOptionPane.showInputDialog(null, "Qual o motivo gerador das peças não conforme?", "Peças Não Conforme", JOptionPane.YES_NO_OPTION);
-                        if (motivoDialog.length() < 15) {
-                            JOptionPane.showMessageDialog(null, "Motivo digitado muito curto. Explique melhor o ocorrido.");
-                            break message;
-                        } else {
-                            txtMotivoNaoOk.setText(motivoDialog);
-                        }
-                    } catch (NullPointerException e) {
-                        JOptionPane.showMessageDialog(null, "Nenhum motivo digitado.");
-                        break message;
-                    }
-                    break;
-                }
-            }
-            fecharProcesso(qtdOk, qtdNaoOk, obs, motivo);
 
-            String op = OP.TxtNumOP.getText();
-            OP.lerOP(op);
-            OP.lerProcessos(op);
-            dispose();
-        } else {
-            fecharProcesso(qtdOk, qtdNaoOk, obs, motivo);
-
-            String op = OP.TxtNumOP.getText();
-            OP.lerOP(op);
-            OP.lerProcessos(op);
-            dispose();
-        }
+        qtdNaoOk(qtdNaoOk);
+        fecharProcesso(qtdOk, qtdNaoOk, obs);
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void txtOkFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtOkFocusGained
@@ -594,10 +651,32 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         txtNaoOk.selectAll();
     }//GEN-LAST:event_txtNaoOkFocusGained
 
+    private void btnAddInspecaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddInspecaoActionPerformed
+
+    }//GEN-LAST:event_btnAddInspecaoActionPerformed
+
+    private void tableInspecoesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableInspecoesMouseClicked
+        if (evt.getClickCount() == 2) {
+            if (txtTermino.getText().equals("")) {
+                InspecaoProcesso ip = new InspecaoProcesso(Integer.parseInt(tableInspecoes.getValueAt(tableInspecoes.getSelectedRow(), 0).toString()));
+                InspecaoProcesso.lerInspecao();
+                Telas.AparecerTela(ip);
+            }
+        }
+    }//GEN-LAST:event_tableInspecoesMouseClicked
+
+    private void txtOkKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtOkKeyReleased
+        quantidades();
+    }//GEN-LAST:event_txtOkKeyReleased
+
+    private void txtNaoOkKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNaoOkKeyReleased
+        quantidades();
+    }//GEN-LAST:event_txtNaoOkKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnAddInspecao;
-    public javax.swing.JButton btnSalvar;
+    public static javax.swing.JButton btnSalvar;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;

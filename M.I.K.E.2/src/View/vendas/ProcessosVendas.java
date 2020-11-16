@@ -5,8 +5,10 @@
  */
 package View.vendas;
 
+import DAO.MedicoesDAO;
 import DAO.ProcessosVendasDAO;
 import DAO.ProcessosVendasMedicoesDAO;
+import Methods.Telas;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -18,9 +20,11 @@ import javax.swing.table.DefaultTableModel;
 public class ProcessosVendas extends javax.swing.JInternalFrame {
 
     private int idProcesso = 0;
+    private int iP = 0;
 
     static ProcessosVendasDAO pvd = new ProcessosVendasDAO();
     static ProcessosVendasMedicoesDAO pvmd = new ProcessosVendasMedicoesDAO();
+    static MedicoesDAO md = new MedicoesDAO();
 
     /**
      * Creates new form ProcessosVendas
@@ -41,6 +45,23 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 pvb.getNome()
             });
         });
+    }
+
+    public void novoProcesso() {
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja lançar um novo Processo de Vendas?", "Novo Processo de Vendas", JOptionPane.YES_NO_OPTION);
+        if (resp == 0) {
+            tabprocessos.setSelectedIndex(1);
+            DefaultTableModel model = (DefaultTableModel) tableMedicoes.getModel();
+            model.setNumRows(0);
+            for (int i = 0; i < jPanel3.getComponentCount(); i++) {
+                if (jPanel3.getComponent(i) instanceof JTextField) {
+                    JTextField c = (JTextField) jPanel3.getComponent(i);
+                    c.setText("");
+                }
+            }
+            idProcesso = 0;
+            txtNome.requestFocus();
+        }
     }
 
     public void lerProcesso(int idProcesso) {
@@ -96,6 +117,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         tableMedicoes = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
@@ -117,9 +139,16 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 "ID", "", "Nome"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -242,7 +271,8 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
 
         txtNome.setName("txtNome"); // NOI18N
 
-        txtStatus.setEnabled(false);
+        txtStatus.setEditable(false);
+        txtStatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtStatus.setName("txtStatus"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -289,9 +319,16 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 "ID", "", "Nome"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -310,6 +347,11 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
 
         jButton1.setText("Adicionar Medição");
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Excluir Medição");
         jButton2.setName("jButton2"); // NOI18N
@@ -340,6 +382,14 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                     .addComponent(jButton2)))
         );
 
+        jButton6.setText("Novo");
+        jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -351,6 +401,8 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)))
                 .addContainerGap())
         );
@@ -362,7 +414,9 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton4)
+                    .addComponent(jButton6))
                 .addContainerGap())
         );
 
@@ -383,18 +437,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int resp = JOptionPane.showConfirmDialog(null, "Deseja lançar um novo Processo de Vendas?", "Novo Processo de Vendas", JOptionPane.YES_NO_OPTION);
-        if (resp == 0) {
-            tabprocessos.setSelectedIndex(1);
-            DefaultTableModel model = (DefaultTableModel) tableMedicoes.getModel();
-            model.setNumRows(0);
-            for (int i = 0; i < jPanel3.getComponentCount(); i++) {
-                if (jPanel3.getComponent(i) instanceof JTextField) {
-                    JTextField c = (JTextField) jPanel3.getComponent(i);
-                    c.setText("");
-                }
-            }
-        }
+        novoProcesso();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -478,6 +521,15 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        AddMedicoes am = new AddMedicoes();
+        Telas.AparecerTela(am);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        novoProcesso();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
@@ -485,6 +537,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
+    public javax.swing.JButton jButton6;
     public javax.swing.JComboBox<String> jComboBox1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -496,7 +549,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel6;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
-    public javax.swing.JTable tableMedicoes;
+    public static javax.swing.JTable tableMedicoes;
     public static javax.swing.JTable tableProcessos;
     public javax.swing.JTabbedPane tabprocessos;
     public javax.swing.JTextField txtNome;

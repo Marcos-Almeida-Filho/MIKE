@@ -10,6 +10,7 @@ import View.compras.Insumos;
 import View.financeiro.AdicionarContasAPagar;
 import View.servicos.*;
 import View.vendas.CotacaoVenda;
+import View.vendas.OP;
 import View.vendas.PedidoVenda;
 import View.vendas.VM;
 import View.vendas.VendasMateriais;
@@ -139,6 +140,9 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                         break;
                     case "PedidoVenda":
                         Arquivos.AdicionarArquivoEmTable(PedidoVenda.tableDocs, filestring, this);
+                        break;
+                    case "OP":
+                        Arquivos.AdicionarArquivoEmTable(OP.tableDocs, filestring, this);
                         break;
                 }
                 dispose();

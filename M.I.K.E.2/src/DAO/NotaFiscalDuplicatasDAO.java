@@ -5,7 +5,7 @@
  */
 package DAO;
 
-import Bean.ProcessosVendasMedicoesBean;
+import Bean.NotaFiscalDuplicatasBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.sql.Connection;
@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
  *
  * @author Marcos Filho
  */
-public class ProcessosVendasMedicoesDAO {
+public class NotaFiscalDuplicatasDAO {
 
     Connection con;
 
@@ -28,9 +28,9 @@ public class ProcessosVendasMedicoesDAO {
 
     ResultSet rs;
 
-    List<ProcessosVendasMedicoesBean> listpvmb;
+    List<NotaFiscalDuplicatasBean> listnfd;
 
-    ProcessosVendasMedicoesBean pvmb;
+    NotaFiscalDuplicatasBean nfdb;
 
     private void conStmt() {
         con = ConnectionFactory.getConnection();
@@ -43,18 +43,18 @@ public class ProcessosVendasMedicoesDAO {
 
         rs = null;
 
-        listpvmb = new ArrayList<>();
+        listnfd = new ArrayList<>();
     }
 
-    public void create(int idProcesso, String medida) {
+    public void create(int numeroNF, String duplicata, String data, double valor) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO processos_vendas_medicoes (idprocesso, medida) VALUES (" + idProcesso + ", '" + medida + "')");
+            stmt = con.prepareStatement("INSERT INTO nf_duplicatas (numeroNf, duplicatas, data, valor) VALUES (" + numeroNF + ", '" + duplicata + "', '" + data + "', " + valor + ")");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            String msg = "Erro ao criar Medições do Processo de Venda.";
+            String msg = "Erro ao criar duplicata.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
@@ -69,24 +69,23 @@ public class ProcessosVendasMedicoesDAO {
         }
     }
 
-    public List<ProcessosVendasMedicoesBean> readMedidas(int id) {
+    public List<NotaFiscalDuplicatasBean> readDiplicatas(int numeroNF) {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM processos_vendas_medicoes WHERE idprocesso = " + id);
+            stmt = con.prepareStatement("SELECT * FROM nf_duplicatas");
 
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                pvmb = new ProcessosVendasMedicoesBean();
+                nfdb = new NotaFiscalDuplicatasBean();
 
-                pvmb.setId(rs.getInt("id"));
-                pvmb.setMedida(rs.getString("medida"));
-
-                listpvmb.add(pvmb);
+                nfdb.setDuplicata(rs.getString("duplicata"));
+                nfdb.setData(rs.getString("data"));
+                nfdb.setValor(rs.getDouble("valor"));
             }
         } catch (SQLException e) {
-            String msg = "Erro ao ler Medições do Processo de Venda.";
+            String msg = "Erro ao ler duplicatas da Nota Fiscal " + numeroNF;
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
@@ -100,29 +99,6 @@ public class ProcessosVendasMedicoesDAO {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
 
-        return listpvmb;
-    }
-
-    public void delete(int id) {
-        conStmt();
-
-        try {
-            stmt = con.prepareStatement("DELETE FROM processos_vendas_medicoes WHERE id = " + id);
-
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            String msg = "Erro ao deletar Medida do Processo de Venda.";
-            JOptionPane.showMessageDialog(null, msg);
-
-            new Thread() {
-
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        return listnfd;
     }
 }

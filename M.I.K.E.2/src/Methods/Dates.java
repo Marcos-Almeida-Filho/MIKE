@@ -102,6 +102,11 @@ public class Dates {
         return idos;
     }
 
+    public static String TransformarDataXML(String data) {
+        datanormal = data.substring(0, 10) + " " + data.substring(12, 19);
+        return datanormal;
+    }
+
     public static String CriarDataCurtaDBComDataExistente(String data) {
         datanormal = "";
         String dia = data.substring(0, 2);

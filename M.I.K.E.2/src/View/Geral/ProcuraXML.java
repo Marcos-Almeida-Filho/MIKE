@@ -8,6 +8,9 @@ package View.Geral;
 import DAO.ClientesDAO;
 import DAO.FornecedoresDAO;
 import DAO.RastreamentoDocumentosDAO;
+import DAO.NotaFiscalDAO;
+import DAO.NotaFiscalItensDAO;
+import DAO.CARDAO;
 import Methods.Dates;
 import Methods.ReadXMLDocumento;
 import Methods.SendEmail;
@@ -46,9 +49,15 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
      * Creates new form Documentos
      */
     public String nome, origem;
+    private String ieT, obsItem;
 
     ClientesDAO cd = new ClientesDAO();
     FornecedoresDAO fd = new FornecedoresDAO();
+    NotaFiscalDAO nfd = new NotaFiscalDAO();
+    NotaFiscalItensDAO nfid = new NotaFiscalItensDAO();
+    CARDAO card = new CARDAO();
+
+    double baseIcmsStItem, valorIcmsStItem, aliquotaIcms, aliquotaIcmsSt, valorIcmsItem, qtd, valorUnitario, valorTotal;
 
     public ProcuraXML(String origin) {
         initComponents();
@@ -304,6 +313,7 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                     dispose();
                     break;
                 case "NotasFiscais":
+                    NotasFiscais.pasta = chooser.getCurrentDirectory().toString();
                     for (File selectedFile : chooser.getSelectedFiles()) {
                         try {
                             dBuilder = dbFactory.newDocumentBuilder();
@@ -320,36 +330,158 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                         //optional, but recommended
                         //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
                         doc.getDocumentElement().normalize();
-                        
-                        //Buscar Destinatário
-                        NodeList destlist = doc.getElementsByTagName("dest");
-                        Node destnode = destlist.item(0);
-                        Element destelement = (Element) destnode;
-
-                        //Buscar Emissão
-                        NodeList emilist = doc.getElementsByTagName("dhEmi");
-                        Node eminode = emilist.item(0);
 
                         //Buscar Número
                         NodeList numlist = doc.getElementsByTagName("nNF");
-                        Node numnode = numlist.item(0);
-                        
-                        //Buscar Natureza de Operação
-                        NodeList natlist = doc.getElementsByTagName("natOp");
-                        Node natnode = natlist.item(0);
-                        
-                        //Status
-                        NodeList statuslist = doc.getElementsByTagName("xMotivo");
-                        Node statusnode = statuslist.item(0);
-                        
-                        DefaultTableModel modelnf = (DefaultTableModel) NotasFiscais.tablenf.getModel();
-                        modelnf.addRow(new Object[]{
-                            "",
-                            numnode.getTextContent(),
-                            destelement.getElementsByTagName("xNome").item(0).getTextContent(),
-                            natnode.getTextContent(),
-                            statusnode.getTextContent()
-                        });
+                        Node numNode = numlist.item(0);
+                        int numero = Integer.parseInt(numNode.getTextContent());
+
+                        if (nfd.notaExiste(numero)) {
+                            JOptionPane.showMessageDialog(null, "Nota já cadastrada.");
+                        } else {
+                            //Buscar Destinatário
+                            NodeList destlist = doc.getElementsByTagName("dest");
+                            Node destnode = destlist.item(0);
+                            Element destelement = (Element) destnode;
+                            String destinatario = destelement.getElementsByTagName("xNome").item(0).getTextContent();
+                            String logradouroD = destelement.getElementsByTagName("xLgr").item(0).getTextContent();
+                            String numeroD = destelement.getElementsByTagName("nro").item(0).getTextContent();
+                            String complementoD = "";
+                            String bairroD = destelement.getElementsByTagName("xBairro").item(0).getTextContent();
+                            String cidadeD = destelement.getElementsByTagName("xMun").item(0).getTextContent();
+                            String ufD = destelement.getElementsByTagName("UF").item(0).getTextContent();
+                            String cepD = destelement.getElementsByTagName("CEP").item(0).getTextContent();
+                            String cnpjD = destelement.getElementsByTagName("CNPJ").item(0).getTextContent();
+                            String ieD = destelement.getElementsByTagName("IE").item(0).getTextContent();
+
+                            //Buscar Transportadora
+                            NodeList transList = doc.getElementsByTagName("transporta");
+                            Node transNode = transList.item(0);
+                            Element transElement = (Element) transNode;
+                            String transportadora = transElement.getElementsByTagName("xNome").item(0).getTextContent();
+                            String enderecoT = transElement.getElementsByTagName("xEnder").item(0).getTextContent();
+                            String cidadeT = transElement.getElementsByTagName("xMun").item(0).getTextContent();
+                            String ufT = transElement.getElementsByTagName("UF").item(0).getTextContent();
+                            String cnpjT = transElement.getElementsByTagName("CNPJ").item(0).getTextContent();
+                            try {
+                                ieT = transElement.getElementsByTagName("IE").item(0).getTextContent();
+                            } catch (NullPointerException e) {
+                                ieT = "";
+                            }
+
+                            //Buscar Emissão
+                            NodeList emilist = doc.getElementsByTagName("dhEmi");
+                            Node emiNode = emilist.item(0);
+                            String dataEmissao = Dates.TransformarDataXML(emiNode.getTextContent());
+                            
+                            //Buscar Observação
+                            NodeList obsList = doc.getElementsByTagName("infCpl");
+                            Node obsNode = obsList.item(0);
+                            String obs = obsNode.getTextContent();
+
+                            //Buscar Natureza de Operação
+                            NodeList natlist = doc.getElementsByTagName("natOp");
+                            Node natNode = natlist.item(0);
+                            String natureza = natNode.getTextContent();
+
+                            //Buscar Valores
+                            NodeList valoresList = doc.getElementsByTagName("total");
+                            Node valoresNode = valoresList.item(0);
+                            Element valoresElement = (Element) valoresNode;
+                            double baseIcms = Double.parseDouble(valoresElement.getElementsByTagName("vBC").item(0).getTextContent());
+                            double valorIcms = Double.parseDouble(valoresElement.getElementsByTagName("vICMS").item(0).getTextContent());
+                            double baseIcmsSt = Double.parseDouble(valoresElement.getElementsByTagName("vBCST").item(0).getTextContent());
+                            double valorIcmsSt = Double.parseDouble(valoresElement.getElementsByTagName("vST").item(0).getTextContent());
+                            double valorPis = Double.parseDouble(valoresElement.getElementsByTagName("vPIS").item(0).getTextContent());
+                            double valorCofins = Double.parseDouble(valoresElement.getElementsByTagName("vCOFINS").item(0).getTextContent());
+                            double valorIpi = Double.parseDouble(valoresElement.getElementsByTagName("vIPI").item(0).getTextContent());
+                            double valorProdutos = Double.parseDouble(valoresElement.getElementsByTagName("vProd").item(0).getTextContent());
+                            double valorFrete = Double.parseDouble(valoresElement.getElementsByTagName("vFrete").item(0).getTextContent());
+                            double valorTotalNotaFiscal = Double.parseDouble(valoresElement.getElementsByTagName("vNF").item(0).getTextContent());
+
+                            //Buscar Status
+                            NodeList statuslist = doc.getElementsByTagName("xMotivo");
+                            Node statusNode = statuslist.item(0);
+                            String status = statusNode.getTextContent();
+
+                            //Buscar Duplicatas
+                            NodeList dupList = doc.getElementsByTagName("dup");
+                            for (int i = 0; i < dupList.getLength(); i++) {
+                                Node dupNode = dupList.item(i);
+                                Element dupElement = (Element) dupNode;
+                                String duplicata = numero + "-" + dupElement.getElementsByTagName("nDup").item(0).getTextContent();
+                                String data = dupElement.getElementsByTagName("dVenc").item(0).getTextContent();
+                                double valor = Double.parseDouble(dupElement.getElementsByTagName("vDup").item(0).getTextContent());
+
+                                card.create(Dates.CriarDataCurtaDBSemDataExistente(), destinatario, numero, dataEmissao, valorTotalNotaFiscal, duplicata, valor, data);
+                            }
+
+                            //Buscar Itens
+                            NodeList itensList = doc.getElementsByTagName("det");
+                            for (int i = 0; i < itensList.getLength(); i++) {
+                                Node itemNode = itensList.item(i);
+                                Element itemElement = (Element) itemNode;
+
+                                String codigo = itemElement.getElementsByTagName("cProd").item(0).getTextContent();
+                                String descricao = itemElement.getElementsByTagName("xProd").item(0).getTextContent();
+                                try {
+                                    obsItem = itemElement.getElementsByTagName("infAdProd").item(0).getTextContent();
+                                } catch (DOMException | NullPointerException e) {
+                                    obsItem = "";
+                                }
+                                String un = itemElement.getElementsByTagName("uTrib").item(0).getTextContent();
+                                String cfop = itemElement.getElementsByTagName("CFOP").item(0).getTextContent();
+                                String ncm = itemElement.getElementsByTagName("NCM").item(0).getTextContent();
+                                String csosn = itemElement.getElementsByTagName("CSOSN").item(0).getTextContent();
+                                String cst = itemElement.getElementsByTagName("CST").item(0).getTextContent();
+                                try {
+                                    qtd = Double.parseDouble(itemElement.getElementsByTagName("qTrib").item(0).getTextContent());
+                                } catch (NumberFormatException | DOMException | NullPointerException e) {
+                                    qtd = 0;
+                                }
+                                try {
+                                    valorUnitario = Double.parseDouble(itemElement.getElementsByTagName("vUnTrib").item(0).getTextContent());
+                                } catch (NumberFormatException | DOMException | NullPointerException e) {
+                                    valorUnitario = 0;
+                                }
+                                try {
+                                    valorTotal = Double.parseDouble(itemElement.getElementsByTagName("vProd").item(0).getTextContent());
+                                } catch (NumberFormatException | DOMException | NullPointerException e) {
+                                    valorTotal = 0;
+                                }
+                                try {
+                                    valorIcmsItem = Double.parseDouble(itemElement.getElementsByTagName("vCredICMSSN").item(0).getTextContent());
+                                } catch (NumberFormatException | DOMException | NullPointerException e) {
+                                    valorIcmsItem = 0;
+                                }
+                                try {
+                                    aliquotaIcms = Double.parseDouble(itemElement.getElementsByTagName("pCredSN").item(0).getTextContent());
+                                } catch (NumberFormatException | DOMException | NullPointerException e) {
+                                    aliquotaIcms = 0;
+                                }
+                                try {
+                                    baseIcmsStItem = Double.parseDouble(itemElement.getElementsByTagName("vBCST").item(0).getTextContent());
+                                } catch (NumberFormatException | DOMException | NullPointerException e) {
+                                    baseIcmsStItem = 0;
+                                }
+                                try {
+                                    valorIcmsStItem = Double.parseDouble(itemElement.getElementsByTagName("vICMSST").item(0).getTextContent());
+                                } catch (NumberFormatException | DOMException | NullPointerException e) {
+                                    valorIcmsStItem = 0;
+                                }
+                                try {
+                                    aliquotaIcmsSt = Double.parseDouble(itemElement.getElementsByTagName("pICMSST").item(0).getTextContent());
+                                } catch (NumberFormatException | DOMException | NullPointerException e) {
+                                    aliquotaIcmsSt = 0;
+                                }
+
+                                nfid.create(numero, codigo, descricao, obsItem, un, cfop, ncm, csosn, cst, qtd, valorUnitario, valorTotal, valorIcmsItem, baseIcmsStItem, valorIcmsStItem, aliquotaIcms, aliquotaIcmsSt);
+                            }
+
+                            nfd.create(numero, dataEmissao, destinatario, logradouroD, numeroD, complementoD, bairroD, cidadeD, ufD, cepD, cnpjD, ieD, natureza, transportadora, enderecoT, cidadeT, ufT, cnpjT, ieT, baseIcms, valorIcms, baseIcmsSt, valorIcmsSt, valorPis, valorCofins, valorIpi, valorProdutos, valorFrete, valorTotalNotaFiscal, obs, status);
+
+                            NotasFiscais.lerNotasFiscais();
+                        }
                     }
                     dispose();
                     break;

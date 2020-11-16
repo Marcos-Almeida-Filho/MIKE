@@ -108,9 +108,16 @@ public class Medicoes extends javax.swing.JInternalFrame {
                 "ID", "", "Nome", "Unidade"
             }
         ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
+            };
             boolean[] canEdit = new boolean [] {
                 false, true, false, false
             };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -201,15 +208,21 @@ public class Medicoes extends javax.swing.JInternalFrame {
             if (resp == 0) {
                 for (int i = 0; i < tablemedicoes.getRowCount(); i++) {
                     if (tablemedicoes.getValueAt(i, 1).equals(true)) {
-
+                        md.delete(Integer.parseInt(tablemedicoes.getValueAt(i, 0).toString()));
                     }
                 }
+                lerMedicoes();
             }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        String nome = JOptionPane.showInputDialog(null, "Qual o nome da medida?", "Nova Medida", JOptionPane.YES_NO_OPTION);
+        String unidade = JOptionPane.showInputDialog(null, "Qual a unidade da medida?\nEx: mm, º, etc.", "Nova Medida", JOptionPane.YES_NO_OPTION);
+
+        md.create(nome, unidade);
+
+        lerMedicoes();
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

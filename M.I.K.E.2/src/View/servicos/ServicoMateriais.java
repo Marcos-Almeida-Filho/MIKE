@@ -41,7 +41,6 @@ import static View.servicos.PedidoServico.txtvalorcobranca;
 import static View.servicos.PedidoServico.txtvalorretorno;
 import java.awt.AWTException;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -54,7 +53,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -69,9 +67,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     /**
      * Creates new form MateriaisServico
      */
-    
     private int idmaterial = 0;
-    
+
     public ServicoMateriais() {
         initComponents();
         readtablemateriais();
@@ -769,7 +766,7 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     private void tablelistamaterialservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablelistamaterialservicoMouseClicked
         if (evt.getClickCount() == 2) {
             idmaterial = Integer.parseInt(tablelistamaterialservico.getValueAt(tablelistamaterialservico.getSelectedRow(), 0).toString());
-            
+
             tabmateriaisservico.setSelectedIndex(1);
 
             txtid.setText(tablelistamaterialservico.getValueAt(tablelistamaterialservico.getSelectedRow(), 0).toString());
@@ -827,24 +824,14 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        File dir = new File(lbldirectory.getText());
         if (lbldirectory.getText().equals("")) {
             DocumentosMateriaisServico dms = new DocumentosMateriaisServico();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(dms);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = dms.getSize();
-            dms.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-            dms.setVisible(true);
+            Telas.AparecerTela(dms);
         } else {
+            File dir = new File(lbldirectory.getText());
             DocumentosMateriaisServico dms = new DocumentosMateriaisServico();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(dms);
-            Dimension desktopsize = jDesktopPane1.getSize();
-            Dimension jinternalframesize = dms.getSize();
-            dms.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
             DocumentosMateriaisServico.chooser.setCurrentDirectory(dir);
-            dms.setVisible(true);
+            Telas.AparecerTela(dms);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -853,10 +840,8 @@ public class ServicoMateriais extends javax.swing.JInternalFrame {
             Desktop desk = Desktop.getDesktop();
             try {
                 desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 4)));
-
             } catch (IOException ex) {
-                Logger.getLogger(DocumentosOrcamentoServico.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked

@@ -102,4 +102,63 @@ public class OPMedicoesDAO {
 
         return listob;
     }
+
+    public List<OPMedicoesBean> readMedicao(int id) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op_medicoes WHERE id = " + id);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OPMedicoesBean omb = new OPMedicoesBean();
+
+                omb.setId(rs.getInt("id"));
+                omb.setInstrumento(rs.getString("instrumento"));
+                omb.setMaior(rs.getString("maior"));
+                omb.setMenor(rs.getString("menor"));
+                omb.setMedida(rs.getString("medida"));
+
+                listob.add(omb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler medições do processo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listob;
+    }
+    
+    public void update(int id, String maior, String menor, String instrumento) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op_medicoes SET maior = '" + maior + "', menor = '" + menor + "', instrumento = '" + instrumento + "' WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar Inspeção do Processo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 }

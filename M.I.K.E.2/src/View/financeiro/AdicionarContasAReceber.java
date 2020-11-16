@@ -17,7 +17,6 @@ import View.Geral.ProcuraXML;
 import View.Geral.ProcurarCliente;
 import java.awt.AWTException;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +27,6 @@ import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -37,6 +35,14 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
+
+    //DAO e Bean para salvar
+    CARDAO cd = new CARDAO();
+    CARBean cb = new CARBean();
+
+    //DAO e Bean para salvar documento
+    CARDocumentosDAO cdd = new CARDocumentosDAO();
+    CARDocumentosBean cdb = new CARDocumentosBean();
 
     /**
      * Creates new form AdicionarContasPagar
@@ -439,7 +445,7 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
         if (!txttotal.getText().equals("") && tableparcelas.getRowCount() > 0) {
             total = new BigDecimal(Valores.TransformarDinheiroEmValorDouble(txttotal.getText()));
             total = total.setScale(2, RoundingMode.HALF_EVEN);
-            
+
             for (int i = 0; i < tableparcelas.getRowCount(); i++) {
                 BigDecimal parcela = new BigDecimal(Valores.TransformarDinheiroEmValorDouble(tableparcelas.getValueAt(i, 2).toString()));
                 parcela = parcela.setScale(2, RoundingMode.HALF_EVEN);
@@ -452,12 +458,7 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
         if (txtcliente.getText().equals("")) {
             JOptionPane.showMessageDialog(rootPane, "Selecione um cliente.");
             ProcurarCliente pf = new ProcurarCliente("CAR");
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(pf);
-            Dimension jif = pf.getSize();
-            Dimension d = desk.getSize();
-            pf.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-            pf.setVisible(true);
+            Telas.AparecerTela(pf);
         } else if (txtnumero.getText().equals("")) {//Verifica se tem número de nota fiscal
             JOptionPane.showMessageDialog(rootPane, "Coloque o número da nota fiscal por favor.");
             txtnumero.requestFocus();
@@ -484,32 +485,12 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
                 txttotal.selectAll();
             }
         } else {//Caso tudo esteja correto, procede para salvar
-            //DAO e Bean para salvar
-            CARDAO cd = new CARDAO();
-            CARBean cb = new CARBean();
-
-            //DAO e Bean para salvar documento
-            CARDocumentosDAO cdd = new CARDocumentosDAO();
-            CARDocumentosBean cdb = new CARDocumentosBean();
-
             //Criar data de lançamento
             String data = Dates.CriarDataCompletaParaDB();
 
             //Criar CAR
             for (int i = 0; i < tableparcelas.getRowCount(); i++) {
-                //Dados para salvar
-                cb.setDatalancamento(data);
-                cb.setCliente(txtcliente.getText());
-                cb.setNotafiscal(Integer.parseInt(txtnumero.getText()));
-                cb.setDataemissao(Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()));
-                cb.setTotal(Valores.TransformarDinheiroEmValorDouble(txttotal.getText()));
-                cb.setParcela(tableparcelas.getValueAt(i, 0).toString());
-                cb.setValorparcela(Valores.TransformarDinheiroEmValorDouble(tableparcelas.getValueAt(i, 2).toString()));
-                cb.setDataparcela(Dates.CriarDataCurtaDBComDataExistente(tableparcelas.getValueAt(i, 1).toString()));
-                cb.setStatus("Ativo");
-
-                //datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, status
-                cd.create(cb);
+                cd.create(data, txtcliente.getText(), Integer.parseInt(txtnumero.getText()), Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()), Valores.TransformarDinheiroEmValorDouble(txttotal.getText()), tableparcelas.getValueAt(i, 0).toString(), Valores.TransformarDinheiroEmValorDouble(tableparcelas.getValueAt(i, 2).toString()), Dates.CriarDataCurtaDBComDataExistente(tableparcelas.getValueAt(i, 1).toString()));
 
                 //Variável para o ID
                 int id = 0;
@@ -624,22 +605,12 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
 
     private void btnAddDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDocActionPerformed
         DocumentosCAR dcar = new DocumentosCAR();
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(dcar);
-        Dimension jif = dcar.getSize();
-        Dimension d = desk.getSize();
-        dcar.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        dcar.setVisible(true);
+        Telas.AparecerTela(dcar);
     }//GEN-LAST:event_btnAddDocActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         ProcurarCliente p = new ProcurarCliente("CAR");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(p);
-        Dimension jif = p.getSize();
-        Dimension d = desk.getSize();
-        p.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        p.setVisible(true);
+        Telas.AparecerTela(p);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked

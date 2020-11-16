@@ -14,6 +14,7 @@ import View.financeiro.AdicionarContasAReceber;
 import View.logistica.RastreamentoDocumentos;
 import View.vendas.CodigoPorCliente;
 import View.vendas.CotacaoVenda;
+import View.vendas.OP;
 import View.vendas.PedidoVenda;
 import javax.swing.table.DefaultTableModel;
 
@@ -221,6 +222,9 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                     break;
                 case "CodigoPorCliente":
                     CodigoPorCliente.txtcliente.setText(cliente);
+                    break;
+                case "OP":
+                    OP.txtCliente.setText(cliente);
                     break;
             }
             dispose();

@@ -8,6 +8,7 @@ package View.comercial;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
 import DAO.ProcessosServicoDAO;
+import DAO.ProcessosVendasDAO;
 import DAO.ServicoGrupoDeProcessosDAO;
 import Methods.Dates;
 import Methods.ExcelMethods;
@@ -35,6 +36,8 @@ public class F_UP extends javax.swing.JInternalFrame {
 
     static ProcessosServicoDAO psd = new ProcessosServicoDAO();
     static ServicoGrupoDeProcessosDAO sgdpd = new ServicoGrupoDeProcessosDAO();
+    
+    static ProcessosVendasDAO pvd = new ProcessosVendasDAO();
 
     public F_UP() {
         initComponents();
@@ -304,8 +307,12 @@ public class F_UP extends javax.swing.JInternalFrame {
     public static void statusOS() {
         psd.read().forEach(sgdpd -> {
             cbStatusOS.addItem(sgdpd.getNome());
-            cbStatusOP.addItem(sgdpd.getNome());
         });
+        
+        pvd.readTodos().forEach(pvb -> {
+            cbStatusOP.addItem(pvb.getNome());
+        });
+        
         cbStatusOS.addItem("Encerrado");
         cbStatusOP.addItem("Encerrado");
     }

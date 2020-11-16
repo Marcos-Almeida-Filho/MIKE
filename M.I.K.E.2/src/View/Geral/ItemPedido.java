@@ -207,7 +207,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnprocurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarActionPerformed
-        ProcuraMaterial pm = new ProcuraMaterial(origin);
+        ProcurarMaterial pm = new ProcurarMaterial(origin);
         Telas.AparecerTela(pm);
     }//GEN-LAST:event_btnprocurarActionPerformed
 

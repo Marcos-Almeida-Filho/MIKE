@@ -220,6 +220,24 @@ public class Arquivos {
         }
     }
 
+    public static void abrirArquivo(String file) {
+        Desktop desk = Desktop.getDesktop();
+        try {
+            desk.open(new File((String) file));
+        } catch (IOException ex) {
+            String msg = "Erro ao abrir arquivo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + ex);
+                }
+            }.start();
+        }
+    }
+
     /*public static void criarArquivoEmRede(String origem, String file, int numero) {
         File fileoriginal = new File(file);
         File folder = new File("");

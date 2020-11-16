@@ -268,7 +268,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_radioNaoCadastradoActionPerformed
 
     private void btnprocurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarActionPerformed
-        ProcuraMaterial pm = new ProcuraMaterial(origin);
+        ProcurarMaterial pm = new ProcurarMaterial(origin);
         Telas.AparecerTela(pm);
     }//GEN-LAST:event_btnprocurarActionPerformed
 

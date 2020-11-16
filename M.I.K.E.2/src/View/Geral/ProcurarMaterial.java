@@ -5,6 +5,7 @@
  */
 package View.Geral;
 
+import DAO.OPMPDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.VendasMateriaisDAO;
 import View.comercial.CategoriaDePreco;
@@ -17,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Marcos Filho
  */
-public class ProcuraMaterial extends javax.swing.JInternalFrame {
+public class ProcurarMaterial extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form ProcuraMaterialVenda
@@ -26,8 +27,9 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
 
     static ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
     static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
+    static OPMPDAO ompd = new OPMPDAO();
 
-    public ProcuraMaterial(String origin) {
+    public ProcurarMaterial(String origin) {
         initComponents();
         origem = origin;
         readtablemateriais();
@@ -93,6 +95,15 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
                 });
                 break;
             case "PedidoVenda":
+                vmd.readStatus("Ativo").forEach(vmb -> {
+                    model.addRow(new Object[]{
+                        vmb.getId(),
+                        vmb.getCodigo(),
+                        vmb.getDescricao()
+                    });
+                });
+                break;
+            case "OP":
                 vmd.readStatus("Ativo").forEach(vmb -> {
                     model.addRow(new Object[]{
                         vmb.getId(),
@@ -264,15 +275,9 @@ public class ProcuraMaterial extends javax.swing.JInternalFrame {
                     ItemPedido.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
                     break;
                 case "OP":
-                    DefaultTableModel modelOP = (DefaultTableModel) OP.tableMP.getModel();
-                    modelOP.addRow(new Object[]{
-                        "",
-                        false,
-                        codigo,
-                        desc,
-                        0,
-                        false
-                    });
+                    String op = OP.txtNumOP.getText();
+                    ompd.create(op, codigo, desc, 0);
+                    OP.lerMP(op);
                     break;
             }
             ItemCotacao.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());

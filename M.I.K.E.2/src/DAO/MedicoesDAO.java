@@ -80,6 +80,42 @@ public class MedicoesDAO {
             while (rs.next()) {
                 mb = new MedicoesBean();
 
+                mb.setId(rs.getInt("id"));
+                mb.setNome(rs.getString("nome"));
+                mb.setUnidade(rs.getString("unidade"));
+
+                listmb.add(mb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Medições.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listmb;
+    }
+
+    public List<MedicoesBean> readMedicao(String medicao) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM medicoes WHERE nome = '" + medicao + "'");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                mb = new MedicoesBean();
+
+                mb.setId(rs.getInt("id"));
                 mb.setNome(rs.getString("nome"));
                 mb.setUnidade(rs.getString("unidade"));
 
