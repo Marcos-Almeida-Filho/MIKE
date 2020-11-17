@@ -893,7 +893,8 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jScrollPane3" pref="1218" max="32767" attributes="0"/>
                                   <Group type="102" attributes="0">
-                                      <EmptySpace min="0" pref="709" max="32767" attributes="0"/>
+                                      <Component id="btnAll" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace pref="584" max="32767" attributes="0"/>
                                       <Component id="jButton11" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButton6" min="-2" max="-2" attributes="0"/>
@@ -924,6 +925,7 @@
                                   <Component id="txttotal" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButton11" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnAll" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -1073,6 +1075,14 @@
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton11ActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="btnAll">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Selecionar Todos"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAllActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>

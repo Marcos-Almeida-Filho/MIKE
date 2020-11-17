@@ -44,7 +44,6 @@ import static View.TelaPrincipal.jDesktopPane1;
 import static View.servicos.OS.txtnumeroos;
 import java.awt.AWTException;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,7 +58,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDesktopPane;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -267,6 +265,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         txttotal = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
+        btnAll = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableitensnota = new javax.swing.JTable();
@@ -826,6 +825,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             }
         });
 
+        btnAll.setText("Selecionar Todos");
+        btnAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAllActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -835,7 +841,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGap(0, 709, Short.MAX_VALUE)
+                        .addComponent(btnAll)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 584, Short.MAX_VALUE)
                         .addComponent(jButton11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
@@ -861,7 +868,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(jButton6)
                     .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
-                    .addComponent(jButton11))
+                    .addComponent(jButton11)
+                    .addComponent(btnAll))
                 .addContainerGap())
         );
 
@@ -1574,13 +1582,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         if (evt.getButton() == 1) {
             if (evt.getClickCount() == 2) {
                 ItemPedidoServico p = new ItemPedidoServico();
-                JDesktopPane desk = this.getDesktopPane();
-
-                desk.add(p);
-                Dimension desktopsize = jDesktopPane1.getSize();
-                Dimension jinternalframesize = p.getSize();
-                p.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
-                p.setVisible(true);
+                Telas.AparecerTela(p);
 
                 int row = tableitensorcamento.getSelectedRow();
                 ItemPedidoServico.txtrow.setText(String.valueOf(row));
@@ -1995,12 +1997,28 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         //InternalFrameProcura.procuraCliente(txtclientepedido, "ServiçoPedido");
     }//GEN-LAST:event_txtclientepedidoKeyReleased
 
+    private void btnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAllActionPerformed
+        if (btnAll.getText().equals("Selecionar Todos")) {
+            for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+                tableitensorcamento.setValueAt(true, i, 0);
+                btnAll.setText("Desmarcar Todos");
+            }
+        } else {
+            for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+                tableitensorcamento.setValueAt(false, i, 0);
+                btnAll.setText("Selecionar Todos");
+            }
+        }
+
+    }//GEN-LAST:event_btnAllActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnCondicao;
     private javax.swing.JButton BtnProcurar;
     private javax.swing.JButton BtnRepresentante;
     private javax.swing.JButton BtnVendedor;
+    private javax.swing.JButton btnAll;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;

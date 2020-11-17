@@ -396,6 +396,29 @@ public class VendasPedidoDAO {
         }
     }
 
+    public void updateStatus(String pedido, String status) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_pedido SET status = '" + status + "' WHERE pedido = '" + pedido + "'");
+            stmt.executeUpdate();
+
+            PedidoVenda.pedidoAtualizado = true;
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar Pedido de Venda!";
+            JOptionPane.showMessageDialog(null, msg);
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
     public void desativarPedido(String pedido, String motivo) {
         conStmt();
 

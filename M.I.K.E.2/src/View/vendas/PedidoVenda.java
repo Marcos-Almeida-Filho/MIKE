@@ -6,6 +6,7 @@
 package View.vendas;
 
 import Bean.F_UPBean;
+import Bean.VendasPedidoItensBean;
 import Connection.Session;
 import DAO.AltDAO;
 import DAO.F_UPDAO;
@@ -32,6 +33,7 @@ import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
 import View.comercial.DocumentosFornecedores;
+import View.fiscal.NotasFiscais;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -446,7 +448,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
         jPanel10.setName("jPanel10"); // NOI18N
 
-        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Parcialmente Faturado", "Fechado", "Desativado", "Todos" }));
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Parcialmente Faturado", "Faturado", "Desativado", "Todos" }));
         cbStatus.setName("cbStatus"); // NOI18N
         cbStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1170,6 +1172,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             JPopupMenu menu = new JPopupMenu();
             JMenuItem abrirOP = new JMenuItem("Abrir OP");
             JMenuItem abrirNF = new JMenuItem("Abrir NF");
+            JMenuItem lancarNF = new JMenuItem("Lançar NF");
 
             abrirOP.addActionListener((ActionEvent e) -> {
                 String op = tableItens.getValueAt(tableItens.getSelectedRow(), 9).toString();
@@ -1180,17 +1183,52 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     OP.txtNumOP.setText(op);
                     OP.tabOPS.setSelectedIndex(1);
                     OP.lerOP(op);
+                    OP.lerDocs(op);
+                    OP.lerInspecoes(op);
+                    OP.lerMP(op);
+                    OP.lerMedidasMaterial(Integer.parseInt(tableItens.getValueAt(row, 11).toString()));
+                    OP.lerObs(op);
+                    OP.lerProcessos(op);
                     Telas.AparecerTelaAumentada(opjif);
                 }
             });
 
             abrirNF.addActionListener((ActionEvent ae) -> {
                 String nf = tableItens.getValueAt(tableItens.getSelectedRow(), 10).toString();
-                JOptionPane.showMessageDialog(null, "Em Breve");
+                NotasFiscais nfv = new NotasFiscais();
+                Telas.AparecerTela(nfv);
+                nfv.tabNF.setSelectedIndex(1);
+                nfv.readNF(Integer.parseInt(nf));
+            });
+
+            lancarNF.addActionListener((ActionEvent ae) -> {
+                int idMaterial = Integer.parseInt(tableItens.getValueAt(row, 11).toString());
+                int idItemPedido = Integer.parseInt(tableItens.getValueAt(row, 0).toString());
+
+                VendasPedidoItensBean vpib = new VendasPedidoItensBean();
+                vpib.setId(Integer.parseInt(tableItens.getValueAt(row, 0).toString()));
+                vpib.setPedido(txtPedido.getText());
+                vpib.setIdMaterial(Integer.parseInt(tableItens.getValueAt(row, 11).toString()));
+                vpib.setCodigo(tableItens.getValueAt(row, 2).toString());
+                vpib.setDescricao(tableItens.getValueAt(row, 3).toString());
+                vpib.setQtd(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 4).toString()));
+                vpib.setValorunitario(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 5).toString()));
+                vpib.setValortotal(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 6).toString()));
+                vpib.setPrazo(tableItens.getValueAt(row, 7).toString());
+                vpib.setPedido(tableItens.getValueAt(row, 8).toString());
+                vpib.setOp(tableItens.getValueAt(row, 9).toString());
+
+                AddNF anf = new AddNF(idMaterial, idItemPedido, vpib);
+                Telas.AparecerTela(anf);
+
             });
 
             menu.add(abrirOP);
-            menu.add(abrirNF);
+            if (tableItens.getValueAt(tableItens.getSelectedRow(), 10).equals("")) {
+                menu.add(lancarNF);
+            } else {
+                menu.add(abrirNF);
+            }
 
             menu.show(evt.getComponent(), evt.getPoint().x, evt.getPoint().y);
         }

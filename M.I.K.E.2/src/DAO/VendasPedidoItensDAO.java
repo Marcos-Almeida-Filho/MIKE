@@ -74,7 +74,14 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao criar item do Pedido de Venda!";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -107,7 +114,14 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler os itens do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + e);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -142,7 +156,14 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler os itens do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + e);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -180,7 +201,14 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler item do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -209,22 +237,36 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao atualizar item do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
 
-    public void updateNotaFiscal(String nf, int id) {
+    public void updateNotaFiscal(String nf, int idItemPedido) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET nf = '" + nf + "' WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET nf = '" + nf + "' WHERE id = " + idItemPedido);
             stmt.executeUpdate();
         } catch (SQLException e) {
             String msg = "Erro ao atualizar nota fiscal do item do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -239,7 +281,14 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao atualizar OP do item do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -255,7 +304,14 @@ public class VendasPedidoItensDAO {
         } catch (HeadlessException | SQLException e) {
             String msg = "Erro ao excluir item do Pedido de Venda";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "/n" + e);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

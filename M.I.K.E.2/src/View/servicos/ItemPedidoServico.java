@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.text.DecimalFormat;
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -255,7 +254,7 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
                     qtdf,
                     txtvalor.getText(),
                     totf,
-                    txtprazo.getText() + " dias",
+                    txtprazo.getText() + " dias úteis",
                     txtpedido.getText(),
                     "",
                     ""
@@ -271,7 +270,7 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
             float valor = Float.parseFloat(v.replace(",", "."));
             float tot = qtd * valor;
             String totf = formatter.format(tot);
-            String nprazo = txtprazo.getText().replace(" dias", "");
+            String nprazo = txtprazo.getText().replace(" dias úteis", "");
 
             model.setValueAt(txtid.getText(), Integer.parseInt(txtrow.getText()), 1);
             model.setValueAt(txtcodigo.getText(), Integer.parseInt(txtrow.getText()), 2);
@@ -279,7 +278,7 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
             model.setValueAt(txtqtd.getText(), Integer.parseInt(txtrow.getText()), 4);
             model.setValueAt(txtvalor.getText(), Integer.parseInt(txtrow.getText()), 5);
             model.setValueAt(totf, Integer.parseInt(txtrow.getText()), 6);
-            model.setValueAt(nprazo + " dias", Integer.parseInt(txtrow.getText()), 7);
+            model.setValueAt(nprazo + " dias úteis", Integer.parseInt(txtrow.getText()), 7);
             model.setValueAt(txtpedido.getText(), Integer.parseInt(txtrow.getText()), 8);
             dispose();
         }

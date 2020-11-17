@@ -280,12 +280,26 @@ public class CARDAO {
         return listcb;
     }
 
-    public void update(String cliente, int notaFiscal, double total, String parcela, double valorParcela, String dataParcela, String dataRecebimento, String banco, String metodo, int id) {
+    /**
+     *
+     * @param cliente
+     * @param notaFiscal
+     * @param total
+     * @param parcela
+     * @param valorParcela
+     * @param dataParcela
+     * @param dataRecebimento
+     * @param valorRecebido
+     * @param banco
+     * @param metodo
+     * @param id
+     */
+    public void update(String cliente, int notaFiscal, double total, String parcela, double valorParcela, String dataParcela, int id) {
 
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE car SET cliente = '" + cliente + "', notafiscal = " + notaFiscal + ", total = " + total + ", parcela = '" + parcela + "', valorparcela = " + valorParcela + ", dataparcela = '" + dataParcela + "', datarecebimento = '" + dataRecebimento + "', banco = '" + banco + "', metodo = '" + metodo + "' WHERE id =" + id);
+            stmt = con.prepareStatement("UPDATE car SET cliente = '" + cliente + "', notafiscal = " + notaFiscal + ", total = " + total + ", parcela = '" + parcela + "', valorparcela = " + valorParcela + ", dataparcela = '" + dataParcela + "' WHERE id =" + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -304,12 +318,21 @@ public class CARDAO {
         }
     }
 
-    public void updaterecebimento(String dataRecebimento, String banco, String metodo, int id) {
+    /**
+     *
+     * @param dataRecebimento
+     * @param valorRecebido
+     * @param banco
+     * @param metodo
+     * @param cheque
+     * @param id
+     */
+    public void updaterecebimento(String dataRecebimento, double valorRecebido, String banco, String metodo, String cheque, int id) {
 
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE car SET datarecebimento = '" + dataRecebimento + "', banco = '" + banco + "', metodo = '" + metodo + "', status = 'Pago' WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE car SET datarecebimento = '" + dataRecebimento + "', valorrecebido = " + valorRecebido + ", banco = '" + banco + "', metodo = '" + metodo + "', cheque = '" + cheque + "', status = 'Pago' WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -327,7 +350,7 @@ public class CARDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void cancelarConta(int notaFiscal) {
 
         conStmt();

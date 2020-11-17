@@ -263,7 +263,7 @@
                           <StringArray count="5">
                             <StringItem index="0" value="Em Aberto"/>
                             <StringItem index="1" value="Parcialmente Faturado"/>
-                            <StringItem index="2" value="Fechado"/>
+                            <StringItem index="2" value="Faturado"/>
                             <StringItem index="3" value="Desativado"/>
                             <StringItem index="4" value="Todos"/>
                           </StringArray>

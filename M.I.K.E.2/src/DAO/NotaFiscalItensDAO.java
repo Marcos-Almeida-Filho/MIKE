@@ -127,6 +127,45 @@ public class NotaFiscalItensDAO {
 
         return listnfi;
     }
+    
+    public List<NotaFiscalItensBean> readItensSemPedido(int numeroNF) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM nf_itens WHERE numeroNF = " + numeroNF + " AND idMaterial = 0");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                nfib = new NotaFiscalItensBean();
+
+                nfib.setId(rs.getInt("id"));
+                nfib.setIdMaterial(rs.getInt("idMaterial"));
+                nfib.setCodigo(rs.getString("codigo"));
+                nfib.setDescricao(rs.getString("descricao"));
+                nfib.setQtd(rs.getDouble("qtd"));
+                nfib.setValorUnitario(rs.getDouble("valorUnitario"));
+                nfib.setValorTotal(rs.getDouble("valorTotal"));
+
+                listnfi.add(nfib);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Itens da Nota Fiscal " + numeroNF;
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listnfi;
+    }
 
     public List<NotaFiscalItensBean> readItem(int id) {
         rsList();
@@ -174,5 +213,28 @@ public class NotaFiscalItensDAO {
         }
 
         return listnfi;
+    }
+    
+    public void updateIdMaterial(int idMaterial, int idItem) {
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("UPDATE nf_itens SET idMaterial = " + idMaterial + " WHERE id = " + idItem);
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao lançar idMaterial no item da Nota Fiscal.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg + "\n" + e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
     }
 }

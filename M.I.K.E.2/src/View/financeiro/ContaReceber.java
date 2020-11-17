@@ -5,18 +5,13 @@
  */
 package View.financeiro;
 
-import Bean.BancosBean;
-import Bean.CAPBean;
 import DAO.BancosDAO;
-import DAO.CAPDAO;
+import DAO.CARDAO;
+import Methods.Dates;
 import Methods.Docs;
+import Methods.Telas;
 import View.Geral.ProcurarFornecedor;
-import static View.financeiro.ContasPagar.readtablecap;
-import java.awt.Dimension;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,15 +20,20 @@ import javax.swing.JOptionPane;
  */
 public class ContaReceber extends javax.swing.JInternalFrame {
 
+    CARDAO card = new CARDAO();
+    private int id;
+
     /**
      * Creates new form AdicionarContasPagar
+     *
+     * @param id
      */
-    public ContaReceber() {
+    public ContaReceber(int id) {
         initComponents();
-        data();
         readcbbancos();
         travacampos();
         cheque();
+        this.id = id;
     }
 
     public static void cheque() {
@@ -46,24 +46,17 @@ public class ContaReceber extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void data() {
-        Calendar c = Calendar.getInstance();
-        String pattern = "dd/MM/yyyy";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        txtdatalancamento.setText(simpleDateFormat.format(c.getTime()));
-    }
-
     public static void readcbbancos() {
         BancosDAO bd = new BancosDAO();
 
-        for (BancosBean bb : bd.read()) {
+        bd.read().forEach(bb -> {
             cbbanco.addItem(bb.getBanco());
-        }
+        });
     }
 
     public static void travacampos() {
-        if (!txtpagamento.getText().equals("")) {
-            txtfornecedor.setEditable(false);
+        if (dcDataRecebimento.getDate() != null) {
+            txtCliente.setEditable(false);
             btnprocurar.setEnabled(false);
             jButton1.setEnabled(false);
             txtnf.setEditable(false);
@@ -71,23 +64,24 @@ public class ContaReceber extends javax.swing.JInternalFrame {
             txttotal.setEditable(false);
             txtparcela.setEditable(false);
             txtvalorparcela.setEditable(false);
-            txtvencimento.setEditable(false);
-            txtpagamento.setEditable(false);
+            dcDataVencimento.setEnabled(false);
+            dcDataRecebimento.setEnabled(false);
             cbbanco.setEnabled(false);
             cbmetodo.setEnabled(false);
         }
     }
 
-    public static void zeracampos() {
+    public void zeracampos() {
+        id = 0;
         txtid.setText("");
-        txtfornecedor.setText("");
+        txtCliente.setText("");
         txtnf.setText("");
         txtemissao.setText("");
         txttotal.setText("");
         txtparcela.setText("");
         txtvalorparcela.setText("");
-        txtvencimento.setText("");
-        txtpagamento.setText("");
+        dcDataVencimento.setDate(null);
+        dcDataRecebimento.setDate(null);
         cbbanco.setSelectedIndex(0);
         cbmetodo.setSelectedIndex(0);
     }
@@ -107,12 +101,11 @@ public class ContaReceber extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         txtid = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        txtdatalancamento = new javax.swing.JFormattedTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         txtnf = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtfornecedor = new javax.swing.JTextField();
+        txtCliente = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtemissao = new javax.swing.JFormattedTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -124,19 +117,22 @@ public class ContaReceber extends javax.swing.JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         txtvalorparcela = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        txtvencimento = new javax.swing.JFormattedTextField();
+        dcDataVencimento = new com.toedter.calendar.JDateChooser();
         jPanel4 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        txtpagamento = new javax.swing.JFormattedTextField();
         jLabel11 = new javax.swing.JLabel();
         cbbanco = new javax.swing.JComboBox<>();
         jLabel12 = new javax.swing.JLabel();
         cbmetodo = new javax.swing.JComboBox<>();
         lblcheque = new javax.swing.JLabel();
         txtcheque = new javax.swing.JTextField();
+        dcDataRecebimento = new com.toedter.calendar.JDateChooser();
+        txtValorRecebido = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabledocs = new javax.swing.JTable();
+        txtDataLancamento = new javax.swing.JTextField();
 
         setClosable(true);
         setResizable(true);
@@ -157,10 +153,6 @@ public class ContaReceber extends javax.swing.JInternalFrame {
             }
         });
 
-        txtdatalancamento.setEditable(false);
-        txtdatalancamento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtdatalancamento.setToolTipText("dd/mm/aaaa");
-
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados"));
 
         jLabel3.setText("Nota Fiscal");
@@ -170,7 +162,7 @@ public class ContaReceber extends javax.swing.JInternalFrame {
 
         jLabel4.setText("Cliente");
 
-        txtfornecedor.setEditable(false);
+        txtCliente.setEditable(false);
 
         jLabel5.setText("Data de Emissão");
 
@@ -201,12 +193,11 @@ public class ContaReceber extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnprocurar))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -221,17 +212,16 @@ public class ContaReceber extends javax.swing.JInternalFrame {
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnprocurar))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel6)
@@ -242,10 +232,10 @@ public class ContaReceber extends javax.swing.JInternalFrame {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel3)
                         .addComponent(txtnf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Contas A Pagar"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Contas A Receber"));
 
         jLabel7.setText("Parcela");
 
@@ -265,11 +255,11 @@ public class ContaReceber extends javax.swing.JInternalFrame {
             }
         });
 
+        jLabel9.setLabelFor(dcDataVencimento);
         jLabel9.setText("Data de Vencimento");
+        jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        txtvencimento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtvencimento.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtvencimento.setToolTipText("dd/mm/aaaa");
+        dcDataVencimento.setDateFormatString("dd/MM/yyyy");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -279,18 +269,18 @@ public class ContaReceber extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dcDataVencimento, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtparcela, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtparcela, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtvalorparcela, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtvencimento, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(txtvalorparcela, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -302,18 +292,15 @@ public class ContaReceber extends javax.swing.JInternalFrame {
                     .addComponent(jLabel8)
                     .addComponent(txtvalorparcela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(txtvencimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(dcDataVencimento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Pagamento"));
 
         jLabel10.setText("Data de Recebimento");
-
-        txtpagamento.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
-        txtpagamento.setToolTipText("dd/mm/aaaa");
 
         jLabel11.setText("Banco");
 
@@ -330,6 +317,10 @@ public class ContaReceber extends javax.swing.JInternalFrame {
 
         lblcheque.setText("Número do Cheque");
 
+        dcDataRecebimento.setDateFormatString("dd/MM/yyyy");
+
+        jLabel13.setText("Valor Recebido R$");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -338,42 +329,49 @@ public class ContaReceber extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtpagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblcheque)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtcheque)))
+                        .addComponent(txtcheque))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dcDataRecebimento, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtValorRecebido, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel11)
-                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel10)
-                        .addComponent(txtpagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbbanco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel10))
+                    .addComponent(dcDataRecebimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtValorRecebido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(cbmetodo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblcheque)
                     .addComponent(txtcheque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Documentos"));
@@ -432,9 +430,11 @@ public class ContaReceber extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        txtDataLancamento.setEditable(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -443,6 +443,8 @@ public class ContaReceber extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -450,21 +452,16 @@ public class ContaReceber extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtdatalancamento, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(669, 669, 669)
-                        .addComponent(jButton1)
-                        .addGap(0, 74, Short.MAX_VALUE))
+                        .addComponent(txtDataLancamento, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(19, 19, 19))))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -474,13 +471,13 @@ public class ContaReceber extends javax.swing.JInternalFrame {
                     .addComponent(jLabel1)
                     .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(txtdatalancamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDataLancamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -504,57 +501,18 @@ public class ContaReceber extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int sn = JOptionPane.showConfirmDialog(rootPane, "Deseja lançar outro registro?", "Novo registro", JOptionPane.YES_NO_OPTION);
-        if (txtid.getText().equals("")) {
-            CAPBean capb = new CAPBean();
-            CAPDAO capd = new CAPDAO();
+        if (id == 0) {
+            card.create(Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), Integer.parseInt(txtnf.getText()), txtemissao.getText(), Double.parseDouble(txttotal.getText()), txtparcela.getText(), Double.parseDouble(txtvalorparcela.getText()), Dates.CriarDataCurtaDBJDateChooser(dcDataVencimento.getDate()));
 
-            capb.setDatalancamento(txtdatalancamento.getText());
-            capb.setFornecedor(txtfornecedor.getText());
-            capb.setNumero(txtnf.getText());
-            capb.setDataemissao(txtemissao.getText());
-            capb.setTotal(txttotal.getText());
-            capb.setParcela(txtparcela.getText());
-            capb.setValorparcela(txtvalorparcela.getText());
-            capb.setDataparcela(txtvencimento.getText());
-            capb.setDatapagamento(txtpagamento.getText());
-            capb.setBanco(cbbanco.getSelectedItem().toString());
-            capb.setMetodo(cbmetodo.getSelectedItem().toString());
-
-            if (txtpagamento.getText().equals("")) {
-                capb.setStatus("Em aberto");
-            } else {
-                capb.setStatus("Pago");
-            }
-//            datalancamento, fornecedor, notafiscal, dataemissao, total, parcela, valorparcela, dataparcela, datapagamento, banco, metodo, status
-            capd.create(capb);
-            ContasPagar.cbstatus.setSelectedIndex(0);
-            readtablecap();
+            ContasReceber.readtablecar();
         } else {
-            CAPBean capb = new CAPBean();
-            CAPDAO capd = new CAPDAO();
+            card.update(txtCliente.getText(), Integer.parseInt(txtnf.getText()), Double.parseDouble(txttotal.getText()), txtparcela.getText(), Double.parseDouble(txtvalorparcela.getText()), Dates.CriarDataCurtaDBJDateChooser(dcDataVencimento.getDate()), id);
 
-            capb.setDatalancamento(txtdatalancamento.getText());
-            capb.setFornecedor(txtfornecedor.getText());
-            capb.setNumero(txtnf.getText());
-            capb.setDataemissao(txtemissao.getText());
-            capb.setTotal(txttotal.getText());
-            capb.setParcela(txtparcela.getText());
-            capb.setValorparcela(txtvalorparcela.getText());
-            capb.setDataparcela(txtvencimento.getText());
-            capb.setDatapagamento(txtpagamento.getText());
-            capb.setBanco(cbbanco.getSelectedItem().toString());
-            capb.setMetodo(cbmetodo.getSelectedItem().toString());
-
-            if (txtpagamento.getText().equals("")) {
-                capb.setStatus("Em aberto");
-            } else {
-                capb.setStatus("Pago");
+            if (dcDataRecebimento.getDate() != null) {
+                card.updaterecebimento(Dates.CriarDataCurtaDBJDateChooser(dcDataRecebimento.getDate()), Double.parseDouble(txtValorRecebido.getText()), cbbanco.getSelectedItem().toString(), cbmetodo.getSelectedItem().toString(), txtcheque.getText(), id);
             }
-            capb.setId(Integer.parseInt(txtid.getText()));
-//            datalancamento = ?, fornecedor = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datapagamento = ?, banco = ?, metodo = ?, status = ? WHERE id = ?
-            capd.update(capb);
-            ContasPagar.cbstatus.setSelectedIndex(0);
-            readtablecap();
+
+            ContasReceber.readtablecar();
         }
         if (sn == 0) {
             zeracampos();
@@ -578,12 +536,7 @@ public class ContaReceber extends javax.swing.JInternalFrame {
 
     private void btnprocurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarActionPerformed
         ProcurarFornecedor pf = new ProcurarFornecedor("ContaPagar");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(pf);
-        Dimension jif = pf.getSize();
-        Dimension d = desk.getSize();
-        pf.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        pf.setVisible(true);
+        Telas.AparecerTela(pf);
     }//GEN-LAST:event_btnprocurarActionPerformed
 
     private void txtparcelaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtparcelaFocusLost
@@ -631,11 +584,14 @@ public class ContaReceber extends javax.swing.JInternalFrame {
     public javax.swing.ButtonGroup buttonGroup1;
     public static javax.swing.JComboBox<String> cbbanco;
     public static javax.swing.JComboBox<String> cbmetodo;
+    public static com.toedter.calendar.JDateChooser dcDataRecebimento;
+    public static com.toedter.calendar.JDateChooser dcDataVencimento;
     public static javax.swing.JButton jButton1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel11;
     public javax.swing.JLabel jLabel12;
+    public javax.swing.JLabel jLabel13;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
@@ -652,16 +608,15 @@ public class ContaReceber extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JLabel lblcheque;
     public static javax.swing.JTable tabledocs;
+    public static javax.swing.JTextField txtCliente;
+    public static javax.swing.JTextField txtDataLancamento;
+    public javax.swing.JTextField txtValorRecebido;
     public static javax.swing.JTextField txtcheque;
-    public static javax.swing.JFormattedTextField txtdatalancamento;
     public static javax.swing.JFormattedTextField txtemissao;
-    public static javax.swing.JTextField txtfornecedor;
     public static javax.swing.JTextField txtid;
     public static javax.swing.JTextField txtnf;
-    public static javax.swing.JFormattedTextField txtpagamento;
     public static javax.swing.JTextField txtparcela;
     public static javax.swing.JTextField txttotal;
     public static javax.swing.JTextField txtvalorparcela;
-    public static javax.swing.JFormattedTextField txtvencimento;
     // End of variables declaration//GEN-END:variables
 }

@@ -24,6 +24,7 @@ public class CARBean {
     private String datarecebimento;
     private String banco;
     private String metodo;
+    private String cheque;
     private String status;
 
     public int getId() {
@@ -97,7 +98,7 @@ public class CARBean {
     public void setValorrecebido(double valorrecebido) {
         this.valorrecebido = valorrecebido;
     }
-    
+
     public String getDataparcela() {
         return dataparcela;
     }
@@ -128,6 +129,14 @@ public class CARBean {
 
     public void setMetodo(String metodo) {
         this.metodo = metodo;
+    }
+
+    public String getCheque() {
+        return cheque;
+    }
+
+    public void setCheque(String cheque) {
+        this.cheque = cheque;
     }
 
     public String getStatus() {

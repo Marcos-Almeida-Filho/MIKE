@@ -10,11 +10,8 @@ import DAO.CARDocumentosDAO;
 import Methods.Dates;
 import Methods.Telas;
 import Methods.Valores;
-import View.Geral.MudarStatus;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import javax.swing.JDesktopPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -129,7 +126,6 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablecar = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -138,7 +134,6 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         cbstatus = new javax.swing.JComboBox<>();
         jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
 
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -167,9 +162,6 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-
-        jButton2.setText("Excluir");
-        jButton2.setName("jButton2"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -278,14 +270,6 @@ public class ContasReceber extends javax.swing.JInternalFrame {
             }
         });
 
-        jButton4.setText("Alterar Status");
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -296,11 +280,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 855, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -321,9 +301,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(jButton3))
                 .addContainerGap())
         );
 
@@ -352,28 +330,25 @@ public class ContasReceber extends javax.swing.JInternalFrame {
 
     private void tablecarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablecarMouseClicked
         if (evt.getClickCount() == 2) {
-            ContaReceber acp = new ContaReceber();
-            JDesktopPane desk = this.getDesktopPane();
-            desk.add(acp);
-            ContaReceber.txtid.setText(tablecar.getValueAt(tablecar.getSelectedRow(), 1).toString());
+            int id = Integer.parseInt(tablecar.getValueAt(tablecar.getSelectedRow(), 1).toString());
+            ContaReceber acp = new ContaReceber(id);
+
+            ContaReceber.txtid.setText(String.valueOf(id));
 
             //DAOs para pesquisa
             CARDAO card = new CARDAO();
             CARDocumentosDAO cdd = new CARDocumentosDAO();
 
-            //int ID
-            int id = Integer.parseInt(ContaReceber.txtid.getText());
-
             card.click(id).forEach(cb -> {
-                ContaReceber.txtdatalancamento.setText(cb.getDatalancamento());
-                ContaReceber.txtfornecedor.setText(cb.getCliente());
+                ContaReceber.txtDataLancamento.setText(Dates.TransformarDataCurtaDoDB(cb.getDatalancamento()));
+                ContaReceber.txtCliente.setText(cb.getCliente());
                 ContaReceber.txtnf.setText(String.valueOf(cb.getNotafiscal()));
                 ContaReceber.txtemissao.setText(Dates.TransformarDataCurtaDoDB(cb.getDataemissao()));
                 ContaReceber.txttotal.setText(Valores.TransformarValorFloatEmDinheiro(String.valueOf(cb.getTotal())));
                 ContaReceber.txtparcela.setText(cb.getParcela());
                 ContaReceber.txtvalorparcela.setText(Valores.TransformarValorFloatEmDinheiro(String.valueOf(cb.getValorparcela())));
-                ContaReceber.txtvencimento.setText(Dates.TransformarDataCurtaDoDB(cb.getDataparcela()));
-                ContaReceber.txtpagamento.setText(cb.getDatarecebimento());
+                Dates.SetarDataJDateChooser(ContaReceber.dcDataRecebimento, cb.getDatarecebimento());
+                Dates.SetarDataJDateChooser(ContaReceber.dcDataVencimento, cb.getDataparcela());
             });
 
             //DefaultTableModel para adicionar linhas
@@ -388,10 +363,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                 });
             });
 
-            Dimension jif = acp.getSize();
-            Dimension d = desk.getSize();
-            acp.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-            acp.setVisible(true);
+            Telas.AparecerTela(acp);
             ContaReceber.travacampos();
         }
     }//GEN-LAST:event_tablecarMouseClicked
@@ -401,28 +373,11 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         Telas.AparecerTela(pel);
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        String[] ops = new String[4];
-        ops[0] = "Selecione";
-        ops[1] = "Lançado";
-        ops[2] = "Aprovado";
-        ops[3] = "Automático";
-        MudarStatus sel = new MudarStatus(ops, "Mudar Status CAR", "CAR");
-        JDesktopPane desk = this.getDesktopPane();
-        desk.add(sel);
-        Dimension jif = sel.getSize();
-        Dimension d = desk.getSize();
-        sel.setLocation((d.width - jif.width) / 2, (d.height - jif.height) / 2);
-        sel.setVisible(true);
-    }//GEN-LAST:event_jButton4ActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JComboBox<String> cbstatus;
     public javax.swing.JButton jButton1;
-    public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
-    public javax.swing.JButton jButton4;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
