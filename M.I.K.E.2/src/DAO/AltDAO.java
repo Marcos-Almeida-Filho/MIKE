@@ -25,37 +25,38 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class AltDAO {
-    
+
     Connection con;
-    
+
     PreparedStatement stmt;
-    
+
     ResultSet rs;
-    
+
     List<AltBean> listab;
 
     private void conStmt() {
         con = ConnectionFactory.getConnection();
-        
+
         stmt = null;
     }
-    
+
     private void rsList() {
         conStmt();
-        
+
         rs = null;
-        
+
         listab = new ArrayList<>();
     }
-    
+
     /**
      * Método para criar alterações em qualquer item.
-     * 
+     *
      * @param id String contendo o ID do item
      * @param tipo String do tipo do item
      * @param data String com data completa invertida para o Banco de Dados
      * @param user String com o nome do usuário fazendo a alteração
-     * @param valor String com o valor que foi alterado. (Ex: Nome, Código, Descrição, etc.)
+     * @param valor String com o valor que foi alterado. (Ex: Nome, Código,
+     * Descrição, etc.)
      * @param valoranterior String com o valor original
      * @param valornovo String com o novo valor que foi inserido
      */
@@ -68,20 +69,23 @@ public class AltDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar as alterações!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(AltDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao salvar as alterações.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     /**
      * Método para leitura de todas as modificações de qualquer item.
-     * 
+     *
      * @param id String contendo o id do item a ser procuradas as alterações
      * @param tipo String com o tipo do item para achar as alterações
      * @return List<> com todas as alterações do item.

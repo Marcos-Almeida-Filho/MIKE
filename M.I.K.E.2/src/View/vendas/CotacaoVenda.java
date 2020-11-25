@@ -26,14 +26,15 @@ import View.Geral.ProcurarCondicaoDePagamento;
 import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
-import View.comercial.DocumentosFornecedores;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.SQLException;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -52,23 +53,30 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     static VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
     static AltDAO ad = new AltDAO();
 
-    static public boolean cotacaoAtualizada, cotacaoCriada, itensCriados, docsCriados, obsCriadas;
-
-    public String clienteOriginal, condicaoOriginal, representanteOriginal, vendedorOriginal;
-    public int numDocsOriginal, numObsOriginal, numItensOriginal;
+    public static String clienteOriginal, condicaoOriginal, representanteOriginal, vendedorOriginal;
+    public static int numDocsOriginal, numObsOriginal, numItensOriginal;
 
     /**
      * Creates new form CotacaoVenda
      */
     public CotacaoVenda() {
         initComponents();
-        status();
         lerCotacoes();
         btnMotivo.setVisible(false);
     }
 
-    public static void cotacaoDesativada() {
-        if (txtStatus.getText().equals("Desativado")) {
+    public static void valoresOriginais() {
+        clienteOriginal = txtCliente.getText();
+        condicaoOriginal = txtCondPag.getText();
+        representanteOriginal = txtRep.getText();
+        vendedorOriginal = txtVendedor.getText();
+        numObsOriginal = tableObs.getRowCount();
+        numDocsOriginal = tableDocs.getRowCount();
+        numItensOriginal = tableItens.getRowCount();
+    }
+
+    public static void camposPorStatus() {
+        if (txtStatus.getText().equals("Desativado") || txtStatus.getText().equals("Fechado")) {
             txtCliente.setEditable(false);
             btnProcurarCliente.setEnabled(false);
             btnCondPag.setEnabled(false);
@@ -152,6 +160,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public static void lerCotacao(String cotacao) {
         vcd.readCotacao(cotacao).forEach(vcb -> {
             idCotacao = vcb.getId();
+            txtCotacao.setText(vcb.getCotacao());
             txtDataAbertura.setText(Dates.TransformarDataCurtaDoDB(vcb.getData_abertura()));
             txtCliente.setText(vcb.getCliente());
             txtStatus.setText(vcb.getStatus());
@@ -168,6 +177,20 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         if (txtStatus.getText().equals("Desativado")) {
             btnMotivo.setVisible(true);
         }
+
+        lerItensCotacao(cotacao);
+
+        lerDocumentosCotacao(cotacao);
+
+        lerObsCotacao(cotacao);
+
+        txtTotal();
+
+        clienteCadastrado();
+
+        valoresOriginais();
+
+        camposPorStatus();
     }
 
     public static void lerItensCotacao(String cotacao) {
@@ -228,14 +251,6 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         });
     }
 
-    public static void status() {
-        cotacaoAtualizada = false;
-        cotacaoCriada = false;
-        itensCriados = false;
-        docsCriados = false;
-        obsCriadas = false;
-    }
-
     public static void txtTotal() {
         double valorItem, valorTotal = 0;
         for (int i = 0; i < tableItens.getRowCount(); i++) {
@@ -277,35 +292,23 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     }
 
     public static void criarDocumentosCotacao(String cotacao) {
-        for (int i = 0; i < tableDocs.getRowCount(); i++) {
-            if (tableDocs.getValueAt(i, 0).equals("")) {
-                //Localicação do documento original
-                File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
-                //Pasta que será colocar o documento
-                File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
-                //Documento copiado do original
-                File filecopy = new File(folder + "/" + fileoriginal.getName());
 
-                //Criar pasta no caso de já não existir
-                folder.mkdirs();
-                try {
-                    //Criar o documento copiado na pasta
-                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                } catch (IOException ex) {
-                    Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+    }
 
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(ex.toString());
-                        }
-                    }.start();
-                }
-
-                vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
+    public void alterarStatus(String cotacao) {
+        int numPedido = 0;
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            if (!tableItens.getValueAt(i, 10).equals("")) {
+                numPedido++;
             }
         }
+        if (numPedido == tableItens.getRowCount()) {
+            vcd.updateStatus(cotacao, "Fechado");
+        } else {
+            vcd.updateStatus(cotacao, "Parcialmente Fechado");
+        }
+
+        lerCotacoes();
     }
 
     /**
@@ -941,6 +944,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableItensMouseClicked(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tableItensMouseReleased(evt);
+            }
         });
         jScrollPane3.setViewportView(tableItens);
         if (tableItens.getColumnModel().getColumnCount() > 0) {
@@ -1215,7 +1221,24 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 Telas.AparecerTela(ic);
             }
         } else if (evt.getButton() == 3) {
-            JOptionPane.showMessageDialog(null, "Botão direito");
+            String pedido = tableItens.getValueAt(tableItens.getSelectedRow(), 10).toString();
+
+            if (pedido.length() > 0) {
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem abrirPedido = new JMenuItem("Abrir Pedido");
+
+                abrirPedido.addActionListener((ActionEvent e) -> {
+                    PedidoVenda pv = new PedidoVenda();
+                    PedidoVenda.tabPedidos.setSelectedIndex(1);
+                    PedidoVenda.lerPedido(pedido);
+
+                    Telas.AparecerTelaAumentada(pv);
+                });
+
+                menu.add(abrirPedido);
+
+                menu.show(evt.getComponent(), evt.getPoint().x, evt.getPoint().y);
+            }
         }
     }//GEN-LAST:event_tableItensMouseClicked
 
@@ -1231,57 +1254,134 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         } else if (idCotacao == 0) {
             String cotacao = vcd.cotacaoAtual();
 
-            //Criar nova cotação
-            vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+            try {
+                //Criar nova cotação
+                vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
-            txtCotacao.setText(cotacao);
-            txtStatus.setText("Ativo");
+                lerCotacao(cotacao);
+                idCotacao = vcd.idCotacao(cotacao);
 
-            //Criar itens da cotação
-            for (int i = 0; i < tableItens.getRowCount(); i++) {
-                vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+                //Criar itens da cotação
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+                    vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+                }
+
+                //Criar documentos da cotação
+                for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                    if (tableDocs.getValueAt(i, 0).equals("")) {
+                        //Localicação do documento original
+                        File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                        //Pasta que será colocar o documento
+                        File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
+                        //Documento copiado do original
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                        //Criar pasta no caso de já não existir
+                        folder.mkdirs();
+                        try {
+                            //Criar o documento copiado na pasta
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                        } catch (IOException e) {
+                            String msg = "Erro ao criar documento em rede.";
+                            JOptionPane.showMessageDialog(null, msg);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
+
+                        vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
+                    }
+                }
+
+                //Criar observações da cotação
+                for (int i = 0; i < tableObs.getRowCount(); i++) {
+                    vcod.create(cotacao, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                }
+
+                JOptionPane.showMessageDialog(null, "Cotação de Venda criada com sucesso!");
+            } catch (SQLException e) {
+                String msg = "Erro ao criar Cotação de Venda.";
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
             }
-
-            //Criar documentos da cotação
-            criarDocumentosCotacao(cotacao);
-
-            //Criar observações da cotação
-            for (int i = 0; i < tableObs.getRowCount(); i++) {
-                vcod.create(cotacao, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
-            }
-
-            status();
 
             lerCotacao(cotacao);
-            lerDocumentosCotacao(cotacao);
-            lerItensCotacao(cotacao);
-            lerObsCotacao(cotacao);
         } else {
             String cotacao = txtCotacao.getText();
 
-            //Atualizar cotação
-            vcd.update(cotacao, txtCliente.getText(), radioCadastrado.isSelected(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+            try {
+                //Atualizar cotação
+                vcd.update(cotacao, txtCliente.getText(), radioCadastrado.isSelected(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
-            //Criar itens da cotação que não existiam
-            for (int i = 0; i < tableItens.getRowCount(); i++) {
-                if (tableItens.getValueAt(i, 0).equals("")) {
-                    vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
-                } else {
-                    vcid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 7).toString())), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                //Criar itens da cotação que não existiam
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+                    if (tableItens.getValueAt(i, 0).equals("")) {
+                        vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+                    } else {
+                        vcid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 7).toString())), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                    }
                 }
-            }
 
-            //Criar documentos da cotação que não existiam
-            criarDocumentosCotacao(cotacao);
+                //Criar documentos da cotação que não existiam
+                for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                    if (tableDocs.getValueAt(i, 0).equals("")) {
+                        //Localicação do documento original
+                        File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                        //Pasta que será colocar o documento
+                        File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
+                        //Documento copiado do original
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
 
-            //Criar observações da cotação
-            for (int i = 0; i < tableObs.getRowCount(); i++) {
-                if (tableObs.getValueAt(i, 0).equals("")) {
-                    vcod.create(cotacao, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                        //Criar pasta no caso de já não existir
+                        folder.mkdirs();
+                        try {
+                            //Criar o documento copiado na pasta
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                        } catch (IOException e) {
+                            String msg = "Erro ao criar documento em rede.";
+                            JOptionPane.showMessageDialog(null, msg);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
+
+                        vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
+                    }
                 }
-            }
 
-            status();
+                //Criar observações da cotação
+                for (int i = 0; i < tableObs.getRowCount(); i++) {
+                    if (tableObs.getValueAt(i, 0).equals("")) {
+                        vcod.create(cotacao, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                    }
+                }
+
+                JOptionPane.showMessageDialog(null, "Cotação de Venda atualizada com sucesso.");
+            } catch (SQLException e) {
+                String msg = "Erro ao atualizar Cotação de Vendas.";
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
 
             //Verificar alterações
             String id = txtCotacao.getText();
@@ -1297,7 +1397,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             if (!txtRep.getText().equals(representanteOriginal)) {
                 ad.create(id, tipo, data, user, "Representante", representanteOriginal, txtRep.getText());
             }
-            if (!txtVendedor.getText().equals(condicaoOriginal)) {
+            if (!txtVendedor.getText().equals(vendedorOriginal)) {
                 ad.create(id, tipo, data, user, "Vendedor", vendedorOriginal, txtVendedor.getText());
             }
             if (numDocsOriginal != tableDocs.getRowCount()) {
@@ -1313,10 +1413,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             lerCotacoes();
 
             lerCotacao(cotacao);
-            lerDocumentosCotacao(cotacao);
-            lerItensCotacao(cotacao);
-            lerObsCotacao(cotacao);
         }
+
+        valoresOriginais();
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void tableCotacoesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCotacoesMouseClicked
@@ -1325,35 +1424,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
             tabCotacoes.setSelectedIndex(1);
 
-            txtCotacao.setText(tableCotacoes.getValueAt(tableCotacoes.getSelectedRow(), 2).toString());
-
-            String cotacao = txtCotacao.getText();
+            String cotacao = tableCotacoes.getValueAt(tableCotacoes.getSelectedRow(), 2).toString();
 
             //Pegar dados da Cotação no DB
             lerCotacao(cotacao);
-
-            //Pegar itens da Cotação no DB
-            lerItensCotacao(cotacao);
-
-            //Pegar Documentos da Cotação no DB
-            lerDocumentosCotacao(cotacao);
-
-            //Pegar Observações da Cotação no DB
-            lerObsCotacao(cotacao);
-
-            txtTotal();
-
-            clienteCadastrado();
-
-            cotacaoDesativada();
-
-            clienteOriginal = txtCliente.getText();
-            condicaoOriginal = txtCondPag.getText();
-            representanteOriginal = txtRep.getText();
-            vendedorOriginal = txtVendedor.getText();
-            numObsOriginal = tableObs.getRowCount();
-            numDocsOriginal = tableDocs.getRowCount();
-            numItensOriginal = tableItens.getRowCount();
         }
     }//GEN-LAST:event_tableCotacoesMouseClicked
 
@@ -1404,7 +1478,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     private void btnDelItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelItemActionPerformed
         int numTrue = 0;
         for (int i = 0; i < tableItens.getRowCount(); i++) {
-            if (tableItens.getValueAt(i, 1).equals(true)) {
+            if (tableItens.getValueAt(i, 2).equals(true)) {
                 numTrue++;
             }
         }
@@ -1415,14 +1489,30 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir o(s) item(ns) selecionado(s)?", "Excluir Item", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
                 for (int i = 0; i < tableItens.getRowCount(); i++) {
-                    if (tableItens.getValueAt(i, 1).equals(true)) {
+                    if (tableItens.getValueAt(i, 2).equals(true)) {
                         vcid.delete(Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
                     }
                 }
+
+                String id = txtCotacao.getText();
+                String tipo = this.getClass().getSimpleName();
+                String data = Dates.CriarDataCompletaParaDB();
+                String user = Session.nome;
+
+                String cotacao = txtCotacao.getText();
+
                 //Pegar itens da Cotação no DB
-                lerItensCotacao(txtCotacao.getText());
+                lerItensCotacao(cotacao);
+
+                alterarStatus(cotacao);
+
+                ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
 
                 txtTotal();
+
+                lerCotacao(cotacao);
+
+                valoresOriginais();
             }
         }
     }//GEN-LAST:event_btnDelItemActionPerformed
@@ -1479,12 +1569,15 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void btnAddPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPedidoActionPerformed
-        int numTrue = 0, numNaoCadastrado = 0;
+        int numTrue = 0, numNaoCadastrado = 0, numPedido = 0;
         for (int i = 0; i < tableItens.getRowCount(); i++) {
             if (tableItens.getValueAt(i, 2).equals(true)) {
                 numTrue++;
                 if (tableItens.getValueAt(i, 1).equals(false)) {
                     numNaoCadastrado++;
+                }
+                if (!tableItens.getValueAt(i, 10).equals("")) {
+                    numPedido++;
                 }
             }
         }
@@ -1496,29 +1589,44 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Não é possível criar pedidos com produtos não cadastrados.");
         } else if (!txtCliente.getText().equals(clienteOriginal) || !txtCondPag.getText().equals(condicaoOriginal) || !txtRep.getText().equals(representanteOriginal) || !txtVendedor.getText().equals(vendedorOriginal) || numDocsOriginal != tableDocs.getRowCount() || numObsOriginal != tableObs.getRowCount() || numItensOriginal != tableItens.getRowCount()) {
             JOptionPane.showMessageDialog(null, "Salve a cotação para que as alterações entrem em vigor primeiro.");
+        } else if (numPedido > 0) {
+            JOptionPane.showMessageDialog(null, "Itens com Pedido selecionados.");
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja criar um pedido com os itens selecionados?", "Criar Pedido", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
                 String dav = vpd.pedidoAtual();
-                vpd.create(dav, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
-                for (int i = 0; i < tableItens.getRowCount(); i++) {
-                    if (tableItens.getValueAt(i, 2).equals(true)) {
-                        vcid.updateDAV(dav, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                try {
+                    vpd.create(dav, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
-                        vpid.create(dav, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), "", "");
+                    for (int i = 0; i < tableItens.getRowCount(); i++) {
+                        if (tableItens.getValueAt(i, 2).equals(true)) {
+                            vcid.updateDAV(dav, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+
+                            vpid.create(dav, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), "", "");
+                        }
                     }
+
+                    JOptionPane.showMessageDialog(null, "Pedido criado com sucesso.");
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar Pedido de Venda.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
                 }
             }
             String cotacao = txtCotacao.getText();
-            if (numTrue == tableItens.getRowCount()) {
-                vcd.updateStatus(cotacao, "Fechado");
-            } else {
-                vcd.updateStatus(cotacao, "Parcialmente Fechado");
-            }
+
+            lerItensCotacao(cotacao);
+
+            alterarStatus(cotacao);
 
             lerCotacao(cotacao);
-            lerItensCotacao(cotacao);
         }
     }//GEN-LAST:event_btnAddPedidoActionPerformed
 
@@ -1594,6 +1702,15 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             Docs.open(tableDocs.getValueAt(tableDocs.getSelectedRow(), 3).toString());
         }
     }//GEN-LAST:event_tableDocsMouseClicked
+
+    private void tableItensMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItensMouseReleased
+        int r = tableItens.rowAtPoint(evt.getPoint());
+        if (r >= 0 && r < tableItens.getRowCount()) {
+            tableItens.setRowSelectionInterval(r, r);
+        } else {
+            tableItens.clearSelection();
+        }
+    }//GEN-LAST:event_tableItensMouseReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

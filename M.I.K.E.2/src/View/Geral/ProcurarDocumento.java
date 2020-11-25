@@ -6,6 +6,7 @@
 package View.Geral;
 
 import Methods.Arquivos;
+import View.compras.ComprasCotacao;
 import View.compras.Insumos;
 import View.financeiro.AdicionarContasAPagar;
 import View.servicos.*;
@@ -13,7 +14,6 @@ import View.vendas.CotacaoVenda;
 import View.vendas.OP;
 import View.vendas.PedidoVenda;
 import View.vendas.VM;
-import View.vendas.VendasMateriais;
 import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
@@ -132,9 +132,6 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                     case "VM":
                         Arquivos.AdicionarArquivoEmTable(VM.tabledocumentos, filestring, this);
                         break;
-                    case "VendasMateriais":
-                        Arquivos.AdicionarArquivoEmTable(VendasMateriais.tableDocumentos, filestring, this);
-                        break;
                     case "CotacaoVenda":
                         Arquivos.AdicionarArquivoEmTable(CotacaoVenda.tableDocs, filestring, this);
                         break;
@@ -143,6 +140,9 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                         break;
                     case "OP":
                         Arquivos.AdicionarArquivoEmTable(OP.tableDocs, filestring, this);
+                        break;
+                    case "CotacaoCompras":
+                        Arquivos.AdicionarArquivoEmTable(ComprasCotacao.tableDocs, filestring, this);
                         break;
                 }
                 dispose();

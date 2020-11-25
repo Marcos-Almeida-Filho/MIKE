@@ -36,8 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
@@ -341,14 +340,14 @@ public class OP extends javax.swing.JInternalFrame {
                 try {
                     //Criar o documento copiado na pasta
                     Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                } catch (IOException ex) {
-                    Logger.getLogger(OP.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                } catch (IOException e) {
+                    String msg = "Erro ao criar documento em rede.";
+                    JOptionPane.showMessageDialog(null, msg);
 
                     new Thread() {
                         @Override
                         public void run() {
-                            SendEmail.EnviarErro2(ex.toString());
+                            SendEmail.EnviarErro2(msg, e);
                         }
                     }.start();
                 }
@@ -1759,7 +1758,19 @@ public class OP extends javax.swing.JInternalFrame {
 
                         vmd.updateEstoque(estoque, idmaterial);
 
-                        vmmd.create(idmaterial, estoqueAtual, qtd, estoque, txtNumOP.getText() + " - baixa de MP", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                        try {
+                            vmmd.create(idmaterial, estoqueAtual, qtd, estoque, txtNumOP.getText() + " - baixa de MP", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                        } catch (SQLException e) {
+                            String msg = "Erro ao criar movimentação do Material de Venda.";
+                            JOptionPane.showMessageDialog(null, msg);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
 
                         String op = txtNumOP.getText();
 

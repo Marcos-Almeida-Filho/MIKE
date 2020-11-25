@@ -25,31 +25,31 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class CAPObsDAO {
-    
+
     Connection con;
-    
+
     PreparedStatement stmt;
-    
+
     ResultSet rs;
-    
+
     List<CAPObsBean> listcob;
-    
+
     public void conStmt() {
         con = ConnectionFactory.getConnection();
-        
+
         stmt = null;
     }
-    
+
     public void rsList() {
         conStmt();
-        
+
         rs = null;
-        
+
         listcob = new ArrayList<>();
     }
 
     public void create(CAPObsBean cob) {
-        
+
         conStmt();
 
         try {
@@ -74,7 +74,7 @@ public class CAPObsDAO {
     }
 
     public List<CAPObsBean> read(int idcap) {
-        
+
         rsList();
 
         try {
@@ -108,7 +108,7 @@ public class CAPObsDAO {
 
     public boolean checkObs(int idcap) {
         boolean obs = false;
-        
+
         rsList();
 
         try {
@@ -116,7 +116,7 @@ public class CAPObsDAO {
             stmt.setInt(1, idcap);
 
             rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 obs = true;
             }
@@ -133,17 +133,25 @@ public class CAPObsDAO {
 
         return obs;
     }
-    
+
     public void delete(int id) {
-        
+
         conStmt();
-        
+
         try {
             stmt = con.prepareStatement("DELETE FROM cap_obs WHERE id = " + id);
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
-            SendEmail.EnviarErro2(e.toString() + " - CAPObsDAO(delete)");
+            String msg = "Erro ao deletar Observação do CAP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

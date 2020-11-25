@@ -56,10 +56,9 @@ public class OPMedicoesDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -90,10 +89,9 @@ public class OPMedicoesDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -126,10 +124,9 @@ public class OPMedicoesDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -138,7 +135,7 @@ public class OPMedicoesDAO {
 
         return listob;
     }
-    
+
     public void update(int id, String maior, String menor, String instrumento) {
         conStmt();
 
@@ -151,10 +148,9 @@ public class OPMedicoesDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {

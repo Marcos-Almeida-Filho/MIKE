@@ -52,8 +52,15 @@ public class GrupoDeUsuariosPermDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar permissão de grupo.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao criar Permissão de Grupo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -61,30 +68,37 @@ public class GrupoDeUsuariosPermDAO {
 
     public List<GrupoDeUsuariosPermBean> read(String nome, int idgrupo) {
         rsList();
-        
+
         try {
             stmt = con.prepareStatement("SELECT * FROM grupo_usuarios_perm WHERE idgrupo = " + idgrupo + " AND nome = '" + nome + "'");
-            
+
             rs = stmt.executeQuery();
-            
-            while(rs.next()) {
+
+            while (rs.next()) {
                 GrupoDeUsuariosPermBean gupb = new GrupoDeUsuariosPermBean();
-                
+
                 gupb.setId(rs.getInt("id"));
                 gupb.setPerm(rs.getBoolean("permissao"));
-                
+
                 listg.add(gupb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro ao ler permissões do grupo de usuários.\n" + e);
-            SendEmail.EnviarErro2("Erro ao ler permissões do grupo de usuários.\n" + e.toString());
+            String msg = "Erro ao ler Permissões do Grupo de Usuários.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        
+
         return listg;
     }
-    
+
     public boolean readPerm(int idgrupo, String nome) {
         rsList();
 
@@ -99,8 +113,15 @@ public class GrupoDeUsuariosPermDAO {
                 perm = rs.getBoolean("permissao");
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler permissão do grupo.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Permissão do Grupo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -122,8 +143,15 @@ public class GrupoDeUsuariosPermDAO {
                 id = rs.getInt("id");
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler permissão do grupo.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Permissão do Grupo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -139,8 +167,15 @@ public class GrupoDeUsuariosPermDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar permissão.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao Atualizar permissão do Grupo de Usuários.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

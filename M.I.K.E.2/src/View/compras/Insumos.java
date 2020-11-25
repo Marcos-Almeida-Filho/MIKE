@@ -5,19 +5,23 @@
  */
 package View.compras;
 
-import Bean.InsumosBean;
-import Bean.InsumosDocBean;
-import Bean.InsumosMovBean;
-import Bean.InsumosObsBean;
+import Connection.Session;
 import DAO.InsumosDAO;
 import DAO.InsumosDocDAO;
 import DAO.InsumosMovDAO;
 import DAO.InsumosObsDAO;
+import DAO.TiposInsumoDAO;
 import Methods.Dates;
+import Methods.Docs;
+import Methods.SendEmail;
 import Methods.Telas;
 import View.Geral.AdicionarObs;
 import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarUnidades;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -27,28 +31,57 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Insumos extends javax.swing.JInternalFrame {
 
+    //DAOs para salvar
+    static InsumosDAO idao = new InsumosDAO();
+    InsumosDocDAO idd = new InsumosDocDAO();
+    InsumosMovDAO imd = new InsumosMovDAO();
+    InsumosObsDAO iod = new InsumosObsDAO();
+    static TiposInsumoDAO tid = new TiposInsumoDAO();
+
+    int idInsumo;
+
     /**
      * Creates new form Insumos
      */
-    int idcriado;
-    static InsumosDAO idao = new InsumosDAO();
-
     public Insumos() {
         initComponents();
-        readtableinsumos();
+        readtableinsumos(cbstatus.getSelectedItem().toString());
+        readTipos();
     }
 
-    public static void readtableinsumos() {
-        DefaultTableModel modelinsumos = (DefaultTableModel) tableinsumos.getModel();
+    public static void readtableinsumos(String status) {
+        DefaultTableModel modelinsumos = (DefaultTableModel) tableInsumos.getModel();
         modelinsumos.setRowCount(0);
 
-        idao.read().forEach(ib -> {
-            modelinsumos.addRow(new Object[]{
-                ib.getId(),
-                false,
-                ib.getCodigo(),
-                ib.getDescricao()
-            });
+        switch (status) {
+            case "Todos":
+                idao.read().forEach(ib -> {
+                    modelinsumos.addRow(new Object[]{
+                        ib.getId(),
+                        false,
+                        ib.getCodigo(),
+                        ib.getDescricao(),
+                        ib.getStatus()
+                    });
+                });
+                break;
+            default:
+                idao.readPorStatus(status).forEach(ib -> {
+                    modelinsumos.addRow(new Object[]{
+                        ib.getId(),
+                        false,
+                        ib.getCodigo(),
+                        ib.getDescricao(),
+                        ib.getStatus()
+                    });
+                });
+                break;
+        }
+    }
+
+    public static void readTipos() {
+        tid.read().forEach(tib -> {
+            cbtipo.addItem(tib.getNome());
         });
     }
 
@@ -68,6 +101,108 @@ public class Insumos extends javax.swing.JInternalFrame {
         modelest.setRowCount(0);
     }
 
+    public static void travarCampos() {
+        if (txtstatus.getText().equals("Desativado")) {
+            txtcodigo.setEditable(false);
+            txtdescricao.setEditable(false);
+            cbtipo.setEnabled(false);
+            btnProcurarUnidade.setEnabled(false);
+            btnAddObs.setEnabled(false);
+        } else {
+
+        }
+    }
+
+    public void criarDocumentos() {
+        for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+            if (tabledocumentos.getValueAt(i, 0).equals("")) {
+                File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                File folder = new File("Q:/MIKE_ERP/ins_arq/" + idInsumo);
+                File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                folder.mkdirs();
+                try {
+                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                } catch (IOException e) {
+                    String msg = "Erro ao criar documento em rede.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+
+                String descricaoDoc = tabledocumentos.getValueAt(i, 2).toString();
+                idd.create(idInsumo, descricaoDoc, filecopy.toString().replace("\\", "\\\\"));
+            }
+        }
+    }
+
+    public void lerInsumo(int idInsumo) {
+        idao.click(idInsumo).forEach(ib -> {
+            txtid.setText(String.valueOf(ib.getId()));
+            txtstatus.setText(ib.getStatus());
+            txtcodigo.setText(ib.getCodigo());
+            txtdescricao.setText(ib.getDescricao());
+            txtun.setText(ib.getUnidade());
+            cbtipo.setSelectedItem(ib.getTipo());
+        });
+
+        lerObs(idInsumo);
+
+        lerDocs(idInsumo);
+
+        lerMov(idInsumo);
+    }
+
+    public void lerObs(int idInsumo) {
+        DefaultTableModel model = (DefaultTableModel) tableobs.getModel();
+        model.setNumRows(0);
+
+        iod.read(idInsumo).forEach(iob -> {
+            model.addRow(new Object[]{
+                iob.getId(),
+                false,
+                Dates.TransformarDataCurtaDoDB(iob.getData()),
+                iob.getFuncionario(),
+                iob.getObs()
+            });
+        });
+    }
+
+    public void lerDocs(int idInsumo) {
+        DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
+        model.setNumRows(0);
+
+        idd.readDocs(idInsumo).forEach(idb -> {
+            model.addRow(new Object[]{
+                idb.getId(),
+                false,
+                idb.getDescricao(),
+                idb.getLocal()
+            });
+        });
+    }
+
+    public void lerMov(int idInsumo) {
+        DefaultTableModel model = (DefaultTableModel) tableestoque.getModel();
+        model.setNumRows(0);
+
+        imd.read(idInsumo).forEach(imb -> {
+            model.addRow(new Object[]{
+                Dates.TransformarDataCurtaDoDB(imb.getData()),
+                imb.getTipomov(),
+                imb.getQtdinicial(),
+                imb.getQtdmov(),
+                imb.getQtdfinal(),
+                imb.getFuncionario()
+            });
+        });
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -77,10 +212,10 @@ public class Insumos extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tabinsumos = new javax.swing.JTabbedPane();
+        tabInsumos = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableinsumos = new javax.swing.JTable();
+        tableInsumos = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         txtpesquisa = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
@@ -91,7 +226,7 @@ public class Insumos extends javax.swing.JInternalFrame {
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableobs = new javax.swing.JTable();
-        jButton6 = new javax.swing.JButton();
+        btnAddObs = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tabledocumentos = new javax.swing.JTable();
@@ -113,7 +248,7 @@ public class Insumos extends javax.swing.JInternalFrame {
         txtid = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         txtun = new javax.swing.JTextField();
-        jButton8 = new javax.swing.JButton();
+        btnProcurarUnidade = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -121,26 +256,26 @@ public class Insumos extends javax.swing.JInternalFrame {
         setClosable(true);
         setTitle("Cadastro de Insumos");
 
-        tabinsumos.setName("tabinsumos"); // NOI18N
+        tabInsumos.setName("tabInsumos"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        tableinsumos.setModel(new javax.swing.table.DefaultTableModel(
+        tableInsumos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "", "Código", "Descrição"
+                "ID", "", "Código", "Descrição", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false
+                false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -151,18 +286,26 @@ public class Insumos extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableinsumos.setName("tableinsumos"); // NOI18N
-        jScrollPane1.setViewportView(tableinsumos);
-        if (tableinsumos.getColumnModel().getColumnCount() > 0) {
-            tableinsumos.getColumnModel().getColumn(0).setMinWidth(0);
-            tableinsumos.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tableinsumos.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableinsumos.getColumnModel().getColumn(1).setMinWidth(30);
-            tableinsumos.getColumnModel().getColumn(1).setPreferredWidth(30);
-            tableinsumos.getColumnModel().getColumn(1).setMaxWidth(30);
-            tableinsumos.getColumnModel().getColumn(2).setMinWidth(200);
-            tableinsumos.getColumnModel().getColumn(2).setPreferredWidth(200);
-            tableinsumos.getColumnModel().getColumn(2).setMaxWidth(200);
+        tableInsumos.setName("tableInsumos"); // NOI18N
+        tableInsumos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableInsumosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tableInsumos);
+        if (tableInsumos.getColumnModel().getColumnCount() > 0) {
+            tableInsumos.getColumnModel().getColumn(0).setMinWidth(0);
+            tableInsumos.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableInsumos.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableInsumos.getColumnModel().getColumn(1).setMinWidth(30);
+            tableInsumos.getColumnModel().getColumn(1).setPreferredWidth(30);
+            tableInsumos.getColumnModel().getColumn(1).setMaxWidth(30);
+            tableInsumos.getColumnModel().getColumn(2).setMinWidth(200);
+            tableInsumos.getColumnModel().getColumn(2).setPreferredWidth(200);
+            tableInsumos.getColumnModel().getColumn(2).setMaxWidth(200);
+            tableInsumos.getColumnModel().getColumn(4).setMinWidth(150);
+            tableInsumos.getColumnModel().getColumn(4).setPreferredWidth(150);
+            tableInsumos.getColumnModel().getColumn(4).setMaxWidth(150);
         }
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
@@ -186,6 +329,11 @@ public class Insumos extends javax.swing.JInternalFrame {
 
         cbstatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ativo", "Desativado", "Todos" }));
         cbstatus.setName("cbstatus"); // NOI18N
+        cbstatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbstatusActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -232,7 +380,7 @@ public class Insumos extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        tabinsumos.addTab("Insumos", jPanel1);
+        tabInsumos.addTab("Insumos", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
@@ -283,11 +431,11 @@ public class Insumos extends javax.swing.JInternalFrame {
             tableobs.getColumnModel().getColumn(3).setMaxWidth(200);
         }
 
-        jButton6.setText("Adicionar Observação");
-        jButton6.setName("jButton6"); // NOI18N
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnAddObs.setText("Adicionar Observação");
+        btnAddObs.setName("btnAddObs"); // NOI18N
+        btnAddObs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnAddObsActionPerformed(evt);
             }
         });
 
@@ -301,7 +449,7 @@ public class Insumos extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 971, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton6)))
+                        .addComponent(btnAddObs)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -310,7 +458,7 @@ public class Insumos extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6)
+                .addComponent(btnAddObs)
                 .addContainerGap())
         );
 
@@ -332,7 +480,7 @@ public class Insumos extends javax.swing.JInternalFrame {
                 java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, true
+                false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -344,6 +492,11 @@ public class Insumos extends javax.swing.JInternalFrame {
             }
         });
         tabledocumentos.setName("tabledocumentos"); // NOI18N
+        tabledocumentos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabledocumentosMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tabledocumentos);
         if (tabledocumentos.getColumnModel().getColumnCount() > 0) {
             tabledocumentos.getColumnModel().getColumn(0).setMinWidth(0);
@@ -406,9 +559,17 @@ public class Insumos extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Data", "Tipo de Movimentação", "ID", "Qtd Inicial", "Qtd Movimentada", "Qtd Final", "Funcionário"
+                "Data", "Tipo de Movimentação", "Qtd Inicial", "Qtd Movimentada", "Qtd Final", "Funcionário"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tableestoque.setName("tableestoque"); // NOI18N
         jScrollPane4.setViewportView(tableestoque);
 
@@ -450,7 +611,8 @@ public class Insumos extends javax.swing.JInternalFrame {
 
         txtdescricao.setName("txtdescricao"); // NOI18N
 
-        txtstatus.setEnabled(false);
+        txtstatus.setEditable(false);
+        txtstatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtstatus.setName("txtstatus"); // NOI18N
 
         cbtipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
@@ -464,20 +626,21 @@ public class Insumos extends javax.swing.JInternalFrame {
         jLabel5.setText("ID");
         jLabel5.setName("jLabel5"); // NOI18N
 
-        txtid.setEnabled(false);
+        txtid.setEditable(false);
+        txtid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtid.setName("txtid"); // NOI18N
 
         jLabel6.setText("UN");
         jLabel6.setName("jLabel6"); // NOI18N
 
-        txtun.setEnabled(false);
+        txtun.setEditable(false);
         txtun.setName("txtun"); // NOI18N
 
-        jButton8.setText("Procurar Unidade");
-        jButton8.setName("jButton8"); // NOI18N
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        btnProcurarUnidade.setText("Procurar Unidade");
+        btnProcurarUnidade.setName("btnProcurarUnidade"); // NOI18N
+        btnProcurarUnidade.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                btnProcurarUnidadeActionPerformed(evt);
             }
         });
 
@@ -501,7 +664,7 @@ public class Insumos extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtun, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton8)
+                        .addComponent(btnProcurarUnidade)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -538,7 +701,7 @@ public class Insumos extends javax.swing.JInternalFrame {
                     .addComponent(txtun, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8))
+                    .addComponent(btnProcurarUnidade))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -598,17 +761,17 @@ public class Insumos extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        tabinsumos.addTab("Detalhes do Insumo", jPanel2);
+        tabInsumos.addTab("Detalhes do Insumo", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabinsumos)
+            .addComponent(tabInsumos)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabinsumos)
+            .addComponent(tabInsumos)
         );
 
         pack();
@@ -619,18 +782,6 @@ public class Insumos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbtipoActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //DAOs para salvar
-        InsumosDAO id = new InsumosDAO();
-        InsumosDocDAO idd = new InsumosDocDAO();
-        InsumosMovDAO imd = new InsumosMovDAO();
-        InsumosObsDAO iod = new InsumosObsDAO();
-
-        //Beans para salvar
-        InsumosBean ib = new InsumosBean();
-        InsumosDocBean idb = new InsumosDocBean();
-        InsumosMovBean imb = new InsumosMovBean();
-        InsumosObsBean iob = new InsumosObsBean();
-
         if (txtcodigo.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Digite um código.");
             txtcodigo.requestFocus();
@@ -643,126 +794,81 @@ public class Insumos extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Escolha um tipo de insumo.");
             cbtipo.showPopup();
         } else {//Se tudo estiver correto.
-            String datacriacao = Dates.CriarDataCompletaParaDB();
+            String codigo = txtcodigo.getText();
+            String descricao = txtdescricao.getText();
+            String unidade = txtun.getText();
+            String tipo = cbtipo.getSelectedItem().toString();
+            String dataCriacao = Dates.CriarDataCompletaParaDB();
             if (txtid.getText().equals("")) {//Se for um item novo
 ////////////////Criar Insumo
-                ib.setCodigo(txtcodigo.getText());
-                ib.setDescricao(txtdescricao.getText());
-                ib.setTipo(cbtipo.getSelectedItem().toString());
-                ib.setEstoque(0);
-                ib.setDatacriacao(datacriacao);
-                ib.setStatus("Ativo");
+                idao.create(codigo, descricao, unidade, tipo, 0, dataCriacao);
 
-                //codigo, descricao, tipo, estoque, datacriacao, status
-                id.create(ib);
+                idInsumo = idao.idCreated(codigo);
 
-                //Pegar id criado
-                id.readcreated(datacriacao).forEach(ib2 -> {
-                    idcriado = ib2.getId();
+                txtid.setText(String.valueOf(idInsumo));
+
+                idao.click(idInsumo).forEach(ib -> {
+                    txtstatus.setText(ib.getStatus());
                 });
 
 ////////////////Criar Documentos do Insumo
-                if (tabledocumentos.getRowCount() > 0) {
-                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                        idb.setIdinsumo(idcriado);
-                        idb.setDescricao(datacriacao);
-                        idb.setLocal(title);
-
-                        //idinsumo, descricao, local
-                        idd.create(idb);
-                    }
-                }
+                criarDocumentos();
 
 ////////////////Criar Observação do Insumo
                 if (tableobs.getRowCount() > 0) {
                     for (int i = 0; i < tableobs.getRowCount(); i++) {
-                        iob.setIdinsumo(idcriado);
-                        iob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()));
-                        iob.setFuncionario(tableobs.getValueAt(i, 3).toString());
-                        iob.setObs(tableobs.getValueAt(i, 4).toString());
-
-                        //idinsumo, data, funcionario, obs
-                        iod.create(iob);
+                        String data = Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString());
+                        String funcionario = tableobs.getValueAt(i, 3).toString();
+                        String obs = tableobs.getValueAt(i, 4).toString();
+                        iod.create(idInsumo, data, funcionario, obs);
                     }
                 }
 
 ////////////////Criar Movimentação do Insumo
-                imb.setIdinsumo(idcriado);
-                imb.setData(Dates.CriarDataCurtaDBSemDataExistente());
-                imb.setTipomov("Criação");
-                imb.setQtdinicial(0);
-                imb.setQtdmov(0);
-                imb.setQtdfinal(0);
-                imb.setFuncionario(datacriacao);
-
-                //idinsumo, data, tipomov, qtdinicial, qtdmov, qtdfinal, funcionario
-                imd.create(imb);
+                imd.create(idInsumo, Dates.CriarDataCurtaDBSemDataExistente(), "Criação", 0, 0, 0, Session.nome);
 
                 JOptionPane.showMessageDialog(null, "Criado com sucesso.");
             } else {//Se for um item já cadastrado
 ////////////////Atualizar Insumo
-                ib.setCodigo(txtcodigo.getText());
-                ib.setDescricao(txtdescricao.getText());
-                ib.setTipo(cbtipo.getSelectedItem().toString());
-                ib.setId(Integer.parseInt(txtid.getText()));
-
-                //codigo = ?, descricao = ?, tipo = ? WHERE id = ?
-                id.update(ib);
+                idao.update(codigo, descricao, tipo, idInsumo);
 
 ////////////////Criar Documentos do Insumo
                 if (tabledocumentos.getRowCount() > 0) {
                     for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
                         if (tabledocumentos.getValueAt(i, 0).equals("")) {
-                            idb.setIdinsumo(Integer.parseInt(txtid.getText()));
-                            idb.setDescricao(datacriacao);
-                            idb.setLocal(title);
-
-                            //idinsumo, descricao, local
-                            idd.create(idb);
+                            idd.create(idInsumo, descricao, tipo);
                         }
                     }
                 }
 
 ////////////////Criar Observação do Insumo
-                if (tableobs.getRowCount() > 0) {
-                    for (int i = 0; i < tableobs.getRowCount(); i++) {
-                        if (tableobs.getValueAt(i, 0).equals("")) {
-                            iob.setIdinsumo(Integer.parseInt(txtid.getText()));
-                            iob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 1).toString()));
-                            iob.setFuncionario(tableobs.getValueAt(i, 2).toString());
-                            iob.setObs(tableobs.getValueAt(i, 3).toString());
-
-                            //idinsumo, data, funcionario, obs
-                            iod.create(iob);
-                        }
-                    }
-                }
+                criarDocumentos();
 
                 JOptionPane.showMessageDialog(null, "Atualizado com sucesso.");
             }
+            lerInsumo(idInsumo);
+            readtableinsumos(cbstatus.getSelectedItem().toString());
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btnAddObsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddObsActionPerformed
         AdicionarObs ao = new AdicionarObs("Insumos");
         Telas.AparecerTela(ao);
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btnAddObsActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (txtid.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Selecione um insumo.");
-            tabinsumos.setSelectedIndex(0);
+            tabInsumos.setSelectedIndex(0);
+        } else if (idInsumo == 0) {
+            JOptionPane.showMessageDialog(null, "Selecione ou salve um Insumo primeiro.");
         } else {
-            InsumosDAO id = new InsumosDAO();
-            InsumosBean ib = new InsumosBean();
-
             int resp = JOptionPane.showConfirmDialog(null, "Deseja desativar o insumo " + txtcodigo.getText() + "?", "Desativar Insumo", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
-                ib.setStatus("Desativado");
-                ib.setId(Integer.parseInt(txtid.getText()));
+                idao.desativar(idInsumo);
 
-                //status = ? WHERE id = ?
-                id.update(ib);
+                lerInsumo(idInsumo);
+                readtableinsumos(cbstatus.getSelectedItem().toString());
             }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -772,21 +878,43 @@ public class Insumos extends javax.swing.JInternalFrame {
         Telas.AparecerTela(pd);
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        ProcurarUnidades pu = new ProcurarUnidades(this.getName());
+    private void btnProcurarUnidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcurarUnidadeActionPerformed
+        ProcurarUnidades pu = new ProcurarUnidades(this.getClass().getSimpleName());
         Telas.AparecerTela(pu);
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_btnProcurarUnidadeActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int resp = JOptionPane.showConfirmDialog(null, "Deseja criar um novo insumo?", "Criar novo", JOptionPane.YES_NO_OPTION);
         if (resp == 0) {
             zeracampos();
-            tabinsumos.setSelectedIndex(1);
+            tabInsumos.setSelectedIndex(1);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void tableInsumosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableInsumosMouseClicked
+        if (evt.getClickCount() == 2) {
+            idInsumo = Integer.parseInt(tableInsumos.getValueAt(tableInsumos.getSelectedRow(), 0).toString());
+
+            tabInsumos.setSelectedIndex(1);
+
+            lerInsumo(idInsumo);
+        }
+    }//GEN-LAST:event_tableInsumosMouseClicked
+
+    private void tabledocumentosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledocumentosMouseClicked
+        if (evt.getClickCount() == 2) {
+            Docs.open(tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3).toString());
+        }
+    }//GEN-LAST:event_tabledocumentosMouseClicked
+
+    private void cbstatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbstatusActionPerformed
+        readtableinsumos(cbstatus.getSelectedItem().toString());
+    }//GEN-LAST:event_cbstatusActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JButton btnAddObs;
+    public static javax.swing.JButton btnProcurarUnidade;
     public javax.swing.JComboBox<String> cbstatus;
     public static javax.swing.JComboBox<String> cbtipo;
     public javax.swing.JButton jButton1;
@@ -794,9 +922,7 @@ public class Insumos extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
-    public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
-    public javax.swing.JButton jButton8;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -816,10 +942,10 @@ public class Insumos extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JScrollPane jScrollPane4;
     public javax.swing.JTabbedPane jTabbedPane2;
-    public static javax.swing.JTabbedPane tabinsumos;
+    public static javax.swing.JTabbedPane tabInsumos;
+    public static javax.swing.JTable tableInsumos;
     public static javax.swing.JTable tabledocumentos;
     public static javax.swing.JTable tableestoque;
-    public static javax.swing.JTable tableinsumos;
     public static javax.swing.JTable tableobs;
     public static javax.swing.JTextField txtcodigo;
     public static javax.swing.JTextField txtdescricao;

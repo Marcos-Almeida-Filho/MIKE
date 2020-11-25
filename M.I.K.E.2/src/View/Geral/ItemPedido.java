@@ -6,8 +6,10 @@
 package View.Geral;
 
 import DAO.VendasPedidoItensDAO;
+import Methods.SendEmail;
 import Methods.Telas;
 import View.vendas.PedidoVenda;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -263,7 +265,19 @@ public class ItemPedido extends javax.swing.JInternalFrame {
 
             switch (origin) {
                 case "PedidoVenda":
-                    vpid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo + " dias úteis", txtpedido.getText(), idItemCotacao);
+                    try {
+                        vpid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo + " dias úteis", txtpedido.getText(), idItemCotacao);
+                    } catch (SQLException e) {
+                        String msg = "Erro ao atualizar item do Pedido.";
+                        JOptionPane.showMessageDialog(null, msg);
+
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                SendEmail.EnviarErro2(msg, e);
+                            }
+                        }.start();
+                    }
                     PedidoVenda.lerItensPedido(PedidoVenda.txtPedido.getText());
                     PedidoVenda.txtTotal();
                     break;

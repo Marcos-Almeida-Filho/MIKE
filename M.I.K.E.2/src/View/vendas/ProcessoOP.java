@@ -18,8 +18,10 @@ import DAO.ProcessosVendasMedicoesDAO;
 import DAO.VendasMateriaisDAO;
 import DAO.VendasMateriaisMovDAO;
 import Methods.Dates;
+import Methods.SendEmail;
 import Methods.SoNumeros;
 import Methods.Telas;
+import java.sql.SQLException;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -211,7 +213,19 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
 
             vmd.updateEstoque(estoque, idMaterial);
 
-            vmmd.create(idMaterial, estoqueAtual, qtdFinalOP, estoque, OP.txtNumOP.getText(), Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+            try {
+                vmmd.create(idMaterial, estoqueAtual, qtdFinalOP, estoque, OP.txtNumOP.getText(), Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+            } catch (SQLException e) {
+                String msg = "Erro ao criar movimentação do Material de Venda.";
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
         } else {
             JComboBox cbProcessos = new JComboBox();
 

@@ -8,7 +8,6 @@ package DAO;
 import Bean.VendasPedidoDocsBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import View.vendas.PedidoVenda;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,23 +53,16 @@ public class VendasPedidoDocsDAO {
      * @param pedido - Código do Pedido
      * @param descricao - Descrição do documento. Ex: Boleto, Desenho, etc.
      * @param local - Local onde o documento está salvo.
+     * @throws java.sql.SQLException
      */
-    public void create(String pedido, String descricao, String local) {
+    public void create(String pedido, String descricao, String local) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_pedido_docs (pedido, descricao, local) VALUES ('" + pedido + "','" + descricao + "','" + local + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_pedido_docs (pedido, descricao, local) VALUES ('" + pedido + "','" + descricao + "','" + local + "')");
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-            PedidoVenda.docsCriados = true;
-        } catch (SQLException e) {
-            String msg = "Erro ao criar documento do Pedido de Venda!";
-            JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     /**
@@ -97,7 +89,13 @@ public class VendasPedidoDocsDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler documentos do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -111,15 +109,21 @@ public class VendasPedidoDocsDAO {
         try {
             stmt = con.prepareStatement("DELETE FROM vendas_pedido_docs WHERE id = " + id);
             stmt.executeUpdate();
-            
+
             File file = new File(location);
             file.delete();
-            
+
             JOptionPane.showMessageDialog(null, "Arquivo excluído com sucesso!");
         } catch (SQLException e) {
             String msg = "Erro ao excluir documento do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

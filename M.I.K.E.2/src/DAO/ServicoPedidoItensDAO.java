@@ -26,26 +26,26 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class ServicoPedidoItensDAO {
-    
+
     Connection con;
-    
+
     PreparedStatement stmt;
-    
+
     ResultSet rs;
-    
+
     List<ServicoPedidoItensBean> listspib;
-    
+
     public void conStmt() {
         con = ConnectionFactory.getConnection();
-        
+
         stmt = null;
     }
-    
+
     public void rsList() {
         conStmt();
-        
+
         rs = null;
-        
+
         listspib = new ArrayList<>();
     }
 
@@ -175,20 +175,26 @@ public class ServicoPedidoItensDAO {
 
     public void delete(int id) {
         conStmt();
-        
+
         try {
             stmt = con.prepareStatement("DELETE FROM servicos_pedido_itens_orcamento WHERE id = " + id);
-            
+
             stmt.executeUpdate();
-            
-            JOptionPane.showMessageDialog(null,"Item excluído com sucesso.");
-        } catch (SQLException ex) {
-            Logger.getLogger(ServicoPedidoItensDAO.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null,"Erro ao excluir item!");
-            SendEmail.EnviarErro2(ex.toString());
+
+            JOptionPane.showMessageDialog(null, "Item excluído com sucesso.");
+        } catch (SQLException e) {
+            String msg = "Erro ao excluir item do Pedido de Compra.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
-        
-     }
+
+    }
 }

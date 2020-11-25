@@ -9,7 +9,6 @@ import View.comercial.*;
 import DAO.AltDAO;
 import Methods.Dates;
 import View.vendas.CotacaoVenda;
-import View.vendas.VendasMateriais;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -51,17 +50,6 @@ public class HistoricoAlteracao extends javax.swing.JInternalFrame {
                 });
                 break;
             case "HistDoc":
-                break;
-            case "VendasMateriais":
-                ad.read(String.valueOf(VendasMateriais.id), "VendasMateriais").forEach(ab -> {
-                    model.addRow(new Object[]{
-                        Dates.TransformarDataCompletaDoDB(ab.getData()),
-                        ab.getUser(),
-                        ab.getValor(),
-                        ab.getValoranterior(),
-                        ab.getValornovo()
-                    });
-                });
                 break;
             case "CotacaoVenda":
                 ad.read(CotacaoVenda.txtCotacao.getText(), "CotacaoVenda").forEach(ab -> {

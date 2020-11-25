@@ -48,31 +48,23 @@ public class VendasMateriaisObsDAO {
 
     /**
      * Método para criação de observação em material de venda.
-     * 
+     *
      * @param idmaterial Int com o ID do material no Banco de Dados
      * @param data String da data que a observação foi criada
      * @param usuario String com o nome do usuário que fez a observação
      * @param obs String da observação feita
-     * 
+     * @throws java.sql.SQLException
+     *
      * @since 2.0.0
      */
-    public void create(int idmaterial, String data, String usuario, String obs) {
+    public void create(int idmaterial, String data, String usuario, String obs) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_materiais_obs (idmaterial, data, usuario, obs) VALUES (" + idmaterial + ",'" + data + "','" + usuario + "','" + obs + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_materiais_obs (idmaterial, data, usuario, obs) VALUES (" + idmaterial + ",'" + data + "','" + usuario + "','" + obs + "')");
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar observação do material!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisObsDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<VendasMateriaisObsBean> read(int id) {
@@ -114,10 +106,17 @@ public class VendasMateriaisObsDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE vendas_materiais_obs SET ");
-            
+
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar comentário.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao atualizar observação do Material.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -125,14 +124,21 @@ public class VendasMateriaisObsDAO {
 
     public void delete(int id) {
         conStmt();
-        
+
         try {
             stmt = con.prepareStatement("DELETE FROM vendas_materiais_obs WHERE id = " + id);
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro ao excluir observação do material.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao excluir observação do Material.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

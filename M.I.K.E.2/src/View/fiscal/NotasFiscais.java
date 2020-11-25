@@ -13,10 +13,12 @@ import DAO.CARDAO;
 import DAO.VendasMateriaisDAO;
 import DAO.VendasMateriaisMovDAO;
 import Methods.Dates;
+import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
 import View.Geral.ProcuraXML;
 import java.io.File;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -953,7 +955,20 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
                                 double qtdItem = nfib.getQtd();
                                 double estoque = estoqueAtual + qtdItem;
                                 vmd.updateEstoque(estoque, nfib.getIdMaterial());
-                                vmmd.create(nfib.getIdMaterial(), estoqueAtual, qtdItem, estoque, "Nota Fiscal " + numero + " Cancelada", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+
+                                try {
+                                    vmmd.create(nfib.getIdMaterial(), estoqueAtual, qtdItem, estoque, "Nota Fiscal " + numero + " Cancelada", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                                } catch (SQLException e) {
+                                    String msg = "Erro ao criar movimentação do Material de Venda.";
+                                    JOptionPane.showMessageDialog(null, msg);
+
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            SendEmail.EnviarErro2(msg, e);
+                                        }
+                                    }.start();
+                                }
                             }
                         });
                         cd.cancelarConta(numero);

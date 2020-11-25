@@ -32,15 +32,13 @@ import View.Geral.ProcurarCondicaoDePagamento;
 import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarRepresentante;
 import View.Geral.ProcurarVendedor;
-import View.comercial.DocumentosFornecedores;
 import View.fiscal.NotasFiscais;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.SQLException;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -154,6 +152,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
     public static void lerPedido(String pedido) {
         vpd.readPedido(pedido).forEach(vpb -> {
+            txtPedido.setText(vpb.getPedido());
             txtDataAbertura.setText(Dates.TransformarDataCurtaDoDB(vpb.getData_abertura()));
             txtCliente.setText(vpb.getCliente());
             txtStatus.setText(vpb.getStatus());
@@ -161,6 +160,12 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             txtRep.setText(vpb.getRepresentante());
             txtCondPag.setText(vpb.getCondicao());
         });
+
+        lerItensPedido(pedido);
+
+        lerDocumentosPedido(pedido);
+
+        lerObsPedido(pedido);
     }
 
     public static void lerItensPedido(String pedido) {
@@ -1246,84 +1251,105 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         } else if (idCotacao == 0) {
             String pedido = vpd.pedidoAtual();
 
-            //Criar novo pedido
-            vpd.create(pedido, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+            try {
+                //Criar novo pedido
+                vpd.create(pedido, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
-            txtPedido.setText(pedido);
+                txtPedido.setText(pedido);
 
-            //Criar itens do Pedido
-            for (int i = 0; i < tableItens.getRowCount(); i++) {
-                vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
-            }
-
-            //Criar documentos da cotação
-            for (int i = 0; i < tableDocs.getRowCount(); i++) {
-                //Localicação do documento original
-                File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
-                //Pasta que será colocar o documento
-                File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(pedido));
-                //Documento copiado do original
-                File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                //Criar pasta no caso de já não existir
-                folder.mkdirs();
-                try {
-                    //Criar o documento copiado na pasta
-                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                } catch (IOException ex) {
-                    Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(ex.toString());
-                        }
-                    }.start();
+                //Criar itens do Pedido
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+                    vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
                 }
 
-                vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
-            }
+                //Criar documentos da cotação
+                for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                    //Localicação do documento original
+                    File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                    //Pasta que será colocar o documento
+                    File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(pedido));
+                    //Documento copiado do original
+                    File filecopy = new File(folder + "/" + fileoriginal.getName());
 
-            //Criar observações da cotação
-            for (int i = 0; i < tableObs.getRowCount(); i++) {
-                vpod.create(pedido, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
-            }
+                    //Criar pasta no caso de já não existir
+                    folder.mkdirs();
+                    try {
+                        //Criar o documento copiado na pasta
+                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                    } catch (IOException e) {
+                        String msg = "Erro ao criar documento em rede.";
+                        JOptionPane.showMessageDialog(null, msg);
 
-            if (pedidoCriado && itensCriados && docsCriados && obsCriadas) {
-                JOptionPane.showMessageDialog(null, "Cotação criada com sucesso!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Ops...algo deu errado. Favor entrar em contato com suporte.");
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                SendEmail.EnviarErro2(msg, e);
+                            }
+                        }.start();
+                    }
+
+                    vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
+                }
+
+                //Criar observações da cotação
+                for (int i = 0; i < tableObs.getRowCount(); i++) {
+                    vpod.create(pedido, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                }
+
+                JOptionPane.showMessageDialog(null, "Pedido de Venda criado com sucesso.");
+            } catch (SQLException e) {
+                String msg = "Erro ao criar Pedido de Venda.";
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
             }
 
             status();
         } else {
             String pedido = txtPedido.getText();
 
-            //Atualizar cotação
-            vpd.update(pedido, txtCliente.getText(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+            try {
+                //Atualizar cotação
+                vpd.update(pedido, txtCliente.getText(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
-            //Criar itens da cotação que não existiam
-            for (int i = 0; i < tableItens.getRowCount(); i++) {
-                if (tableItens.getValueAt(i, 0).equals("")) {
-                    vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
-                } else {
-                    vpid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 4).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                //Criar itens da cotação que não existiam
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+                    if (tableItens.getValueAt(i, 0).equals("")) {
+                        vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
+                    } else {
+                        vpid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 4).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                    }
                 }
-            }
 
-            //Criar documentos do pedido que não existiam
-            for (int i = 0; i < tableDocs.getRowCount(); i++) {
-                if (tableDocs.getValueAt(i, 0).equals("")) {
-                    vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
+                //Criar documentos do pedido que não existiam
+                for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                    if (tableDocs.getValueAt(i, 0).equals("")) {
+                        vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
+                    }
                 }
-            }
 
-            //Criar observações do pedido
-            for (int i = 0; i < tableObs.getRowCount(); i++) {
-                if (tableObs.getValueAt(i, 0).equals("")) {
-                    vpod.create(pedido, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                //Criar observações do pedido
+                for (int i = 0; i < tableObs.getRowCount(); i++) {
+                    if (tableObs.getValueAt(i, 0).equals("")) {
+                        vpod.create(pedido, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                    }
                 }
+                JOptionPane.showMessageDialog(null, "Pedido de Venda atualizado com sucesso.");
+            } catch (SQLException e) {
+                String msg = "Erro ao atualizar Pedido de Venda.";
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
             }
 
             status();
@@ -1372,15 +1398,6 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
             //Pegar dados da Cotação no DB
             lerPedido(cotacao);
-
-            //Pegar itens da Cotação no DB
-            lerItensPedido(cotacao);
-
-            //Pegar Documentos da Cotação no DB
-            lerDocumentosPedido(cotacao);
-
-            //Pegar Observações da Cotação no DB
-            lerObsPedido(cotacao);
 
             txtTotal();
 
@@ -1579,14 +1596,14 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                             try {
                                 //Criar o documento copiado na pasta
                                 Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                            } catch (IOException ex) {
-                                Logger.getLogger(DocumentosFornecedores.class.getName()).log(Level.SEVERE, null, ex);
-                                JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                            } catch (IOException e) {
+                                String msg = "Erro ao criar documento em rede.";
+                                JOptionPane.showMessageDialog(null, msg);
 
                                 new Thread() {
                                     @Override
                                     public void run() {
-                                        SendEmail.EnviarErro2(ex.toString());
+                                        SendEmail.EnviarErro2(msg, e);
                                     }
                                 }.start();
                             }

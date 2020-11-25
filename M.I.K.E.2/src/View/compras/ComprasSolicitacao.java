@@ -5,21 +5,18 @@
  */
 package View.compras;
 
-import Bean.ComprasSolicitacaoBean;
-import Bean.ComprasSolicitacaoItensBean;
-import Bean.ComprasSolicitacaoObsBean;
+import View.Geral.AdicionarInsumoSolicitacaoCompras;
 import Connection.Session;
 import DAO.ComprasSolicitacaoDAO;
 import DAO.ComprasSolicitacaoItensDAO;
 import DAO.ComprasSolicitacaoObsDAO;
 import DAO.TiposInsumoDAO;
 import Methods.Dates;
-import Methods.Names;
+import Methods.SendEmail;
 import Methods.Telas;
+import View.Geral.AdicionarObs;
 import View.Geral.ProcurarUser;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -29,37 +26,62 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ComprasSolicitacao extends javax.swing.JInternalFrame {
 
+    //DAO para salvar nova solicitação
+    static ComprasSolicitacaoDAO csd = new ComprasSolicitacaoDAO();
+
+    //DAO para salvar itens
+    ComprasSolicitacaoItensDAO csid = new ComprasSolicitacaoItensDAO();
+
+    //DAO para salvar observações
+    ComprasSolicitacaoObsDAO csod = new ComprasSolicitacaoObsDAO();
+
+    static TiposInsumoDAO tid = new TiposInsumoDAO();
+
+    int idSolicitacao = 0;
+
+    static DefaultTableModel modelSolicitacoes, modelItens, modelObs;
+
+    static String solicitanteOriginal, tipoOriginal;
+    static int obsOriginal, itensOriginal;
+
     /**
      * Creates new form ComprasSolicitacao
      */
-    int id;
-
     public ComprasSolicitacao() {
         initComponents();
-        readsolicitacoes();
-        txtsolicitante.setText(Session.nome);
+
+        modelSolicitacoes = (DefaultTableModel) tablesolicitacao.getModel();
+        modelItens = (DefaultTableModel) tableItens.getModel();
+        modelObs = (DefaultTableModel) tableobs.getModel();
+
+        readSolicitacoes();
         tiposdeinsumo();
     }
 
-    public static void readsolicitacoes() {
-        //DAO para método
-        ComprasSolicitacaoDAO csd = new ComprasSolicitacaoDAO();
+    public static void valoresOriginal() {
+        solicitanteOriginal = txtsolicitante.getText();
+        tipoOriginal = cbtipo.getSelectedItem().toString();
+        obsOriginal = tableobs.getRowCount();
+        itensOriginal = tableItens.getRowCount();
+    }
 
+    public static void readSolicitacoes() {
         //Zerar linhas na Tablesolicitacao
-        DefaultTableModel model = (DefaultTableModel) tablesolicitacao.getModel();
-        model.setNumRows(0);
+        modelSolicitacoes.setNumRows(0);
 
         //Ler dados
         csd.read().forEach((csb) -> {
-            model.addRow(new Object[]{
+            modelSolicitacoes.addRow(new Object[]{
                 csb.getId(),
                 false,
-                csb.getIdtela(),
+                csb.getSolicitacao(),
                 csb.getTipo(),
                 csb.getSolicitante(),
                 csb.getStatus()
             });
         });
+
+        txtsolicitante.setText(Session.nome);
     }
 
     public static void travacampos() {
@@ -72,10 +94,55 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
     }
 
     public static void tiposdeinsumo() {
-        TiposInsumoDAO tid = new TiposInsumoDAO();
-
         tid.read().forEach(tib -> {
             cbtipo.addItem(tib.getNome());
+        });
+    }
+
+    public void lerSolicitacao(int idSolicitacao) {
+        csd.click(idSolicitacao).forEach(csb -> {
+            txtNumeroSolicitacao.setText(csb.getSolicitacao());
+            txtdata.setText(Dates.TransformarDataCurtaDoDB(csb.getData()));
+            txtstatus.setText(csb.getStatus());
+            txtsolicitante.setText(csb.getSolicitante());
+            cbtipo.setSelectedItem(csb.getTipo());
+        });
+
+        lerObs(idSolicitacao);
+
+        lerItens(idSolicitacao);
+
+        //Ver status e travar campos se necessário
+        travacampos();
+    }
+
+    public void lerObs(int idSolicitacao) {
+        modelObs.setNumRows(0);
+
+        csod.read(idSolicitacao).forEach(csob -> {
+            modelObs.addRow(new Object[]{
+                csob.getId(),
+                false,
+                Dates.TransformarDataCurtaDoDB(csob.getData()),
+                csob.getFuncionario(),
+                csob.getObs()
+            });
+        });
+    }
+
+    public void lerItens(int idSolicitacao) {
+        modelItens.setNumRows(0);
+
+        csid.read(idSolicitacao).forEach(csib -> {
+            modelItens.addRow(new Object[]{
+                csib.getId(),
+                false,
+                csib.getItem(),
+                csib.getQtd(),
+                csib.getUnidade(),
+                csib.getObs(),
+                csib.getPedido()
+            });
         });
     }
 
@@ -98,7 +165,7 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
         tablesolicitacao = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtnumerosolicitacao = new javax.swing.JTextField();
+        txtNumeroSolicitacao = new javax.swing.JTextField();
         txtstatus = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -114,13 +181,17 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tableobs = new javax.swing.JTable();
         jButton5 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tablesolicitacaoitens = new javax.swing.JTable();
+        tableItens = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        btnAll = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         txtdata = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        jButton9 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Solicitação de Compra");
@@ -242,11 +313,11 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
 
         jLabel1.setText("Nº");
 
-        txtnumerosolicitacao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtnumerosolicitacao.setEnabled(false);
+        txtNumeroSolicitacao.setEditable(false);
+        txtNumeroSolicitacao.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
+        txtstatus.setEditable(false);
         txtstatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtstatus.setEnabled(false);
 
         jLabel2.setText("Status");
 
@@ -305,6 +376,11 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
         });
 
         jButton2.setText("Novo");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jPanel6.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -313,66 +389,14 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Data", "Funcionário", "Observação"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane4.setViewportView(tableobs);
-        if (tableobs.getColumnModel().getColumnCount() > 0) {
-            tableobs.getColumnModel().getColumn(0).setMinWidth(0);
-            tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
-            tableobs.getColumnModel().getColumn(1).setMinWidth(75);
-            tableobs.getColumnModel().getColumn(1).setPreferredWidth(75);
-            tableobs.getColumnModel().getColumn(1).setMaxWidth(75);
-            tableobs.getColumnModel().getColumn(2).setMinWidth(200);
-            tableobs.getColumnModel().getColumn(2).setPreferredWidth(200);
-            tableobs.getColumnModel().getColumn(2).setMaxWidth(200);
-        }
-
-        jButton5.setText("Adicionar Observação");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1040, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton5)
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5)
-                .addContainerGap())
-        );
-
-        tabsolicitacaointerna.addTab("Observações", jPanel6);
-
-        tablesolicitacaoitens.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "", "Item", "Qtd", "UN", "Observação", "Pedido de Compra"
+                "ID", "", "Data", "Funcionário", "Observação"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, true, false, false
+                false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -383,26 +407,109 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(tablesolicitacaoitens);
-        if (tablesolicitacaoitens.getColumnModel().getColumnCount() > 0) {
-            tablesolicitacaoitens.getColumnModel().getColumn(0).setMinWidth(0);
-            tablesolicitacaoitens.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tablesolicitacaoitens.getColumnModel().getColumn(0).setMaxWidth(0);
-            tablesolicitacaoitens.getColumnModel().getColumn(1).setMinWidth(40);
-            tablesolicitacaoitens.getColumnModel().getColumn(1).setPreferredWidth(40);
-            tablesolicitacaoitens.getColumnModel().getColumn(1).setMaxWidth(40);
-            tablesolicitacaoitens.getColumnModel().getColumn(2).setMinWidth(250);
-            tablesolicitacaoitens.getColumnModel().getColumn(2).setPreferredWidth(250);
-            tablesolicitacaoitens.getColumnModel().getColumn(2).setMaxWidth(250);
-            tablesolicitacaoitens.getColumnModel().getColumn(3).setMinWidth(70);
-            tablesolicitacaoitens.getColumnModel().getColumn(3).setPreferredWidth(70);
-            tablesolicitacaoitens.getColumnModel().getColumn(3).setMaxWidth(70);
-            tablesolicitacaoitens.getColumnModel().getColumn(4).setMinWidth(70);
-            tablesolicitacaoitens.getColumnModel().getColumn(4).setPreferredWidth(70);
-            tablesolicitacaoitens.getColumnModel().getColumn(4).setMaxWidth(70);
-            tablesolicitacaoitens.getColumnModel().getColumn(6).setMinWidth(110);
-            tablesolicitacaoitens.getColumnModel().getColumn(6).setPreferredWidth(110);
-            tablesolicitacaoitens.getColumnModel().getColumn(6).setMaxWidth(110);
+        tableobs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableobsMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(tableobs);
+        if (tableobs.getColumnModel().getColumnCount() > 0) {
+            tableobs.getColumnModel().getColumn(0).setMinWidth(0);
+            tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableobs.getColumnModel().getColumn(1).setMinWidth(35);
+            tableobs.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableobs.getColumnModel().getColumn(1).setMaxWidth(35);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(75);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(75);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(75);
+            tableobs.getColumnModel().getColumn(3).setMinWidth(200);
+            tableobs.getColumnModel().getColumn(3).setPreferredWidth(200);
+            tableobs.getColumnModel().getColumn(3).setMaxWidth(200);
+        }
+
+        jButton5.setText("Adicionar Observação");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jButton7.setText("Excluir Observação");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1040, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton5)
+                    .addComponent(jButton7))
+                .addContainerGap())
+        );
+
+        tabsolicitacaointerna.addTab("Observações", jPanel6);
+
+        tableItens.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "", "Item", "Qtd", "UN", "Observação", "Cotação de Compra"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tableItens);
+        if (tableItens.getColumnModel().getColumnCount() > 0) {
+            tableItens.getColumnModel().getColumn(0).setMinWidth(0);
+            tableItens.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableItens.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableItens.getColumnModel().getColumn(1).setMinWidth(40);
+            tableItens.getColumnModel().getColumn(1).setPreferredWidth(40);
+            tableItens.getColumnModel().getColumn(1).setMaxWidth(40);
+            tableItens.getColumnModel().getColumn(2).setMinWidth(250);
+            tableItens.getColumnModel().getColumn(2).setPreferredWidth(250);
+            tableItens.getColumnModel().getColumn(2).setMaxWidth(250);
+            tableItens.getColumnModel().getColumn(3).setMinWidth(70);
+            tableItens.getColumnModel().getColumn(3).setPreferredWidth(70);
+            tableItens.getColumnModel().getColumn(3).setMaxWidth(70);
+            tableItens.getColumnModel().getColumn(4).setMinWidth(70);
+            tableItens.getColumnModel().getColumn(4).setPreferredWidth(70);
+            tableItens.getColumnModel().getColumn(4).setMaxWidth(70);
+            tableItens.getColumnModel().getColumn(6).setMinWidth(130);
+            tableItens.getColumnModel().getColumn(6).setPreferredWidth(130);
+            tableItens.getColumnModel().getColumn(6).setMaxWidth(130);
         }
 
         jButton3.setText("Incluir");
@@ -414,6 +521,20 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
 
         jButton4.setText("Excluir");
 
+        btnAll.setText("Selecionar Todos");
+        btnAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAllActionPerformed(evt);
+            }
+        });
+
+        jButton8.setText("Aprovar Itens");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -422,11 +543,14 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnAll)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 999, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1028, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -437,16 +561,20 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(btnAll)
+                    .addComponent(jButton8))
                 .addContainerGap())
         );
 
         tabsolicitacaointerna.addTab("Itens", jPanel7);
 
+        txtdata.setEditable(false);
         txtdata.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtdata.setEnabled(false);
 
         jLabel5.setText("Data de Criação");
+
+        jButton9.setText("Alterações");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -460,17 +588,18 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtnumerosolicitacao, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNumeroSolicitacao, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtdata, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtdata, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
@@ -482,7 +611,7 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(txtnumerosolicitacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNumeroSolicitacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(txtdata, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -494,7 +623,8 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(jButton2)
+                    .addComponent(jButton9))
                 .addContainerGap())
         );
 
@@ -522,29 +652,15 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
             //Colocar a tabnotes na frente caso não estivesse
             tabsolicitacaointerna.setSelectedIndex(0);
 
-            //Colocar o número da solicitação no txt
-            txtnumerosolicitacao.setText(tablesolicitacao.getValueAt(tablesolicitacao.getSelectedRow(), 2).toString());
+            idSolicitacao = Integer.parseInt(tablesolicitacao.getValueAt(tablesolicitacao.getSelectedRow(), 0).toString());
 
-            //DAO para leitura dos dados
-            ComprasSolicitacaoDAO csd = new ComprasSolicitacaoDAO();
+            lerSolicitacao(idSolicitacao);
 
-            //Ler dados e colocar nos campos
-            csd.click(txtnumerosolicitacao.getText()).forEach(csb -> {
-                txtdata.setText(csb.getData());
-                txtstatus.setText(csb.getStatus());
-                txtsolicitante.setText(csb.getSolicitante());
-                cbtipo.setSelectedItem(csb.getTipo());
-            });
-
-            //Ver status e travar campos se necessário
-            travacampos();
+            valoresOriginal();
         }
     }//GEN-LAST:event_tablesolicitacaoMouseClicked
 
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
-        //DAO para método
-        ComprasSolicitacaoDAO csd = new ComprasSolicitacaoDAO();
-
         //Zerar linhas na tablesolicitacao
         DefaultTableModel model = (DefaultTableModel) tablesolicitacao.getModel();
         model.setNumRows(0);
@@ -554,7 +670,7 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
             model.addRow(new Object[]{
                 csb.getId(),
                 false,
-                csb.getIdtela(),
+                csb.getSolicitacao(),
                 csb.getTipo(),
                 csb.getSolicitante(),
                 csb.getStatus()
@@ -563,121 +679,84 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        //DAO e Bean para salvar nova solicitação
-        ComprasSolicitacaoDAO csd = new ComprasSolicitacaoDAO();
-        ComprasSolicitacaoBean csb = new ComprasSolicitacaoBean();
-
-        //DAO e Bean para salvar itens
-        ComprasSolicitacaoItensDAO csid = new ComprasSolicitacaoItensDAO();
-        ComprasSolicitacaoItensBean csib = new ComprasSolicitacaoItensBean();
-
-        //DAO e Bean para salvar observações
-        ComprasSolicitacaoObsDAO csod = new ComprasSolicitacaoObsDAO();
-        ComprasSolicitacaoObsBean csob = new ComprasSolicitacaoObsBean();
-
         if (cbtipo.getSelectedIndex() == 0) {
             JOptionPane.showMessageDialog(null, "Selecione o tipo de material");
             cbtipo.showPopup();
-        } else if (tablesolicitacaoitens.getRowCount() == 0) {
+        } else if (tableItens.getRowCount() == 0) {
             JOptionPane.showMessageDialog(null, "Adicione um item à solicitação.");
-        } else if (txtnumerosolicitacao.getText().equals("")) {//Se for uma solicitação nova
-            //Data de Criação
-            String data = Dates.CriarDataCompletaParaDB();
+        } else {
+            if (idSolicitacao == 0) {//Se for uma solicitação nova
+                try {
+                    //Dados para criar nova solicitação
+                    String solicitacao = csd.solicitacaoAtual();
+                    String data = Dates.CriarDataCurtaDBSemDataExistente();
 
-////////////Criar nova solicitação
-            //Dados para criar nova solicitação
-            try {
-                txtnumerosolicitacao.setText(Names.CriarIdTela(csd.readnome(), "SC", csd.readultimoidtela()));
-            } catch (SQLException ex) {
-                Logger.getLogger(ComprasSolicitacao.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                    txtNumeroSolicitacao.setText(solicitacao);
 
-            String idtela = txtnumerosolicitacao.getText();
+                    //Criar Solicitação de Compra
+                    csd.create(solicitacao, data, txtsolicitante.getText(), cbtipo.getSelectedItem().toString());
 
-            csb.setIdtela(idtela);
-            csb.setData(data);
-            csb.setSolicitante(txtsolicitante.getText());
-            csb.setTipo(String.valueOf(cbtipo.getSelectedItem()));
-            csb.setStatus("Ativo");
+                    idSolicitacao = csd.idSolicitacao(solicitacao);
 
-            //idtela, data, solicitante, tipo, notes, status
-            csd.create(csb);
-
-            //Ler solicitação criada
-            csd.readcreated(data).forEach(csb2 -> {
-                id = csb2.getId();
-            });
-
-////////////Criar Itens da Solicitação
-            //Dados para criar os itens
-            for (int i = 0; i < tablesolicitacaoitens.getRowCount(); i++) {
-                csib.setIdtela(idtela);
-                csib.setItem(tablesolicitacaoitens.getValueAt(i, 2).toString());
-                csib.setQtd(Integer.parseInt(tablesolicitacaoitens.getValueAt(i, 3).toString()));
-                csib.setObs(tablesolicitacaoitens.getValueAt(i, 4).toString());
-
-                //idtela, item, qtd, obs
-                csid.create(csib);
-            }
-
-////////////Criar Observações
-            if (tableobs.getRowCount() > 0) {
-                for (int i = 0; i < tableobs.getRowCount(); i++) {
-                    csob.setIdtela(idtela);
-                    csob.setData(tableobs.getValueAt(i, 1).toString());
-                    csob.setFuncionario(tableobs.getValueAt(i, 2).toString());
-                    csob.setObs(tableobs.getValueAt(i, 3).toString());
-
-                    //idsolicitacao, data, funcionario, obs
-                    csod.create(csob);
-                }
-            }
-        } else { //Se a solicitação já existir
-////////////Atualizar solicitação
-            //Dados para atualizar solicitação
-            csb.setSolicitante(Session.nome);
-            csb.setTipo(String.valueOf(cbtipo.getSelectedItem()));
-            csb.setIdtela(txtnumerosolicitacao.getText());
-
-            //solicitante = ?, tipo = ? WHERE idtela = ?
-            csd.update(csb);
-
-////////////Criar ou Atualizar Itens da Solicitação
-            //Dados para criar os itens
-            for (int i = 0; i < tablesolicitacaoitens.getRowCount(); i++) {
-                if (tablesolicitacaoitens.getValueAt(i, 0).equals("")) {
-                    csib.setIdtela(txtnumerosolicitacao.getText());
-                    csib.setItem(tablesolicitacaoitens.getValueAt(i, 2).toString());
-                    csib.setQtd(Integer.parseInt(tablesolicitacaoitens.getValueAt(i, 3).toString()));
-                    csib.setObs(tablesolicitacaoitens.getValueAt(i, 4).toString());
-
-                    //idtela, item, qtd, obs
-                    csid.create(csib);
-                } else {
-                    csib.setItem(tablesolicitacaoitens.getValueAt(i, 2).toString());
-                    csib.setQtd(Integer.parseInt(tablesolicitacaoitens.getValueAt(i, 3).toString()));
-                    csib.setObs(tablesolicitacaoitens.getValueAt(i, 4).toString());
-                    csib.setId(Integer.parseInt(tablesolicitacaoitens.getValueAt(i, 0).toString()));
-
-                    //item = ?, qtd = ?, obs = ? WHERE id = ?
-                    csid.update(csib);
-                }
-            }
-
-////////////Criar Observações
-            if (tableobs.getRowCount() > 0) {
-                for (int i = 0; i < tableobs.getRowCount(); i++) {
-                    if (tableobs.getValueAt(i, 0).equals("")) {
-                        csob.setIdtela(txtnumerosolicitacao.getText());
-                        csob.setData(tableobs.getValueAt(i, 1).toString());
-                        csob.setFuncionario(tableobs.getValueAt(i, 2).toString());
-                        csob.setObs(tableobs.getValueAt(i, 3).toString());
-
-                        //idsolicitacao, data, funcionario, obs
-                        csod.create(csob);
+                    //Criar Itens da Solicitação de Compra
+                    for (int i = 0; i < tableItens.getRowCount(); i++) {
+                        csid.create(idSolicitacao, tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(tableItens.getValueAt(i, 3).toString()), tableItens.getValueAt(i, 5).toString());
                     }
+
+                    //Criar Observações da Solicitação de Compra
+                    for (int i = 0; i < tableobs.getRowCount(); i++) {
+                        csod.create(idSolicitacao, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Solicitação de Compra salva com sucesso!");
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar Solicitação de Compras.";
+                    JOptionPane.showMessageDialog(null, msg + "\n" + "Enviando e-mail para suporte.");
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
                 }
+            } else { //Se a solicitação já existir
+                try {
+                    //Atualizar Solicitação de Compra
+                    csd.update(txtsolicitante.getText(), cbtipo.getSelectedItem().toString(), idSolicitacao);
+
+                    //Dados para criar os itens
+                    for (int i = 0; i < tableItens.getRowCount(); i++) {
+                        if (tableItens.getValueAt(i, 0).equals("")) {
+                            csid.create(idSolicitacao, tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(tableItens.getValueAt(i, 3).toString()), tableItens.getValueAt(i, 5).toString());
+                        } else {
+                            csid.update(tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(tableItens.getValueAt(i, 3).toString()), tableItens.getValueAt(i, 5).toString(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                        }
+                    }
+
+                    //Criar Observações
+                    for (int i = 0; i < tableobs.getRowCount(); i++) {
+                        if (tableobs.getValueAt(i, 0).equals("")) {
+                            csod.create(idSolicitacao, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Solicitação de Compra atualizada com sucesso.");
+                } catch (SQLException e) {
+                    String msg = "Erro ao atualizar Solicitação de Compra.";
+                    JOptionPane.showMessageDialog(null, msg + "\n" + "Enviando e-mail para suporte");
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+                valoresOriginal();
             }
+            lerSolicitacao(idSolicitacao);
+            readSolicitacoes();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -696,8 +775,101 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
         Telas.AparecerTela(pu);
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        AdicionarObs ao = new AdicionarObs(this.getClass().getSimpleName());
+        Telas.AparecerTela(ao);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void tableobsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableobsMouseClicked
+        if (tableobs.getSelectedColumn() == 1) {
+            if (!tableobs.getValueAt(tableobs.getSelectedRow(), 3).toString().equals(Session.nome)) {
+                JOptionPane.showMessageDialog(null, "Usuário diferente do usuário que fez a observação.");
+                tableobs.setValueAt(false, tableobs.getSelectedRow(), 1);
+            }
+        }
+    }//GEN-LAST:event_tableobsMouseClicked
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        int numTrue = 0;
+        for (int i = 0; i < tableobs.getRowCount(); i++) {
+            if (tableobs.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma observação selecionada.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir as observações selecionadas?", "Excluir Observações", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                for (int i = 0; i < tableobs.getRowCount(); i++) {
+                    if (tableobs.getValueAt(i, 1).equals(true)) {
+                        int id = Integer.parseInt(tableobs.getValueAt(i, 0).toString());
+                        csod.delete(id);
+                    }
+                }
+                lerObs(idSolicitacao);
+            }
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja criar uma nova Solicitação de Compras?", "Nova Solicitação", JOptionPane.YES_NO_OPTION);
+
+        if (resp == 0) {
+            idSolicitacao = 0;
+
+            txtNumeroSolicitacao.setText("");
+            txtdata.setText("");
+            txtstatus.setText("");
+            txtsolicitante.setText("");
+            cbtipo.setSelectedIndex(0);
+
+            modelObs.setNumRows(0);
+            modelItens.setNumRows(0);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            if (tableItens.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado");
+        } else if (!solicitanteOriginal.equals(txtsolicitante.getText()) || !tipoOriginal.equals(cbtipo.getSelectedItem().toString()) || tableobs.getRowCount() != obsOriginal || itensOriginal != tableItens.getRowCount()) {
+            JOptionPane.showMessageDialog(null, "Salve as alterações primeiro.");
+        } else {
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                if (tableItens.getValueAt(i, 1).equals(true)) {
+                    
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void btnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAllActionPerformed
+        if (btnAll.getText().equals("Selecionar Todos")) {
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                tableItens.setValueAt(true, i, 1);
+                btnAll.setText("Desmarcar Todos");
+            }
+        } else {
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                tableItens.setValueAt(false, i, 1);
+                btnAll.setText("Selecionar Todos");
+            }
+        }
+    }//GEN-LAST:event_btnAllActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton btnAll;
     public static javax.swing.JComboBox<String> cbstatus;
     public static javax.swing.JComboBox<String> cbtipo;
     public javax.swing.JButton jButton1;
@@ -706,6 +878,9 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
     public javax.swing.JButton jButton6;
+    public javax.swing.JButton jButton7;
+    public javax.swing.JButton jButton8;
+    public javax.swing.JButton jButton9;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -721,13 +896,13 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JScrollPane jScrollPane4;
-    public javax.swing.JTable tableobs;
+    public static javax.swing.JTable tableItens;
+    public static javax.swing.JTable tableobs;
     public static javax.swing.JTable tablesolicitacao;
-    public static javax.swing.JTable tablesolicitacaoitens;
     public javax.swing.JTabbedPane tabsolicitacao;
     public javax.swing.JTabbedPane tabsolicitacaointerna;
+    public static javax.swing.JTextField txtNumeroSolicitacao;
     public static javax.swing.JTextField txtdata;
-    public static javax.swing.JTextField txtnumerosolicitacao;
     public static javax.swing.JTextField txtpesquisa;
     public static javax.swing.JTextField txtsolicitante;
     public static javax.swing.JTextField txtstatus;

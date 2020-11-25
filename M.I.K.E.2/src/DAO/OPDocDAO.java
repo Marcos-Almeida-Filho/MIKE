@@ -49,8 +49,10 @@ public class OPDocDAO {
     public void create(String op, String descricao, String local) {
         conStmt();
 
+        String local2 = local.replace("\\", "\\\\");
+
         try {
-            stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ('" + op + "', '" + descricao + "', '" + local + "')");
+            stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ('" + op + "', '" + descricao + "', '" + local2 + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -58,10 +60,9 @@ public class OPDocDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -91,10 +92,9 @@ public class OPDocDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -115,10 +115,9 @@ public class OPDocDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {

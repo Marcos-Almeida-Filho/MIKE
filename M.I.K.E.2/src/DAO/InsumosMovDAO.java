@@ -8,16 +8,12 @@ package DAO;
 import Bean.InsumosMovBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.awt.AWTException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,76 +21,91 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class InsumosMovDAO {
- 
-    public void create(InsumosMovBean bb) {
 
-        Connection con = ConnectionFactory.getConnection();
+    Connection con;
 
-        PreparedStatement stmt = null;
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<InsumosMovBean> listimb;
+
+    InsumosMovBean imb;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listimb = new ArrayList<>();
+    }
+
+    public void create(int idInsumo, String data, String tipoMov, double qtdInicial, double qtdMov, double qtdFinal, String funcionario) {
+
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO insumos_mov (idinsumo, data, tipomov, qtdinicial, qtdmov, qtdfinal, funcionario) VALUES (?,?,?,?,?,?,?)");
-
-            stmt.setInt(1, bb.getIdinsumo());
-            stmt.setString(2, bb.getData());
-            stmt.setString(3, bb.getTipomov());
-            stmt.setDouble(4, bb.getQtdinicial());
-            stmt.setDouble(5, bb.getQtdmov());
-            stmt.setDouble(6, bb.getQtdfinal());
-            stmt.setString(7, bb.getFuncionario());
+            stmt = con.prepareStatement("INSERT INTO insumos_mov (idinsumo, data, tipomov, qtdinicial, qtdmov, qtdfinal, funcionario) VALUES (" + idInsumo + ", '" + data + "', '" + tipoMov + "', " + qtdInicial + ", " + qtdMov + ", " + qtdFinal + ", '" + funcionario + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar movimentação do insumo!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosMovDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao criar Movimentação do Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
 
-    public List<InsumosMovBean> read(int idinsumo) {
+    public List<InsumosMovBean> read(int idInsumo) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<InsumosMovBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM insumos_mov WHERE idinsumo = ?");
-            stmt.setInt(1, idinsumo);
+            stmt = con.prepareStatement("SELECT * FROM insumos_mov WHERE idinsumo = " + idInsumo);
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                InsumosMovBean cb = new InsumosMovBean();
+                imb = new InsumosMovBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setIdinsumo(rs.getInt("idinsumo"));
-                cb.setData(rs.getString("data"));
-                cb.setTipomov(rs.getString("tipomov"));
-                cb.setQtdinicial(rs.getDouble("qtdinicial"));
-                cb.setQtdmov(rs.getDouble("qtdmov"));
-                cb.setQtdfinal(rs.getDouble("qtdfinal"));
-                cb.setFuncionario(rs.getString("funcionario"));
+                imb.setId(rs.getInt("id"));
+                imb.setIdinsumo(rs.getInt("idinsumo"));
+                imb.setData(rs.getString("data"));
+                imb.setTipomov(rs.getString("tipomov"));
+                imb.setQtdinicial(rs.getDouble("qtdinicial"));
+                imb.setQtdmov(rs.getDouble("qtdmov"));
+                imb.setQtdfinal(rs.getDouble("qtdfinal"));
+                imb.setFuncionario(rs.getString("funcionario"));
 
-                listbb.add(cb);
+                listimb.add(imb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(InsumosMovDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosMovDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Movimentações do Insumo.";
+
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listimb;
     }
 }

@@ -14,7 +14,7 @@ public class VendasMateriaisBean {
     private int id;
     private String codigo;
     private String descricao;
-    private double estoque, estoqueMinimo;
+    private double estoque, estoqueMinimo, qtdMinimaOP;
     private String local;
     private String status;
     private String d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal;
@@ -58,6 +58,14 @@ public class VendasMateriaisBean {
 
     public void setEstoqueMinimo(double estoqueMinimo) {
         this.estoqueMinimo = estoqueMinimo;
+    }
+
+    public double getQtdMinimaOP() {
+        return qtdMinimaOP;
+    }
+
+    public void setQtdMinimaOP(double qtdMinimaOP) {
+        this.qtdMinimaOP = qtdMinimaOP;
     }
 
     public String getLocal() {

@@ -9,8 +9,6 @@ import Bean.OSBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import View.servicos.PedidoServico;
-import java.awt.AWTException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,8 +17,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -89,12 +85,15 @@ public class OSDAO {
                 vezes = 0;
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao criar OS.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -140,12 +139,15 @@ public class OSDAO {
                 listbb.add(ob);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler OS's cadastradas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -192,12 +194,15 @@ public class OSDAO {
                 listbb.add(ob);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler OS's abertas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -244,12 +249,15 @@ public class OSDAO {
                 listbb.add(ob);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler OS's com status " + status;
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -273,12 +281,15 @@ public class OSDAO {
                 listbb.add(ob);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler OS criada.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -306,12 +317,15 @@ public class OSDAO {
             // checking if ResultSet is empty
             resp = rs.next();
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler última OS.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -358,12 +372,15 @@ public class OSDAO {
                 listbb.add(ob);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler OS selecionada.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -410,12 +427,15 @@ public class OSDAO {
                 listbb.add(ob);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler OS's cadastradas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -428,8 +448,8 @@ public class OSDAO {
         int qtd;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM os WHERE status = ?");
-            stmt.setString(1, "Ativo");
+            stmt = con.prepareStatement("SELECT * FROM os WHERE status = 'Ativo'");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -464,12 +484,15 @@ public class OSDAO {
                 listbb.add(ob);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler OS's em aberto.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -504,12 +527,15 @@ public class OSDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar OS.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -527,12 +553,15 @@ public class OSDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar status da OS.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -551,12 +580,15 @@ public class OSDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(OSDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizat quantidade da OS.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -569,11 +601,18 @@ public class OSDAO {
             stmt = con.prepareStatement("DELETE FROM os WHERE idtela = '" + os + "'");
 
             stmt.executeUpdate();
-            
-            JOptionPane.showMessageDialog(null,os + " excluída com sucesso.");
+
+            JOptionPane.showMessageDialog(null, os + " excluída com sucesso.");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao excluir a " + os + ".\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao excluir a " + os;
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

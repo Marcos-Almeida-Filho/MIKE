@@ -6,9 +6,11 @@
 package View.Geral;
 
 import DAO.VendasCotacaoItensDAO;
+import Methods.SendEmail;
 import Methods.Telas;
 import View.servicos.*;
 import View.vendas.CotacaoVenda;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -345,7 +347,19 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
 
                     break;
                 case "CotacaoVenda":
-                    vcid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo, radioCadastrado.isSelected(), idItemCotacao);
+                    try {
+                        vcid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo, radioCadastrado.isSelected(), idItemCotacao);
+                    } catch (SQLException e) {
+                        String msg = "Erro ao atualizar item da Cotação de Vendas.";
+                        JOptionPane.showMessageDialog(null, msg);
+
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                SendEmail.EnviarErro2(msg, e);
+                            }
+                        }.start();
+                    }
                     break;
                 default:
                     throw new AssertionError();

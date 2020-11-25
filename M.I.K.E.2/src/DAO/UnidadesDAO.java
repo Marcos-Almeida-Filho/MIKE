@@ -8,16 +8,12 @@ package DAO;
 import Bean.UnidadesBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.awt.AWTException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,28 +22,50 @@ import javax.swing.JOptionPane;
  */
 public class UnidadesDAO {
 
-    public void create(UnidadesBean ub) {
+    Connection con;
 
-        Connection con = ConnectionFactory.getConnection();
+    PreparedStatement stmt;
 
-        PreparedStatement stmt = null;
+    ResultSet rs;
+
+    List<UnidadesBean> listu;
+
+    UnidadesBean ub;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listu = new ArrayList<>();
+    }
+
+    public void create(String nome, String abv) {
+
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO unidades (nome, abv) VALUES (?,?)");
-
-            stmt.setString(1, ub.getNome());
-            stmt.setString(2, ub.getAbv());
+            stmt = con.prepareStatement("INSERT INTO unidades (nome, abv) VALUES ('" + nome + "', '" + abv + "')");
 
             stmt.executeUpdate();
-            
-            JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
+
+            JOptionPane.showMessageDialog(null, "Unidade salva com sucesso!");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(UnidadesDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao criar Unidade.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -55,100 +73,143 @@ public class UnidadesDAO {
 
     public List<UnidadesBean> read() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UnidadesBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM unidades");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                UnidadesBean cb = new UnidadesBean();
+                ub = new UnidadesBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setNome("nome");
-                cb.setAbv("abv");
+                ub.setId(rs.getInt("id"));
+                ub.setNome(rs.getString("nome"));
+                ub.setAbv(rs.getString("abv"));
 
-                listbb.add(cb);
+                listu.add(ub);
             }
         } catch (SQLException e) {
-            Logger.getLogger(UnidadesDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(UnidadesDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Unidades.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listu;
     }
 
     public List<UnidadesBean> click(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<UnidadesBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM unidades WHERE id = ?");
-            stmt.setInt(1, id);
+            stmt = con.prepareStatement("SELECT * FROM unidades WHERE id = " + id);
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                UnidadesBean cb = new UnidadesBean();
+                ub = new UnidadesBean();
 
-                cb.setId(rs.getInt("id"));
-                cb.setNome("nome");
-                cb.setAbv("abv");
+                ub.setId(rs.getInt("id"));
+                ub.setNome(rs.getString("nome"));
+                ub.setAbv(rs.getString("abv"));
 
-                listbb.add(cb);
+                listu.add(ub);
             }
         } catch (SQLException e) {
-            Logger.getLogger(UnidadesDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(UnidadesDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Unidade.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listu;
     }
 
-    public void update(UnidadesBean ub) {
+    public int idUnidade(String nome) {
+        rsList();
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        int id = 0;
 
         try {
-            stmt = con.prepareStatement("UPDATE unidades SET nome = ?, abv = ? WHERE id = ?");
+            stmt = con.prepareStatement("SELECT id FROM unidades WHERE nome = '" + nome + "'");
 
-            stmt.setString(1, ub.getNome());
-            stmt.setString(2, ub.getAbv());
-            stmt.setInt(3, ub.getId());
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler ID da Unidade.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return id;
+    }
+
+    public void update(String nome, String abv, int id) {
+
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE unidades SET nome = '" + nome + "', abv = '" + abv + "' WHERE id = " + id);
 
             stmt.executeUpdate();
-            
+
             JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(UnidadesDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar Unidade.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void delete(int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM unidades WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao excluir Unidade.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

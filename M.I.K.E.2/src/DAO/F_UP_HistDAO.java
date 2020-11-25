@@ -67,7 +67,7 @@ public class F_UP_HistDAO {
 
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -122,9 +122,15 @@ public class F_UP_HistDAO {
                 id = rs.getInt("id");
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro em " + this.getClass().getSimpleName() + " - getId");
-            JOptionPane.showMessageDialog(null, "Erro ao resgatar id do F-UP.");
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao pegar ID do Histórico do Follow-Up.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }

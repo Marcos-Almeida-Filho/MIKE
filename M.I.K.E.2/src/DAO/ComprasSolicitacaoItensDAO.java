@@ -8,17 +8,12 @@ package DAO;
 import Bean.ComprasSolicitacaoItensBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.awt.AWTException;
-import java.awt.HeadlessException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -27,115 +22,117 @@ import javax.swing.JOptionPane;
  */
 public class ComprasSolicitacaoItensDAO {
 
-    public void create(ComprasSolicitacaoItensBean csb) {
+    Connection con;
 
-        Connection con = ConnectionFactory.getConnection();
+    PreparedStatement stmt;
 
-        PreparedStatement stmt = null;
+    ResultSet rs;
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO solicitacao_compras_itens (idtela, item, qtd, obs) VALUES (?,?,?,?)");
-            stmt.setString(1, csb.getIdtela());
-            stmt.setString(2, csb.getItem());
-            stmt.setInt(3, csb.getQtd());
-            stmt.setString(4, csb.getObs());
+    List<ComprasSolicitacaoItensBean> listcsi;
 
-            stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar a solicitação de compra!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+    ComprasSolicitacaoItensBean csib;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
     }
 
-    public List<ComprasSolicitacaoItensBean> read(String idtela) {
+    private void rsList() {
+        conStmt();
 
-        Connection con = ConnectionFactory.getConnection();
+        rs = null;
 
-        PreparedStatement stmt = null;
+        listcsi = new ArrayList<>();
+    }
 
-        ResultSet rs = null;
+    /**
+     *
+     * @param idSolicitacao
+     * @param item
+     * @param unidade
+     * @param qtd
+     * @param obs
+     * @throws java.sql.SQLException
+     */
+    public void create(int idSolicitacao, String item, String unidade, double qtd, String obs) throws SQLException {
 
-        List<ComprasSolicitacaoItensBean> listso = new ArrayList<>();
+        conStmt();
+
+        stmt = con.prepareStatement("INSERT INTO compras_solicitacao_itens (idSolicitacao, item, unidade, qtd, obs) VALUES (" + idSolicitacao + ", '" + item + "', '" + unidade + "', " + qtd + ", '" + obs + "')");
+
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
+    }
+
+    public List<ComprasSolicitacaoItensBean> read(int idSolicitacao) {
+
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * from solicitacao_compras_itens WHERE idtela = " + idtela);
+            stmt = con.prepareStatement("SELECT * FROM compras_solicitacao_itens WHERE idSolicitacao = " + idSolicitacao);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ComprasSolicitacaoItensBean csb = new ComprasSolicitacaoItensBean();
+                csib = new ComprasSolicitacaoItensBean();
 
-                csb.setIdtela(rs.getString("idtela"));
-                csb.setItem(rs.getString("item"));
-                csb.setQtd(rs.getInt("qtd"));
-                csb.setObs(rs.getString("obs"));
-                csb.setPedido(rs.getString("pedido"));
+                csib.setIdSolicitacao(rs.getInt("idSolicitacao"));
+                csib.setItem(rs.getString("item"));
+                csib.setUnidade(rs.getString("unidade"));
+                csib.setQtd(rs.getInt("qtd"));
+                csib.setObs(rs.getString("obs"));
+                csib.setPedido(rs.getString("pedido"));
 
-                listso.add(csb);
+                listcsi.add(csib);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler itens da Solicitação de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listso;
+        return listcsi;
     }
 
-    public void update(ComprasSolicitacaoItensBean csb) {
+    public void update(String item, String unidade, double qtd, String obs, int id) throws SQLException {
 
-        Connection con = ConnectionFactory.getConnection();
+        conStmt();
 
-        PreparedStatement stmt = null;
+        stmt = con.prepareStatement("UPDATE compras_solicitacao_itens SET item = '" + item + "', unidade = '" + unidade + "', qtd = " + qtd + ", obs = '" + obs + "' WHERE id = " + id);
 
-        try {
-            stmt = con.prepareStatement("UPDATE solicitacao_compras SET item = ?, qtd = ?, obs = ? WHERE id = ?");
-            stmt.setString(1, csb.getItem());
-            stmt.setInt(2, csb.getQtd());
-            stmt.setString(3, csb.getObs());
-            stmt.setInt(4, csb.getId());
+        stmt.executeUpdate();
 
-            stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
-    
-    public void updatepedido(ComprasSolicitacaoItensBean csb) {
 
-        Connection con = ConnectionFactory.getConnection();
+    public void updatepedido(String pedido, int id) {
 
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE solicitacao_compras SET pedido = ? WHERE id = ?");
-            stmt.setString(1, csb.getPedido());
-            stmt.setInt(2, csb.getId());
+            stmt = con.prepareStatement("UPDATE compras_solicitacao_itens SET pedido = '" + pedido + "' WHERE id = " + id);
 
             stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar Pedido da Solicitação de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

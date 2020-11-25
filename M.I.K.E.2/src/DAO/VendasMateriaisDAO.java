@@ -9,7 +9,6 @@ import Bean.VendasMateriaisBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
 import java.awt.AWTException;
-import java.awt.HeadlessException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,6 +31,7 @@ public class VendasMateriaisDAO {
     PreparedStatement stmt;
     ResultSet rs;
     List<VendasMateriaisBean> listvmb;
+    VendasMateriaisBean vmb;
 
     /**
      * Método para criar uma nova conexão e deixar o PreparedStatement nulo de
@@ -99,24 +99,17 @@ public class VendasMateriaisDAO {
      * @param filete
      * @param agressividade
      * @param frontal
+     * @param qtdMinimaOP
+     * @throws java.sql.SQLException
      */
-    public void create(String codigo, String descricao, double estoque, double estoqueMinimo, String status, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal) {
+    public void create(String codigo, String descricao, double estoque, double estoqueMinimo, String status, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, double qtdMinimaOP) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_materiais (codigo, descricao, estoque, estoqueMinimo, status, local, d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, importada, weldon, ri, md, hss, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal) VALUES ('" + codigo + "','" + descricao + "'," + estoque + "," + estoqueMinimo + ",'" + status + "','" + local + "','" + d1 + "','" + d2 + "','" + d3 + "','" + d4 + "','" + d5 + "','" + l1 + "','" + l2 + "','" + l3 + "','" + l4 + "','" + l5 + "','" + materialOrigem + "','" + rev + "','" + raio + "'," + importada + "," + weldon + "," + ri + "," + md + "," + hss + ",'" + tipo + "','" + familia + "','" + tamanho + "','" + cortes + "','" + topo + "','" + canal + "','" + extra + "','" + helice + "','" + nucleo + "','" + concavidade + "','" + topo1 + "','" + topo2 + "','" + alivio1 + "','" + alivio2 + "','" + filete + "','" + agressividade + "','" + frontal + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_materiais (codigo, descricao, estoque, estoqueMinimo, status, local, d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, importada, weldon, ri, md, hss, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal, qtdMinimaOP) VALUES ('" + codigo + "','" + descricao + "'," + estoque + "," + estoqueMinimo + ",'" + status + "','" + local + "','" + d1 + "','" + d2 + "','" + d3 + "','" + d4 + "','" + d5 + "','" + l1 + "','" + l2 + "','" + l3 + "','" + l4 + "','" + l5 + "','" + materialOrigem + "','" + rev + "','" + raio + "'," + importada + "," + weldon + "," + ri + "," + md + "," + hss + ",'" + tipo + "','" + familia + "','" + tamanho + "','" + cortes + "','" + topo + "','" + canal + "','" + extra + "','" + helice + "','" + nucleo + "','" + concavidade + "','" + topo1 + "','" + topo2 + "','" + alivio1 + "','" + alivio2 + "','" + filete + "','" + agressividade + "','" + frontal + "', " + qtdMinimaOP + ")");
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar Material!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     /**
@@ -133,7 +126,7 @@ public class VendasMateriaisDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                VendasMateriaisBean vmb = new VendasMateriaisBean();
+                vmb = new VendasMateriaisBean();
 
                 vmb.setId(rs.getInt("id"));
                 vmb.setCodigo(rs.getString("codigo"));
@@ -145,12 +138,15 @@ public class VendasMateriaisDAO {
                 listvmb.add(vmb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Materiais cadastrados.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -166,7 +162,7 @@ public class VendasMateriaisDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                VendasMateriaisBean vmb = new VendasMateriaisBean();
+                vmb = new VendasMateriaisBean();
 
                 vmb.setId(rs.getInt("id"));
                 vmb.setCodigo(rs.getString("codigo"));
@@ -178,12 +174,15 @@ public class VendasMateriaisDAO {
                 listvmb.add(vmb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Materiais cadastrados.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -199,7 +198,7 @@ public class VendasMateriaisDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                VendasMateriaisBean vmb = new VendasMateriaisBean();
+                vmb = new VendasMateriaisBean();
 
                 vmb.setId(rs.getInt("id"));
                 vmb.setCodigo(rs.getString("codigo"));
@@ -211,12 +210,15 @@ public class VendasMateriaisDAO {
                 listvmb.add(vmb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Materiais cadastrados.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -232,7 +234,7 @@ public class VendasMateriaisDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                VendasMateriaisBean vmb = new VendasMateriaisBean();
+                vmb = new VendasMateriaisBean();
 
                 vmb.setId(rs.getInt("id"));
                 vmb.setCodigo(rs.getString("codigo"));
@@ -244,12 +246,15 @@ public class VendasMateriaisDAO {
                 listvmb.add(vmb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Materiais cadastrados.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -275,18 +280,21 @@ public class VendasMateriaisDAO {
                 lastid = rs.getInt("id");
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Material cadastrado.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
         return lastid;
     }
-    
+
     public double readEstoque(int idMaterial) {
 
         rsList();
@@ -301,12 +309,15 @@ public class VendasMateriaisDAO {
                 estoque = rs.getDouble("estoque");
             }
         } catch (SQLException e) {
-            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler estoque do Material.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -326,14 +337,13 @@ public class VendasMateriaisDAO {
                 produto = rs.getInt("id");
             }
         } catch (SQLException e) {
-            String msg = "Erro ao ler id do produto.";
+            String msg = "Erro ao ler ID do produto.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -352,12 +362,13 @@ public class VendasMateriaisDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                VendasMateriaisBean vmb = new VendasMateriaisBean();
+                vmb = new VendasMateriaisBean();
 
                 vmb.setCodigo(rs.getString("codigo"));
                 vmb.setDescricao(rs.getString("descricao"));
                 vmb.setEstoque(rs.getDouble("estoque"));
                 vmb.setEstoqueMinimo(rs.getDouble("estoqueMinimo"));
+                vmb.setQtdMinimaOP(rs.getDouble("qtdMinimaOP"));
                 vmb.setStatus(rs.getString("status"));
                 vmb.setLocal(rs.getString("local"));
                 vmb.setD1(rs.getString("d1"));
@@ -411,24 +422,60 @@ public class VendasMateriaisDAO {
         return listvmb;
     }
 
-    public void update(String codigo, String descricao, double estoqueMinimo, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, int id) {
+    /**
+     *
+     * @param codigo
+     * @param descricao
+     * @param estoqueMinimo
+     * @param local
+     * @param d1
+     * @param d2
+     * @param d3
+     * @param d4
+     * @param d5
+     * @param l1
+     * @param l2
+     * @param l3
+     * @param l4
+     * @param l5
+     * @param materialOrigem
+     * @param rev
+     * @param raio
+     * @param importada
+     * @param weldon
+     * @param ri
+     * @param md
+     * @param hss
+     * @param tipo
+     * @param familia
+     * @param tamanho
+     * @param cortes
+     * @param topo
+     * @param canal
+     * @param extra
+     * @param helice
+     * @param nucleo
+     * @param concavidade
+     * @param topo1
+     * @param topo2
+     * @param alivio1
+     * @param alivio2
+     * @param filete
+     * @param agressividade
+     * @param frontal
+     * @param qtdMinimaOP
+     * @param id
+     * @throws SQLException
+     */
+    public void update(String codigo, String descricao, double estoqueMinimo, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, double qtdMinimaOP, int id) throws SQLException {
 
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("UPDATE vendas_materiais SET codigo = '" + codigo + "', descricao = '" + descricao + "' , local = '" + local + "', estoqueMinimo = " + estoqueMinimo + ", d1 = '" + d1 + "', d2 = '" + d2 + "', d3 = '" + d3 + "', d4 = '" + d4 + "', d5 = '" + d5 + "', l1 = '" + l1 + "', l2 = '" + l2 + "', l3 = '" + l3 + "', l4 = '" + l4 + "', l5 = '" + l5 + "', materialOrigem = '" + materialOrigem + "', rev = '" + rev + "', raio = '" + raio + "', importada = " + importada + ", weldon = " + weldon + ", ri = " + ri + ", md = " + md + ", hss = " + hss + ", tipo = '" + tipo + "', familia = '" + familia + "', tamanho = '" + tamanho + "', cortes = '" + cortes + "', topo = '" + topo + "', canal = '" + canal + "', extra = '" + extra + "', helice = '" + helice + "', nucleo = '" + nucleo + "', concavidade = '" + concavidade + "', topo1 = '" + topo1 + "', topo2 = '" + topo2 + "', alivio1 = '" + alivio1 + "', alivio2 = '" + alivio2 + "', filete = '" + filete + "', agressividade = '" + agressividade + "', frontal = '" + frontal + "' WHERE id = " + id);
+        stmt = con.prepareStatement("UPDATE vendas_materiais SET codigo = '" + codigo + "', descricao = '" + descricao + "' , local = '" + local + "', estoqueMinimo = " + estoqueMinimo + ", d1 = '" + d1 + "', d2 = '" + d2 + "', d3 = '" + d3 + "', d4 = '" + d4 + "', d5 = '" + d5 + "', l1 = '" + l1 + "', l2 = '" + l2 + "', l3 = '" + l3 + "', l4 = '" + l4 + "', l5 = '" + l5 + "', materialOrigem = '" + materialOrigem + "', rev = '" + rev + "', raio = '" + raio + "', importada = " + importada + ", weldon = " + weldon + ", ri = " + ri + ", md = " + md + ", hss = " + hss + ", tipo = '" + tipo + "', familia = '" + familia + "', tamanho = '" + tamanho + "', cortes = '" + cortes + "', topo = '" + topo + "', canal = '" + canal + "', extra = '" + extra + "', helice = '" + helice + "', nucleo = '" + nucleo + "', concavidade = '" + concavidade + "', topo1 = '" + topo1 + "', topo2 = '" + topo2 + "', alivio1 = '" + alivio1 + "', alivio2 = '" + alivio2 + "', filete = '" + filete + "', agressividade = '" + agressividade + "', frontal = '" + frontal + "' , qtdMinimaOP = " + qtdMinimaOP + " WHERE id = " + id);
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar material!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public void updateStatus(VendasMateriaisBean vmb) {
@@ -468,10 +515,9 @@ public class VendasMateriaisDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -488,13 +534,16 @@ public class VendasMateriaisDAO {
             stmt.setInt(1, cb.getId());
 
             stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (SQLException e) {
+            String msg = "Erro ao excluir Material de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

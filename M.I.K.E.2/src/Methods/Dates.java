@@ -61,8 +61,17 @@ public class Dates {
 
     public static String CriarDataCurtaDBSemDataExistenteComPrazo(int days) {
         date = Calendar.getInstance();
+        Calendar date2 = Calendar.getInstance();
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        
+        for (int i = 1; i <= days; i++) {
+            date2.add(Calendar.DAY_OF_MONTH, i);
+            if (date2.get(Calendar.DAY_OF_WEEK) == 1 || date2.get(Calendar.DAY_OF_WEEK) == 7) {
+                days++;
+            }
+        }
+        
         date.add(Calendar.DAY_OF_MONTH, days);
         data = simpleDateFormat.format(date.getTime());
 

@@ -64,7 +64,7 @@ public class OPDAO {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO op (op, dataabertura, dataprevista, cliente, dav, idmaterial, codigo, descricao, qtd, qtdok, status) VALUES ('" + op + "', '" + dataabertura + "', '" + dataprevista + "', '" + cliente + "', '" + dav + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + qtdOk + "', " + status + "')");
+            stmt = con.prepareStatement("INSERT INTO op (op, dataabertura, dataprevista, cliente, dav, idmaterial, codigo, descricao, qtd, qtdok, status) VALUES ('" + op + "', '" + dataabertura + "', '" + dataprevista + "', '" + cliente + "', '" + dav + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + qtdOk + ", '" + status + "')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -72,10 +72,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -113,10 +112,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -125,7 +123,7 @@ public class OPDAO {
 
         return listob;
     }
-    
+
     public List<OPBean> readTodasOPsEmAberto() {
         rsList();
 
@@ -152,10 +150,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -182,10 +179,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -221,10 +217,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -270,10 +265,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -307,10 +301,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -341,10 +334,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -364,10 +356,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -392,10 +383,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -419,10 +409,9 @@ public class OPDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {

@@ -342,6 +342,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         txttotal = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         btnexcluiritem = new javax.swing.JButton();
+        btnAll = new javax.swing.JButton();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
@@ -801,24 +802,28 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             }
         });
 
+        btnAll.setText("Selecionar Todos");
+        btnAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAllActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnexcluiritem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnincluiritem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addComponent(btnAll)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnexcluiritem)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnincluiritem)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -829,7 +834,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     .addComponent(btnincluiritem)
                     .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
-                    .addComponent(btnexcluiritem)))
+                    .addComponent(btnexcluiritem)
+                    .addComponent(btnAll)))
         );
 
         txtnotes.setColumns(20);
@@ -1898,9 +1904,25 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         }*/
     }//GEN-LAST:event_txtnomeclienteKeyReleased
 
+    private void btnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAllActionPerformed
+        if (btnAll.getText().equals("Selecionar Todos")) {
+            for (int i = 0; i < tableitens.getRowCount(); i++) {
+                tableitens.setValueAt(true, i, 0);
+            }
+            btnAll.setText("Desmarcar Todos");
+        } else {
+            for (int i = 0; i < tableitens.getRowCount(); i++) {
+                tableitens.setValueAt(false, i, 0);
+            }
+            btnAll.setText("Selecionar Todos");
+        }
+
+    }//GEN-LAST:event_btnAllActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelOrcamentoServico;
+    private javax.swing.JButton btnAll;
     public static javax.swing.JButton btncancelar;
     public static javax.swing.JButton btncancelarorcamento;
     public static javax.swing.JButton btncliente;

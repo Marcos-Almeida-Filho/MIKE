@@ -54,25 +54,17 @@ public class VendasMateriaisDocDAO {
      * @param idmaterial
      * @param descricao
      * @param local
+     * @throws java.sql.SQLException
      */
-    public void create(int idmaterial, String descricao, String local) {
+    public void create(int idmaterial, String descricao, String local) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_materiais_doc (idmaterial, descricao, local) VALUES (" + idmaterial + ",'" + descricao + "',?)");
-            stmt.setString(1, local);
+        stmt = con.prepareStatement("INSERT INTO vendas_materiais_doc (idmaterial, descricao, local) VALUES (" + idmaterial + ",'" + descricao + "',?)");
+        stmt.setString(1, local);
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar documento do material!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisDocDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<VendasMateriaisDocBean> read(int id) {

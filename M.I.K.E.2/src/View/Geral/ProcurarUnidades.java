@@ -5,7 +5,9 @@
  */
 package View.Geral;
 
+import DAO.UnidadesDAO;
 import View.compras.Insumos;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,15 +15,31 @@ import View.compras.Insumos;
  */
 public class ProcurarUnidades extends javax.swing.JInternalFrame {
 
+    String origem;
+
+    static UnidadesDAO ud = new UnidadesDAO();
+
     /**
      * Creates new form ProcurarUnidades
+     *
+     * @param origin
      */
-    
-    String origem;
-    
     public ProcurarUnidades(String origin) {
         initComponents();
         origem = origin;
+        lerUnidades();
+    }
+
+    public static void lerUnidades() {
+        DefaultTableModel model = (DefaultTableModel) tableUnidades.getModel();
+        model.setNumRows(0);
+
+        ud.read().forEach(ub -> {
+            model.addRow(new Object[]{
+                ub.getNome(),
+                ub.getAbv()
+            });
+        });
     }
 
     /**
@@ -35,7 +53,7 @@ public class ProcurarUnidades extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tableunidades = new javax.swing.JTable();
+        tableUnidades = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         txtpesquisa = new javax.swing.JTextField();
 
@@ -47,12 +65,9 @@ public class ProcurarUnidades extends javax.swing.JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        tableunidades.setModel(new javax.swing.table.DefaultTableModel(
+        tableUnidades.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Nome", "Abreviação"
@@ -66,17 +81,17 @@ public class ProcurarUnidades extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        tableunidades.setName("tableunidades"); // NOI18N
-        tableunidades.addMouseListener(new java.awt.event.MouseAdapter() {
+        tableUnidades.setName("tableUnidades"); // NOI18N
+        tableUnidades.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableunidadesMouseClicked(evt);
+                tableUnidadesMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tableunidades);
-        if (tableunidades.getColumnModel().getColumnCount() > 0) {
-            tableunidades.getColumnModel().getColumn(1).setMinWidth(75);
-            tableunidades.getColumnModel().getColumn(1).setPreferredWidth(75);
-            tableunidades.getColumnModel().getColumn(1).setMaxWidth(75);
+        jScrollPane1.setViewportView(tableUnidades);
+        if (tableUnidades.getColumnModel().getColumnCount() > 0) {
+            tableUnidades.getColumnModel().getColumn(1).setMinWidth(75);
+            tableUnidades.getColumnModel().getColumn(1).setPreferredWidth(75);
+            tableUnidades.getColumnModel().getColumn(1).setMaxWidth(75);
         }
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
@@ -130,26 +145,24 @@ public class ProcurarUnidades extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tableunidadesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableunidadesMouseClicked
+    private void tableUnidadesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableUnidadesMouseClicked
         if (evt.getClickCount() == 2) {
-            String unidade = tableunidades.getValueAt(tableunidades.getSelectedRow(), 0).toString();
+            String unidade = tableUnidades.getValueAt(tableUnidades.getSelectedRow(), 0).toString();
             switch (origem) {
                 case "Insumos":
                     Insumos.txtun.setText(unidade);
                     dispose();
                     break;
-                default:
-                    throw new AssertionError();
             }
         }
-    }//GEN-LAST:event_tableunidadesMouseClicked
+    }//GEN-LAST:event_tableUnidadesMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable tableunidades;
+    public static javax.swing.JTable tableUnidades;
     public javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables
 }

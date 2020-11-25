@@ -14,6 +14,8 @@ import DAO.VendasMateriaisMovDAO;
 import DAO.VendasPedidoDAO;
 import DAO.VendasPedidoItensDAO;
 import Methods.Dates;
+import Methods.SendEmail;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -235,9 +237,21 @@ public class AddNF extends javax.swing.JInternalFrame {
             } else {
                 if (qtd < vpib.getQtd()) {
                     double qtd2 = vpib.getQtd() - qtd;
-                    vpid.update(vpib.getIdMaterial(), vpib.getCodigo(), vpib.getDescricao(), qtd, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), vpib.getPedido(), vpib.getId());
+                    try {
+                        vpid.update(vpib.getIdMaterial(), vpib.getCodigo(), vpib.getDescricao(), qtd, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), vpib.getPedido(), vpib.getId());
 
-                    vpid.create(PedidoVenda.txtPedido.getText(), 0, vpib.getCodigo(), vpib.getDescricao(), qtd2, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), vpib.getPedido(), "", vpib.getOp());
+                        vpid.create(PedidoVenda.txtPedido.getText(), 0, vpib.getCodigo(), vpib.getDescricao(), qtd2, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), vpib.getPedido(), "", vpib.getOp());
+                    } catch (SQLException e) {
+                        String msg = "Erro ao atualizar item do Pedido de Venda.";
+                        JOptionPane.showMessageDialog(null, msg);
+
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                SendEmail.EnviarErro2(msg, e);
+                            }
+                        }.start();
+                    }
                 } else {
                     vpid.updateNotaFiscal(nf, idItemPedido);
                 }
@@ -247,7 +261,19 @@ public class AddNF extends javax.swing.JInternalFrame {
 
                 vmd.updateEstoque(estoque, idMaterial);
 
-                vmmd.create(idMaterial, estoqueAtual, qtd, estoque, "Nota Fiscal " + nf, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                try {
+                    vmmd.create(idMaterial, estoqueAtual, qtd, estoque, "Nota Fiscal " + nf, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar movimentação do Material de Venda.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
 
                 PedidoVenda.lerItensPedido(PedidoVenda.txtPedido.getText());
                 int numNota = 0;

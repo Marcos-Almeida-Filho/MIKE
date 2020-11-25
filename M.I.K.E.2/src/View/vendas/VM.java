@@ -5,7 +5,6 @@
  */
 package View.vendas;
 
-import Bean.VendasMateriaisBean;
 import Connection.Session;
 import DAO.VendasMateriaisCodigoClienteDAO;
 import DAO.VendasMateriaisDAO;
@@ -28,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -50,7 +50,6 @@ public class VM extends javax.swing.JInternalFrame {
     static int idmaterial = 0;
 
     static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
-    static VendasMateriaisBean vmb = new VendasMateriaisBean();
 
     static VendasMateriaisDocDAO vmdd = new VendasMateriaisDocDAO();
 
@@ -70,6 +69,139 @@ public class VM extends javax.swing.JInternalFrame {
         lbldescricaoerro.setVisible(false);
         radioVazio.setVisible(false);
         readProdutos();
+    }
+
+    public void lerMaterial(int idmaterial) {
+        tabmateriais.setSelectedIndex(1);
+
+        vmd.click(idmaterial).forEach(vmb -> {
+            txtcodigo.setText(vmb.getCodigo());
+            txtdescricao.setText(vmb.getDescricao());
+            txtestoque.setText(String.valueOf(vmb.getEstoque()));
+            txtestoqueminimo.setText(String.valueOf(vmb.getEstoqueMinimo()));
+            txtQtdOp.setText(String.valueOf(vmb.getQtdMinimaOP()));
+            txtstatus.setText(vmb.getStatus());
+            txtLocal.setText(vmb.getLocal());
+            txtd1.setText(vmb.getD1());
+            txtd2.setText(vmb.getD2());
+            txtd3.setText(vmb.getD3());
+            txtd4.setText(vmb.getD4());
+            txtd5.setText(vmb.getD5());
+            txtl1.setText(vmb.getL1());
+            txtl2.setText(vmb.getL2());
+            txtl3.setText(vmb.getL3());
+            txtl4.setText(vmb.getL4());
+            txtl5.setText(vmb.getL5());
+            txtmaterialdeorigem.setText(vmb.getMaterialOrigem());
+            if (!vmb.getRev().equals("Selecione")) {
+                checkrevestimento.setSelected(true);
+                cbrevestimento.setSelectedItem(vmb.getRev());
+            } else {
+                checkrevestimento.setSelected(false);
+                cbrevestimento.setSelectedIndex(0);
+            }
+            if (!vmb.getRaio().equals("")) {
+                checkraio.setSelected(true);
+                txtraio.setText(vmb.getRaio());
+            } else {
+                checkraio.setSelected(false);
+                txtraio.setText("");
+            }
+            checkimportado.setSelected(vmb.isImportada());
+            checkweldon.setSelected(vmb.isWeldon());
+            checkri.setSelected(vmb.isRi());
+            radioMD.setSelected(vmb.isMd());
+            radioHSS.setSelected(vmb.isHss());
+            cbtipo.setSelectedItem(vmb.getTipo());
+            cbfamilia.setSelectedItem(vmb.getFamilia());
+            cbtamanho.setSelectedItem(vmb.getTamanho());
+            txtcortes.setText(vmb.getCortes());
+            cbtopo.setSelectedItem(vmb.getTopo());
+            cbcanal.setSelectedItem(vmb.getCanal());
+            txtextra.setText(vmb.getExtra());
+            txthelice.setText(vmb.getHelice());
+            txtnucleo.setText(vmb.getNucleo());
+            txtconcavidade.setText(vmb.getConcavidade());
+            txtaliviotopo1.setText(vmb.getTopo1());
+            txtaliviotopo2.setText(vmb.getTopo2());
+            txtalivio1.setText(vmb.getAlivio1());
+            txtalivio2.setText(vmb.getAlivio2());
+            txtespfilete.setText(vmb.getFilete());
+            txtagressividade.setText(vmb.getAgressividade());
+            txtfrontal.setText(vmb.getFrontal());
+        });
+
+        readObs(idmaterial);
+
+        readDocs(idmaterial);
+
+        readDescCli(idmaterial);
+
+        readMov(idmaterial);
+
+        revestimento();
+
+        raio();
+    }
+
+    public static void readMov(int idmaterial) {
+        DefaultTableModel model = (DefaultTableModel) tableMovimentacao.getModel();
+        model.setNumRows(0);
+
+        vmmd.read(idmaterial).forEach(vmmb -> {
+            model.addRow(new Object[]{
+                Dates.TransformarDataCurtaDoDB(vmmb.getData()),
+                vmmb.getTipo(),
+                vmmb.getQtdInicial(),
+                vmmb.getQtdMovimentada(),
+                vmmb.getSaldo(),
+                vmmb.getUsuario()
+            });
+        });
+    }
+
+    public static void readDescCli(int idmaterial) {
+        DefaultTableModel model = (DefaultTableModel) tabledesccli.getModel();
+        model.setNumRows(0);
+
+        vmccd.read(idmaterial).forEach(vmccb -> {
+            model.addRow(new Object[]{
+                vmccb.getId(),
+                false,
+                vmccb.getCliente(),
+                vmccb.getCodigo(),
+                vmccb.getDescricao()
+            });
+        });
+    }
+
+    public static void readObs(int idmaterial) {
+        DefaultTableModel model = (DefaultTableModel) tableobs.getModel();
+        model.setNumRows(0);
+
+        vmod.read(idmaterial).forEach(vmob -> {
+            model.addRow(new Object[]{
+                vmob.getId(),
+                false,
+                Dates.TransformarDataCurtaDoDB(vmob.getData()),
+                vmob.getUsuario(),
+                vmob.getObs()
+            });
+        });
+    }
+
+    public static void readDocs(int idmaterial) {
+        DefaultTableModel model = (DefaultTableModel) tabledocumentos.getModel();
+        model.setNumRows(0);
+
+        vmdd.read(idmaterial).forEach(vmdb -> {
+            model.addRow(new Object[]{
+                vmdb.getId(),
+                false,
+                vmdb.getDescricao(),
+                vmdb.getLocal()
+            });
+        });
     }
 
     public static void readProdutos() {
@@ -863,7 +995,9 @@ public class VM extends javax.swing.JInternalFrame {
         modelMov.setNumRows(0);
 
         txtestoque.setText("");
+        txtLocal.setText("");
         txtestoqueminimo.setText("");
+        txtQtdOp.setText("");
 
         cbtipo.setSelectedIndex(0);
         cbfamilia.setSelectedIndex(0);
@@ -1028,6 +1162,7 @@ public class VM extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableobs = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
         paneldados = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         cbtipo = new javax.swing.JComboBox<>();
@@ -1329,6 +1464,11 @@ public class VM extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
+        tableobs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableobsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableobs);
         if (tableobs.getColumnModel().getColumnCount() > 0) {
             tableobs.getColumnModel().getColumn(0).setMinWidth(0);
@@ -1352,6 +1492,13 @@ public class VM extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton10.setText("Excluir Observação");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelobsLayout = new javax.swing.GroupLayout(panelobs);
         panelobs.setLayout(panelobsLayout);
         panelobsLayout.setHorizontalGroup(
@@ -1362,6 +1509,8 @@ public class VM extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1285, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelobsLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -1371,7 +1520,9 @@ public class VM extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addGroup(panelobsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton10))
                 .addContainerGap())
         );
 
@@ -2406,7 +2557,7 @@ public class VM extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabmaterialinfo, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                .addComponent(tabmaterialinfo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton9)
@@ -2704,7 +2855,6 @@ public class VM extends javax.swing.JInternalFrame {
                 for (int i = 0; i < panelcomp.getComponentCount(); i++) {
                     panelcomp.getComponent(i).setEnabled(false);
                 }
-
                 break;
         }
     }//GEN-LAST:event_cbtipoActionPerformed
@@ -2925,11 +3075,9 @@ public class VM extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        if (txtcodigo.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Produto sem código.");
-        } else if (txtdescricao.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Produto sem descrição.");
-        } else if (lblcodigoerro.isVisible()) {
+        gerarCodigo();
+
+        if (lblcodigoerro.isVisible()) {
             JOptionPane.showMessageDialog(null, "Código muito longo.");
         } else if (lbldescricaoerro.isVisible()) {
             JOptionPane.showMessageDialog(null, "Descrição muito longa.");
@@ -2942,178 +3090,213 @@ public class VM extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Sem valor de estoque mínimo.");
             txtestoqueminimo.requestFocus();
             tabmaterialinfo.setSelectedIndex(4);
-        } else if (idmaterial == 0) {
-            gerarCodigo();
-
-            //Criar material
-            vmd.create(
-                    txtcodigo.getText(),
-                    txtdescricao.getText(),
-                    0,
-                    Double.parseDouble(txtestoqueminimo.getText()),
-                    "Ativo",
-                    txtLocal.getText(),
-                    txtd1.getText(),
-                    txtd2.getText(),
-                    txtd3.getText(),
-                    txtd4.getText(),
-                    txtd5.getText(),
-                    txtl1.getText(),
-                    txtl2.getText(),
-                    txtl3.getText(),
-                    txtl4.getText(),
-                    txtl5.getText(),
-                    txtmaterialdeorigem.getText(),
-                    cbrevestimento.getSelectedItem().toString(),
-                    txtraio.getText(),
-                    checkimportado.isSelected(),
-                    checkweldon.isSelected(),
-                    checkri.isSelected(),
-                    radioMD.isSelected(),
-                    radioHSS.isSelected(),
-                    cbtipo.getSelectedItem().toString(),
-                    cbfamilia.getSelectedItem().toString(),
-                    cbtamanho.getSelectedItem().toString(),
-                    txtcortes.getText(),
-                    cbtopo.getSelectedItem().toString(),
-                    cbcanal.getSelectedItem().toString(),
-                    txtextra.getText(),
-                    txthelice.getText(),
-                    txtnucleo.getText(),
-                    txtconcavidade.getText(),
-                    txtaliviotopo1.getText(),
-                    txtaliviotopo2.getText(),
-                    txtalivio1.getText(),
-                    txtalivio2.getText(),
-                    txtespfilete.getText(),
-                    txtagressividade.getText(),
-                    txtfrontal.getText()
-            );
-
-            //Recuperar id do material
-            idmaterial = vmd.readcreated();
-
-            //Criar observações
-            for (int i = 0; i < tableobs.getRowCount(); i++) {
-                vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
-            }
-
-            //Criar documentos
-            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
-                File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
-                File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                folder.mkdirs();
-                try {
-                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                } catch (IOException ex) {
-                    Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
-                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-                    try {
-                        SendEmail.EnviarErro(ex.toString());
-                        JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                    } catch (HeadlessException hex) {
-                        JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
-                    } catch (AWTException | IOException ex1) {
-                        Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
-                    }
-                }
-                vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
-            }
-
-            //Criar códigos por clientes
-            for (int i = 0; i < tabledesccli.getRowCount(); i++) {
-                vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
-            }
-
-            //Criar movimentação do material
-            vmmd.create(idmaterial, 0, 0, 0, "Criação", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+        } else if (txtQtdOp.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Sem valor de Quantidade Mínima na OP.");
+            txtQtdOp.requestFocus();
+        } else if (!radioMD.isSelected() && !radioHSS.isSelected()) {
+            JOptionPane.showMessageDialog(null, "Escolha se é Metal Duro ou HSS.");
+            tabmaterialinfo.setSelectedIndex(1);
         } else {
-            //Atualizar material
-            vmd.update(
-                    //filete = '" + filete + "', agressividade = '" + agressividade + "', frontal = '" + frontal + "' WHERE id = " + id
-                    txtcodigo.getText(),
-                    txtdescricao.getText(),
-                    Double.parseDouble(txtestoqueminimo.getText()),
-                    txtLocal.getText(),
-                    txtd1.getText(),
-                    txtd2.getText(),
-                    txtd3.getText(),
-                    txtd4.getText(),
-                    txtd5.getText(),
-                    txtl1.getText(),
-                    txtl2.getText(),
-                    txtl3.getText(),
-                    txtl4.getText(),
-                    txtl5.getText(),
-                    txtmaterialdeorigem.getText(),
-                    cbrevestimento.getSelectedItem().toString(),
-                    txtraio.getText(),
-                    checkimportado.isSelected(),
-                    checkweldon.isSelected(),
-                    checkri.isSelected(),
-                    radioMD.isSelected(),
-                    radioHSS.isSelected(),
-                    cbtipo.getSelectedItem().toString(),
-                    cbfamilia.getSelectedItem().toString(),
-                    cbtamanho.getSelectedItem().toString(),
-                    txtcortes.getText(),
-                    cbtopo.getSelectedItem().toString(),
-                    cbcanal.getSelectedItem().toString(),
-                    txtextra.getText(),
-                    txthelice.getText(),
-                    txtnucleo.getText(),
-                    txtconcavidade.getText(),
-                    txtaliviotopo1.getText(),
-                    txtaliviotopo2.getText(),
-                    txtalivio1.getText(),
-                    txtalivio2.getText(),
-                    txtespfilete.getText(),
-                    txtagressividade.getText(),
-                    txtfrontal.getText(),
-                    idmaterial
-            );
+            if (idmaterial == 0) {
+                try {
+                    //Criar material
+                    vmd.create(
+                            txtcodigo.getText(),
+                            txtdescricao.getText(),
+                            0,
+                            Double.parseDouble(txtestoqueminimo.getText()),
+                            "Ativo",
+                            txtLocal.getText(),
+                            txtd1.getText(),
+                            txtd2.getText(),
+                            txtd3.getText(),
+                            txtd4.getText(),
+                            txtd5.getText(),
+                            txtl1.getText(),
+                            txtl2.getText(),
+                            txtl3.getText(),
+                            txtl4.getText(),
+                            txtl5.getText(),
+                            txtmaterialdeorigem.getText(),
+                            cbrevestimento.getSelectedItem().toString(),
+                            txtraio.getText(),
+                            checkimportado.isSelected(),
+                            checkweldon.isSelected(),
+                            checkri.isSelected(),
+                            radioMD.isSelected(),
+                            radioHSS.isSelected(),
+                            cbtipo.getSelectedItem().toString(),
+                            cbfamilia.getSelectedItem().toString(),
+                            cbtamanho.getSelectedItem().toString(),
+                            txtcortes.getText(),
+                            cbtopo.getSelectedItem().toString(),
+                            cbcanal.getSelectedItem().toString(),
+                            txtextra.getText(),
+                            txthelice.getText(),
+                            txtnucleo.getText(),
+                            txtconcavidade.getText(),
+                            txtaliviotopo1.getText(),
+                            txtaliviotopo2.getText(),
+                            txtalivio1.getText(),
+                            txtalivio2.getText(),
+                            txtespfilete.getText(),
+                            txtagressividade.getText(),
+                            txtfrontal.getText(),
+                            Double.parseDouble(txtQtdOp.getText())
+                    );
 
-            //Criar observações que não existiam antes
-            for (int i = 0; i < tableobs.getRowCount(); i++) {
-                if (tableobs.getValueAt(i, 0).equals("")) {
-                    vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
-                }
-            }
+                    //Recuperar id do material
+                    idmaterial = vmd.readcreated();
 
-            //Criar documentos que não existiam antes
-            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                if (tabledocumentos.getValueAt(i, 0).equals("")) {
-                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
-                    File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
-                    File filecopy = new File(folder + "/" + fileoriginal.getName());
+                    //Criar observações
+                    for (int i = 0; i < tableobs.getRowCount(); i++) {
+                        vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
+                    }
 
-                    folder.mkdirs();
-                    try {
-                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                    } catch (IOException ex) {
-                        Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
-                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                    //Criar documentos
+                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                        File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                        File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                        folder.mkdirs();
                         try {
-                            SendEmail.EnviarErro(ex.toString());
-                            JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                        } catch (HeadlessException hex) {
-                            JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
-                        } catch (AWTException | IOException ex1) {
-                            Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                        } catch (IOException e) {
+                            String msg = "Erro ao criar documento em rede.";
+                            JOptionPane.showMessageDialog(null, msg);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
+                        vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
+                    }
+
+                    //Criar códigos por clientes
+                    for (int i = 0; i < tabledesccli.getRowCount(); i++) {
+                        vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
+                    }
+
+                    //Criar movimentação do material
+                    vmmd.create(idmaterial, 0, 0, 0, "Criação", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+
+                    JOptionPane.showMessageDialog(null, "Material de Venda criado com sucesso!");
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar Material de Venda.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+            } else {
+                try {
+                    //Atualizar material
+                    vmd.update(
+                            txtcodigo.getText(),
+                            txtdescricao.getText(),
+                            Double.parseDouble(txtestoqueminimo.getText()),
+                            txtLocal.getText(),
+                            txtd1.getText(),
+                            txtd2.getText(),
+                            txtd3.getText(),
+                            txtd4.getText(),
+                            txtd5.getText(),
+                            txtl1.getText(),
+                            txtl2.getText(),
+                            txtl3.getText(),
+                            txtl4.getText(),
+                            txtl5.getText(),
+                            txtmaterialdeorigem.getText(),
+                            cbrevestimento.getSelectedItem().toString(),
+                            txtraio.getText(),
+                            checkimportado.isSelected(),
+                            checkweldon.isSelected(),
+                            checkri.isSelected(),
+                            radioMD.isSelected(),
+                            radioHSS.isSelected(),
+                            cbtipo.getSelectedItem().toString(),
+                            cbfamilia.getSelectedItem().toString(),
+                            cbtamanho.getSelectedItem().toString(),
+                            txtcortes.getText(),
+                            cbtopo.getSelectedItem().toString(),
+                            cbcanal.getSelectedItem().toString(),
+                            txtextra.getText(),
+                            txthelice.getText(),
+                            txtnucleo.getText(),
+                            txtconcavidade.getText(),
+                            txtaliviotopo1.getText(),
+                            txtaliviotopo2.getText(),
+                            txtalivio1.getText(),
+                            txtalivio2.getText(),
+                            txtespfilete.getText(),
+                            txtagressividade.getText(),
+                            txtfrontal.getText(),
+                            Double.parseDouble(txtQtdOp.getText()),
+                            idmaterial
+                    );
+
+                    //Criar observações que não existiam antes
+                    for (int i = 0; i < tableobs.getRowCount(); i++) {
+                        if (tableobs.getValueAt(i, 0).equals("")) {
+                            vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
                         }
                     }
-                    vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
-                }
-            }
 
-            //Criar códigos por clientes que não existiam antes
-            for (int i = 0; i < tabledesccli.getRowCount(); i++) {
-                if (tabledesccli.getValueAt(i, 0).equals("")) {
-                    vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
+                    //Criar documentos que não existiam antes
+                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                        if (tabledocumentos.getValueAt(i, 0).equals("")) {
+                            File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                            File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
+                            File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                            folder.mkdirs();
+                            try {
+                                Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                            } catch (IOException ex) {
+                                Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
+                                JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                                try {
+                                    SendEmail.EnviarErro(ex.toString());
+                                    JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                                } catch (HeadlessException hex) {
+                                    JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                                } catch (AWTException | IOException ex1) {
+                                    Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                                }
+                            }
+                            vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
+                        }
+                    }
+
+                    //Criar códigos por clientes que não existiam antes
+                    for (int i = 0; i < tabledesccli.getRowCount(); i++) {
+                        if (tabledesccli.getValueAt(i, 0).equals("")) {
+                            vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Material de Venda atualizado com sucesso.");
+                } catch (SQLException e) {
+                    String frase = "Erro ao atualizar Material de Venda.";
+                    JOptionPane.showMessageDialog(null, frase);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(frase, e);
+                        }
+                    }.start();
                 }
             }
+            lerMaterial(idmaterial);
         }
         readProdutos();
     }//GEN-LAST:event_jButton9ActionPerformed
@@ -3122,115 +3305,7 @@ public class VM extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             idmaterial = Integer.parseInt(tablemateriaisvendas.getValueAt(tablemateriaisvendas.getSelectedRow(), 0).toString());
 
-            tabmateriais.setSelectedIndex(1);
-
-            vmd.click(idmaterial).forEach(vmb -> {
-                txtcodigo.setText(vmb.getCodigo());
-                txtdescricao.setText(vmb.getDescricao());
-                txtestoque.setText(String.valueOf(vmb.getEstoque()));
-                txtestoqueminimo.setText(String.valueOf(vmb.getEstoqueMinimo()));
-                txtstatus.setText(vmb.getStatus());
-                txtLocal.setText(vmb.getLocal());
-                txtd1.setText(vmb.getD1());
-                txtd2.setText(vmb.getD2());
-                txtd3.setText(vmb.getD3());
-                txtd4.setText(vmb.getD4());
-                txtd5.setText(vmb.getD5());
-                txtl1.setText(vmb.getL1());
-                txtl2.setText(vmb.getL2());
-                txtl3.setText(vmb.getL3());
-                txtl4.setText(vmb.getL4());
-                txtl5.setText(vmb.getL5());
-                txtmaterialdeorigem.setText(vmb.getMaterialOrigem());
-                if (!vmb.getRev().equals("Selecione")) {
-                    checkrevestimento.setSelected(true);
-                    cbrevestimento.setSelectedItem(vmb.getRev());
-                } else {
-                    checkrevestimento.setSelected(false);
-                    cbrevestimento.setSelectedIndex(0);
-                }
-                if (!vmb.getRaio().equals("")) {
-                    checkraio.setSelected(true);
-                    txtraio.setText(vmb.getRaio());
-                } else {
-                    checkraio.setSelected(false);
-                    txtraio.setText("");
-                }
-                checkimportado.setSelected(vmb.isImportada());
-                checkweldon.setSelected(vmb.isWeldon());
-                checkri.setSelected(vmb.isRi());
-                radioMD.setSelected(vmb.isMd());
-                radioHSS.setSelected(vmb.isHss());
-                cbtipo.setSelectedItem(vmb.getTipo());
-                cbfamilia.setSelectedItem(vmb.getFamilia());
-                cbtamanho.setSelectedItem(vmb.getTamanho());
-                txtcortes.setText(vmb.getCortes());
-                cbtopo.setSelectedItem(vmb.getTopo());
-                cbcanal.setSelectedItem(vmb.getCanal());
-                txtextra.setText(vmb.getExtra());
-                txthelice.setText(vmb.getHelice());
-                txtnucleo.setText(vmb.getNucleo());
-                txtconcavidade.setText(vmb.getConcavidade());
-                txtaliviotopo1.setText(vmb.getTopo1());
-                txtaliviotopo2.setText(vmb.getTopo2());
-                txtalivio1.setText(vmb.getAlivio1());
-                txtalivio2.setText(vmb.getAlivio2());
-                txtespfilete.setText(vmb.getFilete());
-                txtagressividade.setText(vmb.getAgressividade());
-                txtfrontal.setText(vmb.getFrontal());
-            });
-
-            DefaultTableModel modelObs = (DefaultTableModel) tableobs.getModel();
-
-            vmod.read(idmaterial).forEach(vmob -> {
-                modelObs.addRow(new Object[]{
-                    vmob.getId(),
-                    false,
-                    Dates.TransformarDataCurtaDoDB(vmob.getData()),
-                    vmob.getUsuario(),
-                    vmob.getObs()
-                });
-            });
-
-            DefaultTableModel modelDoc = (DefaultTableModel) tabledocumentos.getModel();
-
-            vmdd.read(idmaterial).forEach(vmdb -> {
-                modelDoc.addRow(new Object[]{
-                    vmdb.getId(),
-                    false,
-                    vmdb.getDescricao(),
-                    vmdb.getLocal()
-                });
-            });
-
-            DefaultTableModel modelCodCli = (DefaultTableModel) tabledesccli.getModel();
-
-            vmccd.read(idmaterial).forEach(vmccb -> {
-                modelCodCli.addRow(new Object[]{
-                    vmccb.getId(),
-                    false,
-                    vmccb.getCliente(),
-                    vmccb.getCodigo(),
-                    vmccb.getDescricao()
-                });
-            });
-
-            DefaultTableModel modelMov = (DefaultTableModel) tableMovimentacao.getModel();
-
-            vmmd.read(idmaterial).forEach(vmmb -> {
-                modelMov.addRow(new Object[]{
-                    Dates.TransformarDataCurtaDoDB(vmmb.getData()),
-                    vmmb.getTipo(),
-                    vmmb.getQtdInicial(),
-                    vmmb.getQtdMovimentada(),
-                    vmmb.getSaldo(),
-                    vmmb.getUsuario()
-                });
-            });
-
-            revestimento();
-
-            raio();
+            lerMaterial(idmaterial);
         }
     }//GEN-LAST:event_tablemateriaisvendasMouseClicked
 
@@ -3274,6 +3349,38 @@ public class VM extends javax.swing.JInternalFrame {
         Telas.AparecerTela(pl);
     }//GEN-LAST:event_jButton7ActionPerformed
 
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        int numTrue = 0;
+        for (int i = 0; i < tableobs.getRowCount(); i++) {
+            if (tableobs.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum comentário selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir as observações selecionadas?", "Excluir Observações", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                for (int i = 0; i < tableobs.getRowCount(); i++) {
+                    if (tableobs.getValueAt(i, 1).equals(true)) {
+                        vmod.delete(Integer.parseInt(tableobs.getValueAt(i, 0).toString()));
+                    }
+                }
+            }
+            readObs(idmaterial);
+        }
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void tableobsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableobsMouseClicked
+        if (tableobs.getSelectedColumn() == 1) {
+            if (!tableobs.getValueAt(tableobs.getSelectedRow(), 3).equals(Session.nome)) {
+                JOptionPane.showMessageDialog(null, "Usuário logado diferente do usuário que fez a observação.");
+                tableobs.setValueAt(false, tableobs.getSelectedRow(), 1);
+            }
+        }
+    }//GEN-LAST:event_tableobsMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.ButtonGroup GroupMateriaPrima;
@@ -3291,6 +3398,7 @@ public class VM extends javax.swing.JInternalFrame {
     public static javax.swing.JCheckBox checkri;
     public static javax.swing.JCheckBox checkweldon;
     public javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton10;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;

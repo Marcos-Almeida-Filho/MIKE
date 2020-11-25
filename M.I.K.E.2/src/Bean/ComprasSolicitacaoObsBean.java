@@ -12,7 +12,7 @@ package Bean;
 public class ComprasSolicitacaoObsBean {
 
     private int id;
-    private String idtela;
+    private int idSolicitacao;
     private String data;
     private String funcionario;
     private String obs;
@@ -25,12 +25,12 @@ public class ComprasSolicitacaoObsBean {
         this.id = id;
     }
 
-    public String getIdtela() {
-        return idtela;
+    public int getIdSolicitacao() {
+        return idSolicitacao;
     }
 
-    public void setIdtela(String idtela) {
-        this.idtela = idtela;
+    public void setIdSolicitacao(int idSolicitacao) {
+        this.idSolicitacao = idSolicitacao;
     }
 
     public String getData() {

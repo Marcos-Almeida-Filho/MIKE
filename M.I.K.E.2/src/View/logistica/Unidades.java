@@ -5,9 +5,9 @@
  */
 package View.logistica;
 
-import Bean.UnidadesBean;
 import DAO.UnidadesDAO;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,15 +15,28 @@ import javax.swing.JOptionPane;
  */
 public class Unidades extends javax.swing.JInternalFrame {
 
+    static UnidadesDAO ud = new UnidadesDAO();
+
     /**
      * Creates new form Unidades
      */
-    
-    UnidadesDAO ud = new UnidadesDAO();
-    UnidadesBean ub = new UnidadesBean();
-    
     public Unidades() {
         initComponents();
+        lerUnidades();
+    }
+
+    public static void lerUnidades() {
+        DefaultTableModel model = (DefaultTableModel) tableunidades.getModel();
+        model.setNumRows(0);
+
+        ud.read().forEach(ub -> {
+            model.addRow(new Object[]{
+                ub.getId(),
+                false,
+                ub.getNome(),
+                ub.getAbv()
+            });
+        });
     }
 
     /**
@@ -35,12 +48,13 @@ public class Unidades extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabUnidades = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableunidades = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         txtpesquisa = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -50,12 +64,13 @@ public class Unidades extends javax.swing.JInternalFrame {
         txtabv = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtid = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Cadastro de Unidades");
 
-        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
-        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+        tabUnidades.setBackground(new java.awt.Color(255, 255, 255));
+        tabUnidades.setName("tabUnidades"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
@@ -74,7 +89,7 @@ public class Unidades extends javax.swing.JInternalFrame {
                 java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, true, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -120,6 +135,14 @@ public class Unidades extends javax.swing.JInternalFrame {
             .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
+        jButton2.setText("Excluir");
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -131,7 +154,10 @@ public class Unidades extends javax.swing.JInternalFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(8, 8, 8)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -140,11 +166,13 @@ public class Unidades extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Cadastro de Unidades", jPanel1);
+        tabUnidades.addTab("Cadastro de Unidades", jPanel1);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
@@ -173,7 +201,7 @@ public class Unidades extends javax.swing.JInternalFrame {
         jLabel3.setText("ID");
         jLabel3.setName("jLabel3"); // NOI18N
 
-        txtid.setEnabled(false);
+        txtid.setEditable(false);
         txtid.setName("txtid"); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -194,7 +222,7 @@ public class Unidades extends javax.swing.JInternalFrame {
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 158, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,6 +241,14 @@ public class Unidades extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jButton3.setText("Novo");
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -222,7 +258,9 @@ public class Unidades extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 322, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -231,22 +269,24 @@ public class Unidades extends javax.swing.JInternalFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton3))
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Unidade", jPanel2);
+        tabUnidades.addTab("Unidade", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabUnidades)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabUnidades)
         );
 
         pack();
@@ -259,28 +299,30 @@ public class Unidades extends javax.swing.JInternalFrame {
         } else if (txtabv.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Digite uma abreviação.");
             txtabv.requestFocus();
+        } else if (txtabv.getText().length() > 2) {
+            JOptionPane.showMessageDialog(null, "Abreviação muito longa.\nPor favor, digite a abreviação com 2 dígitos.");
         } else {
+            String nome = txtnome.getText();
+            String abv = txtabv.getText();
             if (txtid.getText().equals("")) {
-                ub.setNome(txtnome.getText());
-                ub.setAbv(txtabv.getText());
-                
-                //nome, abv
-                ud.create(ub);
+                ud.create(nome, abv);
+
+                txtid.setText(String.valueOf(ud.idUnidade(nome)));
             } else {
-                ub.setNome(txtnome.getText());
-                ub.setAbv(txtabv.getText());
-                ub.setId(Integer.parseInt(txtid.getText()));
-                
-                //nome = ?, abv = ? WHERE id = ?
-                ud.update(ub);
+                int id = Integer.parseInt(txtid.getText());
+
+                ud.update(nome, abv, id);
             }
+            lerUnidades();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void tableunidadesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableunidadesMouseClicked
         if (evt.getClickCount() == 2) {
             txtid.setText(tableunidades.getValueAt(tableunidades.getSelectedRow(), 0).toString());
-            
+
+            tabUnidades.setSelectedIndex(1);
+
             ud.click(Integer.parseInt(txtid.getText())).forEach(ub -> {
                 txtnome.setText(ub.getNome());
                 txtabv.setText(ub.getAbv());
@@ -288,9 +330,49 @@ public class Unidades extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableunidadesMouseClicked
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja criar outra Unidade?", "Nova Unidade", JOptionPane.YES_NO_OPTION);
+
+        if (resp == 0) {
+            txtid.setText("");
+            txtnome.setText("");
+            txtabv.setText("");
+            txtnome.requestFocus();
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableunidades.getRowCount(); i++) {
+            if (tableunidades.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma unidade selecionada.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir as Unidades selecionadas?", "Excluir Unidades", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                for (int i = 0; i < tableunidades.getRowCount(); i++) {
+                    if (tableunidades.getValueAt(i, 1).equals(true)) {
+                        int id = Integer.parseInt(tableunidades.getValueAt(i, 0).toString());
+
+                        ud.delete(id);
+                    }
+                }
+                lerUnidades();
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton2;
+    public javax.swing.JButton jButton3;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -299,8 +381,8 @@ public class Unidades extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel3;
     public javax.swing.JPanel jPanel4;
     public javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTabbedPane jTabbedPane1;
-    public javax.swing.JTable tableunidades;
+    public javax.swing.JTabbedPane tabUnidades;
+    public static javax.swing.JTable tableunidades;
     public javax.swing.JTextField txtabv;
     public javax.swing.JTextField txtid;
     public javax.swing.JTextField txtnome;

@@ -19,9 +19,9 @@ public class SplashScreen extends JWindow {
     public SplashScreen(int d) {
         duration = d;
     }
-    
+
     public SplashScreen() {
-        
+
     }
 
 // Este é um método simples para mostrar uma tela de apresentção
@@ -54,8 +54,15 @@ public class SplashScreen extends JWindow {
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
-            JOptionPane.showMessageDialog(null,"Erro.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         }
         setVisible(false);
     }
@@ -66,7 +73,7 @@ public class SplashScreen extends JWindow {
 //        SplashScreen ss = new SplashScreen();
 //        ss.dispose();
     }
-    
+
     public void closeSplash() {
         System.exit(0);
     }

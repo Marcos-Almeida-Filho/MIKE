@@ -78,10 +78,9 @@ public class NotaFiscalItensDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -115,10 +114,9 @@ public class NotaFiscalItensDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -127,7 +125,7 @@ public class NotaFiscalItensDAO {
 
         return listnfi;
     }
-    
+
     public List<NotaFiscalItensBean> readItensSemPedido(int numeroNF) {
         rsList();
 
@@ -154,10 +152,9 @@ public class NotaFiscalItensDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -202,10 +199,9 @@ public class NotaFiscalItensDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -214,23 +210,22 @@ public class NotaFiscalItensDAO {
 
         return listnfi;
     }
-    
+
     public void updateIdMaterial(int idMaterial, int idItem) {
         conStmt();
-        
+
         try {
             stmt = con.prepareStatement("UPDATE nf_itens SET idMaterial = " + idMaterial + " WHERE id = " + idItem);
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             String msg = "Erro ao lançar idMaterial no item da Nota Fiscal.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {

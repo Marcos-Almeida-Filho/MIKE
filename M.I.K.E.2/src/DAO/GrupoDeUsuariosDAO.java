@@ -126,8 +126,15 @@ public class GrupoDeUsuariosDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar grupo de usuário.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao criar Grupo de Usuário.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -176,8 +183,15 @@ public class GrupoDeUsuariosDAO {
                 id = rs.getInt("id");
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao conseguir id criado.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao conseguir ID do Grupo de Usuários criado.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -414,8 +428,15 @@ public class GrupoDeUsuariosDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar grupo de usuário.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao atualizar Grupo de Usuários.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

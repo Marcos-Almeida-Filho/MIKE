@@ -10,11 +10,12 @@ package Bean;
  * @author Marcos Filho
  */
 public class InsumosBean {
-    
+
     private int id;
     private String datacriacao;
     private String codigo;
     private String descricao;
+    private String unidade;
     private String tipo;
     private double estoque;
     private String status;
@@ -51,6 +52,14 @@ public class InsumosBean {
         this.descricao = descricao;
     }
 
+    public String getUnidade() {
+        return unidade;
+    }
+
+    public void setUnidade(String unidade) {
+        this.unidade = unidade;
+    }
+
     public String getTipo() {
         return tipo;
     }
@@ -74,6 +83,5 @@ public class InsumosBean {
     public void setStatus(String status) {
         this.status = status;
     }
-    
-    
+
 }

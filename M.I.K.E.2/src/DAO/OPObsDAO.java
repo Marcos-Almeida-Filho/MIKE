@@ -8,7 +8,6 @@ package DAO;
 import Bean.OPObsBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -66,10 +65,9 @@ public class OPObsDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -105,10 +103,9 @@ public class OPObsDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -136,10 +133,9 @@ public class OPObsDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -159,15 +155,14 @@ public class OPObsDAO {
             stmt = con.prepareStatement("DELETE FROM op_obs WHERE id = " + id);
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Observação excluída com sucesso!");
-        } catch (HeadlessException | SQLException e) {
+        } catch (SQLException e) {
             String msg = "Erro ao excluir observação da OP!";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {

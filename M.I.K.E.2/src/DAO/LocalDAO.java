@@ -58,20 +58,27 @@ public class LocalDAO {
                 vezesDao = 0;
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar local de armazenagem.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao criar Local de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public boolean readLocal(String nome) {
         conStmt();
 
         rsList();
 
         boolean name = false;
-        
+
         try {
             stmt = con.prepareStatement("SELECT * FROM local WHERE nome = '" + nome + "'");
 
@@ -81,8 +88,15 @@ public class LocalDAO {
                 name = true;
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler locais de armazenagem.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Locais de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -110,8 +124,15 @@ public class LocalDAO {
                 listlb.add(lb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler locais de armazenagem.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Locais de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -139,8 +160,15 @@ public class LocalDAO {
                 listlb.add(lb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler locais de armazenagem.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Locais de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -168,8 +196,15 @@ public class LocalDAO {
                 listlb.add(lb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler locais de armazenagem.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Locais de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -197,8 +232,15 @@ public class LocalDAO {
                 listlb.add(lb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler locais de armazenagem.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Locais de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -226,8 +268,15 @@ public class LocalDAO {
                 listlb.add(lb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler locais de armazenagem.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Locais de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -255,8 +304,15 @@ public class LocalDAO {
                 listlb.add(lb);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao ler locais de armazenagem.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao ler Locais de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -275,8 +331,15 @@ public class LocalDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar nome do local.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao atualizar nome do Local de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -290,8 +353,15 @@ public class LocalDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar status do local.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao atualizar status do Local de Armazenagem.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

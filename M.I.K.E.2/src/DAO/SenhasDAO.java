@@ -199,8 +199,15 @@ public class SenhasDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao excluir senhar!\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao excluir senha.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

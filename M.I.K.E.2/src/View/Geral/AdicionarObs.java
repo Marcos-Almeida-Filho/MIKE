@@ -6,6 +6,8 @@
 package View.Geral;
 
 import Methods.Obs;
+import View.compras.ComprasSolicitacao;
+import View.compras.ComprasCotacao;
 import View.compras.Insumos;
 import View.compras.TiposInsumo;
 import View.financeiro.ContaPagar;
@@ -13,7 +15,6 @@ import View.vendas.CotacaoVenda;
 import View.vendas.OP;
 import View.vendas.PedidoVenda;
 import View.vendas.VM;
-import View.vendas.VendasMateriais;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
@@ -49,9 +50,6 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                 case "VM":
                     Obs.AdicionarObs(VM.tableobs, obs);
                     break;
-                case "VendasMateriais":
-                    Obs.AdicionarObs(VendasMateriais.tableObs, obs);
-                    break;
                 case "ContaPagar":
                     Obs.AdicionarObs(ContaPagar.tableobs, obs);
                     break;
@@ -63,6 +61,12 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                     break;
                 case "OP":
                     Obs.AdicionarObs(OP.tableObs, obs);
+                    break;
+                case "ComprasSolicitacao":
+                    Obs.AdicionarObs(ComprasSolicitacao.tableobs, obs);
+                    break;
+                case "CotacaoCompras":
+                    Obs.AdicionarObs(ComprasCotacao.tableObs, obs);
                     break;
             }
             dispose();

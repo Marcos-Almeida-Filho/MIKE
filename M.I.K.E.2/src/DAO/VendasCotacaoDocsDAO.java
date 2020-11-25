@@ -8,7 +8,6 @@ package DAO;
 import Bean.VendasCotacaoDocsBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import View.vendas.CotacaoVenda;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,25 +53,18 @@ public class VendasCotacaoDocsDAO {
      * @param cotacao - Código da cotação
      * @param descricao - Descrição do documento. Ex: Boleto, Desenho, etc.
      * @param local - Local onde o documento está salvo.
+     * @throws java.sql.SQLException
      */
-    public void create(String cotacao, String descricao, String local) {
+    public void create(String cotacao, String descricao, String local) throws SQLException {
         conStmt();
 
         String local2 = local.replace("\\", "\\\\");
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_cotacao_docs (cotacao, descricao, local) VALUES ('" + cotacao + "','" + descricao + "','" + local2 + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_cotacao_docs (cotacao, descricao, local) VALUES ('" + cotacao + "','" + descricao + "','" + local2 + "')");
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-            CotacaoVenda.docsCriados = true;
-        } catch (SQLException e) {
-            String msg = "Erro ao criar documento da Cotação de Venda!";
-            JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     /**
@@ -99,7 +91,13 @@ public class VendasCotacaoDocsDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler documentos da cotação.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -121,7 +119,13 @@ public class VendasCotacaoDocsDAO {
         } catch (SQLException e) {
             String msg = "Erro ao excluir documento da cotação de venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

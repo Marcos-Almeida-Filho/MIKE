@@ -8,7 +8,6 @@ package DAO;
 import Bean.VendasCotacaoBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import View.vendas.CotacaoVenda;
 import java.awt.AWTException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -64,21 +63,14 @@ public class VendasCotacaoDAO {
      * @param representante
      * @param condicaoPagamento
      */
-    public void create(String cotacao, String dataAbertura, String cliente, boolean cadastrado, String status, String vendedor, String representante, String condicaoPagamento) {
+    public void create(String cotacao, String dataAbertura, String cliente, boolean cadastrado, String status, String vendedor, String representante, String condicaoPagamento) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_cotacao (cotacao, data_abertura, cliente, cadastrado, status, vendedor, representante, condicao) VALUES ('" + cotacao + "','" + dataAbertura + "','" + cliente + "'," + cadastrado + ",'" + status + "','" + vendedor + "','" + representante + "','" + condicaoPagamento + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_cotacao (cotacao, data_abertura, cliente, cadastrado, status, vendedor, representante, condicao) VALUES ('" + cotacao + "','" + dataAbertura + "','" + cliente + "'," + cadastrado + ",'" + status + "','" + vendedor + "','" + representante + "','" + condicaoPagamento + "')");
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-            CotacaoVenda.cotacaoCriada = true;
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar Cotação de Venda!");
-            SendEmail.EnviarErro2("Erro ao criar Cotação de Venda.\n" + e);
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<VendasCotacaoBean> readCotacoesAbertas() {
@@ -103,10 +95,9 @@ public class VendasCotacaoDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
-
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -136,7 +127,13 @@ public class VendasCotacaoDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler cotações fechadas.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -164,7 +161,13 @@ public class VendasCotacaoDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler cotações abertas.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -192,7 +195,13 @@ public class VendasCotacaoDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler cotações abertas.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -216,6 +225,7 @@ public class VendasCotacaoDAO {
                 vcb = new VendasCotacaoBean();
 
                 vcb.setId(rs.getInt("id"));
+                vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setData_abertura(rs.getString("data_abertura"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setCadastrado(rs.getBoolean("cadastrado"));
@@ -229,7 +239,13 @@ public class VendasCotacaoDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler cotação selecionada.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -252,7 +268,13 @@ public class VendasCotacaoDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler cotação selecionada.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -275,7 +297,13 @@ public class VendasCotacaoDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler última cotação criada.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -318,6 +346,36 @@ public class VendasCotacaoDAO {
         return idtela;
     }
 
+    public int idCotacao(String cotacao) {
+        rsList();
+
+        int id = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT id FROM vendas_cotacao WHERE cotacao = '" + cotacao + "'");
+
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao pegar ID da Cotação.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return id;
+    }
+
     /**
      *
      * @param cotacao
@@ -326,21 +384,15 @@ public class VendasCotacaoDAO {
      * @param vendedor
      * @param representante
      * @param condicaoPagamento
+     * @throws java.sql.SQLException
      */
-    public void update(String cotacao, String cliente, boolean cadastrado, String vendedor, String representante, String condicaoPagamento) {
+    public void update(String cotacao, String cliente, boolean cadastrado, String vendedor, String representante, String condicaoPagamento) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("UPDATE vendas_cotacao SET cliente = '" + cliente + "', cadastrado = " + cadastrado + ", vendedor = '" + vendedor + "', representante = '" + representante + "', condicao = '" + condicaoPagamento + "' WHERE cotacao = '" + cotacao + "'");
-            stmt.executeUpdate();
+        stmt = con.prepareStatement("UPDATE vendas_cotacao SET cliente = '" + cliente + "', cadastrado = " + cadastrado + ", vendedor = '" + vendedor + "', representante = '" + representante + "', condicao = '" + condicaoPagamento + "' WHERE cotacao = '" + cotacao + "'");
+        stmt.executeUpdate();
 
-            CotacaoVenda.cotacaoAtualizada = true;
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar Cotação de Venda");
-            SendEmail.EnviarErro2("Erro ao atualizar Cotação de Venda! - " + e);
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public void updateStatus(String cotacao, String status) {
@@ -349,16 +401,14 @@ public class VendasCotacaoDAO {
         try {
             stmt = con.prepareStatement("UPDATE vendas_cotacao SET status = '" + status + "' WHERE cotacao = '" + cotacao + "'");
             stmt.executeUpdate();
-
-            CotacaoVenda.cotacaoAtualizada = true;
         } catch (SQLException e) {
             String msg = "Erro ao atualizar status da Cotação de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            new Thread() {
 
+            new Thread() {
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -372,16 +422,14 @@ public class VendasCotacaoDAO {
         try {
             stmt = con.prepareStatement("UPDATE vendas_cotacao SET status = 'Desativado', motivo = '" + motivo + "' WHERE cotacao = '" + cotacao + "'");
             stmt.executeUpdate();
-
-            CotacaoVenda.cotacaoAtualizada = true;
         } catch (SQLException e) {
             String msg = "Erro ao atualizar status da Cotação de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            new Thread() {
 
+            new Thread() {
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {

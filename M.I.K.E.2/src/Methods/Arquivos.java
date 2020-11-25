@@ -224,7 +224,7 @@ public class Arquivos {
         Desktop desk = Desktop.getDesktop();
         try {
             desk.open(new File((String) file));
-        } catch (IOException ex) {
+        } catch (IOException e) {
             String msg = "Erro ao abrir arquivo.";
             JOptionPane.showMessageDialog(null, msg);
 
@@ -232,7 +232,7 @@ public class Arquivos {
 
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + ex);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         }

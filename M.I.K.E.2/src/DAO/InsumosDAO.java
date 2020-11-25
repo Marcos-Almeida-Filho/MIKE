@@ -8,16 +8,12 @@ package DAO;
 import Bean.InsumosBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.awt.AWTException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,31 +21,49 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class InsumosDAO {
-    
-    public void create(InsumosBean ib) {
 
-        Connection con = ConnectionFactory.getConnection();
+    Connection con;
 
-        PreparedStatement stmt = null;
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<InsumosBean> listi;
+
+    InsumosBean ib;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listi = new ArrayList<>();
+    }
+
+    public void create(String codigo, String descricao, String unidade, String tipo, double estoque, String dataCriacao) {
+
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO insumos (codigo, descricao, tipo, estoque, datacriacao, status) VALUES (?,?,?,?,?,?)");
-
-            stmt.setString(1, ib.getCodigo());
-            stmt.setString(2, ib.getDescricao());
-            stmt.setString(3, ib.getTipo());
-            stmt.setDouble(4, ib.getEstoque());
-            stmt.setString(5, ib.getDatacriacao());
-            stmt.setString(6, ib.getStatus());
+            stmt = con.prepareStatement("INSERT INTO insumos (codigo, descricao, unidade, tipo, estoque, datacriacao, status) VALUES ('" + codigo + "', '" + descricao + "', '" + unidade + "', '" + tipo + "', " + estoque + ", '" + dataCriacao + "', 'Ativo')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar insumo!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao criar Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -57,214 +71,231 @@ public class InsumosDAO {
 
     public List<InsumosBean> read() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<InsumosBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM insumos");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                InsumosBean ib = new InsumosBean();
+                ib = new InsumosBean();
 
                 ib.setId(rs.getInt("id"));
                 ib.setCodigo(rs.getString("codigo"));
                 ib.setDescricao(rs.getString("descricao"));
+                ib.setUnidade(rs.getString("unidade"));
                 ib.setTipo(rs.getString("tipo"));
                 ib.setEstoque(rs.getDouble("estoque"));
                 ib.setDatacriacao(rs.getString("datacriacao"));
                 ib.setStatus(rs.getString("status"));
 
-                listbb.add(ib);
+                listi.add(ib);
             }
         } catch (SQLException e) {
-            Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Insumos.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listi;
     }
-    
+
     public List<InsumosBean> readPorTipo(String tipo) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<InsumosBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM insumos WHERE tipo = ?");
-            stmt.setString(1, tipo);
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE tipo = '" + tipo + "' AND status = 'Ativo'");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                InsumosBean ib = new InsumosBean();
+                ib = new InsumosBean();
 
                 ib.setId(rs.getInt("id"));
                 ib.setCodigo(rs.getString("codigo"));
                 ib.setDescricao(rs.getString("descricao"));
+                ib.setUnidade(rs.getString("unidade"));
                 ib.setTipo(rs.getString("tipo"));
                 ib.setEstoque(rs.getDouble("estoque"));
                 ib.setDatacriacao(rs.getString("datacriacao"));
                 ib.setStatus(rs.getString("status"));
 
-                listbb.add(ib);
+                listi.add(ib);
             }
         } catch (SQLException e) {
-            Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Insumos por tipo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listi;
     }
-    
-    public List<InsumosBean> readcreated(String datacriacao) {
 
-        Connection con = ConnectionFactory.getConnection();
+    public List<InsumosBean> readPorStatus(String status) {
 
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<InsumosBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM insumos WHERE dataccriacao = ?");
-            stmt.setString(1, datacriacao);
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE status = '" + status + "'");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                InsumosBean ib = new InsumosBean();
+                ib = new InsumosBean();
 
                 ib.setId(rs.getInt("id"));
                 ib.setCodigo(rs.getString("codigo"));
                 ib.setDescricao(rs.getString("descricao"));
+                ib.setUnidade(rs.getString("unidade"));
                 ib.setTipo(rs.getString("tipo"));
                 ib.setEstoque(rs.getDouble("estoque"));
                 ib.setDatacriacao(rs.getString("datacriacao"));
                 ib.setStatus(rs.getString("status"));
 
-                listbb.add(ib);
+                listi.add(ib);
             }
         } catch (SQLException e) {
-            Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Insumos por tipo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listi;
     }
-    
+
+    public int idCreated(String codigo) {
+
+        rsList();
+
+        int id = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT id FROM insumos WHERE codigo = '" + codigo + "'");
+
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Insumos por Data de Criação.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return id;
+    }
+
     public List<InsumosBean> click(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<InsumosBean> listbb = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM insumos WHERE id = ?");
-            stmt.setInt(1, id);
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE id = " + id);
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                InsumosBean ib = new InsumosBean();
+                ib = new InsumosBean();
 
                 ib.setId(rs.getInt("id"));
                 ib.setCodigo(rs.getString("codigo"));
                 ib.setDescricao(rs.getString("descricao"));
+                ib.setUnidade(rs.getString("unidade"));
                 ib.setTipo(rs.getString("tipo"));
                 ib.setEstoque(rs.getDouble("estoque"));
                 ib.setDatacriacao(rs.getString("datacriacao"));
                 ib.setStatus(rs.getString("status"));
 
-                listbb.add(ib);
+                listi.add(ib);
             }
         } catch (SQLException e) {
-            Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listbb;
+        return listi;
     }
 
-    public void update(InsumosBean bb) {
+    public void update(String codigo, String descricao, String tipo, int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE insumos SET codigo = ?, descricao = ?, tipo = ? WHERE id = ?");
-
-            stmt.setString(1, bb.getCodigo());
-            stmt.setString(2, bb.getDescricao());
-            stmt.setString(3, bb.getTipo());
-            stmt.setInt(4, bb.getId());
+            stmt = con.prepareStatement("UPDATE insumos SET codigo = '" + codigo + "', descricao = '" + descricao + "', tipo = '" + tipo + "' WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
-    public void desativar(InsumosBean bb) {
 
-        Connection con = ConnectionFactory.getConnection();
+    public void desativar(int id) {
 
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE insumos SET status = ? WHERE id = ?");
-
-            stmt.setString(1, bb.getStatus());
-            stmt.setInt(2, bb.getId());
+            stmt = con.prepareStatement("UPDATE insumos SET status = 'Desativado' WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao atualizar Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

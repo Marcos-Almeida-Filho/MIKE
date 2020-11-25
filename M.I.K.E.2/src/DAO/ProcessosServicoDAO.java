@@ -25,26 +25,26 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class ProcessosServicoDAO {
-    
+
     Connection con;
-    
+
     PreparedStatement stmt;
-    
+
     ResultSet rs;
-    
+
     List<ProcessosServicoBean> listpsb;
-    
+
     public void conStmt() {
         con = ConnectionFactory.getConnection();
-        
+
         stmt = null;
     }
-    
+
     public void rsList() {
         conStmt();
-        
+
         rs = null;
-        
+
         listpsb = new ArrayList<>();
     }
 
@@ -98,11 +98,11 @@ public class ProcessosServicoDAO {
         }
         return listpsb;
     }
-    
+
     public int qtdProcessos() {
 
         rsList();
-        
+
         int qtd = 0;
 
         try {
@@ -128,7 +128,7 @@ public class ProcessosServicoDAO {
     public void update(ProcessosServicoBean psb) {
 
         conStmt();
-        
+
         try {
 
         } catch (Exception e) {
@@ -142,16 +142,23 @@ public class ProcessosServicoDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void delete(String nome) {
         conStmt();
-        
+
         try {
             stmt = con.prepareStatement("DELETE FROM processosservico WHERE nome = '" + nome + "'");
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Erro ao excluir processo de serviço!\n" + e);
-            SendEmail.EnviarErro2(e.toString() + " - ProcessosServicoDAO - Delete");
+            String msg = "Erro ao excluir Processo de Serviço.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

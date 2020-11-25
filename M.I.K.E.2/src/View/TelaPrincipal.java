@@ -39,11 +39,13 @@ import View.TI.Senhas;
 import View.administracao.Usuarios;
 import View.arquivo.ProgramacaoMIKE;
 import View.comercial.PlanejamentoFaturamento;
+import View.compras.ComprasCotacao;
 import View.configuracoes.Menus;
 import View.financeiro.Cartoes;
 import View.financeiro.Extratos;
 import View.fiscal.NotasFiscais;
 import View.logistica.LocaisArmazenagem;
+import View.logistica.Unidades;
 import View.qualidade.Medicoes;
 import View.vendas.CotacaoVenda;
 import View.vendas.PedidoVenda;
@@ -1334,7 +1336,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         String menuItemName = menuItem.getName();
 
         if (gupd.readPerm(Session.idnivel, menuItemName)) {
-
+            Unidades u = new Unidades();
+            Telas.AparecerTela(u);
         } else {
             JOptionPane.showMessageDialog(null, "Acesso não permitido.");
         }
@@ -1474,7 +1477,15 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_item_conciliacaoActionPerformed
 
     private void item_orcamento_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_orcamento_comprasActionPerformed
-        // TODO add your handling code here:
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            ComprasCotacao cc = new ComprasCotacao();
+            Telas.AparecerTelaAumentada(cc);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
     }//GEN-LAST:event_item_orcamento_comprasActionPerformed
 
     private void item_pedido_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_pedido_comprasActionPerformed

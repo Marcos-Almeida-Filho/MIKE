@@ -8,8 +8,6 @@ package DAO;
 import Bean.VendasCotacaoItensBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import View.vendas.CotacaoVenda;
-import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,29 +58,16 @@ public class VendasCotacaoItensDAO {
      * @param prazo
      * @param pedido
      * @param cadastrado
+     * @throws java.sql.SQLException
      */
-    public void create(String cotacao, int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, String pedido, boolean cadastrado) {
+    public void create(String cotacao, int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, String pedido, boolean cadastrado) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_cotacao_itens (cotacao, idmaterial, codigo, descricao, qtd, valorunitario, valortotal, prazo, pedido, cadastrado) VALUES ('" + cotacao + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + valorunitario + ", " + valortotal + ", '" + prazo + "', '" + pedido + "', " + cadastrado + ")");
+        stmt = con.prepareStatement("INSERT INTO vendas_cotacao_itens (cotacao, idmaterial, codigo, descricao, qtd, valorunitario, valortotal, prazo, pedido, cadastrado) VALUES ('" + cotacao + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + valorunitario + ", " + valortotal + ", '" + prazo + "', '" + pedido + "', " + cadastrado + ")");
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-            CotacaoVenda.itensCriados = true;
-        } catch (SQLException e) {
-            String msg = "Erro ao criar item da Cotação de Venda!";
-            JOptionPane.showMessageDialog(null, msg);
-            new Thread() {
-
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<VendasCotacaoItensBean> readItens(String cotacao) {
@@ -112,7 +97,13 @@ public class VendasCotacaoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler os itens da cotação de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -151,7 +142,13 @@ public class VendasCotacaoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler item da cotação de venda.";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -170,19 +167,15 @@ public class VendasCotacaoItensDAO {
      * @param prazo
      * @param cadastrado
      * @param id
+     * @throws java.sql.SQLException
      */
-    public void update(int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, boolean cadastrado, int id) {
+    public void update(int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, boolean cadastrado, int id) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("UPDATE vendas_cotacao_itens SET idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + ", valorunitario = " + valorunitario + ", valortotal = " + valortotal + ", prazo = '" + prazo + "', cadastrado = " + cadastrado + " WHERE id = " + id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar item da cotação de venda");
-            SendEmail.EnviarErro2("Erro ao atualizar item da cotação de venda! - " + e);
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        stmt = con.prepareStatement("UPDATE vendas_cotacao_itens SET idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + ", valorunitario = " + valorunitario + ", valortotal = " + valortotal + ", prazo = '" + prazo + "', cadastrado = " + cadastrado + " WHERE id = " + id);
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public void updateDAV(String pedido, int id) {
@@ -194,11 +187,11 @@ public class VendasCotacaoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao lançar Pedido do item da cotação de venda";
             JOptionPane.showMessageDialog(null, msg);
-            new Thread() {
 
+            new Thread() {
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -213,10 +206,16 @@ public class VendasCotacaoItensDAO {
             stmt = con.prepareStatement("DELETE FROM vendas_cotacao_itens WHERE id = " + id);
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Item excluído com sucesso!");
-        } catch (HeadlessException | SQLException e) {
+        } catch (SQLException e) {
             String msg = "Erro ao excluir item da Cotação de Venda";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "/n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

@@ -3,15 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package DAO;
 
 import Bean.ComprasSolicitacaoBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.awt.AWTException;
-import java.awt.HeadlessException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -29,377 +23,367 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class ComprasSolicitacaoDAO {
-    
-    public void create(ComprasSolicitacaoBean csb) {
 
-        Connection con = ConnectionFactory.getConnection();
+    Connection con;
 
-        PreparedStatement stmt = null;
+    PreparedStatement stmt;
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO solicitacao_compras (idtela, data, solicitante, tipo, status) VALUES (?,?,?,?,?)");
-            stmt.setString(1, csb.getIdtela());
-            stmt.setString(2, csb.getData());
-            stmt.setString(3, csb.getSolicitante());
-            stmt.setString(4, csb.getTipo());
-            stmt.setString(5, csb.getStatus());
+    ResultSet rs;
 
-            stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar a solicitação de compra!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+    List<ComprasSolicitacaoBean> listcs;
+
+    ComprasSolicitacaoBean csb;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listcs = new ArrayList<>();
+    }
+
+    public void create(String solicitacao, String data, String solicitante, String tipo) throws SQLException {
+
+        conStmt();
+
+        stmt = con.prepareStatement("INSERT INTO compras_solicitacao (solicitacao, data, solicitante, tipo, status) VALUES ('" + solicitacao + "', '" + data + "', '" + solicitante + "', '" + tipo + "', 'Ativo')");
+
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<ComprasSolicitacaoBean> read() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<ComprasSolicitacaoBean> listso = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * from solicitacao_compras");
+            stmt = con.prepareStatement("SELECT * FROM compras_solicitacao");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ComprasSolicitacaoBean csb = new ComprasSolicitacaoBean();
+                csb = new ComprasSolicitacaoBean();
 
-                csb.setIdtela(rs.getString("idtela"));
+                csb.setId(rs.getInt("id"));
+                csb.setSolicitacao(rs.getString("solicitacao"));
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
                 csb.setStatus(rs.getString("status"));
 
-                listso.add(csb);
+                listcs.add(csb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Solicitações de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listso;
+        return listcs;
     }
-    
-    public String readultimoidtela() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-        
-        String ultimoidtela = "";
-
-        try {
-            stmt = con.prepareStatement("SELECT MAX(idtela) FROM solicitacao_compras");
-            rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                ultimoidtela = rs.getString("idtela");
-            }
-        } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt, rs);
-        }
-        return ultimoidtela;
-    }
-    
     public List<ComprasSolicitacaoBean> readcreated(String data) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<ComprasSolicitacaoBean> listso = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * from solicitacao_compras WHERE data = " + data);
+            stmt = con.prepareStatement("SELECT * FROM compras_solicitacao WHERE data = " + data);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ComprasSolicitacaoBean csb = new ComprasSolicitacaoBean();
+                csb = new ComprasSolicitacaoBean();
 
-                csb.setIdtela(rs.getString("idtela"));
+                csb.setSolicitacao(rs.getString("solicitacao"));
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
                 csb.setStatus(rs.getString("status"));
 
-                listso.add(csb);
+                listcs.add(csb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Solicitação de Compras criada.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listso;
+        return listcs;
     }
-    
+
     public List<ComprasSolicitacaoBean> reademaberto() {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<ComprasSolicitacaoBean> listso = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * from solicitacao_compras WHERE status = ? OR status = ?");
-            stmt.setString(1, "Ativo");
-            stmt.setString(2, "Pedido Parcial");
+            stmt = con.prepareStatement("SELECT * FROM compras_solicitacao WHERE status = 'Ativo' OR status = 'Pedido Parcial'");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ComprasSolicitacaoBean csb = new ComprasSolicitacaoBean();
+                csb = new ComprasSolicitacaoBean();
 
-                csb.setIdtela(rs.getString("idtela"));
+                csb.setSolicitacao(rs.getString("solicitacao"));
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
                 csb.setStatus(rs.getString("status"));
 
-                listso.add(csb);
+                listcs.add(csb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Solicitações de Compras em aberto.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listso;
+        return listcs;
     }
-    
+
     public List<ComprasSolicitacaoBean> readstatus(String status) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<ComprasSolicitacaoBean> listso = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * from solicitacao_compras WHERE status = ?");
-            stmt.setString(1, status);
+            stmt = con.prepareStatement("SELECT * FROM compras_solicitacao WHERE status = '" + status + "'");
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ComprasSolicitacaoBean csb = new ComprasSolicitacaoBean();
+                csb = new ComprasSolicitacaoBean();
 
-                csb.setIdtela(rs.getString("idtela"));
+                csb.setSolicitacao(rs.getString("solicitacao"));
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
                 csb.setStatus(rs.getString("status"));
 
-                listso.add(csb);
+                listcs.add(csb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Solicitações de Compras por Status.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listso;
+        return listcs;
     }
 
-    public Boolean readnome() throws SQLException {
+    private String readLastCreated() {
+        rsList();
 
-        Connection con = ConnectionFactory.getConnection();
+        String last = "";
 
-        PreparedStatement stmt = null;
+        try {
+            stmt = con.prepareStatement("SELECT solicitacao FROM compras_solicitacao ORDER BY id DESC LIMIT 1");
+            rs = stmt.executeQuery();
 
-        ResultSet rs = null;
+            while (rs.next()) {
+                last = rs.getString("solicitacao");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler última Solicitação de Compra criada.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return last;
+    }
+
+    public String solicitacaoAtual() throws SQLException {
+
+        rsList();
 
         Calendar c = Calendar.getInstance();
         String patterny = "yy";
         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
         String year = simpleDateFormaty.format(c.getTime());
-        String idtela = "SC" + year + "-0001";
+        String solicitacao = "SC" + year + "-0001";
 
-        Boolean resp = false;
+        stmt = con.prepareStatement("SELECT * FROM compras_solicitacao WHERE solicitacao = '" + solicitacao + "'");
+        rs = stmt.executeQuery();
 
-        try {
-            stmt = con.prepareStatement("SELECT * FROM solicitacao_compras WHERE idtela = ?");
-            stmt.setString(1, idtela);
-            rs = stmt.executeQuery();
-
-            // checking if ResultSet is empty
-            resp = rs.next();
-        } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt, rs);
+        //checking if ResultSet is empty
+        if (rs.next()) {
+            String last = readLastCreated();
+            int yearint = Integer.parseInt(last.replace("SC" + year + "-", ""));
+            int yearnovo = yearint + 1;
+            solicitacao = "SC" + year + "-" + String.format("%04d", yearnovo);
         }
 
-        return resp;
+        ConnectionFactory.closeConnection(con, stmt, rs);
+
+        return solicitacao;
     }
 
-    public List<ComprasSolicitacaoBean> click(String id) {
+    public int idSolicitacao(String solicitacao) throws SQLException {
+        rsList();
 
-        Connection con = ConnectionFactory.getConnection();
+        int id = 0;
 
-        PreparedStatement stmt = null;
+        stmt = con.prepareStatement("SELECT * FROM compras_solicitacao WHERE solicitacao = '" + solicitacao + "'");
 
-        ResultSet rs = null;
+        rs = stmt.executeQuery();
 
-        List<ComprasSolicitacaoBean> listso = new ArrayList<>();
+        if (rs.next()) {
+            id = rs.getInt("id");
+        }
+
+        ConnectionFactory.closeConnection(con, stmt, rs);
+
+        return id;
+    }
+
+    public List<ComprasSolicitacaoBean> click(int idSolicitacao) {
+
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * from solicitacao_compras WHERE idtela = ?");
-            stmt.setString(1, id);
+            stmt = con.prepareStatement("SELECT * FROM compras_solicitacao WHERE id = " + idSolicitacao);
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ComprasSolicitacaoBean csb = new ComprasSolicitacaoBean();
+                csb = new ComprasSolicitacaoBean();
 
-                csb.setIdtela(rs.getString("idtela"));
+                csb.setSolicitacao(rs.getString("solicitacao"));
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
                 csb.setStatus(rs.getString("status"));
 
-                listso.add(csb);
+                listcs.add(csb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler Solicitação de Compra.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listso;
+        return listcs;
     }
-    
+
     public List<ComprasSolicitacaoBean> pesquisa(String pesquisa) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<ComprasSolicitacaoBean> listob = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM solicitacao_compras WHERE idtela LIKE '%" + pesquisa + "%' OR solicitante LIKE '%" + pesquisa + "%' OR tipo LIKE '%" + pesquisa + "%' OR status LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM compras_solicitacao WHERE solicitacao LIKE '%" + pesquisa + "%' OR solicitante LIKE '%" + pesquisa + "%' OR tipo LIKE '%" + pesquisa + "%' OR status LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ComprasSolicitacaoBean csb = new ComprasSolicitacaoBean();
+                csb = new ComprasSolicitacaoBean();
 
-                csb.setIdtela(rs.getString("idtela"));
+                csb.setSolicitacao(rs.getString("solicitacao"));
                 csb.setData(rs.getString("data"));
                 csb.setSolicitante(rs.getString("solicitante"));
                 csb.setTipo(rs.getString("tipo"));
                 csb.setStatus(rs.getString("status"));
 
-                listob.add(csb);
+                listcs.add(csb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao pesquisar Solicitações de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        return listob;
+        return listcs;
     }
 
-    public void update(ComprasSolicitacaoBean csb) {
+    public void update(String solicitante, String tipo, int idSolicitacao) throws SQLException {
 
-        Connection con = ConnectionFactory.getConnection();
+        conStmt();
 
-        PreparedStatement stmt = null;
+        stmt = con.prepareStatement("UPDATE compras_solicitacao SET solicitante = '" + solicitante + "', tipo = '" + tipo + "' WHERE id = " + idSolicitacao);
 
-        try {
-            stmt = con.prepareStatement("UPDATE solicitacao_compras SET solicitante = ?, tipo = ? WHERE idtela = ?");
-            stmt.setString(1, csb.getSolicitante());
-            stmt.setString(2, csb.getTipo());
-            stmt.setString(3, csb.getIdtela());
+        stmt.executeUpdate();
 
-            stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
+
     }
 
-    public void updatestatus(ComprasSolicitacaoBean csb) {
+    public void updatestatus(String status, String solicitacao) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE solicitacao_compras SET status = ? WHERE idtela = ?");
-            stmt.setString(1, csb.getStatus());
-            stmt.setString(2, csb.getIdtela());
+            stmt = con.prepareStatement("UPDATE compras_solicitacao SET status = '" + status + "' WHERE solicitacao = '" + solicitacao + "'");
 
             stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(ComprasSolicitacaoDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da Solicitação de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

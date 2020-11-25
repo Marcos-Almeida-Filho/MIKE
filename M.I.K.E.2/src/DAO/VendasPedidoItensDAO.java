@@ -8,8 +8,6 @@ package DAO;
 import Bean.VendasPedidoItensBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import View.vendas.CotacaoVenda;
-import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -61,30 +59,16 @@ public class VendasPedidoItensDAO {
      * @param prazo
      * @param nf
      * @param op
+     * @throws java.sql.SQLException
      */
-    public void create(String dav, int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, String pedido, String nf, String op) {
+    public void create(String dav, int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, String pedido, String nf, String op) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_pedido_itens (dav, idmaterial, codigo, descricao, qtd, valorunitario, valortotal, prazo, pedido, nf, op) VALUES ('" + dav + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + valorunitario + ", " + valortotal + ", '" + prazo + "', '" + pedido + "', '" + nf + "', '" + op + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_pedido_itens (dav, idmaterial, codigo, descricao, qtd, valorunitario, valortotal, prazo, pedido, nf, op) VALUES ('" + dav + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + valorunitario + ", " + valortotal + ", '" + prazo + "', '" + pedido + "', '" + nf + "', '" + op + "')");
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-            CotacaoVenda.itensCriados = true;
-        } catch (SQLException e) {
-            String msg = "Erro ao criar item do Pedido de Venda!";
-            JOptionPane.showMessageDialog(null, msg);
-            
-            new Thread() {
-                
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<VendasPedidoItensBean> readItens(String dav) {
@@ -114,12 +98,11 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler os itens do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -156,12 +139,11 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler os itens do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -201,12 +183,11 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler item do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -227,27 +208,15 @@ public class VendasPedidoItensDAO {
      * @param prazo
      * @param pedido
      * @param id
+     * @throws java.sql.SQLException
      */
-    public void update(int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, String pedido, int id) {
+    public void update(int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, String pedido, int id) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + ", valorunitario = " + valorunitario + ", valortotal = " + valortotal + ", prazo = '" + prazo + "', pedido = '" + pedido + "' WHERE id = " + id);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            String msg = "Erro ao atualizar item do Pedido de Venda.";
-            JOptionPane.showMessageDialog(null, msg);
-            
-            new Thread() {
-                
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + ", valorunitario = " + valorunitario + ", valortotal = " + valortotal + ", prazo = '" + prazo + "', pedido = '" + pedido + "' WHERE id = " + id);
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public void updateNotaFiscal(String nf, int idItemPedido) {
@@ -259,12 +228,11 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao atualizar nota fiscal do item do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -281,12 +249,11 @@ public class VendasPedidoItensDAO {
         } catch (SQLException e) {
             String msg = "Erro ao atualizar OP do item do Pedido de Venda.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {
@@ -301,15 +268,14 @@ public class VendasPedidoItensDAO {
             stmt = con.prepareStatement("DELETE FROM vendas_pedido_itens WHERE id = " + id);
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Item excluído com sucesso!");
-        } catch (HeadlessException | SQLException e) {
+        } catch (SQLException e) {
             String msg = "Erro ao excluir item do Pedido de Venda";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
                 @Override
                 public void run() {
-                    SendEmail.EnviarErro2(msg + "\n" + e);
+                    SendEmail.EnviarErro2(msg, e);
                 }
             }.start();
         } finally {

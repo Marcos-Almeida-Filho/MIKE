@@ -8,17 +8,12 @@ package DAO;
 import Bean.InsumosDocBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.awt.AWTException;
-import java.awt.HeadlessException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,45 +21,60 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class InsumosDocDAO {
-    
-    public void create(InsumosDocBean idb) {
 
-        Connection con = ConnectionFactory.getConnection();
+    Connection con;
 
-        PreparedStatement stmt = null;
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<InsumosDocBean> listidb;
+
+    InsumosDocBean idb;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        listidb = new ArrayList<>();
+    }
+
+    public void create(int idInsumo, String descricao, String local) {
+
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO insumos_documentos (idinsumo, descricao, local) VALUES (?,?,?)");
-            stmt.setInt(1, idb.getIdinsumo());
-            stmt.setString(2, idb.getDescricao());
-            stmt.setString(3, idb.getLocal());
+            stmt = con.prepareStatement("INSERT INTO insumos_docs (idinsumo, descricao, local) VALUES (" + idInsumo + ", '" + descricao + "', '" + local + "')");
 
             stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao salvar arquivos do insumo!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDocDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (SQLException e) {
+            String msg = "Erro ao salvar arquivos do insumo!";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
 
-    public List<InsumosDocBean> readitens(String idinsumo) {
+    public List<InsumosDocBean> readDocs(int idInsumo) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<InsumosDocBean> listios = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM os_documentos WHERE idinsumo = ?");
-            stmt.setString(1, idinsumo);
+            stmt = con.prepareStatement("SELECT * FROM insumos_docs WHERE idinsumo = " + idInsumo);
 
             rs = stmt.executeQuery();
 
@@ -76,66 +86,66 @@ public class InsumosDocDAO {
                 iosb.setDescricao(rs.getString("descricao"));
                 iosb.setLocal(rs.getString("local"));
 
-                listios.add(iosb);
+                listidb.add(iosb);
             }
         } catch (SQLException e) {
-            Logger.getLogger(InsumosDocDAO.class.getName()).log(Level.SEVERE, null, e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDocDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            String msg = "Erro ao ler documentos do Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
 
-        return listios;
+        return listidb;
     }
 
-    public void update(InsumosDocBean idb) {
+    public void update(int idInsumo, String descricao, String local, int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE os_documentos SET idinsumo = ?, descricao = ?, local = ? WHERE id = ?");
-            stmt.setInt(1, idb.getIdinsumo());
-            stmt.setString(2, idb.getDescricao());
-            stmt.setString(3, idb.getLocal());
-            stmt.setInt(4, idb.getId());
+            stmt = con.prepareStatement("UPDATE insumos_docs SET idinsumo = " + idInsumo + ", descricao = '" + descricao + "', local = '" + local + "' WHERE id = " + id);
 
             stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDocDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar documento do Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
 
-    public void delete(InsumosDocBean idb) {
+    public void delete(int id) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("DELETE FROM os_documentos WHERE id = ?");
-            stmt.setInt(1, idb.getId());
+            stmt = con.prepareStatement("DELETE FROM insumos_docs WHERE id = " + id);
 
             stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao excluir!\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(InsumosDocDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        } catch (SQLException e) {
+            String msg = "Erro ao excluir documento do Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

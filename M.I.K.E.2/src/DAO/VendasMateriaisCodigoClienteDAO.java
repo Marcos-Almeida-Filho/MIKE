@@ -48,23 +48,14 @@ public class VendasMateriaisCodigoClienteDAO {
         listvmccb = new ArrayList<>();
     }
 
-    public void create(int idmaterial, String cliente, String codigo, String descricao) {
+    public void create(int idmaterial, String cliente, String codigo, String descricao) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_materiais_cod_cli (idmaterial, cliente, codigo, descricao) VALUES (" + idmaterial + ",'" + cliente + "','" + codigo + "','" + descricao + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_materiais_cod_cli (idmaterial, cliente, codigo, descricao) VALUES (" + idmaterial + ",'" + cliente + "','" + codigo + "','" + descricao + "')");
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao criar código por cliente.\n" + e);
-            try {
-                SendEmail.EnviarErro(e.toString());
-            } catch (AWTException | IOException ex) {
-                Logger.getLogger(VendasMateriaisCodigoClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<VendasMateriaisCodigoClienteBean> read(int id) {
@@ -112,8 +103,15 @@ public class VendasMateriaisCodigoClienteDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar código por cliente.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao atualizar Código por Cliente.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -127,8 +125,15 @@ public class VendasMateriaisCodigoClienteDAO {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Erro ao excluir código por cliente.\n" + e);
-            SendEmail.EnviarErro2(e.toString());
+            String msg = "Erro ao excluir Código por Cliente.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

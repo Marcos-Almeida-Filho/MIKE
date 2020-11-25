@@ -15,7 +15,6 @@ public class InsumosMovBean {
     private int idinsumo;
     private String data;
     private String tipomov;
-    private int idmov;
     private double qtdinicial;
     private double qtdmov;
     private double qtdfinal;
@@ -51,14 +50,6 @@ public class InsumosMovBean {
 
     public void setTipomov(String tipomov) {
         this.tipomov = tipomov;
-    }
-
-    public int getIdmov() {
-        return idmov;
-    }
-
-    public void setIdmov(int idmov) {
-        this.idmov = idmov;
     }
 
     public double getQtdinicial() {

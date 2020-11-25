@@ -8,8 +8,6 @@ package DAO;
 import Bean.VendasPedidoObsBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import View.vendas.CotacaoVenda;
-import java.awt.HeadlessException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,23 +53,16 @@ public class VendasPedidoObsDAO {
      * @param data - Data que a observação foi gerada.
      * @param user - Usuário que fez a observação.
      * @param obs - Observação feita.
+     * @throws java.sql.SQLException
      */
-    public void create(String pedido, String data, String user, String obs) {
+    public void create(String pedido, String data, String user, String obs) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO vendas_pedido_obs (pedido, data, usuario, obs) VALUES ('" + pedido + "','" + data + "','" + user + "','" + obs + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_pedido_obs (pedido, data, usuario, obs) VALUES ('" + pedido + "','" + data + "','" + user + "','" + obs + "')");
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-            CotacaoVenda.obsCriadas = true;
-        } catch (SQLException e) {
-            String msg = "Erro ao criar observação do Pedido de Venda!";
-            JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     /**
@@ -100,7 +91,13 @@ public class VendasPedidoObsDAO {
         } catch (SQLException e) {
             String msg = "Erro ao ler observações do pedido de venda!";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
@@ -124,7 +121,13 @@ public class VendasPedidoObsDAO {
         } catch (SQLException e) {
             String msg = "Erro ao atualizar observação do Pedido de Venda!";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
@@ -142,10 +145,16 @@ public class VendasPedidoObsDAO {
             stmt = con.prepareStatement("DELETE FROM vendas_pedido_obs WHERE id = " + id);
             stmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Observação excluída com sucesso!");
-        } catch (HeadlessException | SQLException e) {
+        } catch (SQLException e) {
             String msg = "Erro ao excluir observação do Pedido de Venda!";
             JOptionPane.showMessageDialog(null, msg);
-            SendEmail.EnviarErro2(msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

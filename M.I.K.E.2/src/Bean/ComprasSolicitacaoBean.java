@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Bean;
 
 /**
@@ -11,9 +10,9 @@ package Bean;
  * @author Marcos Filho
  */
 public class ComprasSolicitacaoBean {
-    
+
     private int id;
-    private String idtela;
+    private String solicitacao;
     private String data;
     private String solicitante;
     private String tipo;
@@ -27,12 +26,12 @@ public class ComprasSolicitacaoBean {
         this.id = id;
     }
 
-    public String getIdtela() {
-        return idtela;
+    public String getSolicitacao() {
+        return solicitacao;
     }
 
-    public void setIdtela(String idtela) {
-        this.idtela = idtela;
+    public void setSolicitacao(String solicitacao) {
+        this.solicitacao = solicitacao;
     }
 
     public String getData() {
@@ -66,6 +65,5 @@ public class ComprasSolicitacaoBean {
     public void setStatus(String status) {
         this.status = status;
     }
-    
-    
+
 }

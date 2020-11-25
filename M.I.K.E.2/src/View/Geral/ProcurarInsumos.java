@@ -6,7 +6,6 @@
 package View.Geral;
 
 import DAO.InsumosDAO;
-import View.compras.AdicionarInsumoSolicitacaoCompras;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -15,27 +14,32 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ProcurarInsumos extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form ProcurarInsumos
-     */
+    static InsumosDAO idao = new InsumosDAO();
+
     static String origem, tipo;
 
+    /**
+     * Creates new form ProcurarInsumos
+     *
+     * @param origin
+     * @param type
+     */
     public ProcurarInsumos(String origin, String type) {
         initComponents();
         origem = origin;
         tipo = type;
+        readinsumos();
     }
-    
+
     public static void readinsumos() {
         DefaultTableModel model = (DefaultTableModel) tableinsumos.getModel();
         model.setNumRows(0);
-        
-        InsumosDAO idao = new InsumosDAO();
-        
+
         idao.readPorTipo(tipo).forEach(ib -> {
             model.addRow(new Object[]{
                 ib.getCodigo(),
-                ib.getDescricao()
+                ib.getDescricao(),
+                ib.getUnidade()
             });
         });
     }
@@ -84,11 +88,11 @@ public class ProcurarInsumos extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Código", "Descrição"
+                "Código", "Descrição", "Unidade"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -102,6 +106,11 @@ public class ProcurarInsumos extends javax.swing.JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(tableinsumos);
+        if (tableinsumos.getColumnModel().getColumnCount() > 0) {
+            tableinsumos.getColumnModel().getColumn(2).setMinWidth(60);
+            tableinsumos.getColumnModel().getColumn(2).setPreferredWidth(60);
+            tableinsumos.getColumnModel().getColumn(2).setMaxWidth(60);
+        }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -142,12 +151,18 @@ public class ProcurarInsumos extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             String codigo = tableinsumos.getValueAt(tableinsumos.getSelectedRow(), 0).toString();
             String descricao = tableinsumos.getValueAt(tableinsumos.getSelectedRow(), 1).toString();
+            String unidade = tableinsumos.getValueAt(tableinsumos.getSelectedRow(), 2).toString();
             switch (origem) {
                 case "AdicionarInsumoSolicitacaoCompras":
                     AdicionarInsumoSolicitacaoCompras.txtcodigo.setText(codigo);
                     AdicionarInsumoSolicitacaoCompras.txtdescricao.setText(descricao);
+                    AdicionarInsumoSolicitacaoCompras.txtun.setText(unidade);
+                    break;
+                case "AdicionarInsumoCotacaoCompras":
+                    
                     break;
             }
+            dispose();
         }
     }//GEN-LAST:event_tableinsumosMouseClicked
 
