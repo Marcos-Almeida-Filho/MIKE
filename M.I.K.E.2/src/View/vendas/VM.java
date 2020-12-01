@@ -1263,6 +1263,7 @@ public class VM extends javax.swing.JInternalFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
         txtQtdOp = new javax.swing.JTextField();
+        jButton11 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
 
@@ -2489,13 +2490,24 @@ public class VM extends javax.swing.JInternalFrame {
                 .addComponent(txtQtdOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jButton11.setText("Lançar Movimentação Manual");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelmovLayout = new javax.swing.GroupLayout(panelmov);
         panelmov.setLayout(panelmovLayout);
         panelmovLayout.setHorizontalGroup(
             panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelmovLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelmovLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1135, Short.MAX_VALUE)
+                .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelmovLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton11))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1135, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -2514,9 +2526,10 @@ public class VM extends javax.swing.JInternalFrame {
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addGap(0, 48, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton11))
         );
 
         tabmaterialinfo.addTab("Movimentação", panelmov);
@@ -3381,6 +3394,55 @@ public class VM extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableobsMouseClicked
 
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        if (Session.nivel.equals("Administrador")) {
+            if (idmaterial == 0) {
+                JOptionPane.showMessageDialog(null, "Selecione um produto primeiro.");
+            } else {
+                double estoqueAtual = vmd.readEstoque(idmaterial);
+                String tipo = "";
+                double qtdMovimentada = 0;
+                try {
+                    tipo = JOptionPane.showInputDialog(null, "Qual o tipo da movimentação a ser colocada?", "Tipo Movimentação", JOptionPane.YES_NO_OPTION);
+                    qtdMovimentada = Double.parseDouble(JOptionPane.showInputDialog(null, "Qual a quantidade a ser colocada no estoque?", "Quantidade Movimentada", JOptionPane.YES_NO_OPTION));
+                } catch (NullPointerException e) {
+                    String msg = "Erro.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+
+                double saldo = estoqueAtual + qtdMovimentada;
+
+                try {
+                    vmd.updateEstoque(saldo, idmaterial);
+                    vmmd.create(idmaterial, estoqueAtual, qtdMovimentada, saldo, tipo, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+
+                    JOptionPane.showMessageDialog(null, "Movimentação criada com sucesso.");
+
+                    lerMaterial(idmaterial);
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar movimentação do Material.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Sem permissão.");
+        }
+    }//GEN-LAST:event_jButton11ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.ButtonGroup GroupMateriaPrima;
@@ -3399,6 +3461,7 @@ public class VM extends javax.swing.JInternalFrame {
     public static javax.swing.JCheckBox checkweldon;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
+    public javax.swing.JButton jButton11;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;

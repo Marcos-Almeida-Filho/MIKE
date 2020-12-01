@@ -1251,168 +1251,169 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Nenhum representante selecionado.");
         } else if (txtCondPag.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Nenhuma condição de pagamento selecionada.");
-        } else if (idCotacao == 0) {
-            String cotacao = vcd.cotacaoAtual();
+        } else {
+            if (idCotacao == 0) {
+                String cotacao = vcd.cotacaoAtual();
 
-            try {
-                //Criar nova cotação
-                vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+                try {
+                    //Criar nova cotação
+                    vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+
+                    idCotacao = vcd.idCotacao(cotacao);
+
+                    //Criar itens da cotação
+                    for (int i = 0; i < tableItens.getRowCount(); i++) {
+                        vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+                    }
+
+                    //Criar documentos da cotação
+                    for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                        if (tableDocs.getValueAt(i, 0).equals("")) {
+                            //Localicação do documento original
+                            File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                            //Pasta que será colocar o documento
+                            File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
+                            //Documento copiado do original
+                            File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                            //Criar pasta no caso de já não existir
+                            folder.mkdirs();
+                            try {
+                                //Criar o documento copiado na pasta
+                                Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                            } catch (IOException e) {
+                                String msg = "Erro ao criar documento em rede.";
+                                JOptionPane.showMessageDialog(null, msg);
+
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        SendEmail.EnviarErro2(msg, e);
+                                    }
+                                }.start();
+                            }
+
+                            vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
+                        }
+                    }
+
+                    //Criar observações da cotação
+                    for (int i = 0; i < tableObs.getRowCount(); i++) {
+                        vcod.create(cotacao, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Cotação de Venda criada com sucesso!");
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar Cotação de Venda.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
 
                 lerCotacao(cotacao);
-                idCotacao = vcd.idCotacao(cotacao);
+            } else {
+                String cotacao = txtCotacao.getText();
 
-                //Criar itens da cotação
-                for (int i = 0; i < tableItens.getRowCount(); i++) {
-                    vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
-                }
+                try {
+                    //Atualizar cotação
+                    vcd.update(cotacao, txtCliente.getText(), radioCadastrado.isSelected(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
-                //Criar documentos da cotação
-                for (int i = 0; i < tableDocs.getRowCount(); i++) {
-                    if (tableDocs.getValueAt(i, 0).equals("")) {
-                        //Localicação do documento original
-                        File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
-                        //Pasta que será colocar o documento
-                        File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
-                        //Documento copiado do original
-                        File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                        //Criar pasta no caso de já não existir
-                        folder.mkdirs();
-                        try {
-                            //Criar o documento copiado na pasta
-                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                        } catch (IOException e) {
-                            String msg = "Erro ao criar documento em rede.";
-                            JOptionPane.showMessageDialog(null, msg);
-
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    SendEmail.EnviarErro2(msg, e);
-                                }
-                            }.start();
+                    //Criar itens da cotação que não existiam
+                    for (int i = 0; i < tableItens.getRowCount(); i++) {
+                        if (tableItens.getValueAt(i, 0).equals("")) {
+                            vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+                        } else {
+                            vcid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 7).toString())), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
                         }
-
-                        vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
                     }
-                }
 
-                //Criar observações da cotação
-                for (int i = 0; i < tableObs.getRowCount(); i++) {
-                    vcod.create(cotacao, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
-                }
+                    //Criar documentos da cotação que não existiam
+                    for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                        if (tableDocs.getValueAt(i, 0).equals("")) {
+                            //Localicação do documento original
+                            File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                            //Pasta que será colocar o documento
+                            File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
+                            //Documento copiado do original
+                            File filecopy = new File(folder + "/" + fileoriginal.getName());
 
-                JOptionPane.showMessageDialog(null, "Cotação de Venda criada com sucesso!");
-            } catch (SQLException e) {
-                String msg = "Erro ao criar Cotação de Venda.";
-                JOptionPane.showMessageDialog(null, msg);
+                            //Criar pasta no caso de já não existir
+                            folder.mkdirs();
+                            try {
+                                //Criar o documento copiado na pasta
+                                Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                            } catch (IOException e) {
+                                String msg = "Erro ao criar documento em rede.";
+                                JOptionPane.showMessageDialog(null, msg);
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarErro2(msg, e);
-                    }
-                }.start();
-            }
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        SendEmail.EnviarErro2(msg, e);
+                                    }
+                                }.start();
+                            }
 
-            lerCotacao(cotacao);
-        } else {
-            String cotacao = txtCotacao.getText();
-
-            try {
-                //Atualizar cotação
-                vcd.update(cotacao, txtCliente.getText(), radioCadastrado.isSelected(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
-
-                //Criar itens da cotação que não existiam
-                for (int i = 0; i < tableItens.getRowCount(); i++) {
-                    if (tableItens.getValueAt(i, 0).equals("")) {
-                        vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
-                    } else {
-                        vcid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 7).toString())), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
-                    }
-                }
-
-                //Criar documentos da cotação que não existiam
-                for (int i = 0; i < tableDocs.getRowCount(); i++) {
-                    if (tableDocs.getValueAt(i, 0).equals("")) {
-                        //Localicação do documento original
-                        File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
-                        //Pasta que será colocar o documento
-                        File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(cotacao));
-                        //Documento copiado do original
-                        File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                        //Criar pasta no caso de já não existir
-                        folder.mkdirs();
-                        try {
-                            //Criar o documento copiado na pasta
-                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                        } catch (IOException e) {
-                            String msg = "Erro ao criar documento em rede.";
-                            JOptionPane.showMessageDialog(null, msg);
-
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    SendEmail.EnviarErro2(msg, e);
-                                }
-                            }.start();
+                            vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
                         }
-
-                        vcdd.create(cotacao, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
                     }
+
+                    //Criar observações da cotação
+                    for (int i = 0; i < tableObs.getRowCount(); i++) {
+                        if (tableObs.getValueAt(i, 0).equals("")) {
+                            vcod.create(cotacao, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Cotação de Venda atualizada com sucesso.");
+                } catch (SQLException e) {
+                    String msg = "Erro ao atualizar Cotação de Vendas.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
                 }
 
-                //Criar observações da cotação
-                for (int i = 0; i < tableObs.getRowCount(); i++) {
-                    if (tableObs.getValueAt(i, 0).equals("")) {
-                        vcod.create(cotacao, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
-                    }
+                //Verificar alterações
+                String id = txtCotacao.getText();
+                String tipo = this.getClass().getSimpleName();
+                String data = Dates.CriarDataCompletaParaDB();
+                String user = Session.nome;
+                if (!txtCliente.getText().equals(clienteOriginal)) {
+                    ad.create(id, tipo, data, user, "Cliente", clienteOriginal, txtCliente.getText());
+                }
+                if (!txtCondPag.getText().equals(condicaoOriginal)) {
+                    ad.create(id, tipo, data, user, "Condição de Pagamento", condicaoOriginal, txtCondPag.getText());
+                }
+                if (!txtRep.getText().equals(representanteOriginal)) {
+                    ad.create(id, tipo, data, user, "Representante", representanteOriginal, txtRep.getText());
+                }
+                if (!txtVendedor.getText().equals(vendedorOriginal)) {
+                    ad.create(id, tipo, data, user, "Vendedor", vendedorOriginal, txtVendedor.getText());
+                }
+                if (numDocsOriginal != tableDocs.getRowCount()) {
+                    ad.create(id, tipo, data, user, "Número de Documentos", String.valueOf(numDocsOriginal), String.valueOf(tableDocs.getRowCount()));
+                }
+                if (numObsOriginal != tableObs.getRowCount()) {
+                    ad.create(id, tipo, data, user, "Número de Observações", String.valueOf(numObsOriginal), String.valueOf(tableObs.getRowCount()));
+                }
+                if (numItensOriginal != tableItens.getRowCount()) {
+                    ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
                 }
 
-                JOptionPane.showMessageDialog(null, "Cotação de Venda atualizada com sucesso.");
-            } catch (SQLException e) {
-                String msg = "Erro ao atualizar Cotação de Vendas.";
-                JOptionPane.showMessageDialog(null, msg);
+                lerCotacoes();
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarErro2(msg, e);
-                    }
-                }.start();
+                lerCotacao(cotacao);
             }
-
-            //Verificar alterações
-            String id = txtCotacao.getText();
-            String tipo = this.getClass().getSimpleName();
-            String data = Dates.CriarDataCompletaParaDB();
-            String user = Session.nome;
-            if (!txtCliente.getText().equals(clienteOriginal)) {
-                ad.create(id, tipo, data, user, "Cliente", clienteOriginal, txtCliente.getText());
-            }
-            if (!txtCondPag.getText().equals(condicaoOriginal)) {
-                ad.create(id, tipo, data, user, "Condição de Pagamento", condicaoOriginal, txtCondPag.getText());
-            }
-            if (!txtRep.getText().equals(representanteOriginal)) {
-                ad.create(id, tipo, data, user, "Representante", representanteOriginal, txtRep.getText());
-            }
-            if (!txtVendedor.getText().equals(vendedorOriginal)) {
-                ad.create(id, tipo, data, user, "Vendedor", vendedorOriginal, txtVendedor.getText());
-            }
-            if (numDocsOriginal != tableDocs.getRowCount()) {
-                ad.create(id, tipo, data, user, "Número de Documentos", String.valueOf(numDocsOriginal), String.valueOf(tableDocs.getRowCount()));
-            }
-            if (numObsOriginal != tableObs.getRowCount()) {
-                ad.create(id, tipo, data, user, "Número de Observações", String.valueOf(numObsOriginal), String.valueOf(tableObs.getRowCount()));
-            }
-            if (numItensOriginal != tableItens.getRowCount()) {
-                ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
-            }
-
-            lerCotacoes();
-
-            lerCotacao(cotacao);
         }
 
         valoresOriginais();

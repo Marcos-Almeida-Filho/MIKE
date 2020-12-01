@@ -173,7 +173,7 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableLocalMouseClicked
 
     private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
-        
+        readLocal();
     }//GEN-LAST:event_txtPesquisaKeyReleased
 
 

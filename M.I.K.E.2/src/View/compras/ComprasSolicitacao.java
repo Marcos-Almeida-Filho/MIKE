@@ -37,7 +37,7 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
 
     static TiposInsumoDAO tid = new TiposInsumoDAO();
 
-    int idSolicitacao = 0;
+    int idSolicitacao = 0, indexTipo;
 
     static DefaultTableModel modelSolicitacoes, modelItens, modelObs;
 
@@ -328,6 +328,11 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
         txtsolicitante.setEditable(false);
 
         cbtipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
+        cbtipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbtipoActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Tipo de Material a Comprar");
 
@@ -847,7 +852,7 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
         } else {
             for (int i = 0; i < tableItens.getRowCount(); i++) {
                 if (tableItens.getValueAt(i, 1).equals(true)) {
-                    
+
                 }
             }
         }
@@ -866,6 +871,15 @@ public class ComprasSolicitacao extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_btnAllActionPerformed
+
+    private void cbtipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbtipoActionPerformed
+        if (tableItens.getRowCount() > 0) {
+            JOptionPane.showMessageDialog(null, "Não é possível adicionar mais de um tipo de Insumo na Solicitação.");
+            cbtipo.setSelectedIndex(indexTipo);
+        } else {
+            indexTipo = cbtipo.getSelectedIndex();
+        }
+    }//GEN-LAST:event_cbtipoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

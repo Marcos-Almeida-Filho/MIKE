@@ -226,6 +226,8 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
                     }
                 }.start();
             }
+
+            OP.readOPs();
         } else {
             JComboBox cbProcessos = new JComboBox();
 

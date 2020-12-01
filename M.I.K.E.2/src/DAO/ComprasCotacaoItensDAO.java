@@ -55,34 +55,46 @@ public class ComprasCotacaoItensDAO {
         ConnectionFactory.closeConnection(con, stmt);
     }
 
-    public List<ComprasCotacaoItensBean> readItensCotacao(String cotacao) throws SQLException {
+    public List<ComprasCotacaoItensBean> readItensCotacao(String cotacao) {
         rsList();
 
-        stmt = con.prepareStatement("SELECT * FROM " + tabledb + " WHERE cotacao = '" + cotacao + "'");
+        try {
+            stmt = con.prepareStatement("SELECT * FROM " + tabledb + " WHERE cotacao = '" + cotacao + "'");
 
-        rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            ccib = new ComprasCotacaoItensBean();
+            while (rs.next()) {
+                ccib = new ComprasCotacaoItensBean();
 
-            ccib.setId(rs.getInt("id"));
-            ccib.setCodigo(rs.getString("codigo"));
-            ccib.setDescricao(rs.getString("descricao"));
-            ccib.setQtd(rs.getDouble("qtd"));
-            ccib.setPedido(rs.getString("pedido"));
+                ccib.setId(rs.getInt("id"));
+                ccib.setCodigo(rs.getString("codigo"));
+                ccib.setDescricao(rs.getString("descricao"));
+                ccib.setQtd(rs.getDouble("qtd"));
+                ccib.setPedido(rs.getString("pedido"));
 
-            listccib.add(ccib);
+                listccib.add(ccib);
+            }
+        } catch (SQLException e) {
+            msg = "Erro ao ler itens da Cotação de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
-        ConnectionFactory.closeConnection(con, stmt, rs);
 
         return listccib;
     }
 
     /**
-     * 
+     *
      * @param id
-     * @return 
+     * @return
      */
     public List<ComprasCotacaoItensBean> readItem(int id) {
         rsList();
@@ -131,7 +143,7 @@ public class ComprasCotacaoItensDAO {
     }
 
     /**
-     * 
+     *
      * @param codigo
      * @param descricao
      * @param qtd
@@ -144,7 +156,7 @@ public class ComprasCotacaoItensDAO {
      * @param for3
      * @param valor3
      * @param prazo3
-     * @param id 
+     * @param id
      */
     public void updateItem(String codigo, String descricao, double qtd, String for1, double valor1, String prazo1, String for2, double valor2, String prazo2, String for3, double valor3, String prazo3, int id) {
         conStmt();

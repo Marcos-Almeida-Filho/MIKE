@@ -18,12 +18,21 @@ public class ComprasCotacaoItensBean {
     private double qtd;
     private String for1;
     private double valor1;
+    private double frete1;
+    private String condicao1;
+    private String orcamento1;
     private String prazo1;
     private String for2;
     private double valor2;
+    private double frete2;
+    private String condicao2;
+    private String orcamento2;
     private String prazo2;
     private String for3;
     private double valor3;
+    private double frete3;
+    private String condicao3;
+    private String orcamento3;
     private String prazo3;
     private String pedido;
 
@@ -83,6 +92,30 @@ public class ComprasCotacaoItensBean {
         this.valor1 = valor1;
     }
 
+    public double getFrete1() {
+        return frete1;
+    }
+
+    public void setFrete1(double frete1) {
+        this.frete1 = frete1;
+    }
+
+    public String getCondicao1() {
+        return condicao1;
+    }
+
+    public void setCondicao1(String condicao1) {
+        this.condicao1 = condicao1;
+    }
+
+    public String getOrcamento1() {
+        return orcamento1;
+    }
+
+    public void setOrcamento1(String orcamento1) {
+        this.orcamento1 = orcamento1;
+    }
+
     public String getPrazo1() {
         return prazo1;
     }
@@ -107,6 +140,30 @@ public class ComprasCotacaoItensBean {
         this.valor2 = valor2;
     }
 
+    public double getFrete2() {
+        return frete2;
+    }
+
+    public void setFrete2(double frete2) {
+        this.frete2 = frete2;
+    }
+
+    public String getCondicao2() {
+        return condicao2;
+    }
+
+    public void setCondicao2(String condicao2) {
+        this.condicao2 = condicao2;
+    }
+
+    public String getOrcamento2() {
+        return orcamento2;
+    }
+
+    public void setOrcamento2(String orcamento2) {
+        this.orcamento2 = orcamento2;
+    }
+
     public String getPrazo2() {
         return prazo2;
     }
@@ -129,6 +186,30 @@ public class ComprasCotacaoItensBean {
 
     public void setValor3(double valor3) {
         this.valor3 = valor3;
+    }
+
+    public double getFrete3() {
+        return frete3;
+    }
+
+    public void setFrete3(double frete3) {
+        this.frete3 = frete3;
+    }
+
+    public String getCondicao3() {
+        return condicao3;
+    }
+
+    public void setCondicao3(String condicao3) {
+        this.condicao3 = condicao3;
+    }
+
+    public String getOrcamento3() {
+        return orcamento3;
+    }
+
+    public void setOrcamento3(String orcamento3) {
+        this.orcamento3 = orcamento3;
     }
 
     public String getPrazo3() {

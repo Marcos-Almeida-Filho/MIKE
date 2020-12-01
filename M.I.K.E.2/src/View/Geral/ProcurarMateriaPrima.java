@@ -7,8 +7,11 @@ package View.Geral;
 
 import DAO.InsumosDAO;
 import DAO.OPMPDAO;
+import Methods.SendEmail;
 import View.vendas.OP;
 import View.vendas.VM;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -163,7 +166,19 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
                     break;
                 case "OP":
                     String op = OP.txtNumOP.getText();
-                    ompd.create(op, codigo, desc, 0);
+                    try {
+                        ompd.create(op, codigo, desc, 0);
+                    } catch (SQLException e) {
+                        String msg = "Erro ao criar matéria prima da OP.";
+                        JOptionPane.showMessageDialog(null, msg);
+
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                SendEmail.EnviarErro2(msg, e);
+                            }
+                        }.start();
+                    }
                     OP.lerMP(op);
                     break;
             }

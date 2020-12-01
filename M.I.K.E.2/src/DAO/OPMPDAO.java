@@ -42,26 +42,14 @@ public class OPMPDAO {
         listopmp = new ArrayList<>();
     }
 
-    public void create(String op, String codigo, String descricao, double qtd) {
+    public void create(String op, String codigo, String descricao, double qtd) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO op_mp (op, codigo, descricao, qtd) VALUES ('" + op + "', '" + codigo + "', '" + descricao + "', " + qtd + ")");
+        stmt = con.prepareStatement("INSERT INTO op_mp (op, codigo, descricao, qtd) VALUES ('" + op + "', '" + codigo + "', '" + descricao + "', " + qtd + ")");
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            String msg = "Erro ao criar Matéria Prima da OP.";
-            JOptionPane.showMessageDialog(null, msg);
+        stmt.executeUpdate();
 
-            new Thread() {
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<OPMPBean> readMP(String op) {
@@ -75,6 +63,7 @@ public class OPMPDAO {
             while (rs.next()) {
                 omb = new OPMPBean();
 
+                omb.setId(rs.getInt("id"));
                 omb.setCodigo(rs.getString("codigo"));
                 omb.setDescricao(rs.getString("descricao"));
                 omb.setQtd(rs.getDouble("qtd"));
@@ -98,12 +87,34 @@ public class OPMPDAO {
 
         return listopmp;
     }
-
-    public void updateBaixa(int id, double qtd) {
+    
+    public void updateMP(double qtd, int id) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE op_mp SET baixa = " + true + ", qtd = " + qtd + " WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE op_mp SET qtd = " + qtd + " WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar matéria prima da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateBaixa(int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op_mp SET baixa = " + true + " WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

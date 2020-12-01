@@ -62,6 +62,7 @@ public class VendasCotacaoDAO {
      * @param vendedor
      * @param representante
      * @param condicaoPagamento
+     * @throws java.sql.SQLException
      */
     public void create(String cotacao, String dataAbertura, String cliente, boolean cadastrado, String status, String vendedor, String representante, String condicaoPagamento) throws SQLException {
         conStmt();

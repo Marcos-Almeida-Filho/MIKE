@@ -7,8 +7,10 @@ package DAO;
 
 import Connection.ConnectionFactory;
 import Bean.ComprasCotacaoDocsBean;
+import Methods.SendEmail;
 import java.sql.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -59,24 +61,36 @@ public class ComprasCotacaoDocsDAO {
         ConnectionFactory.closeConnection(con, stmt);
     }
 
-    public List<ComprasCotacaoDocsBean> read(String cotacao) throws SQLException {
+    public List<ComprasCotacaoDocsBean> read(String cotacao) {
         rsList();
 
-        stmt = con.prepareStatement("SELECT * FROM " + tabledb);
+        try {
+            stmt = con.prepareStatement("SELECT * FROM " + tabledb);
 
-        rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            ccdb = new ComprasCotacaoDocsBean();
+            while (rs.next()) {
+                ccdb = new ComprasCotacaoDocsBean();
 
-            ccdb.setId(rs.getInt("id"));
-            ccdb.setDescricao(rs.getString("descricao"));
-            ccdb.setLocal(rs.getString("local"));
+                ccdb.setId(rs.getInt("id"));
+                ccdb.setDescricao(rs.getString("descricao"));
+                ccdb.setLocal(rs.getString("local"));
 
-            listccdb.add(ccdb);
+                listccdb.add(ccdb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Documentos da Cotação de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
-        ConnectionFactory.closeConnection(con, stmt, rs);
 
         return listccdb;
     }

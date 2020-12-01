@@ -80,6 +80,16 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         pedidoDesativado();
     }
 
+    private void valoresOriginais() {
+        clienteOriginal = txtCliente.getText();
+        condicaoOriginal = txtCondPag.getText();
+        representanteOriginal = txtRep.getText();
+        vendedorOriginal = txtVendedor.getText();
+        numDocsOriginal = tableDocs.getRowCount();
+        numObsOriginal = tableObs.getRowCount();
+        numItensOriginal = tableItens.getRowCount();
+    }
+
     public static void lerPedidosAbertos() {
         DefaultTableModel modelTablePedidos = (DefaultTableModel) tablePedidos.getModel();
 
@@ -1248,140 +1258,143 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Nenhum representante selecionado.");
         } else if (txtCondPag.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Nenhuma condição de pagamento selecionada.");
-        } else if (idCotacao == 0) {
-            String pedido = vpd.pedidoAtual();
-
-            try {
-                //Criar novo pedido
-                vpd.create(pedido, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
-
-                txtPedido.setText(pedido);
-
-                //Criar itens do Pedido
-                for (int i = 0; i < tableItens.getRowCount(); i++) {
-                    vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
-                }
-
-                //Criar documentos da cotação
-                for (int i = 0; i < tableDocs.getRowCount(); i++) {
-                    //Localicação do documento original
-                    File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
-                    //Pasta que será colocar o documento
-                    File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(pedido));
-                    //Documento copiado do original
-                    File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                    //Criar pasta no caso de já não existir
-                    folder.mkdirs();
-                    try {
-                        //Criar o documento copiado na pasta
-                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                    } catch (IOException e) {
-                        String msg = "Erro ao criar documento em rede.";
-                        JOptionPane.showMessageDialog(null, msg);
-
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                SendEmail.EnviarErro2(msg, e);
-                            }
-                        }.start();
-                    }
-
-                    vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
-                }
-
-                //Criar observações da cotação
-                for (int i = 0; i < tableObs.getRowCount(); i++) {
-                    vpod.create(pedido, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
-                }
-
-                JOptionPane.showMessageDialog(null, "Pedido de Venda criado com sucesso.");
-            } catch (SQLException e) {
-                String msg = "Erro ao criar Pedido de Venda.";
-                JOptionPane.showMessageDialog(null, msg);
-
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarErro2(msg, e);
-                    }
-                }.start();
-            }
-
-            status();
         } else {
-            String pedido = txtPedido.getText();
+            if (idCotacao == 0) {
+                String pedido = vpd.pedidoAtual();
 
-            try {
-                //Atualizar cotação
-                vpd.update(pedido, txtCliente.getText(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+                try {
+                    //Criar novo pedido
+                    vpd.create(pedido, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
 
-                //Criar itens da cotação que não existiam
-                for (int i = 0; i < tableItens.getRowCount(); i++) {
-                    if (tableItens.getValueAt(i, 0).equals("")) {
+                    txtPedido.setText(pedido);
+
+                    //Criar itens do Pedido
+                    for (int i = 0; i < tableItens.getRowCount(); i++) {
                         vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
-                    } else {
-                        vpid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 4).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
                     }
-                }
 
-                //Criar documentos do pedido que não existiam
-                for (int i = 0; i < tableDocs.getRowCount(); i++) {
-                    if (tableDocs.getValueAt(i, 0).equals("")) {
+                    //Criar documentos da cotação
+                    for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                        //Localicação do documento original
+                        File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                        //Pasta que será colocar o documento
+                        File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(pedido));
+                        //Documento copiado do original
+                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                        //Criar pasta no caso de já não existir
+                        folder.mkdirs();
+                        try {
+                            //Criar o documento copiado na pasta
+                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                        } catch (IOException e) {
+                            String msg = "Erro ao criar documento em rede.";
+                            JOptionPane.showMessageDialog(null, msg);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
+
                         vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
                     }
+
+                    //Criar observações da cotação
+                    for (int i = 0; i < tableObs.getRowCount(); i++) {
+                        vpod.create(pedido, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Pedido de Venda criado com sucesso.");
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar Pedido de Venda.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
                 }
 
-                //Criar observações do pedido
-                for (int i = 0; i < tableObs.getRowCount(); i++) {
-                    if (tableObs.getValueAt(i, 0).equals("")) {
-                        vpod.create(pedido, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                status();
+            } else {
+                String pedido = txtPedido.getText();
+
+                try {
+                    //Atualizar cotação
+                    vpd.update(pedido, txtCliente.getText(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+
+                    //Criar itens da cotação que não existiam
+                    for (int i = 0; i < tableItens.getRowCount(); i++) {
+                        if (tableItens.getValueAt(i, 0).equals("")) {
+                            vpid.create(pedido, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 4).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), "", "");
+                        } else {
+                            vpid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 2).toString(), tableItens.getValueAt(i, 3).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 4).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), tableItens.getValueAt(i, 7).toString(), tableItens.getValueAt(i, 8).toString(), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                        }
                     }
+
+                    //Criar documentos do pedido que não existiam
+                    for (int i = 0; i < tableDocs.getRowCount(); i++) {
+                        if (tableDocs.getValueAt(i, 0).equals("")) {
+                            vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
+                        }
+                    }
+
+                    //Criar observações do pedido
+                    for (int i = 0; i < tableObs.getRowCount(); i++) {
+                        if (tableObs.getValueAt(i, 0).equals("")) {
+                            vpod.create(pedido, Dates.InverterDataCurta(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+                        }
+                    }
+                    JOptionPane.showMessageDialog(null, "Pedido de Venda atualizado com sucesso.");
+                } catch (SQLException e) {
+                    String msg = "Erro ao atualizar Pedido de Venda.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
                 }
-                JOptionPane.showMessageDialog(null, "Pedido de Venda atualizado com sucesso.");
-            } catch (SQLException e) {
-                String msg = "Erro ao atualizar Pedido de Venda.";
-                JOptionPane.showMessageDialog(null, msg);
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarErro2(msg, e);
-                    }
-                }.start();
-            }
+                status();
 
-            status();
+                //Verificar alterações
+                String id = txtPedido.getText();
+                String tipo = this.getClass().getSimpleName();
+                String data = Dates.CriarDataCompletaParaDB();
+                String user = Session.nome;
+                if (!txtCliente.getText().equals(clienteOriginal)) {
+                    ad.create(id, tipo, data, user, "Cliente", clienteOriginal, txtCliente.getText());
+                }
+                if (!txtCondPag.getText().equals(condicaoOriginal)) {
+                    ad.create(id, tipo, data, user, "Condição de Pagamento", condicaoOriginal, txtCondPag.getText());
+                }
+                if (!txtRep.getText().equals(representanteOriginal)) {
+                    ad.create(id, tipo, data, user, "Representante", representanteOriginal, txtRep.getText());
+                }
+                if (!txtVendedor.getText().equals(condicaoOriginal)) {
+                    ad.create(id, tipo, data, user, "Vendedor", vendedorOriginal, txtVendedor.getText());
+                }
+                if (numDocsOriginal != tableDocs.getRowCount()) {
+                    ad.create(id, tipo, data, user, "Número de Documentos", String.valueOf(numDocsOriginal), String.valueOf(tableDocs.getRowCount()));
+                }
+                if (numObsOriginal != tableObs.getRowCount()) {
+                    ad.create(id, tipo, data, user, "Número de Observações", String.valueOf(numObsOriginal), String.valueOf(tableObs.getRowCount()));
+                }
+                if (numItensOriginal != tableItens.getRowCount()) {
+                    ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
+                }
 
-            //Verificar alterações
-            String id = txtPedido.getText();
-            String tipo = this.getClass().getSimpleName();
-            String data = Dates.CriarDataCompletaParaDB();
-            String user = Session.nome;
-            if (!txtCliente.getText().equals(clienteOriginal)) {
-                ad.create(id, tipo, data, user, "Cliente", clienteOriginal, txtCliente.getText());
+                lerPedidosAbertos();
             }
-            if (!txtCondPag.getText().equals(condicaoOriginal)) {
-                ad.create(id, tipo, data, user, "Condição de Pagamento", condicaoOriginal, txtCondPag.getText());
-            }
-            if (!txtRep.getText().equals(representanteOriginal)) {
-                ad.create(id, tipo, data, user, "Representante", representanteOriginal, txtRep.getText());
-            }
-            if (!txtVendedor.getText().equals(condicaoOriginal)) {
-                ad.create(id, tipo, data, user, "Vendedor", vendedorOriginal, txtVendedor.getText());
-            }
-            if (numDocsOriginal != tableDocs.getRowCount()) {
-                ad.create(id, tipo, data, user, "Número de Documentos", String.valueOf(numDocsOriginal), String.valueOf(tableDocs.getRowCount()));
-            }
-            if (numObsOriginal != tableObs.getRowCount()) {
-                ad.create(id, tipo, data, user, "Número de Observações", String.valueOf(numObsOriginal), String.valueOf(tableObs.getRowCount()));
-            }
-            if (numItensOriginal != tableItens.getRowCount()) {
-                ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
-            }
-
-            lerPedidosAbertos();
+            valoresOriginais();
         }
         lerPedido(txtPedido.getText());
     }//GEN-LAST:event_btnSalvarActionPerformed
@@ -1403,13 +1416,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
             pedidoDesativado();
 
-            clienteOriginal = txtCliente.getText();
-            condicaoOriginal = txtCondPag.getText();
-            representanteOriginal = txtRep.getText();
-            vendedorOriginal = txtVendedor.getText();
-            numObsOriginal = tableObs.getRowCount();
-            numDocsOriginal = tableDocs.getRowCount();
-            numItensOriginal = tableItens.getRowCount();
+            valoresOriginais();
         }
     }//GEN-LAST:event_tablePedidosMouseClicked
 
@@ -1563,7 +1570,19 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                         String material = tableItens.getValueAt(i, 2).toString();
                         String dataCriacao = Dates.CriarDataCurtaDBSemDataExistente();
 
-                        od.create(op, dataCriacao, dataEntrega, txtCliente.getText(), txtPedido.getText(), idMaterial, material, tableItens.getValueAt(i, 3).toString(), qtd, qtd, "Rascunho");
+                        try {
+                            od.create(op, dataCriacao, dataEntrega, txtCliente.getText(), txtPedido.getText(), idMaterial, material, tableItens.getValueAt(i, 3).toString(), qtd, qtd, "Rascunho");
+                        } catch (SQLException e) {
+                            String msg = "Erro ao criar OP.";
+                            JOptionPane.showMessageDialog(null, msg);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
 
                         F_UPBean fub = new F_UPBean();
 
@@ -1607,7 +1626,20 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                                     }
                                 }.start();
                             }
-                            odd.create(op, vmdb.getDescricao(), filecopy.toString().replace("//", "////"));
+
+                            try {
+                                odd.create(op, vmdb.getDescricao(), filecopy.toString().replace("//", "////"));
+                            } catch (SQLException e) {
+                                String msg = "Erro ao criar documento da OP.";
+                                JOptionPane.showMessageDialog(null, msg);
+
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        SendEmail.EnviarErro2(msg, e);
+                                    }
+                                }.start();
+                            }
                         });
                     }
                 }

@@ -10,7 +10,7 @@ import DAO.ServicoMateriaisDAO;
 import DAO.VendasMateriaisDAO;
 import View.comercial.CategoriaDePreco;
 import View.servicos.OS;
-import View.vendas.OP;
+import View.vendas.EscolherMP;
 import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
 
@@ -40,16 +40,7 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
         model.setNumRows(0);
 
         switch (origem) {
-            case "VendasMaterial":
-                vmd.readStatus("Ativo").forEach(vmb -> {
-                    model.addRow(new Object[]{
-                        vmb.getId(),
-                        vmb.getCodigo(),
-                        vmb.getDescricao()
-                    });
-                });
-                break;
-            case "VM":
+            default:
                 vmd.readStatus("Ativo").forEach(vmb -> {
                     model.addRow(new Object[]{
                         vmb.getId(),
@@ -76,39 +67,12 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     });
                 });
                 break;
-            case "CotacaoVenda":
-                vmd.readStatus("Ativo").forEach(vmb -> {
-                    model.addRow(new Object[]{
-                        vmb.getId(),
-                        vmb.getCodigo(),
-                        vmb.getDescricao()
-                    });
-                });
-                break;
             case "CotacaoServico":
                 smd.read().forEach(smb -> {
                     model.addRow(new Object[]{
                         smb.getId(),
                         smb.getCodigo(),
                         smb.getDescricao()
-                    });
-                });
-                break;
-            case "PedidoVenda":
-                vmd.readStatus("Ativo").forEach(vmb -> {
-                    model.addRow(new Object[]{
-                        vmb.getId(),
-                        vmb.getCodigo(),
-                        vmb.getDescricao()
-                    });
-                });
-                break;
-            case "OP":
-                vmd.readStatus("Ativo").forEach(vmb -> {
-                    model.addRow(new Object[]{
-                        vmb.getId(),
-                        vmb.getCodigo(),
-                        vmb.getDescricao()
                     });
                 });
                 break;
@@ -274,10 +238,9 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     ItemPedido.txtdesc.setText(desc);
                     ItemPedido.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
                     break;
-                case "OP":
-                    String op = OP.txtNumOP.getText();
-                    ompd.create(op, codigo, desc, 0);
-                    OP.lerMP(op);
+                case "EscolherMP":
+                    EscolherMP.txtCodigo.setText(codigo);
+                    EscolherMP.txtDesc.setText(desc);
                     break;
             }
             ItemCotacao.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());

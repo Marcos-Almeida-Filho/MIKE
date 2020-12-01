@@ -5,9 +5,17 @@
  */
 package View.compras;
 
+import DAO.ComprasCotacaoDAO;
+import DAO.ComprasCotacaoDocsDAO;
+import DAO.ComprasCotacaoItensDAO;
+import DAO.ComprasCotacaoObsDAO;
+import DAO.TiposInsumoDAO;
 import Methods.Telas;
+import View.Geral.AdicionarInsumoCotacaoCompras;
 import View.Geral.AdicionarObs;
 import View.Geral.ProcurarDocumento;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,11 +23,88 @@ import View.Geral.ProcurarDocumento;
  */
 public class ComprasCotacao extends javax.swing.JInternalFrame {
 
+    int indexTipo;
+
+    static TiposInsumoDAO tid = new TiposInsumoDAO();
+    ComprasCotacaoDAO ccd = new ComprasCotacaoDAO();
+    ComprasCotacaoDocsDAO ccdd = new ComprasCotacaoDocsDAO();
+    ComprasCotacaoItensDAO ccid = new ComprasCotacaoItensDAO();
+    ComprasCotacaoObsDAO ccod = new ComprasCotacaoObsDAO();
+
+    DefaultTableModel model;
+
     /**
      * Creates new form CotacaoCompras
      */
     public ComprasCotacao() {
         initComponents();
+        tiposdeinsumo();
+    }
+
+    public static void tiposdeinsumo() {
+        tid.read().forEach(tib -> {
+            cbtipo.addItem(tib.getNome());
+        });
+    }
+
+    public void lerCotacao(String cotacao) {
+        ccd.readCotacao(cotacao).forEach(ccb -> {
+            txtCotacao.setText(ccb.getCotacao());
+            txtDataAbertura.setText(ccb.getDataCriacao());
+            cbtipo.setSelectedItem(ccb.getTipo());
+            txtStatus.setText(ccb.getStatus());
+        });
+
+        lerObservacoes(cotacao);
+
+        lerDocs(cotacao);
+
+        lerItens(cotacao);
+    }
+
+    public void lerObservacoes(String cotacao) {
+        model = (DefaultTableModel) tableObs.getModel();
+        model.setNumRows(0);
+
+        ccod.read(cotacao).forEach(ccob -> {
+            model.addRow(new Object[]{
+                ccob.getId(),
+                false,
+                ccob.getData(),
+                ccob.getFuncionario(),
+                ccob.getObs()
+            });
+        });
+    }
+
+    public void lerDocs(String cotacao) {
+        model = (DefaultTableModel) tableDocs.getModel();
+        model.setNumRows(0);
+
+        ccdd.read(cotacao).forEach(ccdb -> {
+            model.addRow(new Object[]{
+                ccdb.getId(),
+                false,
+                ccdb.getDescricao(),
+                ccdb.getLocal()
+            });
+        });
+    }
+
+    public void lerItens(String cotacao) {
+        model = (DefaultTableModel) tableItens.getModel();
+        model.setNumRows(0);
+
+        ccid.readItensCotacao(cotacao).forEach(ccib -> {
+            model.addRow(new Object[]{
+                ccib.getId(),
+                false,
+                ccib.getCodigo(),
+                ccib.getDescricao(),
+                ccib.getQtd(),
+                ccib.getPedido()
+            });
+        });
     }
 
     /**
@@ -32,7 +117,7 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        tabCotacoes = new javax.swing.JTabbedPane();
         jPanel4 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         txtPesquisa = new javax.swing.JTextField();
@@ -48,6 +133,8 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
         txtCotacao = new javax.swing.JTextField();
         txtDataAbertura = new javax.swing.JTextField();
         txtStatus = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        cbtipo = new javax.swing.JComboBox<>();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -75,7 +162,7 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+        tabCotacoes.setName("tabCotacoes"); // NOI18N
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setName("jPanel4"); // NOI18N
@@ -132,6 +219,11 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
             }
         });
         tableCotacoes.setName("tableCotacoes"); // NOI18N
+        tableCotacoes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableCotacoesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableCotacoes);
         if (tableCotacoes.getColumnModel().getColumnCount() > 0) {
             tableCotacoes.getColumnModel().getColumn(0).setMinWidth(0);
@@ -168,7 +260,7 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Cotações de Compra", jPanel4);
+        tabCotacoes.addTab("Cotações de Compra", jPanel4);
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setName("jPanel5"); // NOI18N
@@ -194,6 +286,17 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
         txtStatus.setEditable(false);
         txtStatus.setName("txtStatus"); // NOI18N
 
+        jLabel4.setText("Tipo");
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        cbtipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione" }));
+        cbtipo.setName("cbtipo"); // NOI18N
+        cbtipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbtipoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -206,6 +309,10 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -219,7 +326,9 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
                 .addComponent(jLabel3)
                 .addComponent(txtCotacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel4)
+                .addComponent(cbtipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jTabbedPane2.setName("jTabbedPane2"); // NOI18N
@@ -400,6 +509,11 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
             }
         });
         tableItens.setName("tableItens"); // NOI18N
+        tableItens.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableItensMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(tableItens);
         if (tableItens.getColumnModel().getColumnCount() > 0) {
             tableItens.getColumnModel().getColumn(0).setMinWidth(0);
@@ -421,9 +535,19 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
 
         jButton7.setText("Adicionar Item");
         jButton7.setName("jButton7"); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton8.setText("Excluir Item");
         jButton8.setName("jButton8"); // NOI18N
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jButton9.setText("Aprovar Itens");
         jButton9.setName("jButton9"); // NOI18N
@@ -497,17 +621,17 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Cotação", jPanel5);
+        tabCotacoes.addTab("Cotação", jPanel5);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabCotacoes)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(tabCotacoes)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -534,9 +658,68 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
         Telas.AparecerTela(pd);
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        if (cbtipo.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Selecione um tipo primeiro.");
+            cbtipo.showPopup();
+        } else {
+            AdicionarInsumoCotacaoCompras aicc = new AdicionarInsumoCotacaoCompras(cbtipo.getSelectedItem().toString());
+            Telas.AparecerTela(aicc);
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void tableItensMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItensMouseClicked
+        if (evt.getClickCount() == 2) {
+            ItemCotacaoCompras icc = new ItemCotacaoCompras();
+            icc.lerItem(Integer.parseInt(tableItens.getValueAt(tableItens.getSelectedRow(), 0).toString()));
+            Telas.AparecerTela(icc);
+        }
+    }//GEN-LAST:event_tableItensMouseClicked
+
+    private void cbtipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbtipoActionPerformed
+        if (tableItens.getRowCount() > 0) {
+            JOptionPane.showMessageDialog(null, "Não é possível adicionar mais de um tipo de Insumo na Solicitação.");
+            cbtipo.setSelectedIndex(indexTipo);
+        } else {
+            indexTipo = cbtipo.getSelectedIndex();
+        }
+    }//GEN-LAST:event_cbtipoActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            if (tableItens.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION);
+            if (resp == 0) {
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void tableCotacoesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCotacoesMouseClicked
+        if (evt.getClickCount() == 2) {
+            tabCotacoes.setSelectedIndex(1);
+
+            String cotacao = tableCotacoes.getValueAt(tableCotacoes.getSelectedRow(), 2).toString();
+
+            lerCotacao(cotacao);
+        }
+    }//GEN-LAST:event_tableCotacoesMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JComboBox<String> cbStatus;
+    public static javax.swing.JComboBox<String> cbtipo;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
     public javax.swing.JButton jButton2;
@@ -550,6 +733,7 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
+    public javax.swing.JLabel jLabel4;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
@@ -563,8 +747,8 @@ public class ComprasCotacao extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JScrollPane jScrollPane4;
-    public javax.swing.JTabbedPane jTabbedPane1;
     public javax.swing.JTabbedPane jTabbedPane2;
+    public javax.swing.JTabbedPane tabCotacoes;
     public javax.swing.JTable tableCotacoes;
     public static javax.swing.JTable tableDocs;
     public static javax.swing.JTable tableItens;

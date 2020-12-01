@@ -29,7 +29,6 @@ import View.Geral.AdicionarObs;
 import View.Geral.ProcurarMaterial;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarDocumento;
-import View.Geral.ProcurarMateriaPrima;
 import View.Geral.ProcurarPedido;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -310,7 +309,7 @@ public class OP extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void criarOP() {
+    public static void criarOP() throws SQLException {
         String op = od.opAtual();
         idMaterial = vmd.idProduto(TxtCodigo.getText());
 
@@ -319,13 +318,13 @@ public class OP extends javax.swing.JInternalFrame {
         txtNumOP.setText(op);
     }
 
-    public static void updateOP(String op) {
+    public static void updateOP(String op) throws SQLException {
         idMaterial = vmd.idProduto(TxtCodigo.getText());
 
-        od.updateOP(op, txtCliente.getText(), idMaterial, TxtCodigo.getText(), TxtDescricao.getText(), Double.parseDouble(TxtQtde.getText().replace(",", ".")));
+        od.updateOP(op, txtCliente.getText(), idMaterial, TxtCodigo.getText(), TxtDescricao.getText(), Double.parseDouble(TxtQtde.getText().replace(",", ".")), Double.parseDouble(TxtQtde.getText().replace(",", ".")));
     }
 
-    public static void salvarDocs(String op) {
+    public static void salvarDocs(String op) throws SQLException {
         for (int i = 0; i < tableDocs.getRowCount(); i++) {
             if (tableDocs.getValueAt(i, 0).equals("")) {
                 //Localicação do documento original
@@ -352,12 +351,12 @@ public class OP extends javax.swing.JInternalFrame {
                     }.start();
                 }
 
-                odd.create(op, tableDocs.getValueAt(i, 2).toString(), filecopy.toString().replace("\\", "\\\\"));
+                odd.create(op, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
             }
         }
     }
 
-    public static void salvarObs(String op) {
+    public static void salvarObs(String op) throws SQLException {
         for (int i = 0; i < tableObs.getRowCount(); i++) {
             if (tableObs.getValueAt(i, 0).equals("")) {
                 ood.create(op, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
@@ -365,10 +364,12 @@ public class OP extends javax.swing.JInternalFrame {
         }
     }
 
-    public static void salvarMP(String op) {
+    public static void salvarMP(String op) throws SQLException {
         for (int i = 0; i < tableMP.getRowCount(); i++) {
             if (tableMP.getValueAt(i, 0).equals("")) {
                 omd.create(op, tableMP.getValueAt(i, 2).toString(), tableMP.getValueAt(i, 3).toString(), Double.parseDouble(tableMP.getValueAt(i, 4).toString()));
+            } else {
+                omd.updateMP(Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", ".")), Integer.parseInt(tableMP.getValueAt(i, 0).toString()));
             }
         }
     }
@@ -1466,25 +1467,55 @@ public class OP extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (txtNumOP.getText().equals("")) {
-            criarOP();
+            try {
+                criarOP();
 
-            String op = txtNumOP.getText();
+                String op = txtNumOP.getText();
 
-            salvarDocs(op);
+                salvarDocs(op);
 
-            salvarMP(op);
+                salvarMP(op);
 
-            salvarObs(op);
+                salvarObs(op);
+
+                JOptionPane.showMessageDialog(null, "OP criada com sucesso.");
+            } catch (SQLException e) {
+                String msg = "Erro ao criar OP.";
+
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
         } else {
             String op = txtNumOP.getText();
 
-            updateOP(op);
+            try {
+                updateOP(op);
 
-            salvarDocs(op);
+                salvarDocs(op);
 
-            salvarMP(op);
+                salvarMP(op);
 
-            salvarObs(op);
+                salvarObs(op);
+
+                JOptionPane.showMessageDialog(null, "OP atualizada com sucesso.");
+            } catch (SQLException e) {
+                String msg = "Erro ao criar OP.";
+
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
         }
 
         String op = txtNumOP.getText();
@@ -1708,24 +1739,8 @@ public class OP extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnExcluirMPActionPerformed
 
     private void btnAddMPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddMPActionPerformed
-        String[] options = new String[2];
-        options[0] = "Produto";
-        options[1] = "Matéria-prima";
-
-        int escolha;
-
-        escolha = JOptionPane.showInternalOptionDialog(null, "Qual origem?", "Escolher Origem", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, iconable);
-
-        switch (escolha) {
-            case 0:
-                ProcurarMaterial pmv = new ProcurarMaterial(this.getClass().getSimpleName());
-                Telas.AparecerTela(pmv);
-                break;
-            case 1:
-                ProcurarMateriaPrima pmp = new ProcurarMateriaPrima(this.getClass().getSimpleName());
-                Telas.AparecerTela(pmp);
-                break;
-        }
+        EscolherMP em = new EscolherMP();
+        Telas.AparecerTela(em);
     }//GEN-LAST:event_btnAddMPActionPerformed
 
     private void btnBaixaMPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBaixaMPActionPerformed
@@ -1738,7 +1753,12 @@ public class OP extends javax.swing.JInternalFrame {
                 numZero++;
             }
         }
-        if (rows == 0 || numBaixa == rows) {
+        double qtdMinima = vmd.qtdMinimaOP(TxtCodigo.getText());
+        double qtdOP = Double.parseDouble(TxtQtde.getText().replace(",", "."));
+
+        if (qtdOP < qtdMinima) {
+            JOptionPane.showMessageDialog(null, "Quantidade da OP menor que a mínima do item.\nQuantidade mínima: " + qtdMinima);
+        } else if (rows == 0 || numBaixa == rows) {
             JOptionPane.showMessageDialog(null, "Nenhum item para dar baixa.");
         } else if (txtNumOP.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Selecione ou salve uma OP primeiro.");
@@ -1754,7 +1774,11 @@ public class OP extends javax.swing.JInternalFrame {
                     if (qtd > estoqueAtual) {
                         JOptionPane.showMessageDialog(null, "Estoque do item " + material + " é inferior ao selecionado para dar baixa.");
                     } else {
-                        double estoque = estoqueAtual - qtd;
+                        int idmp = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
+                        omd.updateBaixa(idmp);
+
+                        qtd = qtd * (-1);
+                        double estoque = estoqueAtual + qtd;
 
                         vmd.updateEstoque(estoque, idmaterial);
 
@@ -1772,13 +1796,11 @@ public class OP extends javax.swing.JInternalFrame {
                             }.start();
                         }
 
+                        escolherPrimeiroProcesso();
+
                         String op = txtNumOP.getText();
 
                         od.updateStatus(op, "Ativo");
-
-                        omd.updateBaixa(idmaterial, qtd);
-
-                        escolherPrimeiroProcesso();
 
                         lerOP(op);
 

@@ -353,6 +353,35 @@ public class VendasMateriaisDAO {
         return produto;
     }
 
+    public double qtdMinimaOP(String codigo) {
+        double qtd = 0;
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT qtdMinimaOP FROM vendas_materiais WHERE codigo = '" + codigo + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                qtd = rs.getInt("qtdMinimaOP");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler ID do produto.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return qtd;
+    }
+
     public List<VendasMateriaisBean> click(int id) {
 
         rsList();

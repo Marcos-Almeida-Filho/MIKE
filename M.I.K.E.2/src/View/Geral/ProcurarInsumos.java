@@ -159,7 +159,9 @@ public class ProcurarInsumos extends javax.swing.JInternalFrame {
                     AdicionarInsumoSolicitacaoCompras.txtun.setText(unidade);
                     break;
                 case "AdicionarInsumoCotacaoCompras":
-                    
+                    AdicionarInsumoCotacaoCompras.txtcodigo.setText(codigo);
+                    AdicionarInsumoCotacaoCompras.txtdescricao.setText(descricao);
+                    AdicionarInsumoCotacaoCompras.txtun.setText(unidade);
                     break;
             }
             dispose();

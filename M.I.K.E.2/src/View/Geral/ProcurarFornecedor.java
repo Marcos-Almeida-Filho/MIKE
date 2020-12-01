@@ -6,8 +6,8 @@
 package View.Geral;
 
 import View.financeiro.*;
-import Bean.FornecedoresBean;
 import DAO.FornecedoresDAO;
+import View.compras.ItemCotacaoCompras;
 import View.logistica.RastreamentoDocumentos;
 import javax.swing.table.DefaultTableModel;
 
@@ -16,6 +16,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class ProcurarFornecedor extends javax.swing.JInternalFrame {
+
+    static FornecedoresDAO fd = new FornecedoresDAO();
 
     /**
      * Creates new form ProcurarCliente
@@ -29,17 +31,16 @@ public class ProcurarFornecedor extends javax.swing.JInternalFrame {
     }
 
     public static void readtablefornecedores() {
-        FornecedoresDAO fd = new FornecedoresDAO();
         DefaultTableModel model = (DefaultTableModel) tablefornecedores.getModel();
         model.setNumRows(0);
 
-        for (FornecedoresBean fb : fd.preenchertabelafornecedores()) {
+        fd.preenchertabelafornecedores().forEach((fb) -> {
             model.addRow(new Object[]{
                 fb.getId(),
                 fb.getNome(),
                 fb.getRazaosocial()
             });
-        }
+        });
     }
 
     /**
@@ -164,26 +165,27 @@ public class ProcurarFornecedor extends javax.swing.JInternalFrame {
             switch (origem) {
                 case "CAP":
                     AdicionarContasAPagar.txtemitente.setText(fornecedor);
-                    dispose();
                     break;
                 case "ContaPagar":
                     ContaPagar.txtfornecedor.setText(fornecedor);
-                    dispose();
                     break;
                 case "Rastreamento":
                     RastreamentoDocumentos.txtemitente.setText(fornecedor);
-                    dispose();
+                    break;
+                case "Btn1":
+                    ItemCotacaoCompras.txtFornecedor1.setText(fornecedor);
                     break;
             }
+            dispose();
         }
     }//GEN-LAST:event_tablefornecedoresMouseClicked
 
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
         FornecedoresDAO fd = new FornecedoresDAO();
-        
+
         DefaultTableModel model = (DefaultTableModel) tablefornecedores.getModel();
         model.setNumRows(0);
-        
+
         fd.pesquisatodos(txtpesquisa.getText()).forEach(fb -> {
             model.addRow(new Object[]{
                 fb.getId(),

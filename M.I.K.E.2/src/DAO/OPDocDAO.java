@@ -46,28 +46,16 @@ public class OPDocDAO {
         listob = new ArrayList<>();
     }
 
-    public void create(String op, String descricao, String local) {
+    public void create(String op, String descricao, String local) throws SQLException {
         conStmt();
 
         String local2 = local.replace("\\", "\\\\");
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ('" + op + "', '" + descricao + "', '" + local2 + "')");
+        stmt = con.prepareStatement("INSERT INTO op_docs (op, descricao, local) VALUES ('" + op + "', '" + descricao + "', '" + local2 + "')");
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            String msg = "Erro ao criar documento da OP.";
-            JOptionPane.showMessageDialog(null, msg);
+        stmt.executeUpdate();
 
-            new Thread() {
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<OPDocBean> read(String op) {

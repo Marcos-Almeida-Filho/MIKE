@@ -59,27 +59,16 @@ public class OPDAO {
      * @param qtd
      * @param qtdOk
      * @param status
+     * @throws java.sql.SQLException
      */
-    public void create(String op, String dataabertura, String dataprevista, String cliente, String dav, int idMaterial, String codigo, String descricao, double qtd, double qtdOk, String status) {
+    public void create(String op, String dataabertura, String dataprevista, String cliente, String dav, int idMaterial, String codigo, String descricao, double qtd, double qtdOk, String status) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO op (op, dataabertura, dataprevista, cliente, dav, idmaterial, codigo, descricao, qtd, qtdok, status) VALUES ('" + op + "', '" + dataabertura + "', '" + dataprevista + "', '" + cliente + "', '" + dav + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + qtdOk + ", '" + status + "')");
+        stmt = con.prepareStatement("INSERT INTO op (op, dataabertura, dataprevista, cliente, dav, idmaterial, codigo, descricao, qtd, qtdok, status) VALUES ('" + op + "', '" + dataabertura + "', '" + dataprevista + "', '" + cliente + "', '" + dav + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + qtdOk + ", '" + status + "')");
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            String msg = "Erro ao criar OP.";
-            JOptionPane.showMessageDialog(null, msg);
+        stmt.executeUpdate();
 
-            new Thread() {
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     /**
@@ -321,27 +310,17 @@ public class OPDAO {
      * @param codigo
      * @param descricao
      * @param qtd
+     * @param qtdOk
+     * @throws java.sql.SQLException
      */
-    public void updateOP(String op, String cliente, int idMaterial, String codigo, String descricao, double qtd) {
+    public void updateOP(String op, String cliente, int idMaterial, String codigo, String descricao, double qtd, double qtdOk) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + " WHERE op = '" + op + "'");
+        stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + ", qtdok = " + qtdOk + " WHERE op = '" + op + "'");
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            String msg = "Erro ao atualizar OP.";
-            JOptionPane.showMessageDialog(null, msg);
+        stmt.executeUpdate();
 
-            new Thread() {
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public void updateOPQtd(String op, double qtdOk, double qtdNaoOk) {

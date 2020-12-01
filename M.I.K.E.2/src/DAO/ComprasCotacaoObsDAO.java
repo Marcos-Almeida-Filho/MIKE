@@ -7,8 +7,10 @@ package DAO;
 
 import Bean.ComprasCotacaoObsBean;
 import Connection.ConnectionFactory;
+import Methods.SendEmail;
 import java.sql.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -66,33 +68,45 @@ public class ComprasCotacaoObsDAO {
      * @return
      * @throws SQLException
      */
-    public List<ComprasCotacaoObsBean> read(String cotacao) throws SQLException {
+    public List<ComprasCotacaoObsBean> read(String cotacao) {
         rsList();
 
-        stmt = con.prepareStatement("SELECT * FROM " + tabledb + " WHERE cotacao + '" + cotacao + "'");
+        try {
+            stmt = con.prepareStatement("SELECT * FROM " + tabledb + " WHERE cotacao + '" + cotacao + "'");
 
-        rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            ccob = new ComprasCotacaoObsBean();
+            while (rs.next()) {
+                ccob = new ComprasCotacaoObsBean();
 
-            ccob.setId(rs.getInt("id"));
-            ccob.setData(rs.getString("data"));
-            ccob.setFuncionario(rs.getString("funcionario"));
-            ccob.setObs(rs.getString("obs"));
+                ccob.setId(rs.getInt("id"));
+                ccob.setData(rs.getString("data"));
+                ccob.setFuncionario(rs.getString("funcionario"));
+                ccob.setObs(rs.getString("obs"));
 
-            listccob.add(ccob);
+                listccob.add(ccob);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler observações da Cotação de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
-        ConnectionFactory.closeConnection(con, stmt, rs);
 
         return listccob;
     }
 
     /**
-     * 
+     *
      * @param id
-     * @throws SQLException 
+     * @throws SQLException
      */
     public void delete(int id) throws SQLException {
         conStmt();

@@ -7,8 +7,10 @@ package DAO;
 
 import Connection.ConnectionFactory;
 import Bean.ComprasCotacaoBean;
+import Methods.SendEmail;
 import java.sql.*;
 import java.util.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,10 +45,10 @@ public class ComprasCotacaoDAO {
     }
 
     /**
-     * 
+     *
      * @param cotacao
      * @param dataCriacao
-     * @throws SQLException 
+     * @throws SQLException
      */
     public void create(String cotacao, String dataCriacao) throws SQLException {
         conStmt();
@@ -57,36 +59,82 @@ public class ComprasCotacaoDAO {
 
         ConnectionFactory.closeConnection(con, stmt);
     }
-    
-    public List<ComprasCotacaoBean> readCotacoes() throws SQLException {
+
+    public List<ComprasCotacaoBean> readCotacoes() {
         rsList();
-        
-        stmt = con.prepareStatement("SELECT * FROM " + tabledb);
-        
-        rs = stmt.executeQuery();
-        
-        while(rs.next()) {
-            ccb = new ComprasCotacaoBean();
-            
-            ccb.setCotacao(rs.getString("cotacao"));
-            ccb.setDataCriacao(rs.getString("dataCriacao"));
-            ccb.setStatus(rs.getString("status"));
-            
-            listccb.add(ccb);
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM " + tabledb);
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ccb = new ComprasCotacaoBean();
+
+                ccb.setCotacao(rs.getString("cotacao"));
+                ccb.setDataCriacao(rs.getString("dataCriacao"));
+                ccb.setStatus(rs.getString("status"));
+
+                listccb.add(ccb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Cotações de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         }
-        
+
         ConnectionFactory.closeConnection(con, stmt, rs);
-        
+
         return listccb;
     }
-    
+
+    public List<ComprasCotacaoBean> readCotacao(String cotacao) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM '" + tabledb + "' WHERE cotacao = '" + cotacao + "'");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ccb = new ComprasCotacaoBean();
+
+                ccb.setCotacao(rs.getString("cotacao"));
+                ccb.setDataCriacao(rs.getString("dataCriacao"));
+                ccb.setStatus(rs.getString("status"));
+
+                listccb.add(ccb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Cotações de Compras.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        }
+
+        ConnectionFactory.closeConnection(con, stmt, rs);
+
+        return listccb;
+    }
+
     public void update(String status) throws SQLException {
         conStmt();
-        
+
         stmt = con.prepareStatement("UPDATE " + tabledb + " SET status = " + status);
-        
+
         stmt.executeUpdate();
-        
+
         ConnectionFactory.closeConnection(con, stmt);
     }
 }

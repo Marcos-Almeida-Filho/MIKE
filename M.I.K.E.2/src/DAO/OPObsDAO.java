@@ -51,28 +51,16 @@ public class OPObsDAO {
      * @param data - Data que a observação foi gerada.
      * @param user - Usuário que fez a observação.
      * @param obs - Observação feita.
+     * @throws java.sql.SQLException
      */
-    public void create(String op, String data, String user, String obs) {
+    public void create(String op, String data, String user, String obs) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO op_obs (op, data, usuario, obs) VALUES ('" + op + "','" + data + "','" + user + "','" + obs + "')");
+        stmt = con.prepareStatement("INSERT INTO op_obs (op, data, usuario, obs) VALUES ('" + op + "','" + data + "','" + user + "','" + obs + "')");
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-        } catch (SQLException e) {
-            String msg = "Erro ao criar observação da OP!";
-            JOptionPane.showMessageDialog(null, msg);
-
-            new Thread() {
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     /**
