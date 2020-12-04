@@ -46,27 +46,15 @@ public class InsumosMovDAO {
         listimb = new ArrayList<>();
     }
 
-    public void create(int idInsumo, String data, String tipoMov, double qtdInicial, double qtdMov, double qtdFinal, String funcionario) {
+    public void create(int idInsumo, double qtdInicial, double qtdMov, double qtdFinal, String data, String tipoMov, String funcionario) throws SQLException {
 
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("INSERT INTO insumos_mov (idinsumo, data, tipomov, qtdinicial, qtdmov, qtdfinal, funcionario) VALUES (" + idInsumo + ", '" + data + "', '" + tipoMov + "', " + qtdInicial + ", " + qtdMov + ", " + qtdFinal + ", '" + funcionario + "')");
+        stmt = con.prepareStatement("INSERT INTO insumos_mov (idinsumo, data, tipomov, qtdinicial, qtdmov, qtdfinal, funcionario) VALUES (" + idInsumo + ", '" + data + "', '" + tipoMov + "', " + qtdInicial + ", " + qtdMov + ", " + qtdFinal + ", '" + funcionario + "')");
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            String msg = "Erro ao criar Movimentação do Insumo.";
-            JOptionPane.showMessageDialog(null, msg);
+        stmt.executeUpdate();
 
-            new Thread() {
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 
     public List<InsumosMovBean> read(int idInsumo) {

@@ -10,6 +10,7 @@ import Methods.SendEmail;
 import Methods.Telas;
 import View.Geral.ProcurarMateriaPrima;
 import View.Geral.ProcurarMaterial;
+import View.TelaPrincipal;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
@@ -20,6 +21,8 @@ import javax.swing.JOptionPane;
 public class EscolherMP extends javax.swing.JInternalFrame {
 
     OPMPDAO ompd = new OPMPDAO();
+
+    boolean insumo;
 
     /**
      * Creates new form EscolherMP
@@ -176,18 +179,18 @@ public class EscolherMP extends javax.swing.JInternalFrame {
         options[0] = "Produto";
         options[1] = "Matéria-prima";
 
-        int escolha;
-
-        escolha = JOptionPane.showInternalOptionDialog(null, "Qual origem?", "Escolher Origem", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, iconable);
+        int escolha = JOptionPane.showInternalOptionDialog(TelaPrincipal.jDesktopPane1, "Qual origem?", "Escolher Origem", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, iconable);
 
         switch (escolha) {
             case 0:
                 ProcurarMaterial pmv = new ProcurarMaterial(this.getClass().getSimpleName());
                 Telas.AparecerTela(pmv);
+                insumo = false;
                 break;
             case 1:
                 ProcurarMateriaPrima pmp = new ProcurarMateriaPrima(this.getClass().getSimpleName());
                 Telas.AparecerTela(pmp);
+                insumo = true;
                 break;
         }
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -204,7 +207,7 @@ public class EscolherMP extends javax.swing.JInternalFrame {
             String desc = txtDesc.getText();
             double qtd = Double.parseDouble(txtQtd.getText().replace(",", "."));
             try {
-                ompd.create(op, codigo, desc, qtd);
+                ompd.create(op, codigo, desc, qtd, insumo);
             } catch (SQLException e) {
                 String msg = "Erro ao criar matéria prima da OP.";
                 JOptionPane.showMessageDialog(null, msg);

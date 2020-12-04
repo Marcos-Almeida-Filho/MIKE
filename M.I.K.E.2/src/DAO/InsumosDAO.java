@@ -216,6 +216,37 @@ public class InsumosDAO {
         return id;
     }
 
+    public double readEstoque(int id) {
+        rsList();
+
+        double estoque = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE id = " + id);
+
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                estoque = rs.getDouble("estoque");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler estoque do Insumo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return estoque;
+    }
+
     public List<InsumosBean> click(int id) {
 
         rsList();
@@ -268,6 +299,29 @@ public class InsumosDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updateEstoque(double estoque, int id) {
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("UPDATE insumos SET estoque = " + estoque + " WHERE id = " + id);
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar estoque.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg, e);

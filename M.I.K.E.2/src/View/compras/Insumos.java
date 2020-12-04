@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -801,7 +802,9 @@ public class Insumos extends javax.swing.JInternalFrame {
             String dataCriacao = Dates.CriarDataCompletaParaDB();
             if (txtid.getText().equals("")) {//Se for um item novo
 ////////////////Criar Insumo
-                idao.create(codigo, descricao, unidade, tipo, 0, dataCriacao);
+                double estoque = Double.parseDouble(JOptionPane.showInputDialog(null, "Qual o estoque inicial do Insumo?", "Estoque Inicial", JOptionPane.YES_NO_OPTION));
+
+                idao.create(codigo, descricao, unidade, tipo, estoque, dataCriacao);
 
                 idInsumo = idao.idCreated(codigo);
 
@@ -825,7 +828,19 @@ public class Insumos extends javax.swing.JInternalFrame {
                 }
 
 ////////////////Criar Movimentação do Insumo
-                imd.create(idInsumo, Dates.CriarDataCurtaDBSemDataExistente(), "Criação", 0, 0, 0, Session.nome);
+                try {
+                    imd.create(idInsumo, 0, estoque, estoque, Dates.CriarDataCurtaDBSemDataExistente(), "Criação", Session.nome);
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar movimentação do Insumo.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
 
                 JOptionPane.showMessageDialog(null, "Criado com sucesso.");
             } else {//Se for um item já cadastrado

@@ -50,7 +50,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PedidoVenda extends javax.swing.JInternalFrame {
 
-    static int idCotacao = 0;
+    static int idCotacao;
 
     static VendasPedidoDAO vpd = new VendasPedidoDAO();
     static VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
@@ -78,6 +78,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         status();
         lerPedidosAbertos();
         pedidoDesativado();
+        idCotacao = 0;
     }
 
     private void valoresOriginais() {

@@ -206,6 +206,7 @@ public class VendasMateriaisDAO {
                 vmb.setEstoque(rs.getDouble("estoque"));
                 vmb.setStatus(rs.getString("status"));
                 vmb.setLocal(rs.getString("local"));
+                vmb.setQtdMinimaOP(rs.getDouble("qtdMinimaOp"));
 
                 listvmb.add(vmb);
             }
@@ -230,7 +231,7 @@ public class VendasMateriaisDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE status = " + status + " AND codigo LIKE '%" + pesquisa + "%' OR status = " + pesquisa + " AND descricao LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE status = '" + status + "' AND codigo LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND descricao LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

@@ -121,6 +121,12 @@
               </Layout>
               <SubComponents>
                 <Component class="javax.swing.JTextField" name="txtpesquisa">
+                  <Events>
+                    <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtpesquisaKeyReleased"/>
+                  </Events>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>
@@ -138,19 +144,19 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jComboBox1" pref="170" max="32767" attributes="0"/>
+                          <Component id="cbstatus" pref="170" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jComboBox1" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbstatus" min="-2" max="-2" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JComboBox" name="jComboBox1">
+                <Component class="javax.swing.JComboBox" name="cbstatus">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                       <StringArray count="3">
@@ -160,8 +166,12 @@
                       </StringArray>
                     </Property>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbstatusActionPerformed"/>
+                  </Events>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                   </AuxValues>
                 </Component>
               </SubComponents>
@@ -644,17 +654,19 @@
                     <Component class="javax.swing.JComboBox" name="cbtipo">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="10">
+                          <StringArray count="12">
                             <StringItem index="0" value="Selecione"/>
                             <StringItem index="1" value="Fresa"/>
                             <StringItem index="2" value="Fresa Especial"/>
                             <StringItem index="3" value="Broca"/>
                             <StringItem index="4" value="Broca Especial"/>
-                            <StringItem index="5" value="Alargador"/>
-                            <StringItem index="6" value="Alargador Especial"/>
-                            <StringItem index="7" value="Lima"/>
-                            <StringItem index="8" value="Lima Especial"/>
-                            <StringItem index="9" value="Ferramenta Especial"/>
+                            <StringItem index="5" value="Escareador"/>
+                            <StringItem index="6" value="Escareador Especial"/>
+                            <StringItem index="7" value="Alargador"/>
+                            <StringItem index="8" value="Alargador Especial"/>
+                            <StringItem index="9" value="Lima"/>
+                            <StringItem index="10" value="Lima Especial"/>
+                            <StringItem index="11" value="Ferramenta Especial"/>
                           </StringArray>
                         </Property>
                       </Properties>

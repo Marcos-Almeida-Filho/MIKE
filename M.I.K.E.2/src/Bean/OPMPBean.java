@@ -17,6 +17,7 @@ public class OPMPBean {
     private String descricao;
     private double qtd;
     private boolean baixa;
+    private boolean insumo;
 
     public int getId() {
         return id;
@@ -64,6 +65,14 @@ public class OPMPBean {
 
     public void setBaixa(boolean baixa) {
         this.baixa = baixa;
+    }
+
+    public boolean isInsumo() {
+        return insumo;
+    }
+
+    public void setInsumo(boolean insumo) {
+        this.insumo = insumo;
     }
 
 }

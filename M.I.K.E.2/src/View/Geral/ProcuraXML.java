@@ -351,8 +351,18 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                             String cidadeD = destelement.getElementsByTagName("xMun").item(0).getTextContent();
                             String ufD = destelement.getElementsByTagName("UF").item(0).getTextContent();
                             String cepD = destelement.getElementsByTagName("CEP").item(0).getTextContent();
-                            String cnpjD = destelement.getElementsByTagName("CNPJ").item(0).getTextContent();
-                            String ieD = destelement.getElementsByTagName("IE").item(0).getTextContent();
+                            String cnpjD;
+                            try {
+                                cnpjD = destelement.getElementsByTagName("CNPJ").item(0).getTextContent();
+                            } catch (NullPointerException e) {
+                                cnpjD = destelement.getElementsByTagName("CPF").item(0).getTextContent();
+                            }
+                            String ieD;
+                            try {
+                                ieD = destelement.getElementsByTagName("IE").item(0).getTextContent();
+                            } catch (NullPointerException e) {
+                                ieD = "";
+                            }
 
                             //Buscar Transportadora
                             NodeList transList = doc.getElementsByTagName("transporta");
@@ -373,7 +383,7 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                             NodeList emilist = doc.getElementsByTagName("dhEmi");
                             Node emiNode = emilist.item(0);
                             String dataEmissao = Dates.TransformarDataXML(emiNode.getTextContent());
-                            
+
                             //Buscar Observação
                             NodeList obsList = doc.getElementsByTagName("infCpl");
                             Node obsNode = obsList.item(0);

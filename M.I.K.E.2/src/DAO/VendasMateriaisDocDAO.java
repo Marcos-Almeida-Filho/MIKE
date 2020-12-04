@@ -78,6 +78,7 @@ public class VendasMateriaisDocDAO {
             while (rs.next()) {
                 VendasMateriaisDocBean vmdb = new VendasMateriaisDocBean();
 
+                vmdb.setId(rs.getInt("id"));
                 vmdb.setDescricao(rs.getString("descricao"));
                 vmdb.setLocal(rs.getString("local"));
 

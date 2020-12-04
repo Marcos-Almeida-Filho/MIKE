@@ -10,6 +10,8 @@ import Bean.F_UP_HistBean;
 import Connection.Session;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
+import DAO.InsumosDAO;
+import DAO.InsumosMovDAO;
 import DAO.OPDAO;
 import DAO.OPDocDAO;
 import DAO.OPMPDAO;
@@ -36,6 +38,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
@@ -62,6 +66,8 @@ public class OP extends javax.swing.JInternalFrame {
     static ProcessosVendasDAO pvd = new ProcessosVendasDAO();
     static ProcessosVendasMedicoesDAO pvmd = new ProcessosVendasMedicoesDAO();
     static F_UPDAO fud = new F_UPDAO();
+    static InsumosDAO idao = new InsumosDAO();
+    static InsumosMovDAO imdao = new InsumosMovDAO();
 
     static int idMaterial = 0;
     static int iP = 0;
@@ -229,7 +235,8 @@ public class OP extends javax.swing.JInternalFrame {
                 omb.getCodigo(),
                 omb.getDescricao(),
                 omb.getQtd(),
-                omb.isBaixa()
+                omb.isBaixa(),
+                omb.isInsumo()
             });
         });
     }
@@ -367,7 +374,7 @@ public class OP extends javax.swing.JInternalFrame {
     public static void salvarMP(String op) throws SQLException {
         for (int i = 0; i < tableMP.getRowCount(); i++) {
             if (tableMP.getValueAt(i, 0).equals("")) {
-                omd.create(op, tableMP.getValueAt(i, 2).toString(), tableMP.getValueAt(i, 3).toString(), Double.parseDouble(tableMP.getValueAt(i, 4).toString()));
+                omd.create(op, tableMP.getValueAt(i, 2).toString(), tableMP.getValueAt(i, 3).toString(), Double.parseDouble(tableMP.getValueAt(i, 4).toString()), Boolean.parseBoolean(tableMP.getValueAt(i, 6).toString()));
             } else {
                 omd.updateMP(Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", ".")), Integer.parseInt(tableMP.getValueAt(i, 0).toString()));
             }
@@ -1241,14 +1248,14 @@ public class OP extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Código", "Descrição", "Quantidade", "Baixa"
+                "ID", "", "Código", "Descrição", "Quantidade", "Baixa", "Insumo"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Boolean.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, true, false
+                false, true, false, false, true, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1278,6 +1285,9 @@ public class OP extends javax.swing.JInternalFrame {
             tableMP.getColumnModel().getColumn(5).setMinWidth(60);
             tableMP.getColumnModel().getColumn(5).setPreferredWidth(60);
             tableMP.getColumnModel().getColumn(5).setMaxWidth(60);
+            tableMP.getColumnModel().getColumn(6).setMinWidth(0);
+            tableMP.getColumnModel().getColumn(6).setPreferredWidth(0);
+            tableMP.getColumnModel().getColumn(6).setMaxWidth(0);
         }
 
         btnBaixaMP.setText("Separar");
@@ -1466,66 +1476,83 @@ public class OP extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (txtNumOP.getText().equals("")) {
-            try {
-                criarOP();
+        if (txtCliente.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Escolha uma cliente antes.");
+        } else if (TxtCodigo.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Escolha um produto antes.");
+        } else if (TxtQtde.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Coloque uma quantidade.");
+            TxtQtde.requestFocus();
+        } else if (txtDataEntrega.getDate() == null) {
+            JOptionPane.showMessageDialog(null, "Escolha uma data de entrega.");
+        } else if (TxtQtde.getText().equals("0")) {
+            JOptionPane.showMessageDialog(null, "Digite uma quantidade maior que 0.");
+            TxtQtde.requestFocus();
+        } else if (vmd.qtdMinimaOP(TxtCodigo.getText()) > Double.parseDouble(TxtQtde.getText().replace(",", "."))) {
+            JOptionPane.showMessageDialog(null, "Quantidade mínima para o produto não atingida.\nQuantidade Mínima: " + vmd.qtdMinimaOP(TxtCodigo.getText()));
+            TxtQtde.requestFocus();
+        } else {
+            if (txtNumOP.getText().equals("")) {
+                try {
+                    criarOP();
 
+                    String op = txtNumOP.getText();
+
+                    salvarDocs(op);
+
+                    salvarMP(op);
+
+                    salvarObs(op);
+
+                    JOptionPane.showMessageDialog(null, "OP criada com sucesso.");
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar OP.";
+
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+            } else {
                 String op = txtNumOP.getText();
 
-                salvarDocs(op);
+                try {
+                    updateOP(op);
 
-                salvarMP(op);
+                    salvarDocs(op);
 
-                salvarObs(op);
+                    salvarMP(op);
 
-                JOptionPane.showMessageDialog(null, "OP criada com sucesso.");
-            } catch (SQLException e) {
-                String msg = "Erro ao criar OP.";
+                    salvarObs(op);
 
-                JOptionPane.showMessageDialog(null, msg);
+                    JOptionPane.showMessageDialog(null, "OP atualizada com sucesso.");
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar OP.";
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarErro2(msg, e);
-                    }
-                }.start();
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
             }
-        } else {
+
             String op = txtNumOP.getText();
 
-            try {
-                updateOP(op);
-
-                salvarDocs(op);
-
-                salvarMP(op);
-
-                salvarObs(op);
-
-                JOptionPane.showMessageDialog(null, "OP atualizada com sucesso.");
-            } catch (SQLException e) {
-                String msg = "Erro ao criar OP.";
-
-                JOptionPane.showMessageDialog(null, msg);
-
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarErro2(msg, e);
-                    }
-                }.start();
-            }
+            lerOP(op);
+            lerDocs(op);
+            lerInspecoes(op);
+            lerMP(op);
+            lerObs(op);
+            lerProcessos(op);
         }
-
-        String op = txtNumOP.getText();
-
-        lerOP(op);
-        lerDocs(op);
-        lerInspecoes(op);
-        lerMP(op);
-        lerObs(op);
-        lerProcessos(op);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void tableOPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableOPMouseClicked
@@ -1768,48 +1795,71 @@ public class OP extends javax.swing.JInternalFrame {
             for (int i = 0; i < rows; i++) {
                 if (tableMP.getValueAt(i, 5).equals(false)) {
                     String material = tableMP.getValueAt(i, 2).toString();
-                    int idmaterial = vmd.idProduto(material);
-                    double estoqueAtual = vmd.readEstoque(idmaterial);
-                    double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
-                    if (qtd > estoqueAtual) {
-                        JOptionPane.showMessageDialog(null, "Estoque do item " + material + " é inferior ao selecionado para dar baixa.");
-                    } else {
-                        int idmp = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
-                        omd.updateBaixa(idmp);
+                    if (tableMP.getValueAt(i, 6).equals(true)) {
+                        int idmaterial = idao.idCreated(material);
+                        double estoqueAtual = idao.readEstoque(idmaterial);
+                        double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+                        if (qtd > estoqueAtual) {
+                            JOptionPane.showMessageDialog(null, "Estoque do item " + material + " é inferior ao selecionado para dar baixa.");
+                        } else {
+                            int idmp = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
+                            omd.updateBaixa(idmp);
 
-                        qtd = qtd * (-1);
-                        double estoque = estoqueAtual + qtd;
+                            qtd = qtd * (-1);
+                            double estoque = estoqueAtual + qtd;
 
-                        vmd.updateEstoque(estoque, idmaterial);
+                            idao.updateEstoque(estoque, idmaterial);
 
-                        try {
-                            vmmd.create(idmaterial, estoqueAtual, qtd, estoque, txtNumOP.getText() + " - baixa de MP", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
-                        } catch (SQLException e) {
-                            String msg = "Erro ao criar movimentação do Material de Venda.";
-                            JOptionPane.showMessageDialog(null, msg);
+                            try {
+                                imdao.create(idmaterial, estoqueAtual, qtd, estoque, Dates.CriarDataCurtaDBSemDataExistente(), txtNumOP.getText() + " - baixa de MP", Session.nome);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(OP.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    SendEmail.EnviarErro2(msg, e);
-                                }
-                            }.start();
                         }
+                    } else {
+                        int idmaterial = vmd.idProduto(material);
+                        double estoqueAtual = vmd.readEstoque(idmaterial);
+                        double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+                        if (qtd > estoqueAtual) {
+                            JOptionPane.showMessageDialog(null, "Estoque do item " + material + " é inferior ao selecionado para dar baixa.");
+                        } else {
+                            int idmp = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
+                            omd.updateBaixa(idmp);
 
-                        escolherPrimeiroProcesso();
+                            qtd = qtd * (-1);
+                            double estoque = estoqueAtual + qtd;
 
-                        String op = txtNumOP.getText();
+                            vmd.updateEstoque(estoque, idmaterial);
 
-                        od.updateStatus(op, "Ativo");
+                            try {
+                                vmmd.create(idmaterial, estoqueAtual, qtd, estoque, txtNumOP.getText() + " - baixa de MP", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                            } catch (SQLException e) {
+                                String msg = "Erro ao criar movimentação do Material de Venda.";
+                                JOptionPane.showMessageDialog(null, msg);
 
-                        lerOP(op);
-
-                        lerProcessos(op);
-
-                        lerMP(op);
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        SendEmail.EnviarErro2(msg, e);
+                                    }
+                                }.start();
+                            }
+                        }
                     }
                 }
             }
+            escolherPrimeiroProcesso();
+
+            String op = txtNumOP.getText();
+
+            od.updateStatus(op, "Ativo");
+
+            lerOP(op);
+
+            lerProcessos(op);
+
+            lerMP(op);
         }
     }//GEN-LAST:event_btnBaixaMPActionPerformed
 
@@ -1903,8 +1953,8 @@ public class OP extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableDocsMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private static javax.swing.JTextField TxtCodigo;
-    private static javax.swing.JTextField TxtDescricao;
+    public static javax.swing.JTextField TxtCodigo;
+    public static javax.swing.JTextField TxtDescricao;
     public static javax.swing.JTextField TxtQtde;
     private static javax.swing.JButton btnAddMP;
     private static javax.swing.JButton btnBaixaMP;

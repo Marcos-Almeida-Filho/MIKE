@@ -42,10 +42,10 @@ public class OPMPDAO {
         listopmp = new ArrayList<>();
     }
 
-    public void create(String op, String codigo, String descricao, double qtd) throws SQLException {
+    public void create(String op, String codigo, String descricao, double qtd, boolean insumo) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO op_mp (op, codigo, descricao, qtd) VALUES ('" + op + "', '" + codigo + "', '" + descricao + "', " + qtd + ")");
+        stmt = con.prepareStatement("INSERT INTO op_mp (op, codigo, descricao, qtd, insumo) VALUES ('" + op + "', '" + codigo + "', '" + descricao + "', " + qtd + ", " + insumo + ")");
 
         stmt.executeUpdate();
 
@@ -68,6 +68,7 @@ public class OPMPDAO {
                 omb.setDescricao(rs.getString("descricao"));
                 omb.setQtd(rs.getDouble("qtd"));
                 omb.setBaixa(rs.getBoolean("baixa"));
+                omb.setInsumo(rs.getBoolean("insumo"));
 
                 listopmp.add(omb);
             }
@@ -87,7 +88,7 @@ public class OPMPDAO {
 
         return listopmp;
     }
-    
+
     public void updateMP(double qtd, int id) {
         conStmt();
 

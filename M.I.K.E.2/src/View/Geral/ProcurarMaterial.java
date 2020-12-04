@@ -11,6 +11,7 @@ import DAO.VendasMateriaisDAO;
 import View.comercial.CategoriaDePreco;
 import View.servicos.OS;
 import View.vendas.EscolherMP;
+import View.vendas.OP;
 import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
 
@@ -45,7 +46,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     model.addRow(new Object[]{
                         vmb.getId(),
                         vmb.getCodigo(),
-                        vmb.getDescricao()
+                        vmb.getDescricao(),
+                        vmb.getQtdMinimaOP()
                     });
                 });
                 break;
@@ -54,7 +56,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     model.addRow(new Object[]{
                         smb.getId(),
                         smb.getCodigo(),
-                        smb.getDescricao()
+                        smb.getDescricao(),
+                        0
                     });
                 });
                 break;
@@ -63,7 +66,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     model.addRow(new Object[]{
                         smb.getId(),
                         smb.getCodigo(),
-                        smb.getDescricao()
+                        smb.getDescricao(),
+                        0
                     });
                 });
                 break;
@@ -72,7 +76,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     model.addRow(new Object[]{
                         smb.getId(),
                         smb.getCodigo(),
-                        smb.getDescricao()
+                        smb.getDescricao(),
+                        0
                     });
                 });
                 break;
@@ -108,11 +113,11 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Código", "Descrição"
+                "ID", "Código", "Descrição", "QtdMinima"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -133,6 +138,9 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
             tablemateriais.getColumnModel().getColumn(1).setMinWidth(150);
             tablemateriais.getColumnModel().getColumn(1).setPreferredWidth(150);
             tablemateriais.getColumnModel().getColumn(1).setMaxWidth(150);
+            tablemateriais.getColumnModel().getColumn(3).setMinWidth(0);
+            tablemateriais.getColumnModel().getColumn(3).setPreferredWidth(0);
+            tablemateriais.getColumnModel().getColumn(3).setMaxWidth(0);
         }
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
@@ -195,6 +203,7 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             String codigo = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString();
             String desc = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString();
+            String qtd = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 3).toString();
             switch (origem) {
                 case "VM":
                     VM.txtmaterialdeorigem.setText(codigo);
@@ -242,6 +251,11 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     EscolherMP.txtCodigo.setText(codigo);
                     EscolherMP.txtDesc.setText(desc);
                     break;
+                case "OP":
+                    OP.TxtCodigo.setText(codigo);
+                    OP.TxtDescricao.setText(desc);
+                    OP.TxtQtde.setText(qtd);
+                    break;
             }
             ItemCotacao.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
             dispose();
@@ -258,25 +272,18 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     model.addRow(new Object[]{
                         smb.getId(),
                         smb.getCodigo(),
-                        smb.getDescricao()
+                        smb.getDescricao(),
+                        0
                     });
                 });
                 break;
-            case "CotacaoVenda":
+            default:
                 vmd.readTodosPesquisa(txtpesquisa.getText()).forEach(vmb -> {
                     model.addRow(new Object[]{
                         vmb.getId(),
                         vmb.getCodigo(),
-                        vmb.getDescricao()
-                    });
-                });
-                break;
-            case "PedidoVenda":
-                vmd.readTodosPesquisa(txtpesquisa.getText()).forEach(vmb -> {
-                    model.addRow(new Object[]{
-                        vmb.getId(),
-                        vmb.getCodigo(),
-                        vmb.getDescricao()
+                        vmb.getDescricao(),
+                        vmb.getQtdMinimaOP()
                     });
                 });
                 break;
