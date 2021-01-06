@@ -49,7 +49,6 @@ public class F_UPDAO {
     }
 
     public void create(F_UPBean fb) {
-
         conStmt();
 
         try {
@@ -677,6 +676,66 @@ public class F_UPDAO {
         }
         return id;
     }
+    
+    public String getProcesso(String op) {
+        rsList();
+        
+        String processo = "";
+        
+        try {
+            stmt = con.prepareStatement("SELECT processo FROM f_up WHERE op = '" + op + "'");
+            
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                processo = rs.getString("processo");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler processo atual da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        
+        return processo;
+    }
+    
+    public boolean existeFUP(String op) {
+        rsList();
+
+        boolean existe = false;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE op = '" + op + "'");
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                existe = true;
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao verificar se OP existe no F-UP.";
+            
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return existe;
+    }
 
     public void update(F_UPBean fb) {
 
@@ -706,6 +765,31 @@ public class F_UPDAO {
             } catch (AWTException | IOException ex) {
                 Logger.getLogger(F_UPDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateDataEntrega(String op, String dataPrevista) {
+
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE f_up SET dataentrega = '" + dataPrevista + "' WHERE op = '" + op + "'");
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            String msg = "Errp ao atualizar F-UP.";
+
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

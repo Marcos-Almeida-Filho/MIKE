@@ -64,14 +64,14 @@ public class Dates {
         Calendar date2 = Calendar.getInstance();
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-        
+
         for (int i = 1; i <= days; i++) {
-            date2.add(Calendar.DAY_OF_MONTH, i);
+            date2.add(Calendar.DAY_OF_MONTH, 1);
             if (date2.get(Calendar.DAY_OF_WEEK) == 1 || date2.get(Calendar.DAY_OF_WEEK) == 7) {
                 days++;
             }
         }
-        
+
         date.add(Calendar.DAY_OF_MONTH, days);
         data = simpleDateFormat.format(date.getTime());
 
@@ -86,7 +86,7 @@ public class Dates {
         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
         String year = simpleDateFormaty.format(ca.getTime());
 
-        String idos = "OS" + year + "-0001S";
+        String idos = "OS" + year + "-0001";
 
         try { //Tentar achar primeira OS do ano para poder dar nome
             if (od.readnome()) {
@@ -865,6 +865,18 @@ public class Dates {
 
             return datanormal;
         }
+    }
+
+    public static String CriarDataCurtaJDateChooser(Date data) {
+        datanormal = "";
+        if (data == null) {
+            datanormal = null;
+        } else {
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            datanormal = df.format(data);
+        }
+        
+        return datanormal;
     }
 
     public static void SetarDataJDateChooser(JDateChooser chooser, String datadb) {

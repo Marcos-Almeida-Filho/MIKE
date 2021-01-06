@@ -17,4 +17,5 @@ public class Session {
     public static int idnivel;
     public static String db;
     public static String setor;
+    public static String emailfabrica;
 }

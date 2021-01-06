@@ -36,6 +36,7 @@ import View.servicos.ServicoMateriais;
 import View.servicos.PedidoServico;
 import View.servicos.ProcessosServico;
 import View.TI.Senhas;
+import View.TI.Tickets;
 import View.administracao.Usuarios;
 import View.arquivo.ProgramacaoMIKE;
 import View.comercial.PlanejamentoFaturamento;
@@ -50,7 +51,7 @@ import View.qualidade.Medicoes;
 import View.vendas.CotacaoVenda;
 import View.vendas.PedidoVenda;
 import View.vendas.ProcessosVendas;
-import View.vendas.VM;
+import View.vendas.VM1;
 import java.awt.Toolkit;
 import java.net.URL;
 import javax.swing.JMenuItem;
@@ -196,6 +197,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_locais = new javax.swing.JMenuItem();
         menu_ti = new javax.swing.JMenu();
         item_senhas = new javax.swing.JMenuItem();
+        item_tickets = new javax.swing.JMenuItem();
         menu_qualidade = new javax.swing.JMenu();
         item_inst_med = new javax.swing.JMenuItem();
         item_iqf = new javax.swing.JMenuItem();
@@ -639,6 +641,16 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         menu_ti.add(item_senhas);
+
+        item_tickets.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_code.png"))); // NOI18N
+        item_tickets.setText("Tickets");
+        item_tickets.setName("item_tickets"); // NOI18N
+        item_tickets.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                item_ticketsActionPerformed(evt);
+            }
+        });
+        menu_ti.add(item_tickets);
 
         jMenuBar1.add(menu_ti);
 
@@ -1252,7 +1264,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         String menuItemName = menuItem.getName();
 
         if (gupd.readPerm(Session.idnivel, menuItemName)) {
-            VM p = new VM();
+            VM1 p = new VM1();
             Telas.AparecerTelaAumentada(p);
         } else {
             JOptionPane.showMessageDialog(null, "Acesso não permitido.");
@@ -1508,6 +1520,18 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_item_protocolosActionPerformed
 
+    private void item_ticketsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_ticketsActionPerformed
+        JMenuItem menuItem = (JMenuItem) evt.getSource();
+        String menuItemName = menuItem.getName();
+
+        if (gupd.readPerm(Session.idnivel, menuItemName)) {
+            Tickets t = new Tickets();
+            Telas.AparecerTelaAumentada(t);
+        } else {
+            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
+        }
+    }//GEN-LAST:event_item_ticketsActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1585,6 +1609,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenuItem item_sobre;
     private javax.swing.JMenuItem item_solic_hora_extra;
     public static javax.swing.JMenuItem item_solicitacao_compras;
+    private javax.swing.JMenuItem item_tickets;
     private javax.swing.JMenuItem item_tipo_insumos;
     private javax.swing.JMenuItem item_trocar_senha;
     private javax.swing.JMenuItem item_unidades;

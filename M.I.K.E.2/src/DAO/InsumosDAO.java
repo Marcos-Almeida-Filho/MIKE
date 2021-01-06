@@ -74,7 +74,46 @@ public class InsumosDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM insumos");
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE status = 'Ativo'");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ib = new InsumosBean();
+
+                ib.setId(rs.getInt("id"));
+                ib.setCodigo(rs.getString("codigo"));
+                ib.setDescricao(rs.getString("descricao"));
+                ib.setUnidade(rs.getString("unidade"));
+                ib.setTipo(rs.getString("tipo"));
+                ib.setEstoque(rs.getDouble("estoque"));
+                ib.setDatacriacao(rs.getString("datacriacao"));
+                ib.setStatus(rs.getString("status"));
+
+                listi.add(ib);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Insumos.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listi;
+    }
+
+    public List<InsumosBean> readPesquisa(String pesquisa) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE status = 'Ativo' AND codigo LIKE '%" + pesquisa + "%' OR status = 'Ativo' AND descricao LIKE '%" + pesquisa + "%'");
 
             rs = stmt.executeQuery();
 
@@ -153,6 +192,45 @@ public class InsumosDAO {
 
         try {
             stmt = con.prepareStatement("SELECT * FROM insumos WHERE status = '" + status + "'");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ib = new InsumosBean();
+
+                ib.setId(rs.getInt("id"));
+                ib.setCodigo(rs.getString("codigo"));
+                ib.setDescricao(rs.getString("descricao"));
+                ib.setUnidade(rs.getString("unidade"));
+                ib.setTipo(rs.getString("tipo"));
+                ib.setEstoque(rs.getDouble("estoque"));
+                ib.setDatacriacao(rs.getString("datacriacao"));
+                ib.setStatus(rs.getString("status"));
+
+                listi.add(ib);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Insumos por tipo.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return listi;
+    }
+
+    public List<InsumosBean> readPorStatusEPesquisa(String status, String pesquisa) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM insumos WHERE status = '" + status + "' AND codigo LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND descricao LIKE '%" + pesquisa + "%'");
 
             rs = stmt.executeQuery();
 
@@ -308,20 +386,20 @@ public class InsumosDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void updateEstoque(double estoque, int id) {
         conStmt();
-        
+
         try {
             stmt = con.prepareStatement("UPDATE insumos SET estoque = " + estoque + " WHERE id = " + id);
-            
+
             stmt.executeUpdate();
         } catch (SQLException e) {
             String msg = "Erro ao atualizar estoque.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
+
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg, e);

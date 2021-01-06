@@ -100,12 +100,18 @@ public class VendasMateriaisDAO {
      * @param agressividade
      * @param frontal
      * @param qtdMinimaOP
+     * @param desbaste
+     * @param tolD1
+     * @param tolD2
+     * @param tolD3
+     * @param tolD4
+     * @param tolD5
      * @throws java.sql.SQLException
      */
-    public void create(String codigo, String descricao, double estoque, double estoqueMinimo, String status, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, double qtdMinimaOP) throws SQLException {
+    public void create(String codigo, String descricao, double estoque, double estoqueMinimo, String status, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, double qtdMinimaOP, boolean desbaste, String tolD1, String tolD2, String tolD3, String tolD4, String tolD5) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO vendas_materiais (codigo, descricao, estoque, estoqueMinimo, status, local, d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, importada, weldon, ri, md, hss, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal, qtdMinimaOP) VALUES ('" + codigo + "','" + descricao + "'," + estoque + "," + estoqueMinimo + ",'" + status + "','" + local + "','" + d1 + "','" + d2 + "','" + d3 + "','" + d4 + "','" + d5 + "','" + l1 + "','" + l2 + "','" + l3 + "','" + l4 + "','" + l5 + "','" + materialOrigem + "','" + rev + "','" + raio + "'," + importada + "," + weldon + "," + ri + "," + md + "," + hss + ",'" + tipo + "','" + familia + "','" + tamanho + "','" + cortes + "','" + topo + "','" + canal + "','" + extra + "','" + helice + "','" + nucleo + "','" + concavidade + "','" + topo1 + "','" + topo2 + "','" + alivio1 + "','" + alivio2 + "','" + filete + "','" + agressividade + "','" + frontal + "', " + qtdMinimaOP + ")");
+        stmt = con.prepareStatement("INSERT INTO vendas_materiais (codigo, descricao, estoque, estoqueMinimo, status, local, d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, importada, weldon, ri, md, hss, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal, qtdMinimaOP, desbaste, tolD1, tolD2, tolD3, tolD4, tolD5) VALUES ('" + codigo + "','" + descricao + "'," + estoque + "," + estoqueMinimo + ",'" + status + "','" + local + "','" + d1 + "','" + d2 + "','" + d3 + "','" + d4 + "','" + d5 + "','" + l1 + "','" + l2 + "','" + l3 + "','" + l4 + "','" + l5 + "','" + materialOrigem + "','" + rev + "','" + raio + "'," + importada + "," + weldon + "," + ri + "," + md + "," + hss + ",'" + tipo + "','" + familia + "','" + tamanho + "','" + cortes + "','" + topo + "','" + canal + "','" + extra + "','" + helice + "','" + nucleo + "','" + concavidade + "','" + topo1 + "','" + topo2 + "','" + alivio1 + "','" + alivio2 + "','" + filete + "','" + agressividade + "','" + frontal + "', " + qtdMinimaOP + ", " + desbaste + ", '" + tolD1 + "', '" + tolD2 + "', '" + tolD3 + "', '" + tolD4 + "', '" + tolD5 + "')");
 
         stmt.executeUpdate();
 
@@ -383,6 +389,35 @@ public class VendasMateriaisDAO {
         return qtd;
     }
 
+    public boolean produtoCadastrado(String codigo) {
+        rsList();
+
+        boolean existe = false;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE codigo = '" + codigo + "'");
+
+            rs = stmt.executeQuery();
+
+            existe = rs.next();
+        } catch (SQLException e) {
+            String msg = "Erro ao verificar se produto já existe.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return existe;
+    }
+
     public List<VendasMateriaisBean> click(int id) {
 
         rsList();
@@ -419,6 +454,7 @@ public class VendasMateriaisDAO {
                 vmb.setRi(rs.getBoolean("ri"));
                 vmb.setMd(rs.getBoolean("md"));
                 vmb.setHss(rs.getBoolean("hss"));
+                vmb.setDesbaste(rs.getBoolean("desbaste"));
                 vmb.setTipo(rs.getString("tipo"));
                 vmb.setFamilia(rs.getString("familia"));
                 vmb.setTamanho(rs.getString("tamanho"));
@@ -426,6 +462,11 @@ public class VendasMateriaisDAO {
                 vmb.setTopo(rs.getString("topo"));
                 vmb.setCanal(rs.getString("canal"));
                 vmb.setExtra(rs.getString("extra"));
+                vmb.setTolD1(rs.getString("tolD1"));
+                vmb.setTolD2(rs.getString("tolD2"));
+                vmb.setTolD3(rs.getString("tolD3"));
+                vmb.setTolD4(rs.getString("tolD4"));
+                vmb.setTolD5(rs.getString("tolD5"));
                 vmb.setHelice(rs.getString("helice"));
                 vmb.setNucleo(rs.getString("nucleo"));
                 vmb.setConcavidade(rs.getString("concavidade"));
@@ -494,14 +535,20 @@ public class VendasMateriaisDAO {
      * @param agressividade
      * @param frontal
      * @param qtdMinimaOP
+     * @param desbaste
+     * @param tolD1
+     * @param tolD2
+     * @param tolD3
      * @param id
+     * @param tolD5
+     * @param tolD4
      * @throws SQLException
      */
-    public void update(String codigo, String descricao, double estoqueMinimo, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, double qtdMinimaOP, int id) throws SQLException {
+    public void update(String codigo, String descricao, double estoqueMinimo, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, double qtdMinimaOP, boolean desbaste, String tolD1, String tolD2, String tolD3, String tolD4, String tolD5, int id) throws SQLException {
 
         conStmt();
 
-        stmt = con.prepareStatement("UPDATE vendas_materiais SET codigo = '" + codigo + "', descricao = '" + descricao + "' , local = '" + local + "', estoqueMinimo = " + estoqueMinimo + ", d1 = '" + d1 + "', d2 = '" + d2 + "', d3 = '" + d3 + "', d4 = '" + d4 + "', d5 = '" + d5 + "', l1 = '" + l1 + "', l2 = '" + l2 + "', l3 = '" + l3 + "', l4 = '" + l4 + "', l5 = '" + l5 + "', materialOrigem = '" + materialOrigem + "', rev = '" + rev + "', raio = '" + raio + "', importada = " + importada + ", weldon = " + weldon + ", ri = " + ri + ", md = " + md + ", hss = " + hss + ", tipo = '" + tipo + "', familia = '" + familia + "', tamanho = '" + tamanho + "', cortes = '" + cortes + "', topo = '" + topo + "', canal = '" + canal + "', extra = '" + extra + "', helice = '" + helice + "', nucleo = '" + nucleo + "', concavidade = '" + concavidade + "', topo1 = '" + topo1 + "', topo2 = '" + topo2 + "', alivio1 = '" + alivio1 + "', alivio2 = '" + alivio2 + "', filete = '" + filete + "', agressividade = '" + agressividade + "', frontal = '" + frontal + "' , qtdMinimaOP = " + qtdMinimaOP + " WHERE id = " + id);
+        stmt = con.prepareStatement("UPDATE vendas_materiais SET codigo = '" + codigo + "', descricao = '" + descricao + "' , local = '" + local + "', estoqueMinimo = " + estoqueMinimo + ", d1 = '" + d1 + "', d2 = '" + d2 + "', d3 = '" + d3 + "', d4 = '" + d4 + "', d5 = '" + d5 + "', l1 = '" + l1 + "', l2 = '" + l2 + "', l3 = '" + l3 + "', l4 = '" + l4 + "', l5 = '" + l5 + "', materialOrigem = '" + materialOrigem + "', rev = '" + rev + "', raio = '" + raio + "', importada = " + importada + ", weldon = " + weldon + ", ri = " + ri + ", md = " + md + ", hss = " + hss + ", tipo = '" + tipo + "', familia = '" + familia + "', tamanho = '" + tamanho + "', cortes = '" + cortes + "', topo = '" + topo + "', canal = '" + canal + "', extra = '" + extra + "', helice = '" + helice + "', nucleo = '" + nucleo + "', concavidade = '" + concavidade + "', topo1 = '" + topo1 + "', topo2 = '" + topo2 + "', alivio1 = '" + alivio1 + "', alivio2 = '" + alivio2 + "', filete = '" + filete + "', agressividade = '" + agressividade + "', frontal = '" + frontal + "' , qtdMinimaOP = " + qtdMinimaOP + ", desbaste = " + desbaste + ", tolD1 = '" + tolD1 + "', tolD2 = '" + tolD2 + "', tolD3 = '" + tolD3 + "', tolD4 = '" + tolD4 + "', tolD5 = '" + tolD5 + "' WHERE id = " + id);
 
         stmt.executeUpdate();
 

@@ -18,6 +18,7 @@ public class VendasPedidoBean {
     private String condicao;
     private String representante;
     private String vendedor;
+    private double frete;
     private double total;
     private String status;
 
@@ -75,6 +76,14 @@ public class VendasPedidoBean {
 
     public void setVendedor(String vendedor) {
         this.vendedor = vendedor;
+    }
+
+    public double getFrete() {
+        return frete;
+    }
+
+    public void setFrete(double frete) {
+        this.frete = frete;
     }
 
     public double getTotal() {

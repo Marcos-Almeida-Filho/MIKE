@@ -41,7 +41,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class VM extends javax.swing.JInternalFrame {
 
-    String codigo, desc, descFerr, ferr, tipotopo, cortes, cortesdesc, revchar, revtipo, raio, ichar, idesc, richar, ritipo, weldonchar, weldondesc, extra, comptotal, diamfinal, tipocanal, tipoCanalChar, materiaPrima, materiaPrimaChar;
+    String codigo, desc, descFerr, ferr, tipotopo, cortes, cortesdesc, revchar, revtipo, raio, ichar, idesc, richar, ritipo, weldonchar, weldondesc, extra, comptotal, diamfinal, tipocanal, tipoCanalChar, materiaPrima, materiaPrimaChar, desbaste;
 
     String[] riarray = new String[2];
     String[] weldonarray = new String[2];
@@ -219,6 +219,8 @@ public class VM extends javax.swing.JInternalFrame {
                             vmb.getId(),
                             vmb.getCodigo(),
                             vmb.getDescricao(),
+                            vmb.getEstoque(),
+                            vmb.getLocal(),
                             vmb.getStatus()
                         });
                     });
@@ -228,6 +230,8 @@ public class VM extends javax.swing.JInternalFrame {
                             vmb.getId(),
                             vmb.getCodigo(),
                             vmb.getDescricao(),
+                            vmb.getEstoque(),
+                            vmb.getLocal(),
                             vmb.getStatus()
                         });
                     });
@@ -240,6 +244,8 @@ public class VM extends javax.swing.JInternalFrame {
                             vmb.getId(),
                             vmb.getCodigo(),
                             vmb.getDescricao(),
+                            vmb.getEstoque(),
+                            vmb.getLocal(),
                             vmb.getStatus()
                         });
                     });
@@ -249,6 +255,8 @@ public class VM extends javax.swing.JInternalFrame {
                             vmb.getId(),
                             vmb.getCodigo(),
                             vmb.getDescricao(),
+                            vmb.getEstoque(),
+                            vmb.getLocal(),
                             vmb.getStatus()
                         });
                     });
@@ -279,6 +287,8 @@ public class VM extends javax.swing.JInternalFrame {
                 cbfamilia.addItem("12");
                 cbfamilia.addItem("13");
                 cbfamilia.addItem("14");
+                cbfamilia.addItem("14.2");
+                cbfamilia.addItem("14.3");
                 cbfamilia.addItem("15");
                 cbfamilia.addItem("16");
                 cbfamilia.addItem("17");
@@ -287,6 +297,8 @@ public class VM extends javax.swing.JInternalFrame {
                 cbfamilia.addItem("12");
                 cbfamilia.addItem("13");
                 cbfamilia.addItem("14");
+                cbfamilia.addItem("14.2");
+                cbfamilia.addItem("14.3");
                 cbfamilia.addItem("15");
                 cbfamilia.addItem("16");
                 cbfamilia.addItem("17");
@@ -432,6 +444,17 @@ public class VM extends javax.swing.JInternalFrame {
         return riarray;
     }
 
+    public String checarDesbaste() {
+        //Identificar se tem raio e qual medida
+        if (checkDesbaste.isSelected()) {
+            desbaste = " Para Desbaste";
+        } else {
+            desbaste = "";
+        }
+
+        return desbaste;
+    }
+
     public String[] checarweldon() {
         if (checkweldon.isSelected()) {
             weldonchar = " W";
@@ -525,6 +548,8 @@ public class VM extends javax.swing.JInternalFrame {
 
         checarri();
 
+        checarDesbaste();
+
         checarweldon();
 
         checarextra();
@@ -541,46 +566,49 @@ public class VM extends javax.swing.JInternalFrame {
     public void gerarcodigofresa() {
         checagemGeral();
 
+        ferr = "Fresa Topo ";
+
         //Identificar família da fresa e criar descrição
-        int selection = cbfamilia.getSelectedIndex();
-        switch (selection) {
-            case 1:
-                ferr = "Fresa Topo ";
+//        int selection = cbfamilia.getSelectedIndex();
+        String sel = cbfamilia.getSelectedItem().toString();
+        switch (sel) {
+            case "12":
                 tipotopo = "Reto " + materiaPrima;
                 cortes = "2 Cortes ";
                 break;
-            case 2:
-                ferr = "Fresa Topo ";
+            case "13":
                 tipotopo = "Reto " + materiaPrima;
                 cortes = "3 Cortes ";
                 break;
-            case 3:
-                ferr = "Fresa Topo ";
+            case "14":
                 tipotopo = "Reto " + materiaPrima;
                 cortes = "4 Cortes ";
                 break;
-            case 4:
-                ferr = "Fresa Topo ";
+            case "15":
                 tipotopo = "Esférico " + materiaPrima;
                 cortes = "2 Cortes ";
                 break;
-            case 5:
-                ferr = "Fresa Topo ";
+            case "16":
                 tipotopo = "Esférico " + materiaPrima;
                 cortes = "4 Cortes ";
                 break;
-            case 6:
-                ferr = "Fresa Topo ";
+            case "17":
                 tipotopo = "Esférico " + materiaPrima;
                 cortes = "3 Cortes ";
                 break;
-            default:
+            case "14.2":
+                tipotopo = "Reto " + materiaPrima;
+                cortes = "4 Cortes ";
+                break;
+            case "14.3":
+                tipotopo = "Reto " + materiaPrima;
+                cortes = "4 Cortes ";
                 break;
         }
 
         //Criar código/descrição
         codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + cbtamanho.getSelectedItem().toString() + materiaPrimaChar + raio + revchar + riarray[0] + weldonarray[0] + iarray[0];
-        desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
+        desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + raio + revtipo + riarray[1] + desbaste + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -636,7 +664,7 @@ public class VM extends javax.swing.JInternalFrame {
         //Criar código/descrição
         if (!txtcortes.getText().equals("")) {
             codigo = cbtipo.getSelectedItem().toString() + " " + txtcortes.getText() + "C " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + materiaPrimaChar + raio + revchar + riarray[0] + weldonarray[0] + iarray[0] + extra;
-            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revtipo + riarray[1] + weldonarray[1] + extra;
+            desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revtipo + riarray[1] + desbaste + weldonarray[1] + extra;
         } else {
             codigo = cbtipo.getSelectedItem().toString() + " " + cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revchar + riarray[0] + weldonarray[0] + ichar + extra;
             desc = ferr + tipotopo + cortes + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1] + extra;
@@ -687,7 +715,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         codigo = ferr + txtd1.getText() + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0];
-        desc = descFerr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + riarray[1] + raio + revtipo + weldonarray[1] + iarray[1];
+        desc = descFerr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + riarray[1] + desbaste + raio + revtipo + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -707,7 +735,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         codigo = "B" + materiaPrimaChar + " Diam. " + txtd1.getText() + " " + cortes + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
-        desc = "Broca " + materiaPrima + "Diam. " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + " " + cortesdesc + tipocanal + riarray[1] + raio + revtipo + weldonarray[1] + iarray[1] + extra;
+        desc = "Broca " + materiaPrima + "Diam. " + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + " " + cortesdesc + tipocanal + riarray[1] + desbaste + raio + revtipo + weldonarray[1] + iarray[1] + extra;
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -719,7 +747,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + riarray[0] + raio + revchar + weldonarray[0] + iarray[0];
-        desc = cbtipo.getSelectedItem().toString() + " " + materiaPrima + "Diam. " + txtd1.getText() + "x" + txtl1.getText() + " Frontal " + cbfamilia.getSelectedItem().toString().substring(4, 6) + "º " + riarray[1] + raio + revtipo + weldonarray[1] + iarray[1];
+        desc = cbtipo.getSelectedItem().toString() + " " + materiaPrima + "Diam. " + txtd1.getText() + "x" + txtl1.getText() + " Frontal " + cbfamilia.getSelectedItem().toString().substring(4, 6) + "º " + riarray[1] + desbaste + raio + revtipo + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -731,7 +759,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         codigo = cbfamilia.getSelectedItem().toString() + "-" + txtfrontal.getText() + "-" + txtd1.getText() + riarray[0] + raio + revchar + weldonarray[0] + iarray[0];
-        desc = cbtipo.getSelectedItem().toString() + " " + materiaPrima + "Diam. " + txtd1.getText() + "x" + txtl1.getText() + " Frontal " + txtfrontal.getText() + "º " + riarray[1] + raio + revtipo + weldonarray[1] + iarray[1];
+        desc = cbtipo.getSelectedItem().toString() + " " + materiaPrima + "Diam. " + txtd1.getText() + "x" + txtl1.getText() + " Frontal " + txtfrontal.getText() + "º " + riarray[1] + desbaste + raio + revtipo + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -756,7 +784,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + tipoCanalChar + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
-        desc = ferr + materiaPrima + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + tipocanal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
+        desc = ferr + materiaPrima + txtd1.getText() + "x" + txtl1.getText() + "x" + txtl2.getText() + "x" + txtd2.getText() + tipocanal + raio + revtipo + riarray[1] + desbaste + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -782,7 +810,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + tipoCanalChar + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
-        desc = ferr + materiaPrima + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + tipocanal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
+        desc = ferr + materiaPrima + txtd1.getText() + "x" + txtl1.getText() + "x" + comptotal + "x" + diamfinal + tipocanal + raio + revtipo + riarray[1] + desbaste + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -852,7 +880,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         codigo = codigo + " " + txtd1.getText() + "M " + tipoCanalChar + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
-        desc = ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtd2.getText() + "x" + txtl2.getText() + tipocanal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
+        desc = ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + txtd2.getText() + "x" + txtl2.getText() + tipocanal + raio + revtipo + riarray[1] + desbaste + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -875,7 +903,7 @@ public class VM extends javax.swing.JInternalFrame {
 
         //Criar código/descrição
         codigo = cbfamilia.getSelectedItem().toString() + "-" + txtd1.getText() + tipoCanalChar + riarray[0] + materiaPrimaChar + raio + revchar + weldonarray[0] + iarray[0] + extra;
-        desc = ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + diamfinal + "x" + comptotal + tipocanal + raio + revtipo + riarray[1] + weldonarray[1] + iarray[1];
+        desc = ferr + txtd1.getText() + "x" + txtl1.getText() + "x" + diamfinal + "x" + comptotal + tipocanal + raio + revtipo + riarray[1] + desbaste + weldonarray[1] + iarray[1];
 
         //Colocar código e descrição nos txt's
         txtcodigo.setText(codigo);
@@ -1097,8 +1125,14 @@ public class VM extends javax.swing.JInternalFrame {
         checkimportado.setSelected(false);
         checkweldon.setSelected(false);
         checkri.setSelected(false);
+        checkDesbaste.setSelected(false);
         radioVazio.setSelected(true);
 
+        txtTolD1.setText("");
+        txtTolD2.setText("");
+        txtTolD3.setText("");
+        txtTolD4.setText("");
+        txtTolD5.setText("");
         txthelice.setText("");
         txtnucleo.setText("");
         txtconcavidade.setText("");
@@ -1134,29 +1168,13 @@ public class VM extends javax.swing.JInternalFrame {
 
         switch (selection) {
             case 1://Fresa
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else if (cbtamanho.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha um tamanho primeiro!");
-                } else {
-                    gerarcodigofresa();
-                }
+                gerarcodigofresa();
                 break;
             case 2://Fresa Especial
-                if (cbfamilia.getSelectedIndex() == 0 & txtcortes.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família ou número de cortes primeiro!");
-                } else if (!txtcortes.getText().equals("") && cbtopo.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Selecione um tipo de topo primeiro!");
-                } else {
-                    gerarcodigofresaespecial();
-                }
+                gerarcodigofresaespecial();
                 break;
             case 3://Broca
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigobroca();
-                }
+                gerarcodigobroca();
                 break;
             case 4://Broca Especial
                 gerarCodigoBrocaEspecial();
@@ -1168,32 +1186,16 @@ public class VM extends javax.swing.JInternalFrame {
                 gerarCodigoEscareadorEspecial();
                 break;
             case 7://Alargador
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigoalargador();
-                }
+                gerarcodigoalargador();
                 break;
             case 8://Alargador Especial
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigoalargadorespecial();
-                }
+                gerarcodigoalargadorespecial();
                 break;
             case 9://Lima
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigolima();
-                }
+                gerarcodigolima();
                 break;
             case 10://Lima Especial
-                if (cbfamilia.getSelectedIndex() == 0) {
-                    JOptionPane.showMessageDialog(null, "Escolha uma família primeiro!");
-                } else {
-                    gerarcodigolimaespecial();
-                }
+                gerarcodigolimaespecial();
                 break;
             default:
                 JOptionPane.showMessageDialog(null, "Escolha um tipo de ferramenta primeiro!");
@@ -1279,6 +1281,7 @@ public class VM extends javax.swing.JInternalFrame {
         radioMD = new javax.swing.JRadioButton();
         radioHSS = new javax.swing.JRadioButton();
         radioVazio = new javax.swing.JRadioButton();
+        checkDesbaste = new javax.swing.JCheckBox();
         jPanel12 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         paneldadostxt = new javax.swing.JPanel();
@@ -1302,6 +1305,16 @@ public class VM extends javax.swing.JInternalFrame {
         jLabel42 = new javax.swing.JLabel();
         txtfrontal = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
+        txtTolD1 = new javax.swing.JTextField();
+        txtTolD2 = new javax.swing.JTextField();
+        txtTolD3 = new javax.swing.JTextField();
+        txtTolD4 = new javax.swing.JTextField();
+        txtTolD5 = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
         lblicon = new javax.swing.JLabel();
         lblcortes = new javax.swing.JLabel();
@@ -1339,7 +1352,7 @@ public class VM extends javax.swing.JInternalFrame {
         jPanel6 = new javax.swing.JPanel();
         jLabel20 = new javax.swing.JLabel();
         txtQtdOp = new javax.swing.JTextField();
-        jButton11 = new javax.swing.JButton();
+        btnMovManual = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
 
@@ -1392,16 +1405,17 @@ public class VM extends javax.swing.JInternalFrame {
             .addComponent(cbstatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
+        tablemateriaisvendas.setAutoCreateRowSorter(true);
         tablemateriaisvendas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Código", "Descrição", "Status"
+                "ID", "Código", "Descrição", "Estoque", "Local", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, true, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1421,9 +1435,15 @@ public class VM extends javax.swing.JInternalFrame {
             tablemateriaisvendas.getColumnModel().getColumn(1).setMinWidth(180);
             tablemateriaisvendas.getColumnModel().getColumn(1).setPreferredWidth(180);
             tablemateriaisvendas.getColumnModel().getColumn(1).setMaxWidth(180);
-            tablemateriaisvendas.getColumnModel().getColumn(3).setMinWidth(150);
-            tablemateriaisvendas.getColumnModel().getColumn(3).setPreferredWidth(150);
-            tablemateriaisvendas.getColumnModel().getColumn(3).setMaxWidth(150);
+            tablemateriaisvendas.getColumnModel().getColumn(3).setMinWidth(70);
+            tablemateriaisvendas.getColumnModel().getColumn(3).setPreferredWidth(70);
+            tablemateriaisvendas.getColumnModel().getColumn(3).setMaxWidth(70);
+            tablemateriaisvendas.getColumnModel().getColumn(4).setMinWidth(110);
+            tablemateriaisvendas.getColumnModel().getColumn(4).setPreferredWidth(110);
+            tablemateriaisvendas.getColumnModel().getColumn(4).setMaxWidth(110);
+            tablemateriaisvendas.getColumnModel().getColumn(5).setMinWidth(150);
+            tablemateriaisvendas.getColumnModel().getColumn(5).setPreferredWidth(150);
+            tablemateriaisvendas.getColumnModel().getColumn(5).setMaxWidth(150);
         }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -1876,6 +1896,8 @@ public class VM extends javax.swing.JInternalFrame {
         GroupMateriaPrima.add(radioVazio);
         radioVazio.setText("Vazio");
 
+        checkDesbaste.setText("Desbaste");
+
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
@@ -1901,7 +1923,8 @@ public class VM extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(radioHSS)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(radioVazio)))
+                        .addComponent(radioVazio))
+                    .addComponent(checkDesbaste))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
@@ -1919,6 +1942,8 @@ public class VM extends javax.swing.JInternalFrame {
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(checkweldon)
                     .addComponent(checkri))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(checkDesbaste)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radioMD)
@@ -2050,6 +2075,16 @@ public class VM extends javax.swing.JInternalFrame {
 
         jLabel16.setText("Frontal");
 
+        jLabel21.setText("Tolerância D1");
+
+        jLabel22.setText("Tolerância D2");
+
+        jLabel23.setText("Tolerância D3");
+
+        jLabel24.setText("Tolerância D4");
+
+        jLabel26.setText("Tolerância D5");
+
         javax.swing.GroupLayout paneldadostxtLayout = new javax.swing.GroupLayout(paneldadostxt);
         paneldadostxt.setLayout(paneldadostxtLayout);
         paneldadostxtLayout.setHorizontalGroup(
@@ -2066,25 +2101,58 @@ public class VM extends javax.swing.JInternalFrame {
                     .addComponent(jLabel40)
                     .addComponent(jLabel41)
                     .addComponent(jLabel42)
-                    .addComponent(jLabel16))
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel21)
+                    .addComponent(jLabel22)
+                    .addComponent(jLabel23)
+                    .addComponent(jLabel24)
+                    .addComponent(jLabel26))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txthelice, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                    .addComponent(txtagressividade)
-                    .addComponent(txtespfilete)
-                    .addComponent(txtalivio2)
-                    .addComponent(txtalivio1)
-                    .addComponent(txtaliviotopo2)
-                    .addComponent(txtaliviotopo1)
-                    .addComponent(txtconcavidade, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtnucleo, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                    .addComponent(txtfrontal))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtTolD5, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                    .addComponent(txtTolD4)
+                    .addComponent(txtTolD3)
+                    .addComponent(txtTolD2)
+                    .addComponent(txtTolD1)
+                    .addGroup(paneldadostxtLayout.createSequentialGroup()
+                        .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txthelice, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(txtagressividade)
+                            .addComponent(txtespfilete)
+                            .addComponent(txtalivio2)
+                            .addComponent(txtalivio1)
+                            .addComponent(txtaliviotopo2)
+                            .addComponent(txtaliviotopo1)
+                            .addComponent(txtconcavidade, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtnucleo, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(txtfrontal))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         paneldadostxtLayout.setVerticalGroup(
             paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(paneldadostxtLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneldadostxtLayout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel24))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel26))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel14)
                     .addComponent(txthelice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -2160,6 +2228,11 @@ public class VM extends javax.swing.JInternalFrame {
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtcortesFocusLost(evt);
+            }
+        });
+        txtcortes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtcortesKeyReleased(evt);
             }
         });
 
@@ -2285,6 +2358,7 @@ public class VM extends javax.swing.JInternalFrame {
                     .addComponent(txtextra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(paneldadosLayout.createSequentialGroup()
                         .addGroup(paneldadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(paneldadosLayout.createSequentialGroup()
@@ -2294,8 +2368,7 @@ public class VM extends javax.swing.JInternalFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(panelorigem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 28, Short.MAX_VALUE))
-                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 28, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -2577,10 +2650,10 @@ public class VM extends javax.swing.JInternalFrame {
                 .addComponent(txtQtdOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jButton11.setText("Lançar Movimentação Manual");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
+        btnMovManual.setText("Lançar Contagem Manual");
+        btnMovManual.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+                btnMovManualActionPerformed(evt);
             }
         });
 
@@ -2593,7 +2666,7 @@ public class VM extends javax.swing.JInternalFrame {
                 .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panelmovLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton11))
+                        .addComponent(btnMovManual))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1135, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelmovLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -2616,7 +2689,7 @@ public class VM extends javax.swing.JInternalFrame {
                         .addGap(0, 48, Short.MAX_VALUE))
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton11))
+                .addComponent(btnMovManual))
         );
 
         tabmaterialinfo.addTab("Movimentação", panelmov);
@@ -2778,7 +2851,7 @@ public class VM extends javax.swing.JInternalFrame {
             case 4://Broca Especial
 
                 //Itens para habilitar/desabilitar
-                cbfamilia.setEnabled(false);
+                cbfamilia.setEnabled(true);
                 cbtamanho.setEnabled(false);
                 cbtopo.setEnabled(false);
                 cbcanal.setEnabled(true);
@@ -3226,98 +3299,160 @@ public class VM extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        gerarCodigo();
-
-        if (lblcodigoerro.isVisible()) {
-            JOptionPane.showMessageDialog(null, "Código muito longo.");
-        } else if (lbldescricaoerro.isVisible()) {
-            JOptionPane.showMessageDialog(null, "Descrição muito longa.");
-        } else if (txtLocal.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Nenhum local de armazenagem selecionado.");
-
-            ProcurarLocal pl = new ProcurarLocal(this.getClass().getSimpleName());
-            Telas.AparecerTela(pl);
-        } else if (txtestoqueminimo.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Sem valor de estoque mínimo.");
-            txtestoqueminimo.requestFocus();
-            tabmaterialinfo.setSelectedIndex(4);
-        } else if (txtQtdOp.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Sem valor de Quantidade Mínima na OP.");
-            txtQtdOp.requestFocus();
-        } else if (!radioMD.isSelected() && !radioHSS.isSelected()) {
-            JOptionPane.showMessageDialog(null, "Escolha se é Metal Duro ou HSS.");
-            tabmaterialinfo.setSelectedIndex(1);
-        } else if (cbtipo.getSelectedIndex() == 6 && txtfrontal.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite um valor para o frontal.");
-            txtfrontal.requestFocus();
+        int indexTipo = cbtipo.getSelectedIndex();
+        if (indexTipo == 1 && (cbfamilia.getSelectedIndex() == 0 || cbtamanho.getSelectedIndex() == 0)) {
+            JOptionPane.showMessageDialog(null, "Escolha uma família e um tamanho.");
+        } else if ((indexTipo == 2 || indexTipo == 4 || indexTipo == 6 || indexTipo == 8) && (cbfamilia.getSelectedIndex() == 0 && txtcortes.getText().equals(""))) {
+            JOptionPane.showMessageDialog(null, "Escolha uma família ou coloque um número de cortes.");
+        } else if ((indexTipo == 3 || indexTipo == 5 || indexTipo == 9 || indexTipo == 10) && cbfamilia.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Escolha uma família.");
+            cbfamilia.showPopup();
+        } else if (indexTipo == 7 && (cbfamilia.getSelectedIndex() == 0 || cbcanal.getSelectedIndex() == 0)) {
+            JOptionPane.showMessageDialog(null, "Escolha uma família e um tipo de canal.");
+        } else if (indexTipo == 8 && cbcanal.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(null, "Escolha um tipo de canal.");
+            cbcanal.showPopup();
+        } else if (indexTipo == 11 && (txtcodigo.getText().equals("") || txtdescricao.getText().equals(""))) {
+            JOptionPane.showMessageDialog(null, "Digite um código e uma descrição.");
         } else {
-            if (idmaterial == 0) {
-                try {
-                    //Criar material
-                    vmd.create(
-                            txtcodigo.getText(),
-                            txtdescricao.getText(),
-                            0,
-                            Double.parseDouble(txtestoqueminimo.getText()),
-                            "Ativo",
-                            txtLocal.getText(),
-                            txtd1.getText(),
-                            txtd2.getText(),
-                            txtd3.getText(),
-                            txtd4.getText(),
-                            txtd5.getText(),
-                            txtl1.getText(),
-                            txtl2.getText(),
-                            txtl3.getText(),
-                            txtl4.getText(),
-                            txtl5.getText(),
-                            txtmaterialdeorigem.getText(),
-                            cbrevestimento.getSelectedItem().toString(),
-                            txtraio.getText(),
-                            checkimportado.isSelected(),
-                            checkweldon.isSelected(),
-                            checkri.isSelected(),
-                            radioMD.isSelected(),
-                            radioHSS.isSelected(),
-                            cbtipo.getSelectedItem().toString(),
-                            cbfamilia.getSelectedItem().toString(),
-                            cbtamanho.getSelectedItem().toString(),
-                            txtcortes.getText(),
-                            cbtopo.getSelectedItem().toString(),
-                            cbcanal.getSelectedItem().toString(),
-                            txtextra.getText(),
-                            txthelice.getText(),
-                            txtnucleo.getText(),
-                            txtconcavidade.getText(),
-                            txtaliviotopo1.getText(),
-                            txtaliviotopo2.getText(),
-                            txtalivio1.getText(),
-                            txtalivio2.getText(),
-                            txtespfilete.getText(),
-                            txtagressividade.getText(),
-                            txtfrontal.getText(),
-                            Double.parseDouble(txtQtdOp.getText())
-                    );
+            gerarCodigo();
 
-                    //Recuperar id do material
-                    idmaterial = vmd.readcreated();
+            if (lblcodigoerro.isVisible()) {
+                JOptionPane.showMessageDialog(null, "Código muito longo.");
+            } else if (lbldescricaoerro.isVisible()) {
+                JOptionPane.showMessageDialog(null, "Descrição muito longa.");
+            } else if (txtLocal.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Nenhum local de armazenagem selecionado.");
 
-                    //Criar observações
-                    for (int i = 0; i < tableobs.getRowCount(); i++) {
-                        vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
-                    }
+                tabmaterialinfo.setSelectedIndex(4);
 
-                    //Criar documentos
-                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                        File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
-                        File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
-                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+                ProcurarLocal pl = new ProcurarLocal(this.getClass().getSimpleName());
+                Telas.AparecerTela(pl);
+            } else if (txtestoqueminimo.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Sem valor de estoque mínimo.");
 
-                        folder.mkdirs();
+                tabmaterialinfo.setSelectedIndex(4);
+
+                txtestoqueminimo.requestFocus();
+                tabmaterialinfo.setSelectedIndex(4);
+            } else if (txtQtdOp.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Sem valor de Quantidade Mínima na OP.");
+
+                tabmaterialinfo.setSelectedIndex(4);
+
+                txtQtdOp.requestFocus();
+            } else if (!radioMD.isSelected() && !radioHSS.isSelected()) {
+                JOptionPane.showMessageDialog(null, "Escolha se é Metal Duro ou HSS.");
+
+                tabmaterialinfo.setSelectedIndex(1);
+
+                tabmaterialinfo.setSelectedIndex(1);
+            } else if (cbtipo.getSelectedIndex() == 6 && txtfrontal.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Digite um valor para o frontal.");
+
+                tabmaterialinfo.setSelectedIndex(1);
+
+                txtfrontal.requestFocus();
+            } else {
+                if (idmaterial == 0) {
+                    if (vmd.produtoCadastrado(txtcodigo.getText())) {
+                        JOptionPane.showMessageDialog(null, "Produto já cadastrado.");
+                    } else {
                         try {
-                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                        } catch (IOException e) {
-                            String msg = "Erro ao criar documento em rede.";
+                            //Criar material
+                            vmd.create(
+                                    txtcodigo.getText(),
+                                    txtdescricao.getText(),
+                                    0,
+                                    Double.parseDouble(txtestoqueminimo.getText()),
+                                    "Ativo",
+                                    txtLocal.getText(),
+                                    txtd1.getText(),
+                                    txtd2.getText(),
+                                    txtd3.getText(),
+                                    txtd4.getText(),
+                                    txtd5.getText(),
+                                    txtl1.getText(),
+                                    txtl2.getText(),
+                                    txtl3.getText(),
+                                    txtl4.getText(),
+                                    txtl5.getText(),
+                                    txtmaterialdeorigem.getText(),
+                                    cbrevestimento.getSelectedItem().toString(),
+                                    txtraio.getText(),
+                                    checkimportado.isSelected(),
+                                    checkweldon.isSelected(),
+                                    checkri.isSelected(),
+                                    radioMD.isSelected(),
+                                    radioHSS.isSelected(),
+                                    cbtipo.getSelectedItem().toString(),
+                                    cbfamilia.getSelectedItem().toString(),
+                                    cbtamanho.getSelectedItem().toString(),
+                                    txtcortes.getText(),
+                                    cbtopo.getSelectedItem().toString(),
+                                    cbcanal.getSelectedItem().toString(),
+                                    txtextra.getText(),
+                                    txthelice.getText(),
+                                    txtnucleo.getText(),
+                                    txtconcavidade.getText(),
+                                    txtaliviotopo1.getText(),
+                                    txtaliviotopo2.getText(),
+                                    txtalivio1.getText(),
+                                    txtalivio2.getText(),
+                                    txtespfilete.getText(),
+                                    txtagressividade.getText(),
+                                    txtfrontal.getText(),
+                                    Double.parseDouble(txtQtdOp.getText()),
+                                    checkDesbaste.isSelected(),
+                                    txtTolD1.getText(),
+                                    txtTolD2.getText(),
+                                    txtTolD3.getText(),
+                                    txtTolD4.getText(),
+                                    txtTolD5.getText()
+                            );
+
+                            //Recuperar id do material
+                            idmaterial = vmd.readcreated();
+
+                            //Criar observações
+                            for (int i = 0; i < tableobs.getRowCount(); i++) {
+                                vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
+                            }
+
+                            //Criar documentos
+                            for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                                File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                                File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
+                                File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                                folder.mkdirs();
+                                try {
+                                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                                } catch (IOException e) {
+                                    String msg = "Erro ao criar documento em rede.";
+                                    JOptionPane.showMessageDialog(null, msg);
+
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            SendEmail.EnviarErro2(msg, e);
+                                        }
+                                    }.start();
+                                }
+                                vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
+                            }
+
+                            //Criar códigos por clientes
+                            for (int i = 0; i < tabledesccli.getRowCount(); i++) {
+                                vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
+                            }
+
+                            //Criar movimentação do material
+                            vmmd.create(idmaterial, 0, 0, 0, "Criação", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+
+                            JOptionPane.showMessageDialog(null, "Material de Venda criado com sucesso!");
+                        } catch (SQLException e) {
+                            String msg = "Erro ao criar Material de Venda.";
                             JOptionPane.showMessageDialog(null, msg);
 
                             new Thread() {
@@ -3327,132 +3462,117 @@ public class VM extends javax.swing.JInternalFrame {
                                 }
                             }.start();
                         }
-                        vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
                     }
+                } else {
+                    try {
+                        //Atualizar material
+                        vmd.update(
+                                txtcodigo.getText(),
+                                txtdescricao.getText(),
+                                Double.parseDouble(txtestoqueminimo.getText()),
+                                txtLocal.getText(),
+                                txtd1.getText(),
+                                txtd2.getText(),
+                                txtd3.getText(),
+                                txtd4.getText(),
+                                txtd5.getText(),
+                                txtl1.getText(),
+                                txtl2.getText(),
+                                txtl3.getText(),
+                                txtl4.getText(),
+                                txtl5.getText(),
+                                txtmaterialdeorigem.getText(),
+                                cbrevestimento.getSelectedItem().toString(),
+                                txtraio.getText(),
+                                checkimportado.isSelected(),
+                                checkweldon.isSelected(),
+                                checkri.isSelected(),
+                                radioMD.isSelected(),
+                                radioHSS.isSelected(),
+                                cbtipo.getSelectedItem().toString(),
+                                cbfamilia.getSelectedItem().toString(),
+                                cbtamanho.getSelectedItem().toString(),
+                                txtcortes.getText(),
+                                cbtopo.getSelectedItem().toString(),
+                                cbcanal.getSelectedItem().toString(),
+                                txtextra.getText(),
+                                txthelice.getText(),
+                                txtnucleo.getText(),
+                                txtconcavidade.getText(),
+                                txtaliviotopo1.getText(),
+                                txtaliviotopo2.getText(),
+                                txtalivio1.getText(),
+                                txtalivio2.getText(),
+                                txtespfilete.getText(),
+                                txtagressividade.getText(),
+                                txtfrontal.getText(),
+                                Double.parseDouble(txtQtdOp.getText()),
+                                checkDesbaste.isSelected(),
+                                txtTolD1.getText(),
+                                txtTolD2.getText(),
+                                txtTolD3.getText(),
+                                txtTolD4.getText(),
+                                txtTolD5.getText(),
+                                idmaterial
+                        );
 
-                    //Criar códigos por clientes
-                    for (int i = 0; i < tabledesccli.getRowCount(); i++) {
-                        vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
-                    }
-
-                    //Criar movimentação do material
-                    vmmd.create(idmaterial, 0, 0, 0, "Criação", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
-
-                    JOptionPane.showMessageDialog(null, "Material de Venda criado com sucesso!");
-                } catch (SQLException e) {
-                    String msg = "Erro ao criar Material de Venda.";
-                    JOptionPane.showMessageDialog(null, msg);
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(msg, e);
-                        }
-                    }.start();
-                }
-            } else {
-                try {
-                    //Atualizar material
-                    vmd.update(
-                            txtcodigo.getText(),
-                            txtdescricao.getText(),
-                            Double.parseDouble(txtestoqueminimo.getText()),
-                            txtLocal.getText(),
-                            txtd1.getText(),
-                            txtd2.getText(),
-                            txtd3.getText(),
-                            txtd4.getText(),
-                            txtd5.getText(),
-                            txtl1.getText(),
-                            txtl2.getText(),
-                            txtl3.getText(),
-                            txtl4.getText(),
-                            txtl5.getText(),
-                            txtmaterialdeorigem.getText(),
-                            cbrevestimento.getSelectedItem().toString(),
-                            txtraio.getText(),
-                            checkimportado.isSelected(),
-                            checkweldon.isSelected(),
-                            checkri.isSelected(),
-                            radioMD.isSelected(),
-                            radioHSS.isSelected(),
-                            cbtipo.getSelectedItem().toString(),
-                            cbfamilia.getSelectedItem().toString(),
-                            cbtamanho.getSelectedItem().toString(),
-                            txtcortes.getText(),
-                            cbtopo.getSelectedItem().toString(),
-                            cbcanal.getSelectedItem().toString(),
-                            txtextra.getText(),
-                            txthelice.getText(),
-                            txtnucleo.getText(),
-                            txtconcavidade.getText(),
-                            txtaliviotopo1.getText(),
-                            txtaliviotopo2.getText(),
-                            txtalivio1.getText(),
-                            txtalivio2.getText(),
-                            txtespfilete.getText(),
-                            txtagressividade.getText(),
-                            txtfrontal.getText(),
-                            Double.parseDouble(txtQtdOp.getText()),
-                            idmaterial
-                    );
-
-                    //Criar observações que não existiam antes
-                    for (int i = 0; i < tableobs.getRowCount(); i++) {
-                        if (tableobs.getValueAt(i, 0).equals("")) {
-                            vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
-                        }
-                    }
-
-                    //Criar documentos que não existiam antes
-                    for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
-                        if (tabledocumentos.getValueAt(i, 0).equals("")) {
-                            File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
-                            File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
-                            File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                            folder.mkdirs();
-                            try {
-                                Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                            } catch (IOException ex) {
-                                Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
-                                JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-                                try {
-                                    SendEmail.EnviarErro(ex.toString());
-                                    JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                                } catch (HeadlessException hex) {
-                                    JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
-                                } catch (AWTException | IOException ex1) {
-                                    Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
-                                }
+                        //Criar observações que não existiam antes
+                        for (int i = 0; i < tableobs.getRowCount(); i++) {
+                            if (tableobs.getValueAt(i, 0).equals("")) {
+                                vmod.create(idmaterial, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()), tableobs.getValueAt(i, 3).toString(), tableobs.getValueAt(i, 4).toString());
                             }
-                            vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
                         }
+
+                        //Criar documentos que não existiam antes
+                        for (int i = 0; i < tabledocumentos.getRowCount(); i++) {
+                            if (tabledocumentos.getValueAt(i, 0).equals("")) {
+                                File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
+                                File folder = new File("Q:/MIKE_ERP/mat_ven_arq/" + idmaterial);
+                                File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                                folder.mkdirs();
+                                try {
+                                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                                } catch (IOException ex) {
+                                    Logger.getLogger(VM.class.getName()).log(Level.SEVERE, null, ex);
+                                    JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                                    try {
+                                        SendEmail.EnviarErro(ex.toString());
+                                        JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
+                                    } catch (HeadlessException hex) {
+                                        JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
+                                    } catch (AWTException | IOException ex1) {
+                                        Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                                    }
+                                }
+                                vmdd.create(idmaterial, tabledocumentos.getValueAt(i, 2).toString(), filecopy.toString());
+                            }
+                        }
+
+                        //Criar códigos por clientes que não existiam antes
+                        for (int i = 0; i < tabledesccli.getRowCount(); i++) {
+                            if (tabledesccli.getValueAt(i, 0).equals("")) {
+                                vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
+                            }
+                        }
+
+                        JOptionPane.showMessageDialog(null, "Material de Venda atualizado com sucesso.");
+                    } catch (SQLException e) {
+                        String frase = "Erro ao atualizar Material de Venda.";
+                        JOptionPane.showMessageDialog(null, frase);
+
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                SendEmail.EnviarErro2(frase, e);
+                            }
+                        }.start();
                     }
-
-                    //Criar códigos por clientes que não existiam antes
-                    for (int i = 0; i < tabledesccli.getRowCount(); i++) {
-                        if (tabledesccli.getValueAt(i, 0).equals("")) {
-                            vmccd.create(idmaterial, tabledesccli.getValueAt(i, 2).toString(), tabledesccli.getValueAt(i, 3).toString(), tabledesccli.getValueAt(i, 4).toString());
-                        }
-                    }
-
-                    JOptionPane.showMessageDialog(null, "Material de Venda atualizado com sucesso.");
-                } catch (SQLException e) {
-                    String frase = "Erro ao atualizar Material de Venda.";
-                    JOptionPane.showMessageDialog(null, frase);
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(frase, e);
-                        }
-                    }.start();
                 }
+                lerMaterial(idmaterial);
             }
-            lerMaterial(idmaterial);
+            readProdutos();
         }
-        readProdutos();
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void tablemateriaisvendasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemateriaisvendasMouseClicked
@@ -3540,54 +3660,48 @@ public class VM extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableobsMouseClicked
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        if (Session.nivel.equals("Administrador")) {
-            if (idmaterial == 0) {
-                JOptionPane.showMessageDialog(null, "Selecione um produto primeiro.");
-            } else {
-                double estoqueAtual = vmd.readEstoque(idmaterial);
-                String tipo = "";
-                double qtdMovimentada = 0;
-                try {
-                    tipo = JOptionPane.showInputDialog(null, "Qual o tipo da movimentação a ser colocada?", "Tipo Movimentação", JOptionPane.YES_NO_OPTION);
-                    qtdMovimentada = Double.parseDouble(JOptionPane.showInputDialog(null, "Qual a quantidade a ser colocada no estoque?", "Quantidade Movimentada", JOptionPane.YES_NO_OPTION));
-                } catch (NullPointerException e) {
-                    String msg = "Erro.";
-                    JOptionPane.showMessageDialog(null, msg);
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(msg, e);
-                        }
-                    }.start();
-                }
-
-                double saldo = estoqueAtual + qtdMovimentada;
-
-                try {
-                    vmd.updateEstoque(saldo, idmaterial);
-                    vmmd.create(idmaterial, estoqueAtual, qtdMovimentada, saldo, tipo, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
-
-                    JOptionPane.showMessageDialog(null, "Movimentação criada com sucesso.");
-
-                    lerMaterial(idmaterial);
-                } catch (SQLException e) {
-                    String msg = "Erro ao criar movimentação do Material.";
-                    JOptionPane.showMessageDialog(null, msg);
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(msg, e);
-                        }
-                    }.start();
-                }
-            }
+    private void btnMovManualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovManualActionPerformed
+        if (idmaterial == 0) {
+            JOptionPane.showMessageDialog(null, "Selecione um produto primeiro.");
         } else {
-            JOptionPane.showMessageDialog(null, "Sem permissão.");
+            double estoqueAtual = vmd.readEstoque(idmaterial);
+            double qtdMovimentada = 0;
+            try {
+                qtdMovimentada = Double.parseDouble(JOptionPane.showInputDialog(null, "Qual a quantidade a ser colocada no estoque?", "Quantidade Movimentada", JOptionPane.YES_NO_OPTION));
+            } catch (NullPointerException e) {
+                String msg = "Erro.";
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
+
+            double saldo = estoqueAtual + qtdMovimentada;
+
+            try {
+                vmd.updateEstoque(saldo, idmaterial);
+                vmmd.create(idmaterial, estoqueAtual, qtdMovimentada, saldo, "Contagem Manual", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+
+                JOptionPane.showMessageDialog(null, "Movimentação criada com sucesso.");
+
+                lerMaterial(idmaterial);
+            } catch (SQLException e) {
+                String msg = "Erro ao criar movimentação do Material.";
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
         }
-    }//GEN-LAST:event_jButton11ActionPerformed
+    }//GEN-LAST:event_btnMovManualActionPerformed
 
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
         readProdutos();
@@ -3597,11 +3711,20 @@ public class VM extends javax.swing.JInternalFrame {
         readProdutos();
     }//GEN-LAST:event_cbstatusActionPerformed
 
+    private void txtcortesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtcortesKeyReleased
+        if (txtcortes.getText().length() > 0) {
+            cbfamilia.setEnabled(false);
+        } else {
+            cbfamilia.setEnabled(true);
+        }
+    }//GEN-LAST:event_txtcortesKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.ButtonGroup GroupMateriaPrima;
     public javax.swing.ButtonGroup GroupRevestimento;
     public javax.swing.ButtonGroup GroupTamanho;
+    public javax.swing.JButton btnMovManual;
     public static javax.swing.JComboBox<String> cbcanal;
     public static javax.swing.JComboBox<String> cbfamilia;
     public static javax.swing.JComboBox<String> cbrevestimento;
@@ -3609,6 +3732,7 @@ public class VM extends javax.swing.JInternalFrame {
     public static javax.swing.JComboBox<String> cbtamanho;
     public static javax.swing.JComboBox<String> cbtipo;
     public static javax.swing.JComboBox<String> cbtopo;
+    public static javax.swing.JCheckBox checkDesbaste;
     public static javax.swing.JCheckBox checkimportado;
     public static javax.swing.JCheckBox checkraio;
     public static javax.swing.JCheckBox checkrevestimento;
@@ -3616,7 +3740,6 @@ public class VM extends javax.swing.JInternalFrame {
     public static javax.swing.JCheckBox checkweldon;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton10;
-    public javax.swing.JButton jButton11;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
@@ -3638,7 +3761,12 @@ public class VM extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel19;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel20;
+    public javax.swing.JLabel jLabel21;
+    public javax.swing.JLabel jLabel22;
+    public javax.swing.JLabel jLabel23;
+    public javax.swing.JLabel jLabel24;
     public javax.swing.JLabel jLabel25;
+    public javax.swing.JLabel jLabel26;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel36;
     public javax.swing.JLabel jLabel37;
@@ -3699,6 +3827,11 @@ public class VM extends javax.swing.JInternalFrame {
     public static javax.swing.JTabbedPane tabmaterialinfo;
     public static javax.swing.JTextField txtLocal;
     public static javax.swing.JTextField txtQtdOp;
+    public static javax.swing.JTextField txtTolD1;
+    public static javax.swing.JTextField txtTolD2;
+    public static javax.swing.JTextField txtTolD3;
+    public static javax.swing.JTextField txtTolD4;
+    public static javax.swing.JTextField txtTolD5;
     public static javax.swing.JTextField txtagressividade;
     public static javax.swing.JTextField txtalivio1;
     public static javax.swing.JTextField txtalivio2;

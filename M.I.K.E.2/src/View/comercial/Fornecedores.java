@@ -58,7 +58,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
 
     public void zeracampos() {
         //Apagar txt's
-        txtidfornecedor.setText("");
         txtnomefornecedor.setText("");
         txtrazao.setText("");
         txtcnpj.setText("");
@@ -280,8 +279,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         btnsalvar = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
-        jLabel18 = new javax.swing.JLabel();
-        txtidfornecedor = new javax.swing.JTextField();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -360,9 +357,9 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tablefornecedores);
         if (tablefornecedores.getColumnModel().getColumnCount() > 0) {
-            tablefornecedores.getColumnModel().getColumn(0).setMinWidth(40);
-            tablefornecedores.getColumnModel().getColumn(0).setPreferredWidth(40);
-            tablefornecedores.getColumnModel().getColumn(0).setMaxWidth(40);
+            tablefornecedores.getColumnModel().getColumn(0).setMinWidth(0);
+            tablefornecedores.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tablefornecedores.getColumnModel().getColumn(0).setMaxWidth(0);
         }
 
         jButton3.setText("Novo");
@@ -461,12 +458,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                 jButton6ActionPerformed(evt);
             }
         });
-
-        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel18.setText("ID");
-
-        txtidfornecedor.setEditable(false);
-        txtidfornecedor.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -629,7 +620,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                         .addComponent(txtcep, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btncep)))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -735,7 +726,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Dados", jPanel6);
@@ -799,14 +790,14 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                         .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 906, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
@@ -877,14 +868,14 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                         .addComponent(jButton9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton7))
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 906, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton7)
@@ -898,11 +889,11 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 906, Short.MAX_VALUE)
+            .addGap(0, 918, Short.MAX_VALUE)
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 333, Short.MAX_VALUE)
+            .addGap(0, 379, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Qualidade", jPanel12);
@@ -922,34 +913,22 @@ public class Fornecedores extends javax.swing.JInternalFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtidfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jTabbedPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnsalvar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 355, Short.MAX_VALUE)
+                .addComponent(jButton10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnsalvar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
                 .addContainerGap())
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel18)
-                    .addComponent(txtidfornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -1162,7 +1141,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                 fb.setUf(cbuf.getSelectedItem().toString());
                 fb.setCep(txtcep.getText());
                 fb.setEmailnfe(txtnfe.getText());
-                fb.setId(Integer.parseInt(txtidfornecedor.getText()));
+                fb.setId(id);
 
                 //nome = ?, razaosocial = ?, cnpj = ?, ie = ?, telefone = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, emailnfe = ? WHERE id = ?
                 fd.update(fb);
@@ -1180,7 +1159,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                 ftb.setLimpeza((boolean) tabletipo.getValueAt(9, 0));
                 ftb.setRevestimento((boolean) tabletipo.getValueAt(10, 0));
                 ftb.setRetifica((boolean) tabletipo.getValueAt(11, 0));
-                ftb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+                ftb.setIdfornecedor(id);
 
                 //mp = ?, ferramentas = ?, rebolo = ?, oleo = ?, gravacao = ?, embalagem = ?, calibracao = ?, manutencao = ?, escritorio = ?, limpeza = ?, revestimento = ?, retifica = ? WHERE idfornecedor = ?
                 ftd.update(ftb);
@@ -1192,7 +1171,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                             //Localicação do documento original
                             File fileoriginal = new File(tabledocumentos.getValueAt(i, 4).toString());
                             //Pasta que será colocar o documento
-                            File folder = new File("Q:/MIKE_ERP/fornecedor_arq/" + txtidfornecedor.getText());
+                            File folder = new File("Q:/MIKE_ERP/fornecedor_arq/" + id);
                             //Documento copiado do original
                             File filecopy = new File(folder + "/" + fileoriginal.getName());
 
@@ -1215,7 +1194,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                             }
 
                             //Dados do documento para salvar no DB
-                            fdb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+                            fdb.setIdfornecedor(id);
                             fdb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
                             fdb.setLocal(filecopy.toString());
 
@@ -1230,7 +1209,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                     //Dados para criar contato
                     for (int i = 0; i < tablecontatos.getRowCount(); i++) {
                         if (tablecontatos.getValueAt(i, 0).equals("")) {//Se não tem id, criar
-                            fcb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+                            fcb.setIdfornecedor(id);
                             fcb.setNome(tablecontatos.getValueAt(i, 2).toString());
                             fcb.setCargo(tablecontatos.getValueAt(i, 3).toString());
                             fcb.setTelefone(tablecontatos.getValueAt(i, 4).toString());
@@ -1243,7 +1222,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
                             fcb.setCargo(tablecontatos.getValueAt(i, 3).toString());
                             fcb.setTelefone(tablecontatos.getValueAt(i, 4).toString());
                             fcb.setEmail(tablecontatos.getValueAt(i, 5).toString());
-                            fcb.setIdfornecedor(Integer.parseInt(txtidfornecedor.getText()));
+                            fcb.setIdfornecedor(id);
 
                             //nome = ?, cargo = ?, telefone = ?, email = ? WHERE idfornecedor = ?
                             fcd.update(fcb);
@@ -1564,7 +1543,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1600,7 +1578,6 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtcidade;
     public static javax.swing.JFormattedTextField txtcnpj;
     public static javax.swing.JTextField txtcomplemento;
-    public static javax.swing.JTextField txtidfornecedor;
     public static javax.swing.JTextField txtie;
     public static javax.swing.JTextField txtlogradouro;
     public static javax.swing.JTextField txtnfe;

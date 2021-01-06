@@ -12,7 +12,6 @@ import Methods.Numeros;
 import Methods.Telas;
 import Methods.Valores;
 import View.Geral.ProcurarCliente;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,18 +19,13 @@ import javax.swing.JOptionPane;
  */
 public class OPF_UP extends javax.swing.JInternalFrame {
 
+    F_UPDAO fud = new F_UPDAO();
+
     /**
      * Creates new form OPF_UP
      */
     public OPF_UP() {
         initComponents();
-        btnAlterarProcesso();
-    }
-
-    public static void btnAlterarProcesso() {
-        if (txtop.getText().contains("OS")) {
-            btnAlterarProcesso.setEnabled(false);
-        }
     }
 
     /**
@@ -68,7 +62,6 @@ public class OPF_UP extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablehist = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
-        btnAlterarProcesso = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("OP Follow Up");
@@ -270,28 +263,18 @@ public class OPF_UP extends javax.swing.JInternalFrame {
             }
         });
 
-        btnAlterarProcesso.setText("Alterar Processo Atual");
-        btnAlterarProcesso.setName("btnAlterarProcesso"); // NOI18N
-        btnAlterarProcesso.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAlterarProcessoActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnAlterarProcesso)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -302,9 +285,7 @@ public class OPF_UP extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(btnAlterarProcesso))
+                .addComponent(jButton1)
                 .addContainerGap())
         );
 
@@ -322,48 +303,6 @@ public class OPF_UP extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtcliente.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Escolha um cliente.");
-        } else if (txtdav.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite uma dav.");
-            txtdav.requestFocus();
-        } else if (txtop.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite uma op.");
-            txtop.requestFocus();
-        } else if (dateentrega.getDate().toString().equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite uma data de entrega.");
-        } else if (txtmaterial.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite o material.");
-            txtmaterial.requestFocus();
-        } else if (cbnivel.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(null, "Escolha um nível.");
-            cbnivel.showPopup();
-        } else if (txtvalor.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite um valor.");
-            txtvalor.requestFocus();
-        } else {
-            F_UPDAO fud = new F_UPDAO();
-            F_UPBean fub = new F_UPBean();
-
-            fub.setDav(txtdav.getText());
-            fub.setOp(txtop.getText());
-            fub.setMaterial(txtmaterial.getText());
-            fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(dateentrega.getDate()));
-            fub.setCliente(txtcliente.getText());
-            fub.setNivel(cbnivel.getSelectedIndex());
-            fub.setValor(Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(txtvalor.getText())));
-            fub.setObservacao(txtobs.getText());
-            fub.setId(Integer.parseInt(txtid.getText()));
-
-            //dav = ?, op = ?, material = ?, dataentrega = ?, cliente = ?, nivel = ?, valor = ?, observacao = ? WHERE id = ?
-            fud.update(fub);
-
-            F_UP.readops();
-            F_UP.readOSs();
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         ProcurarCliente pc = new ProcurarCliente(this.getClass().getSimpleName());
         Telas.AparecerTela(pc);
@@ -373,16 +312,30 @@ public class OPF_UP extends javax.swing.JInternalFrame {
         Numeros.SetarTextoNumeroEmDinheiro(txtvalor.getText(), txtvalor);
     }//GEN-LAST:event_txtvalorFocusLost
 
-    private void btnAlterarProcessoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarProcessoActionPerformed
-        String proc = tablehist.getValueAt(tablehist.getRowCount() - 1, 0).toString();
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        F_UPBean fb = new F_UPBean();
 
-        AlterarProcesso ap = new AlterarProcesso(proc);
-        Telas.AparecerTela(ap);
-    }//GEN-LAST:event_btnAlterarProcessoActionPerformed
+        fb.setDav(txtdav.getText());
+        fb.setOp(txtop.getText());
+        fb.setMaterial(txtmaterial.getText());
+        fb.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(dateentrega.getDate()));
+        fb.setCliente(txtcliente.getText());
+        fb.setNivel(cbnivel.getSelectedIndex());
+        fb.setValor(Valores.TransformarDinheiroEmValorDouble(txtvalor.getText()));
+        fb.setObservacao(txtobs.getText());
+        fb.setId(Integer.parseInt(txtid.getText()));
+
+        //dav = ?, op = ?, material = ?, dataentrega = ?, cliente = ?, nivel = ?, valor = ?, observacao = ? WHERE id = ?
+        fud.update(fb);
+
+        dispose();
+
+        F_UP.readops();
+        F_UP.readOSs();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public static javax.swing.JButton btnAlterarProcesso;
     public static javax.swing.JComboBox<String> cbnivel;
     public static com.toedter.calendar.JDateChooser dateentrega;
     public javax.swing.JButton jButton1;

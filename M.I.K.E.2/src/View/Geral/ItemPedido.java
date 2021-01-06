@@ -5,7 +5,10 @@
  */
 package View.Geral;
 
+import DAO.F_UPDAO;
+import DAO.OPDAO;
 import DAO.VendasPedidoItensDAO;
+import Methods.Dates;
 import Methods.SendEmail;
 import Methods.Telas;
 import View.vendas.PedidoVenda;
@@ -23,8 +26,11 @@ public class ItemPedido extends javax.swing.JInternalFrame {
     private final String origin;
     public int idItemCotacao = 0;
     public static int idMaterial;
+    String op = "";
 
     VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
+    OPDAO od = new OPDAO();
+    F_UPDAO fud = new F_UPDAO();
 
     /**
      * Creates new form ItemOrcamentoServico
@@ -68,10 +74,10 @@ public class ItemPedido extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         txtpedido = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtprazo = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         txtcodigo = new javax.swing.JTextField();
+        txtprazo = new com.toedter.calendar.JDateChooser();
 
         jLabel1.setText("jLabel1");
 
@@ -115,6 +121,8 @@ public class ItemPedido extends javax.swing.JInternalFrame {
 
         txtcodigo.setEditable(false);
 
+        txtprazo.setDateFormatString("dd/MM/yyyy");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -137,7 +145,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtvalor, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 185, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnprocurar))
             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -147,8 +155,8 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtprazo, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
+                .addComponent(txtprazo, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -168,12 +176,13 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                     .addComponent(jLabel4)
                     .addComponent(txtvalor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtpedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(txtprazo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(txtpedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
+                        .addComponent(jButton1))
+                    .addComponent(txtprazo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -232,7 +241,6 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                 float valor = Float.parseFloat(v.replace(",", "."));
                 float tot = qtd * valor;
                 String totf = formatter.format(tot);
-                String qtdf = formatterq.format(qtd);
 
                 switch (origin) {
                     case "PedidoVenda":
@@ -243,9 +251,10 @@ public class ItemPedido extends javax.swing.JInternalFrame {
                             txtcodigo.getText(),
                             txtdesc.getText(),
                             txtqtd.getText(),
+                            0,
                             txtvalor.getText(),
                             totf,
-                            txtprazo.getText() + " dias úteis",
+                            Dates.CriarDataCurtaJDateChooser(txtprazo.getDate()),
                             txtpedido.getText(),
                             "",
                             "",
@@ -261,12 +270,20 @@ public class ItemPedido extends javax.swing.JInternalFrame {
             String v = txtvalor.getText().replace(".", "");
             double valor = Double.parseDouble(v.replace(",", "."));
             double tot = qtd * valor;
-            String nprazo = txtprazo.getText().replace(" dias úteis", "");
+            String nprazo = Dates.CriarDataCurtaDBJDateChooser(txtprazo.getDate());
 
             switch (origin) {
                 case "PedidoVenda":
                     try {
-                        vpid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo + " dias úteis", txtpedido.getText(), idItemCotacao);
+                        vpid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo, txtpedido.getText(), idItemCotacao);
+
+                        vpid.readItem(idItemCotacao).forEach(vpib -> {
+                            op = vpib.getOp();
+                        });
+
+                        od.updateDataEntrega(op, nprazo);
+
+                        fud.updateDataEntrega(op, nprazo);
                     } catch (SQLException e) {
                         String msg = "Erro ao atualizar item do Pedido.";
                         JOptionPane.showMessageDialog(null, msg);
@@ -304,7 +321,7 @@ public class ItemPedido extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtcodigo;
     public static javax.swing.JTextField txtdesc;
     public static javax.swing.JTextField txtpedido;
-    public static javax.swing.JTextField txtprazo;
+    public static com.toedter.calendar.JDateChooser txtprazo;
     public static javax.swing.JTextField txtqtd;
     public static javax.swing.JFormattedTextField txtvalor;
     // End of variables declaration//GEN-END:variables

@@ -36,7 +36,7 @@ public class AddNF extends javax.swing.JInternalFrame {
 
     VendasPedidoItensBean vpib;
 
-    String nf;
+    String nf, destinatario;
 
     /**
      * Creates new form AddNF
@@ -57,13 +57,23 @@ public class AddNF extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tableNF.getModel();
         model.setNumRows(0);
 
-        nfd.readNotas().forEach(nfb -> {
-            model.addRow(new Object[]{
-                nfb.getId(),
-                nfb.getNumero(),
-                nfb.getDestinatario()
+        if (txtPesquisa.getText().equals("")) {
+            nfd.readNotas().forEach(nfb -> {
+                model.addRow(new Object[]{
+                    nfb.getId(),
+                    nfb.getNumero(),
+                    nfb.getDestinatario()
+                });
             });
-        });
+        } else {
+            nfd.readNotasPesquisa(txtPesquisa.getText()).forEach(nfb -> {
+                model.addRow(new Object[]{
+                    nfb.getId(),
+                    nfb.getNumero(),
+                    nfb.getDestinatario()
+                });
+            });
+        }
     }
 
     public void lerItensNF(int numero) {
@@ -107,6 +117,11 @@ public class AddNF extends javax.swing.JInternalFrame {
         jPanel2.setName("jPanel2"); // NOI18N
 
         txtPesquisa.setName("txtPesquisa"); // NOI18N
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -222,6 +237,7 @@ public class AddNF extends javax.swing.JInternalFrame {
     private void tableNFMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableNFMouseClicked
         lerItensNF(Integer.parseInt(tableNF.getValueAt(tableNF.getSelectedRow(), 1).toString()));
         nf = tableNF.getValueAt(tableNF.getSelectedRow(), 1).toString();
+        destinatario = tableNF.getValueAt(tableNF.getSelectedRow(), 2).toString();
     }//GEN-LAST:event_tableNFMouseClicked
 
     private void tableItensMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItensMouseClicked
@@ -262,7 +278,7 @@ public class AddNF extends javax.swing.JInternalFrame {
                 vmd.updateEstoque(estoque, idMaterial);
 
                 try {
-                    vmmd.create(idMaterial, estoqueAtual, qtd, estoque, "Nota Fiscal " + nf, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                    vmmd.create(idMaterial, estoqueAtual, qtd, estoque, "Nota Fiscal " + nf + " - " + destinatario, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
                 } catch (SQLException e) {
                     String msg = "Erro ao criar movimentação do Material de Venda.";
                     JOptionPane.showMessageDialog(null, msg);
@@ -278,7 +294,7 @@ public class AddNF extends javax.swing.JInternalFrame {
                 PedidoVenda.lerItensPedido(PedidoVenda.txtPedido.getText());
                 int numNota = 0;
                 for (int i = 0; i < PedidoVenda.tableItens.getRowCount(); i++) {
-                    if (!PedidoVenda.tableItens.getValueAt(i, 10).equals("")) {
+                    if (!PedidoVenda.tableItens.getValueAt(i, 11).equals("")) {
                         numNota++;
                     }
                 }
@@ -290,12 +306,20 @@ public class AddNF extends javax.swing.JInternalFrame {
                     vpd.updateStatus(pedido, "Parcialmente Faturado");
                 }
 
+                if (tableItens.getRowCount() == 1) {
+                    nfd.updateStatus(Integer.parseInt(nf));
+                }
+
                 PedidoVenda.lerPedido(pedido);
                 PedidoVenda.lerPedidosAbertos();
                 dispose();
             }
         }
     }//GEN-LAST:event_tableItensMouseClicked
+
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        lerNotas();
+    }//GEN-LAST:event_txtPesquisaKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -305,6 +329,6 @@ public class AddNF extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JTable tableItens;
     public static javax.swing.JTable tableNF;
-    public javax.swing.JTextField txtPesquisa;
+    public static javax.swing.JTextField txtPesquisa;
     // End of variables declaration//GEN-END:variables
 }

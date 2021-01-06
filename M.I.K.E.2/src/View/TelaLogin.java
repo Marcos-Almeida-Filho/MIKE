@@ -44,6 +44,7 @@ public class TelaLogin extends javax.swing.JFrame {
         ud.readapelido(TxtLogin.getText()).forEach(ub -> {
             Session.nome = ub.getNome();
             Session.nivel = ub.getNivel();
+            Session.emailfabrica = ub.getEmailfabrica();
         });
         
         //DAO para pesquisar ID do nível do usuário

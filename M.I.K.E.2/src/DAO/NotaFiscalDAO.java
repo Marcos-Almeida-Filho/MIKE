@@ -106,7 +106,43 @@ public class NotaFiscalDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM nf ORDER BY numero");
+            stmt = con.prepareStatement("SELECT * FROM nf WHERE statusInterno = 'Ativo' ORDER BY numero DESC");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                nfb = new NotaFiscalBean();
+
+                nfb.setId(rs.getInt("id"));
+                nfb.setNumero(rs.getInt("numero"));
+                nfb.setDestinatario(rs.getString("destinatario"));
+                nfb.setNatureza(rs.getString("natureza"));
+                nfb.setStatus(rs.getString("status"));
+
+                listnf.add(nfb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Notas Fiscais.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listnf;
+    }
+
+    public List<NotaFiscalBean> readNotasPesquisa(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM nf WHERE statusInterno = 'Ativo' AND numero LIKE '%" + pesquisa + "%' OR statusInterno = 'Ativo' AND destinatario LIKE '%" + pesquisa + "%' ORDER BY numero DESC");
 
             rs = stmt.executeQuery();
 
@@ -240,6 +276,29 @@ public class NotaFiscalDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateStatus(int numero) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE nf SET statusInterno = 'Faturado' WHERE numero = " + numero);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da NF-e.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg, e);

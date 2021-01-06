@@ -204,8 +204,8 @@ public class VendasCotacaoItensDAO {
 
         try {
             stmt = con.prepareStatement("DELETE FROM vendas_cotacao_itens WHERE id = " + id);
+
             stmt.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Item excluído com sucesso!");
         } catch (SQLException e) {
             String msg = "Erro ao excluir item da Cotação de Venda";
             JOptionPane.showMessageDialog(null, msg);

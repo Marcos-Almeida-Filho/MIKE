@@ -185,11 +185,14 @@
               <SubComponents>
                 <Component class="javax.swing.JTable" name="tablemateriaisvendas">
                   <Properties>
+                    <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="4" rowCount="0">
+                      <Table columnCount="6" rowCount="0">
                         <Column editable="false" title="ID" type="java.lang.Object"/>
                         <Column editable="false" title="C&#xf3;digo" type="java.lang.Object"/>
                         <Column editable="false" title="Descri&#xe7;&#xe3;o" type="java.lang.Object"/>
+                        <Column editable="true" title="Estoque" type="java.lang.Object"/>
+                        <Column editable="false" title="Local" type="java.lang.Object"/>
                         <Column editable="false" title="Status" type="java.lang.Object"/>
                       </Table>
                     </Property>
@@ -206,6 +209,16 @@
                           <Renderer/>
                         </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                          <Title/>
+                          <Editor/>
+                          <Renderer/>
+                        </Column>
+                        <Column maxWidth="70" minWidth="70" prefWidth="70" resizable="true">
+                          <Title/>
+                          <Editor/>
+                          <Renderer/>
+                        </Column>
+                        <Column maxWidth="110" minWidth="110" prefWidth="110" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
@@ -624,6 +637,7 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jPanel12" max="32767" attributes="0"/>
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Group type="102" attributes="0">
@@ -638,7 +652,6 @@
                                       </Group>
                                       <EmptySpace min="0" pref="28" max="32767" attributes="0"/>
                                   </Group>
-                                  <Component id="jPanel12" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -1088,6 +1101,7 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="radioVazio" min="-2" max="-2" attributes="0"/>
                                       </Group>
+                                      <Component id="checkDesbaste" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -1111,6 +1125,8 @@
                                       <Component id="checkweldon" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="checkri" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="checkDesbaste" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="radioMD" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1234,6 +1250,14 @@
                             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                           </AuxValues>
                         </Component>
+                        <Component class="javax.swing.JCheckBox" name="checkDesbaste">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Desbaste"/>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
+                        </Component>
                       </SubComponents>
                     </Container>
                     <Container class="javax.swing.JPanel" name="jPanel12">
@@ -1280,7 +1304,7 @@
                               <Layout>
                                 <DimensionLayout dim="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
                                               <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
@@ -1293,27 +1317,67 @@
                                               <Component id="jLabel41" alignment="0" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel42" alignment="0" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel22" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel23" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel24" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel26" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="txthelice" alignment="0" pref="109" max="32767" attributes="0"/>
-                                              <Component id="txtagressividade" max="32767" attributes="0"/>
-                                              <Component id="txtespfilete" max="32767" attributes="0"/>
-                                              <Component id="txtalivio2" max="32767" attributes="0"/>
-                                              <Component id="txtalivio1" max="32767" attributes="0"/>
-                                              <Component id="txtaliviotopo2" max="32767" attributes="0"/>
-                                              <Component id="txtaliviotopo1" max="32767" attributes="0"/>
-                                              <Component id="txtconcavidade" alignment="1" max="32767" attributes="0"/>
-                                              <Component id="txtnucleo" alignment="0" pref="109" max="32767" attributes="0"/>
-                                              <Component id="txtfrontal" alignment="0" max="32767" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="txtTolD5" pref="111" max="32767" attributes="0"/>
+                                              <Component id="txtTolD4" max="32767" attributes="0"/>
+                                              <Component id="txtTolD3" max="32767" attributes="0"/>
+                                              <Component id="txtTolD2" max="32767" attributes="0"/>
+                                              <Component id="txtTolD1" max="32767" attributes="0"/>
+                                              <Group type="102" attributes="0">
+                                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                                      <Component id="txthelice" alignment="0" pref="109" max="32767" attributes="0"/>
+                                                      <Component id="txtagressividade" max="32767" attributes="0"/>
+                                                      <Component id="txtespfilete" max="32767" attributes="0"/>
+                                                      <Component id="txtalivio2" max="32767" attributes="0"/>
+                                                      <Component id="txtalivio1" max="32767" attributes="0"/>
+                                                      <Component id="txtaliviotopo2" max="32767" attributes="0"/>
+                                                      <Component id="txtaliviotopo1" max="32767" attributes="0"/>
+                                                      <Component id="txtconcavidade" alignment="1" max="32767" attributes="0"/>
+                                                      <Component id="txtnucleo" alignment="0" pref="109" max="32767" attributes="0"/>
+                                                      <Component id="txtfrontal" alignment="0" max="32767" attributes="0"/>
+                                                  </Group>
+                                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                              </Group>
                                           </Group>
-                                          <EmptySpace max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                 </DimensionLayout>
                                 <DimensionLayout dim="1">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txtTolD1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel21" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txtTolD2" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel22" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txtTolD3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel23" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txtTolD4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel24" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txtTolD5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel26" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1540,6 +1604,56 @@
                                     <Property name="text" type="java.lang.String" value="Frontal"/>
                                   </Properties>
                                 </Component>
+                                <Component class="javax.swing.JTextField" name="txtTolD1">
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                                  </AuxValues>
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="txtTolD2">
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                                  </AuxValues>
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="txtTolD3">
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                                  </AuxValues>
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="txtTolD4">
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                                  </AuxValues>
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="txtTolD5">
+                                  <AuxValues>
+                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                                  </AuxValues>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel21">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D1"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel22">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D2"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel23">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D3"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel24">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D4"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel26">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D5"/>
+                                  </Properties>
+                                </Component>
                               </SubComponents>
                             </Container>
                           </SubComponents>
@@ -1576,6 +1690,7 @@
                       <Events>
                         <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtcortesFocusGained"/>
                         <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtcortesFocusLost"/>
+                        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtcortesKeyReleased"/>
                       </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
@@ -1955,7 +2070,7 @@
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Group type="102" attributes="0">
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                      <Component id="jButton11" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnMovManual" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane4" pref="1135" max="32767" attributes="0"/>
                               </Group>
@@ -1985,7 +2100,7 @@
                                   <Component id="jScrollPane4" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton11" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnMovManual" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -2211,12 +2326,12 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Component class="javax.swing.JButton" name="jButton11">
+                    <Component class="javax.swing.JButton" name="btnMovManual">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="Lan&#xe7;ar Movimenta&#xe7;&#xe3;o Manual"/>
+                        <Property name="text" type="java.lang.String" value="Lan&#xe7;ar Contagem Manual"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton11ActionPerformed"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMovManualActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>

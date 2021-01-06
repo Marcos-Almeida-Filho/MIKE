@@ -157,6 +157,7 @@ public class UsuariosDAO {
 
                 ub.setNome(rs.getString("nome"));
                 ub.setNivel(rs.getString("nivel"));
+                ub.setEmailfabrica(rs.getString("emailfabrica"));
 
                 listub.add(ub);
             }

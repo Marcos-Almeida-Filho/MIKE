@@ -328,7 +328,6 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                             "",
                             idMaterial
                         });
-                        CotacaoVenda.txtTotal();
                         break;
                     default:
                         throw new AssertionError();
@@ -336,11 +335,11 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                 dispose();
             }
         } else {
-            int qtd = Integer.parseInt(txtqtd.getText());
+            double qtd = Double.parseDouble(txtqtd.getText().replace(",", "."));
             String v = txtvalor.getText().replace(".", "");
-            float valor = Float.parseFloat(v.replace(",", "."));
-            float tot = qtd * valor;
-            String nprazo = txtprazo.getText().replace(" dias úteis", "");
+            double valor = Double.parseDouble(v.replace(",", "."));
+            double tot = qtd * valor;
+            String nprazo = txtprazo.getText() + " dias úteis";
 
             switch (origin) {
                 case "CotacaoServico":
@@ -349,6 +348,8 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                 case "CotacaoVenda":
                     try {
                         vcid.update(idMaterial, txtcodigo.getText(), txtdesc.getText(), qtd, valor, tot, nprazo, radioCadastrado.isSelected(), idItemCotacao);
+                        JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
+                        CotacaoVenda.lerItensCotacao(CotacaoVenda.txtCotacao.getText());
                     } catch (SQLException e) {
                         String msg = "Erro ao atualizar item da Cotação de Vendas.";
                         JOptionPane.showMessageDialog(null, msg);
@@ -361,8 +362,6 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                         }.start();
                     }
                     break;
-                default:
-                    throw new AssertionError();
             }
 
             dispose();

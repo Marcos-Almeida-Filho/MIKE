@@ -23,6 +23,7 @@ import DAO.ProcessosVendasDAO;
 import DAO.ProcessosVendasMedicoesDAO;
 import DAO.VendasMateriaisDAO;
 import DAO.VendasMateriaisMovDAO;
+import DAO.VendasPedidoItensDAO;
 import Methods.Arquivos;
 import Methods.Dates;
 import Methods.SendEmail;
@@ -68,6 +69,7 @@ public class OP extends javax.swing.JInternalFrame {
     static F_UPDAO fud = new F_UPDAO();
     static InsumosDAO idao = new InsumosDAO();
     static InsumosMovDAO imdao = new InsumosMovDAO();
+    static VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
 
     static int idMaterial = 0;
     static int iP = 0;
@@ -127,6 +129,48 @@ public class OP extends javax.swing.JInternalFrame {
                     break;
             }
         } else {
+            String pesquisa = txtPesquisa.getText();
+            switch (status) {
+                case "Em Aberto":
+                    od.readTodasOPsEmAbertoPesquisa(pesquisa).forEach(ob -> {
+                        modelOP.addRow(new Object[]{
+                            ob.getId(),
+                            false,
+                            ob.getOp(),
+                            ob.getCliente(),
+                            ob.getCodigo(),
+                            Dates.TransformarDataCurtaDoDB(ob.getDataprevista()),
+                            ob.getStatus()
+                        });
+                    });
+                    break;
+                case "Todos":
+                    od.readTodasOPsPesquisa(pesquisa).forEach(ob -> {
+                        modelOP.addRow(new Object[]{
+                            ob.getId(),
+                            false,
+                            ob.getOp(),
+                            ob.getCliente(),
+                            ob.getCodigo(),
+                            Dates.TransformarDataCurtaDoDB(ob.getDataprevista()),
+                            ob.getStatus()
+                        });
+                    });
+                    break;
+                default:
+                    od.readOPPorStatusPesquisa(status, pesquisa).forEach(ob -> {
+                        modelOP.addRow(new Object[]{
+                            ob.getId(),
+                            false,
+                            ob.getOp(),
+                            ob.getCliente(),
+                            ob.getCodigo(),
+                            Dates.TransformarDataCurtaDoDB(ob.getDataprevista()),
+                            ob.getStatus()
+                        });
+                    });
+                    break;
+            }
         }
     }
 
@@ -173,8 +217,8 @@ public class OP extends javax.swing.JInternalFrame {
         fuhd.create(fuhb);
     }
 
-    public static void lerOP(String OP) {
-        od.readOP(OP).forEach(ob -> {
+    public static void lerOP(String op) {
+        od.readOP(op).forEach(ob -> {
             idMaterial = ob.getIdmaterial();
             txtDav.setText(ob.getDav());
             txtCliente.setText(ob.getCliente());
@@ -186,6 +230,20 @@ public class OP extends javax.swing.JInternalFrame {
             txtOk.setText(String.valueOf(ob.getQtdok()).replace(".", ","));
             txtMortas.setText(String.valueOf(ob.getQtdnaook()).replace(".", ","));
         });
+
+        lerProcessos(op);
+
+        lerDocs(op);
+
+        lerObs(op);
+
+        lerInspecoes(op);
+
+        lerMP(op);
+
+        lerMedidasMaterial(idMaterial);
+
+        camposPorStatus();
     }
 
     public static void lerProcessos(String op) {
@@ -210,7 +268,22 @@ public class OP extends javax.swing.JInternalFrame {
 
     public static void lerMedidasMaterial(int idMaterial) {
         vmd.click(idMaterial).forEach(vmb -> {
-            txthelice.setText(vmb.getHelice());
+            txtd1.setText(vmb.getD1());
+            txtd2.setText(vmb.getD2());
+            txtd3.setText(vmb.getD3());
+            txtd4.setText(vmb.getD4());
+            txtd5.setText(vmb.getD5());
+            txtl1.setText(vmb.getL1());
+            txtl2.setText(vmb.getL2());
+            txtl3.setText(vmb.getL3());
+            txtl4.setText(vmb.getL4());
+            txtl5.setText(vmb.getL5());
+            txtTolD1.setText(vmb.getTolD1());
+            txtTolD2.setText(vmb.getTolD2());
+            txtTolD3.setText(vmb.getTolD3());
+            txtTolD4.setText(vmb.getTolD4());
+            txtTolD5.setText(vmb.getTolD5());
+            txtHelice.setText(vmb.getHelice());
             txtnucleo.setText(vmb.getNucleo());
             txtconcavidade.setText(vmb.getConcavidade());
             txtaliviotopo1.setText(vmb.getTopo1());
@@ -322,13 +395,54 @@ public class OP extends javax.swing.JInternalFrame {
 
         od.create(op, Dates.CriarDataCurtaDBSemDataExistente(), Dates.CriarDataCurtaDBJDateChooser(txtDataEntrega.getDate()), txtCliente.getText(), txtDav.getText(), idMaterial, TxtCodigo.getText(), TxtDescricao.getText(), Double.parseDouble(TxtQtde.getText()), Double.parseDouble(TxtQtde.getText()), "Rascunho");
 
+        F_UPBean fub = new F_UPBean();
+
+        fub.setDav(txtDav.getText());
+        fub.setOp(op);
+        fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(txtDataEntrega.getDate()));
+        fub.setMaterial(TxtCodigo.getText());
+        fub.setProcesso("Separação de Material");
+        fub.setDatacriacao(Dates.CriarDataCurtaDBSemDataExistente());
+        fub.setNivel(5);
+        fub.setValor(0);
+        fub.setObservacao("");
+        fub.setCliente(txtCliente.getText());
+
+        //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
+        fud.create(fub);
+
         txtNumOP.setText(op);
     }
 
     public static void updateOP(String op) throws SQLException {
         idMaterial = vmd.idProduto(TxtCodigo.getText());
 
-        od.updateOP(op, txtCliente.getText(), idMaterial, TxtCodigo.getText(), TxtDescricao.getText(), Double.parseDouble(TxtQtde.getText().replace(",", ".")), Double.parseDouble(TxtQtde.getText().replace(",", ".")));
+        String dataPrevista = Dates.CriarDataCurtaDBJDateChooser(txtDataEntrega.getDate());
+
+        od.updateOP(op, txtCliente.getText(), idMaterial, TxtCodigo.getText(), TxtDescricao.getText(), Double.parseDouble(TxtQtde.getText().replace(",", ".")), Double.parseDouble(TxtQtde.getText().replace(",", ".")), dataPrevista);
+
+        vpid.updateDataEntrega(op, dataPrevista);
+
+        if (fud.existeFUP(op)) {
+            fud.updateDataEntrega(op, dataPrevista);
+        } else {
+            F_UPBean fub = new F_UPBean();
+
+            fub.setDav(txtDav.getText());
+            fub.setOp(op);
+            fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(txtDataEntrega.getDate()));
+            fub.setMaterial(TxtCodigo.getText());
+            fub.setProcesso("Separação de Material");
+            fub.setDatacriacao(Dates.CriarDataCurtaDBSemDataExistente());
+            fub.setNivel(5);
+            fub.setValor(0);
+            fub.setObservacao("");
+            fub.setCliente(txtCliente.getText());
+
+            //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
+            fud.create(fub);
+        }
+
     }
 
     public static void salvarDocs(String op) throws SQLException {
@@ -429,10 +543,34 @@ public class OP extends javax.swing.JInternalFrame {
         tableProcessos = new javax.swing.JTable();
         jPanel9 = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        paneldadostxt = new javax.swing.JPanel();
-        jLabel14 = new javax.swing.JLabel();
-        txthelice = new javax.swing.JTextField();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        lblicon = new javax.swing.JLabel();
+        paneldiam = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        txtd1 = new javax.swing.JTextField();
+        txtd2 = new javax.swing.JTextField();
+        txtd3 = new javax.swing.JTextField();
+        txtd4 = new javax.swing.JTextField();
+        txtd5 = new javax.swing.JTextField();
+        panelcomp = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        txtl1 = new javax.swing.JTextField();
+        txtl2 = new javax.swing.JTextField();
+        txtl3 = new javax.swing.JTextField();
+        txtl4 = new javax.swing.JTextField();
+        txtl5 = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        paneldadostxt1 = new javax.swing.JPanel();
+        jLabel23 = new javax.swing.JLabel();
+        txtHelice = new javax.swing.JTextField();
         txtnucleo = new javax.swing.JTextField();
         jLabel25 = new javax.swing.JLabel();
         txtconcavidade = new javax.swing.JTextField();
@@ -451,8 +589,16 @@ public class OP extends javax.swing.JInternalFrame {
         jLabel42 = new javax.swing.JLabel();
         txtfrontal = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
-        jScrollPane10 = new javax.swing.JScrollPane();
-        lblicon = new javax.swing.JLabel();
+        txtTolD1 = new javax.swing.JTextField();
+        txtTolD2 = new javax.swing.JTextField();
+        txtTolD3 = new javax.swing.JTextField();
+        txtTolD4 = new javax.swing.JTextField();
+        txtTolD5 = new javax.swing.JTextField();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tableInspecao = new javax.swing.JTable();
@@ -532,6 +678,12 @@ public class OP extends javax.swing.JInternalFrame {
         }
 
         jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
+
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
@@ -713,14 +865,14 @@ public class OP extends javax.swing.JInternalFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TxtDescricao)
+                .addComponent(TxtDescricao, javax.swing.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnProcurarProduto))
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(TxtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 419, Short.MAX_VALUE))
+                .addComponent(TxtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -885,16 +1037,176 @@ public class OP extends javax.swing.JInternalFrame {
         jPanel14.setBackground(new java.awt.Color(255, 255, 255));
         jPanel14.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados para Construção"));
 
-        jLabel14.setText("Hélice");
+        lblicon.setBackground(new java.awt.Color(255, 255, 255));
+        lblicon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblicon.setOpaque(true);
+        jScrollPane10.setViewportView(lblicon);
 
-        txthelice.setEditable(false);
-        txthelice.setName("fresa-broca-fe-be"); // NOI18N
-        txthelice.addFocusListener(new java.awt.event.FocusAdapter() {
+        paneldiam.setBorder(javax.swing.BorderFactory.createTitledBorder("Diâmetro"));
+
+        jLabel11.setText("D1");
+
+        jLabel12.setText("D2");
+
+        jLabel13.setText("D3");
+
+        jLabel15.setText("D4");
+
+        jLabel17.setText("D5");
+
+        txtd1.setEditable(false);
+        txtd1.setName("fresa-broca-fe-be"); // NOI18N
+
+        txtd2.setEditable(false);
+        txtd2.setName("fresa-broca-fe-be"); // NOI18N
+
+        txtd3.setEditable(false);
+        txtd3.setName("fe-be"); // NOI18N
+
+        txtd4.setEditable(false);
+        txtd4.setName("fe-be"); // NOI18N
+
+        txtd5.setEditable(false);
+        txtd5.setName("fe-be"); // NOI18N
+
+        javax.swing.GroupLayout paneldiamLayout = new javax.swing.GroupLayout(paneldiam);
+        paneldiam.setLayout(paneldiamLayout);
+        paneldiamLayout.setHorizontalGroup(
+            paneldiamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneldiamLayout.createSequentialGroup()
+                .addGroup(paneldiamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(paneldiamLayout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtd5))
+                    .addGroup(paneldiamLayout.createSequentialGroup()
+                        .addComponent(jLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtd4))
+                    .addGroup(paneldiamLayout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtd3))
+                    .addGroup(paneldiamLayout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtd1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(paneldiamLayout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtd2)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        paneldiamLayout.setVerticalGroup(
+            paneldiamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneldiamLayout.createSequentialGroup()
+                .addGroup(paneldiamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(txtd1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldiamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(txtd2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldiamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(txtd3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldiamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(txtd4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldiamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(txtd5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        panelcomp.setBorder(javax.swing.BorderFactory.createTitledBorder("Comprimento"));
+
+        jLabel18.setText("L1");
+
+        jLabel19.setText("L2");
+
+        jLabel20.setText("L3");
+
+        jLabel21.setText("L4");
+
+        jLabel22.setText("L5");
+
+        txtl1.setEditable(false);
+        txtl1.setName("fresa-broca-fe-be"); // NOI18N
+
+        txtl2.setEditable(false);
+        txtl2.setName("fresa-broca-fe-be"); // NOI18N
+
+        txtl3.setEditable(false);
+        txtl3.setName("fe-be"); // NOI18N
+
+        txtl4.setEditable(false);
+        txtl4.setName("fe-be"); // NOI18N
+
+        txtl5.setEditable(false);
+        txtl5.setName("fe-be"); // NOI18N
+
+        javax.swing.GroupLayout panelcompLayout = new javax.swing.GroupLayout(panelcomp);
+        panelcomp.setLayout(panelcompLayout);
+        panelcompLayout.setHorizontalGroup(
+            panelcompLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelcompLayout.createSequentialGroup()
+                .addComponent(jLabel22)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtl5))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelcompLayout.createSequentialGroup()
+                .addComponent(jLabel21)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtl4))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelcompLayout.createSequentialGroup()
+                .addComponent(jLabel20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtl3))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelcompLayout.createSequentialGroup()
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtl2))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelcompLayout.createSequentialGroup()
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtl1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        panelcompLayout.setVerticalGroup(
+            panelcompLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelcompLayout.createSequentialGroup()
+                .addGroup(panelcompLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18)
+                    .addComponent(txtl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelcompLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel19)
+                    .addComponent(txtl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelcompLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(txtl3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelcompLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(txtl4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelcompLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(txtl5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        jLabel23.setText("Hélice");
+
+        txtHelice.setEditable(false);
+        txtHelice.setName("fresa-broca-fe-be"); // NOI18N
+        txtHelice.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txtheliceFocusGained(evt);
+                txtHeliceFocusGained(evt);
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                txtheliceFocusLost(evt);
+                txtHeliceFocusLost(evt);
             }
         });
 
@@ -1015,14 +1327,34 @@ public class OP extends javax.swing.JInternalFrame {
 
         jLabel16.setText("Frontal");
 
-        javax.swing.GroupLayout paneldadostxtLayout = new javax.swing.GroupLayout(paneldadostxt);
-        paneldadostxt.setLayout(paneldadostxtLayout);
-        paneldadostxtLayout.setHorizontalGroup(
-            paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(paneldadostxtLayout.createSequentialGroup()
+        txtTolD1.setEditable(false);
+
+        txtTolD2.setEditable(false);
+
+        txtTolD3.setEditable(false);
+
+        txtTolD4.setEditable(false);
+
+        txtTolD5.setEditable(false);
+
+        jLabel24.setText("Tolerância D1");
+
+        jLabel26.setText("Tolerância D2");
+
+        jLabel27.setText("Tolerância D3");
+
+        jLabel28.setText("Tolerância D4");
+
+        jLabel29.setText("Tolerância D5");
+
+        javax.swing.GroupLayout paneldadostxt1Layout = new javax.swing.GroupLayout(paneldadostxt1);
+        paneldadostxt1.setLayout(paneldadostxt1Layout);
+        paneldadostxt1Layout.setHorizontalGroup(
+            paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneldadostxt1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel14)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel23)
                     .addComponent(jLabel25)
                     .addComponent(jLabel36)
                     .addComponent(jLabel37)
@@ -1031,88 +1363,126 @@ public class OP extends javax.swing.JInternalFrame {
                     .addComponent(jLabel40)
                     .addComponent(jLabel41)
                     .addComponent(jLabel42)
-                    .addComponent(jLabel16))
+                    .addComponent(jLabel16)
+                    .addComponent(jLabel24)
+                    .addComponent(jLabel26)
+                    .addComponent(jLabel27)
+                    .addComponent(jLabel28)
+                    .addComponent(jLabel29))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txthelice, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                    .addComponent(txtagressividade)
-                    .addComponent(txtespfilete)
-                    .addComponent(txtalivio2)
-                    .addComponent(txtalivio1)
-                    .addComponent(txtaliviotopo2)
-                    .addComponent(txtaliviotopo1)
-                    .addComponent(txtconcavidade, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtnucleo, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
-                    .addComponent(txtfrontal))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtTolD5, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                    .addComponent(txtTolD4)
+                    .addComponent(txtTolD3)
+                    .addComponent(txtTolD2)
+                    .addComponent(txtTolD1)
+                    .addGroup(paneldadostxt1Layout.createSequentialGroup()
+                        .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtHelice, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(txtagressividade)
+                            .addComponent(txtespfilete)
+                            .addComponent(txtalivio2)
+                            .addComponent(txtalivio1)
+                            .addComponent(txtaliviotopo2)
+                            .addComponent(txtaliviotopo1)
+                            .addComponent(txtconcavidade, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(txtnucleo, javax.swing.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE)
+                            .addComponent(txtfrontal))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
-        paneldadostxtLayout.setVerticalGroup(
-            paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(paneldadostxtLayout.createSequentialGroup()
+        paneldadostxt1Layout.setVerticalGroup(
+            paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneldadostxt1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14)
-                    .addComponent(txthelice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel24))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel26))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel27))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel28))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtTolD5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel29))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel23)
+                    .addComponent(txtHelice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtnucleo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel25))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtconcavidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtaliviotopo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel37))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel38)
                     .addComponent(txtaliviotopo2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel39)
                     .addComponent(txtalivio1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel40)
                     .addComponent(txtalivio2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtespfilete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel41))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtagressividade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel42))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paneldadostxtLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(paneldadostxt1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtfrontal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jScrollPane6.setViewportView(paneldadostxt);
-
-        lblicon.setBackground(new java.awt.Color(255, 255, 255));
-        lblicon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblicon.setOpaque(true);
-        jScrollPane10.setViewportView(lblicon);
+        jScrollPane4.setViewportView(paneldadostxt1);
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(paneldiam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 608, Short.MAX_VALUE))
+                .addComponent(panelcomp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
             .addComponent(jScrollPane10)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(paneldiam, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelcomp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 83, Short.MAX_VALUE))
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -1562,20 +1932,6 @@ public class OP extends javax.swing.JInternalFrame {
 
             String op = txtNumOP.getText();
             lerOP(op);
-
-            lerProcessos(op);
-
-            lerDocs(op);
-
-            lerObs(op);
-
-            lerInspecoes(op);
-
-            lerMP(op);
-
-            lerMedidasMaterial(idMaterial);
-
-            camposPorStatus();
         }
     }//GEN-LAST:event_tableOPMouseClicked
 
@@ -1600,104 +1956,19 @@ public class OP extends javax.swing.JInternalFrame {
                     lerProcessos(txtNumOP.getText());
                 }
             } else {
-                int id = Integer.parseInt(tableProcessos.getValueAt(tableProcessos.getSelectedRow(), 0).toString());
-                double qtdTotalProcesso = Double.parseDouble(tableProcessos.getValueAt(tableProcessos.getSelectedRow(), 9).toString());
-                ProcessoOP po = new ProcessoOP(id, qtdTotalProcesso);
-                Telas.AparecerTela(po);
-                ProcessoOP.readProcesso(id);
+                String user = tableProcessos.getValueAt(tableProcessos.getSelectedRow(), 7).toString();
+                if (user.equals(Session.nome)) {
+                    int id = Integer.parseInt(tableProcessos.getValueAt(tableProcessos.getSelectedRow(), 0).toString());
+                    double qtdTotalProcesso = Double.parseDouble(tableProcessos.getValueAt(tableProcessos.getSelectedRow(), 9).toString());
+                    ProcessoOP po = new ProcessoOP(id, qtdTotalProcesso);
+                    Telas.AparecerTela(po);
+                    ProcessoOP.readProcesso(id);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Usuário logado diferente do usuário do processo.");
+                }
             }
         }
     }//GEN-LAST:event_tableProcessosMouseClicked
-
-    private void txtheliceFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtheliceFocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/helice.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtheliceFocusGained
-
-    private void txtheliceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtheliceFocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtheliceFocusLost
-
-    private void txtnucleoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtnucleoFocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/nucleo.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtnucleoFocusGained
-
-    private void txtnucleoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtnucleoFocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtnucleoFocusLost
-
-    private void txtconcavidadeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtconcavidadeFocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/concavidade.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtconcavidadeFocusGained
-
-    private void txtconcavidadeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtconcavidadeFocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtconcavidadeFocusLost
-
-    private void txtaliviotopo1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo1FocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/aliviotopo1.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtaliviotopo1FocusGained
-
-    private void txtaliviotopo1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo1FocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtaliviotopo1FocusLost
-
-    private void txtaliviotopo2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo2FocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/aliviotopo2.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtaliviotopo2FocusGained
-
-    private void txtaliviotopo2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo2FocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtaliviotopo2FocusLost
-
-    private void txtalivio1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtalivio1FocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/alivio1.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtalivio1FocusGained
-
-    private void txtalivio1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtalivio1FocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtalivio1FocusLost
-
-    private void txtalivio2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtalivio2FocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/alivio2.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtalivio2FocusGained
-
-    private void txtalivio2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtalivio2FocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtalivio2FocusLost
-
-    private void txtespfileteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtespfileteFocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/espfilete.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtespfileteFocusGained
-
-    private void txtespfileteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtespfileteFocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtespfileteFocusLost
-
-    private void txtagressividadeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtagressividadeFocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/agressividade.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtagressividadeFocusGained
-
-    private void txtagressividadeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtagressividadeFocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtagressividadeFocusLost
-
-    private void txtfrontalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtfrontalFocusGained
-        ImageIcon i = new ImageIcon(getClass().getResource("/Images/frontal.png"));
-        lblicon.setIcon(i);
-    }//GEN-LAST:event_txtfrontalFocusGained
-
-    private void txtfrontalFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtfrontalFocusLost
-        lblicon.setIcon(null);
-    }//GEN-LAST:event_txtfrontalFocusLost
 
     private void txtDavMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtDavMouseClicked
         if (evt.getButton() == 3) {
@@ -1761,7 +2032,17 @@ public class OP extends javax.swing.JInternalFrame {
         } else if (baixa > 0) {
             JOptionPane.showMessageDialog(null, "Produtos com baixa de estoque selecionados.");
         } else {
-
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir as Matérias Primas selecionadas?", "Excluir Matéria Prima", JOptionPane.YES_NO_OPTION);
+            
+            if (resp == 0) {
+                for (int i = 0; i < tableMP.getRowCount(); i++) {
+                    if (tableMP.getValueAt(i, 1).equals(true)) {
+                        int id = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
+                        omd.delete(id);
+                    }
+                }
+                lerMP(txtNumOP.getText());
+            }
         }
     }//GEN-LAST:event_btnExcluirMPActionPerformed
 
@@ -1792,6 +2073,8 @@ public class OP extends javax.swing.JInternalFrame {
         } else if (numZero > 0) {
             JOptionPane.showMessageDialog(null, "Um ou mais produtos com quantidade 0 para dar baixa de estoque.");
         } else {
+            int qtdNaoOk = 0;
+
             for (int i = 0; i < rows; i++) {
                 if (tableMP.getValueAt(i, 5).equals(false)) {
                     String material = tableMP.getValueAt(i, 2).toString();
@@ -1800,8 +2083,30 @@ public class OP extends javax.swing.JInternalFrame {
                         double estoqueAtual = idao.readEstoque(idmaterial);
                         double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
                         if (qtd > estoqueAtual) {
-                            JOptionPane.showMessageDialog(null, "Estoque do item " + material + " é inferior ao selecionado para dar baixa.");
-                        } else {
+                            JOptionPane.showMessageDialog(null, "Estoque do insumo " + material + " é inferior ao selecionado para dar baixa.");
+                            qtdNaoOk++;
+                        }
+                    } else {
+                        int idmaterial = vmd.idProduto(material);
+                        double estoqueAtual = vmd.readEstoque(idmaterial);
+                        double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+                        if (qtd > estoqueAtual) {
+                            JOptionPane.showMessageDialog(null, "Estoque do material " + material + " é inferior ao selecionado para dar baixa.");
+                            qtdNaoOk++;
+                        }
+                    }
+                }
+            }
+
+            if (qtdNaoOk == 0) {
+                for (int i = 0; i < rows; i++) {
+                    if (tableMP.getValueAt(i, 5).equals(false)) {
+                        String material = tableMP.getValueAt(i, 2).toString();
+                        if (tableMP.getValueAt(i, 6).equals(true)) {
+                            int idmaterial = idao.idCreated(material);
+                            double estoqueAtual = idao.readEstoque(idmaterial);
+                            double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+
                             int idmp = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
                             omd.updateBaixa(idmp);
 
@@ -1815,15 +2120,11 @@ public class OP extends javax.swing.JInternalFrame {
                             } catch (SQLException ex) {
                                 Logger.getLogger(OP.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                        }
-                    } else {
-                        int idmaterial = vmd.idProduto(material);
-                        double estoqueAtual = vmd.readEstoque(idmaterial);
-                        double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
-                        if (qtd > estoqueAtual) {
-                            JOptionPane.showMessageDialog(null, "Estoque do item " + material + " é inferior ao selecionado para dar baixa.");
                         } else {
+                            int idmaterial = vmd.idProduto(material);
+                            double estoqueAtual = vmd.readEstoque(idmaterial);
+                            double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+
                             int idmp = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
                             omd.updateBaixa(idmp);
 
@@ -1848,18 +2149,18 @@ public class OP extends javax.swing.JInternalFrame {
                         }
                     }
                 }
+                escolherPrimeiroProcesso();
+
+                String op = txtNumOP.getText();
+
+                od.updateStatus(op, "Ativo");
+
+                lerOP(op);
+
+                lerProcessos(op);
+
+                lerMP(op);
             }
-            escolherPrimeiroProcesso();
-
-            String op = txtNumOP.getText();
-
-            od.updateStatus(op, "Ativo");
-
-            lerOP(op);
-
-            lerProcessos(op);
-
-            lerMP(op);
         }
     }//GEN-LAST:event_btnBaixaMPActionPerformed
 
@@ -1952,6 +2253,100 @@ public class OP extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableDocsMouseClicked
 
+    private void txtHeliceFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHeliceFocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/helice.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtHeliceFocusGained
+
+    private void txtHeliceFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtHeliceFocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtHeliceFocusLost
+
+    private void txtnucleoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtnucleoFocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/nucleo.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtnucleoFocusGained
+
+    private void txtnucleoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtnucleoFocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtnucleoFocusLost
+
+    private void txtconcavidadeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtconcavidadeFocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/concavidade.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtconcavidadeFocusGained
+
+    private void txtconcavidadeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtconcavidadeFocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtconcavidadeFocusLost
+
+    private void txtaliviotopo1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo1FocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/aliviotopo1.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtaliviotopo1FocusGained
+
+    private void txtaliviotopo1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo1FocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtaliviotopo1FocusLost
+
+    private void txtaliviotopo2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo2FocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/aliviotopo2.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtaliviotopo2FocusGained
+
+    private void txtaliviotopo2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtaliviotopo2FocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtaliviotopo2FocusLost
+
+    private void txtalivio1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtalivio1FocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/alivio1.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtalivio1FocusGained
+
+    private void txtalivio1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtalivio1FocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtalivio1FocusLost
+
+    private void txtalivio2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtalivio2FocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/alivio2.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtalivio2FocusGained
+
+    private void txtalivio2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtalivio2FocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtalivio2FocusLost
+
+    private void txtespfileteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtespfileteFocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/espfilete.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtespfileteFocusGained
+
+    private void txtespfileteFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtespfileteFocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtespfileteFocusLost
+
+    private void txtagressividadeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtagressividadeFocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/agressividade.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtagressividadeFocusGained
+
+    private void txtagressividadeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtagressividadeFocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtagressividadeFocusLost
+
+    private void txtfrontalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtfrontalFocusGained
+        ImageIcon i = new ImageIcon(getClass().getResource("/Images/frontal.png"));
+        lblicon.setIcon(i);
+    }//GEN-LAST:event_txtfrontalFocusGained
+
+    private void txtfrontalFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtfrontalFocusLost
+        lblicon.setIcon(null);
+    }//GEN-LAST:event_txtfrontalFocusLost
+
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        readOPs();
+    }//GEN-LAST:event_txtPesquisaKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JTextField TxtCodigo;
     public static javax.swing.JTextField TxtDescricao;
@@ -1970,10 +2365,25 @@ public class OP extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
@@ -2006,14 +2416,16 @@ public class OP extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane3;
     private javax.swing.JLabel lblicon;
-    public static javax.swing.JPanel paneldadostxt;
+    public static javax.swing.JPanel panelcomp;
+    public static javax.swing.JPanel paneldadostxt1;
+    public static javax.swing.JPanel paneldiam;
     public static javax.swing.JTabbedPane tabOPS;
     public static javax.swing.JTable tableDocs;
     private static javax.swing.JTable tableInspecao;
@@ -2024,20 +2436,35 @@ public class OP extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtCliente;
     private static com.toedter.calendar.JDateChooser txtDataEntrega;
     private static javax.swing.JTextField txtDav;
+    public static javax.swing.JTextField txtHelice;
     public static javax.swing.JTextField txtMortas;
     public static javax.swing.JTextField txtNumOP;
     public static javax.swing.JTextField txtOk;
     private static javax.swing.JTextField txtPesquisa;
     private static javax.swing.JTextField txtStatus;
+    private static javax.swing.JTextField txtTolD1;
+    private static javax.swing.JTextField txtTolD2;
+    private static javax.swing.JTextField txtTolD3;
+    private static javax.swing.JTextField txtTolD4;
+    private static javax.swing.JTextField txtTolD5;
     public static javax.swing.JTextField txtagressividade;
     public static javax.swing.JTextField txtalivio1;
     public static javax.swing.JTextField txtalivio2;
     public static javax.swing.JTextField txtaliviotopo1;
     public static javax.swing.JTextField txtaliviotopo2;
     public static javax.swing.JTextField txtconcavidade;
+    public static javax.swing.JTextField txtd1;
+    public static javax.swing.JTextField txtd2;
+    public static javax.swing.JTextField txtd3;
+    public static javax.swing.JTextField txtd4;
+    public static javax.swing.JTextField txtd5;
     public static javax.swing.JTextField txtespfilete;
     public static javax.swing.JTextField txtfrontal;
-    public static javax.swing.JTextField txthelice;
+    public static javax.swing.JTextField txtl1;
+    public static javax.swing.JTextField txtl2;
+    public static javax.swing.JTextField txtl3;
+    public static javax.swing.JTextField txtl4;
+    public static javax.swing.JTextField txtl5;
     public static javax.swing.JTextField txtnucleo;
     // End of variables declaration//GEN-END:variables
 }

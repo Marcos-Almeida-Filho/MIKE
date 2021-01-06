@@ -8,6 +8,8 @@ package View.comercial;
 import Bean.PlanejamentoBean;
 import DAO.F_UPDAO;
 import DAO.PlanejamentoDAO;
+import DAO.VendasPedidoDAO;
+import DAO.VendasPedidoItensDAO;
 import Methods.Dates;
 import Methods.Valores;
 import java.text.ParseException;
@@ -26,9 +28,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form PlanejamentoQuinzenal
-     */
     CellEditorListener ChangeNotification = new CellEditorListener() {
         @Override
         public void editingCanceled(ChangeEvent e) {
@@ -43,7 +42,13 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
 
     PlanejamentoDAO pd = new PlanejamentoDAO();
     PlanejamentoBean pb = new PlanejamentoBean();
+    F_UPDAO fd = new F_UPDAO();
+    VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
+    VendasPedidoDAO vpd = new VendasPedidoDAO();
 
+    /**
+     * Creates new form PlanejamentoQuinzenal
+     */
     public PlanejamentoFaturamento() {
         initComponents();
         tableFill();
@@ -68,32 +73,53 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
     }
 
     public void tableFill() {
-        F_UPDAO fd = new F_UPDAO();
-
         DefaultTableModel model = (DefaultTableModel) tablePlanejamento.getModel();
         model.setNumRows(0);
 
-        fd.readtableplanejamento().forEach(fb -> {
+        vpid.readItensSemNF().forEach(vpib -> {
             model.addRow(new Object[]{
-                fb.getId(),
-                fb.getDav(),
-                fb.getCliente(),
-                fb.getMaterial(),
-                fb.getOp(),
-                Dates.TransformarDataCurtaDoDB(fb.getDataentrega()),
-                Valores.TransformarValorFloatEmDinheiro(String.valueOf(fb.getValor())),
-                fb.getNivel(),
-                fb.getProcesso(),
-                fb.getObservacao()
+                vpib.getId(),
+                vpib.getDav(),
+                "",
+                vpib.getCodigo(),
+                vpib.getOp(),
+                "",
+                Dates.TransformarDataCurtaDoDB(vpib.getPrazo()),
+                Valores.TransformarValorFloatEmDinheiro(String.valueOf(vpib.getValorunitario())),
+                Valores.TransformarValorFloatEmDinheiro(String.valueOf(vpib.getValortotal()))
             });
         });
+
+        new Thread() {
+            @Override
+            public void run() {
+                for (int i = 0; i < tablePlanejamento.getRowCount(); i++) {
+                    String pedido = tablePlanejamento.getValueAt(i, 1).toString();
+                    String cliente = vpd.readCliente(pedido);
+                    tablePlanejamento.setValueAt(cliente, i, 2);
+                }
+            }
+        }.start();
+
+        new Thread() {
+            @Override
+            public void run() {
+                for (int i = 0; i < tablePlanejamento.getRowCount(); i++) {
+                    if (!tablePlanejamento.getValueAt(i, 4).toString().equals("")) {
+                        String op = tablePlanejamento.getValueAt(i, 4).toString();
+                        String processo = fd.getProcesso(op);
+                        tablePlanejamento.setValueAt(processo, i, 5);
+                    }
+                }
+            }
+        }.start();
     }
 
     public void txtAtrasado() {
         double valorAtrasado = 0, valorParcial;
 
         for (int i = 0; i < tablePlanejamento.getRowCount(); i++) {
-            String dataNormal = tablePlanejamento.getValueAt(i, 5).toString();
+            String dataNormal = tablePlanejamento.getValueAt(i, 6).toString();
             Date dataDate = new Date(), dataHoje = new Date();
             try {
                 dataDate = new SimpleDateFormat("dd/MM/yyyy").parse(dataNormal);
@@ -101,7 +127,7 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 Logger.getLogger(PlanejamentoFaturamento.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (dataDate.compareTo(dataHoje) < 0) {
-                valorParcial = Valores.TransformarDinheiroEmValorDouble(tablePlanejamento.getValueAt(i, 6).toString());
+                valorParcial = Valores.TransformarDinheiroEmValorDouble(tablePlanejamento.getValueAt(i, 8).toString());
                 valorAtrasado += valorParcial;
             }
         }
@@ -144,11 +170,11 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "DAV", "Cliente", "Código", "OP", "Data de Entrega", "Valor R$", "Nível", "Processo", "OBS"
+                "ID", "DAV", "Cliente", "Código", "OP", "Processo", "Data de Entrega", "Valor R$", "Valor Unitário R$"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -167,15 +193,12 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
             tablePlanejamento.getColumnModel().getColumn(4).setMinWidth(80);
             tablePlanejamento.getColumnModel().getColumn(4).setPreferredWidth(80);
             tablePlanejamento.getColumnModel().getColumn(4).setMaxWidth(80);
-            tablePlanejamento.getColumnModel().getColumn(5).setMinWidth(105);
-            tablePlanejamento.getColumnModel().getColumn(5).setPreferredWidth(105);
-            tablePlanejamento.getColumnModel().getColumn(5).setMaxWidth(105);
-            tablePlanejamento.getColumnModel().getColumn(6).setMinWidth(85);
-            tablePlanejamento.getColumnModel().getColumn(6).setPreferredWidth(85);
-            tablePlanejamento.getColumnModel().getColumn(6).setMaxWidth(85);
-            tablePlanejamento.getColumnModel().getColumn(7).setMinWidth(45);
-            tablePlanejamento.getColumnModel().getColumn(7).setPreferredWidth(45);
-            tablePlanejamento.getColumnModel().getColumn(7).setMaxWidth(45);
+            tablePlanejamento.getColumnModel().getColumn(6).setMinWidth(105);
+            tablePlanejamento.getColumnModel().getColumn(6).setPreferredWidth(105);
+            tablePlanejamento.getColumnModel().getColumn(6).setMaxWidth(105);
+            tablePlanejamento.getColumnModel().getColumn(7).setMinWidth(85);
+            tablePlanejamento.getColumnModel().getColumn(7).setPreferredWidth(85);
+            tablePlanejamento.getColumnModel().getColumn(7).setMaxWidth(85);
         }
 
         jPanel4.setName("jPanel4"); // NOI18N

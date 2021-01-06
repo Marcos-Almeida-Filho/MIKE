@@ -47,7 +47,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                         vmb.getId(),
                         vmb.getCodigo(),
                         vmb.getDescricao(),
-                        vmb.getQtdMinimaOP()
+                        vmb.getQtdMinimaOP(),
+                        vmb.getEstoque()
                     });
                 });
                 break;
@@ -57,7 +58,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                         smb.getId(),
                         smb.getCodigo(),
                         smb.getDescricao(),
-                        0
+                        0,
+                        smb.getEstoque()
                     });
                 });
                 break;
@@ -67,7 +69,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                         smb.getId(),
                         smb.getCodigo(),
                         smb.getDescricao(),
-                        0
+                        0,
+                        smb.getEstoque()
                     });
                 });
                 break;
@@ -77,7 +80,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                         smb.getId(),
                         smb.getCodigo(),
                         smb.getDescricao(),
-                        0
+                        0,
+                        smb.getEstoque()
                     });
                 });
                 break;
@@ -108,16 +112,17 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        tablemateriais.setAutoCreateRowSorter(true);
         tablemateriais.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "Código", "Descrição", "QtdMinima"
+                "ID", "Código", "Descrição", "QtdMinima", "Estoque"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -135,12 +140,15 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
             tablemateriais.getColumnModel().getColumn(0).setMinWidth(0);
             tablemateriais.getColumnModel().getColumn(0).setPreferredWidth(0);
             tablemateriais.getColumnModel().getColumn(0).setMaxWidth(0);
-            tablemateriais.getColumnModel().getColumn(1).setMinWidth(150);
-            tablemateriais.getColumnModel().getColumn(1).setPreferredWidth(150);
-            tablemateriais.getColumnModel().getColumn(1).setMaxWidth(150);
+            tablemateriais.getColumnModel().getColumn(1).setMinWidth(250);
+            tablemateriais.getColumnModel().getColumn(1).setPreferredWidth(250);
+            tablemateriais.getColumnModel().getColumn(1).setMaxWidth(500);
             tablemateriais.getColumnModel().getColumn(3).setMinWidth(0);
             tablemateriais.getColumnModel().getColumn(3).setPreferredWidth(0);
             tablemateriais.getColumnModel().getColumn(3).setMaxWidth(0);
+            tablemateriais.getColumnModel().getColumn(4).setMinWidth(70);
+            tablemateriais.getColumnModel().getColumn(4).setPreferredWidth(70);
+            tablemateriais.getColumnModel().getColumn(4).setMaxWidth(70);
         }
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
@@ -171,7 +179,7 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 896, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -273,7 +281,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                         smb.getId(),
                         smb.getCodigo(),
                         smb.getDescricao(),
-                        0
+                        0,
+                        smb.getEstoque()
                     });
                 });
                 break;
@@ -283,7 +292,8 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                         vmb.getId(),
                         vmb.getCodigo(),
                         vmb.getDescricao(),
-                        vmb.getQtdMinimaOP()
+                        vmb.getQtdMinimaOP(),
+                        vmb.getEstoque()
                     });
                 });
                 break;

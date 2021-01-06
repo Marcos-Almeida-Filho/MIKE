@@ -39,7 +39,7 @@ public class Insumos extends javax.swing.JInternalFrame {
     InsumosObsDAO iod = new InsumosObsDAO();
     static TiposInsumoDAO tid = new TiposInsumoDAO();
 
-    int idInsumo;
+    static int idInsumo = 0;
 
     /**
      * Creates new form Insumos
@@ -54,29 +54,58 @@ public class Insumos extends javax.swing.JInternalFrame {
         DefaultTableModel modelinsumos = (DefaultTableModel) tableInsumos.getModel();
         modelinsumos.setRowCount(0);
 
-        switch (status) {
-            case "Todos":
-                idao.read().forEach(ib -> {
-                    modelinsumos.addRow(new Object[]{
-                        ib.getId(),
-                        false,
-                        ib.getCodigo(),
-                        ib.getDescricao(),
-                        ib.getStatus()
+        String pesquisa = txtpesquisa.getText();
+
+        if (pesquisa.length() == 0) {
+            switch (status) {
+                case "Todos":
+                    idao.read().forEach(ib -> {
+                        modelinsumos.addRow(new Object[]{
+                            ib.getId(),
+                            false,
+                            ib.getCodigo(),
+                            ib.getDescricao(),
+                            ib.getStatus()
+                        });
                     });
-                });
-                break;
-            default:
-                idao.readPorStatus(status).forEach(ib -> {
-                    modelinsumos.addRow(new Object[]{
-                        ib.getId(),
-                        false,
-                        ib.getCodigo(),
-                        ib.getDescricao(),
-                        ib.getStatus()
+                    break;
+                default:
+                    idao.readPorStatus(status).forEach(ib -> {
+                        modelinsumos.addRow(new Object[]{
+                            ib.getId(),
+                            false,
+                            ib.getCodigo(),
+                            ib.getDescricao(),
+                            ib.getStatus()
+                        });
                     });
-                });
-                break;
+                    break;
+            }
+        } else {
+            switch (status) {
+                case "Todos":
+                    idao.readPesquisa(pesquisa).forEach(ib -> {
+                        modelinsumos.addRow(new Object[]{
+                            ib.getId(),
+                            false,
+                            ib.getCodigo(),
+                            ib.getDescricao(),
+                            ib.getStatus()
+                        });
+                    });
+                    break;
+                default:
+                    idao.readPorStatusEPesquisa(status, pesquisa).forEach(ib -> {
+                        modelinsumos.addRow(new Object[]{
+                            ib.getId(),
+                            false,
+                            ib.getCodigo(),
+                            ib.getDescricao(),
+                            ib.getStatus()
+                        });
+                    });
+                    break;
+            }
         }
     }
 
@@ -92,6 +121,7 @@ public class Insumos extends javax.swing.JInternalFrame {
         txtdescricao.setText("");
         txtstatus.setText("");
         cbtipo.setSelectedIndex(0);
+        txtun.setText("");
 
         DefaultTableModel modelobs = (DefaultTableModel) tableobs.getModel();
         DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
@@ -100,6 +130,8 @@ public class Insumos extends javax.swing.JInternalFrame {
         modelobs.setRowCount(0);
         modeldoc.setRowCount(0);
         modelest.setRowCount(0);
+
+        idInsumo = 0;
     }
 
     public static void travarCampos() {
@@ -236,6 +268,7 @@ public class Insumos extends javax.swing.JInternalFrame {
         jPanel8 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         tableestoque = new javax.swing.JTable();
+        jButton6 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -264,6 +297,7 @@ public class Insumos extends javax.swing.JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        tableInsumos.setAutoCreateRowSorter(true);
         tableInsumos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -313,6 +347,11 @@ public class Insumos extends javax.swing.JInternalFrame {
         jPanel3.setName("jPanel3"); // NOI18N
 
         txtpesquisa.setName("txtpesquisa"); // NOI18N
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -574,20 +613,34 @@ public class Insumos extends javax.swing.JInternalFrame {
         tableestoque.setName("tableestoque"); // NOI18N
         jScrollPane4.setViewportView(tableestoque);
 
+        jButton6.setText("Lançar Contagem Manual");
+        jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 971, Short.MAX_VALUE)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 971, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton6)))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton6)
                 .addContainerGap())
         );
 
@@ -800,13 +853,13 @@ public class Insumos extends javax.swing.JInternalFrame {
             String unidade = txtun.getText();
             String tipo = cbtipo.getSelectedItem().toString();
             String dataCriacao = Dates.CriarDataCompletaParaDB();
-            if (txtid.getText().equals("")) {//Se for um item novo
+            if (idInsumo == 0) {//Se for um item novo
 ////////////////Criar Insumo
                 double estoque = Double.parseDouble(JOptionPane.showInputDialog(null, "Qual o estoque inicial do Insumo?", "Estoque Inicial", JOptionPane.YES_NO_OPTION));
 
                 idao.create(codigo, descricao, unidade, tipo, estoque, dataCriacao);
 
-                idInsumo = idao.idCreated(codigo);
+                idInsumo = idao.idCreated(descricao);
 
                 txtid.setText(String.valueOf(idInsumo));
 
@@ -926,6 +979,39 @@ public class Insumos extends javax.swing.JInternalFrame {
         readtableinsumos(cbstatus.getSelectedItem().toString());
     }//GEN-LAST:event_cbstatusActionPerformed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        if (idInsumo == 0) {
+            JOptionPane.showMessageDialog(null, "Selecione um insumo antes.");
+        } else {
+            double qtd, estoqueAtual;
+            estoqueAtual = idao.readEstoque(idInsumo);
+            try {
+                qtd = Double.parseDouble(JOptionPane.showInputDialog(null, "Qual a quantidade movimentada?", "Lançar Contagem", JOptionPane.YES_NO_OPTION));
+
+                double estoqueFinal = estoqueAtual + qtd;
+
+                idao.updateEstoque(estoqueFinal, idInsumo);
+                imd.create(idInsumo, estoqueAtual, qtd, estoqueFinal, Dates.CriarDataCurtaDBSemDataExistente(), "Contagem Manual", Session.nome);
+
+                lerInsumo(idInsumo);
+            } catch (Exception e) {
+                String msg = "Erro.\n" + e;
+                JOptionPane.showMessageDialog(null, msg);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        readtableinsumos(cbstatus.getSelectedItem().toString());
+    }//GEN-LAST:event_txtpesquisaKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddObs;
@@ -937,6 +1023,7 @@ public class Insumos extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
+    public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
@@ -965,7 +1052,7 @@ public class Insumos extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtcodigo;
     public static javax.swing.JTextField txtdescricao;
     public static javax.swing.JTextField txtid;
-    public javax.swing.JTextField txtpesquisa;
+    public static javax.swing.JTextField txtpesquisa;
     public static javax.swing.JTextField txtstatus;
     public static javax.swing.JTextField txtun;
     // End of variables declaration//GEN-END:variables

@@ -194,7 +194,7 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         if (resp == 0) {
             od.updateStatus(OP.txtNumOP.getText(), "Finalizado");
 
-            int idMaterial = OP.idMaterial;
+            int idMaterial = vmd.idProduto(OP.TxtCodigo.getText());
 
             double estoqueAtual = vmd.readEstoque(idMaterial);
 

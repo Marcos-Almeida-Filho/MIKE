@@ -112,6 +112,48 @@ public class VendasPedidoItensDAO {
         return listvpi;
     }
 
+    public List<VendasPedidoItensBean> readItensSemNF() {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido_itens WHERE nf = ''");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vpib = new VendasPedidoItensBean();
+
+                vpib.setId(rs.getInt("id"));
+                vpib.setIdMaterial(rs.getInt("idmaterial"));
+                vpib.setDav(rs.getString("dav"));
+                vpib.setCodigo(rs.getString("codigo"));
+                vpib.setDescricao(rs.getString("descricao"));
+                vpib.setQtd(rs.getDouble("qtd"));
+                vpib.setValorunitario(rs.getDouble("valorunitario"));
+                vpib.setValortotal(rs.getDouble("valortotal"));
+                vpib.setPrazo(rs.getString("prazo"));
+                vpib.setPedido(rs.getString("pedido"));
+                vpib.setNf(rs.getString("nf"));
+                vpib.setOp(rs.getString("op"));
+
+                listvpi.add(vpib);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler os itens do Pedido de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvpi;
+    }
+
     public List<VendasPedidoItensBean> readItensSemOp(String dav, String codigo) {
         rsList();
 
@@ -245,6 +287,27 @@ public class VendasPedidoItensDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET op = '" + op + "' WHERE id = " + id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar OP do item do Pedido de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateDataEntrega(String op, String dataPrevista) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET prazo = '" + dataPrevista + "' WHERE op = '" + op + "'");
             stmt.executeUpdate();
         } catch (SQLException e) {
             String msg = "Erro ao atualizar OP do item do Pedido de Venda.";

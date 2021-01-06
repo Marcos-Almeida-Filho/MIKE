@@ -13,6 +13,7 @@ public class VendasPedidoItensBean {
 
     private int id;
     private int idMaterial;
+    private String dav;
     private String pedido;
     private String codigo;
     private String descricao;
@@ -37,6 +38,14 @@ public class VendasPedidoItensBean {
 
     public void setIdMaterial(int idMaterial) {
         this.idMaterial = idMaterial;
+    }
+
+    public String getDav() {
+        return dav;
+    }
+
+    public void setDav(String dav) {
+        this.dav = dav;
     }
 
     public String getPedido() {

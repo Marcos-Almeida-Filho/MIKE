@@ -17,8 +17,8 @@ public class VendasMateriaisBean {
     private double estoque, estoqueMinimo, qtdMinimaOP;
     private String local;
     private String status;
-    private String d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal;
-    private boolean importada, weldon, ri, md, hss;
+    private String d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal, tolD1, tolD2, tolD3, tolD4, tolD5;
+    private boolean importada, weldon, ri, md, hss, desbaste;
 
     public int getId() {
         return id;
@@ -362,6 +362,54 @@ public class VendasMateriaisBean {
 
     public void setHss(boolean hss) {
         this.hss = hss;
+    }
+
+    public boolean isDesbaste() {
+        return desbaste;
+    }
+
+    public void setDesbaste(boolean desbaste) {
+        this.desbaste = desbaste;
+    }
+
+    public String getTolD1() {
+        return tolD1;
+    }
+
+    public void setTolD1(String tolD1) {
+        this.tolD1 = tolD1;
+    }
+
+    public String getTolD2() {
+        return tolD2;
+    }
+
+    public void setTolD2(String tolD2) {
+        this.tolD2 = tolD2;
+    }
+
+    public String getTolD3() {
+        return tolD3;
+    }
+
+    public void setTolD3(String tolD3) {
+        this.tolD3 = tolD3;
+    }
+
+    public String getTolD4() {
+        return tolD4;
+    }
+
+    public void setTolD4(String tolD4) {
+        this.tolD4 = tolD4;
+    }
+
+    public String getTolD5() {
+        return tolD5;
+    }
+
+    public void setTolD5(String tolD5) {
+        this.tolD5 = tolD5;
     }
 
 }

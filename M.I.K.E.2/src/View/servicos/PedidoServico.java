@@ -783,9 +783,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             tableitensorcamento.getColumnModel().getColumn(8).setMinWidth(110);
             tableitensorcamento.getColumnModel().getColumn(8).setPreferredWidth(110);
             tableitensorcamento.getColumnModel().getColumn(8).setMaxWidth(110);
-            tableitensorcamento.getColumnModel().getColumn(9).setMinWidth(80);
-            tableitensorcamento.getColumnModel().getColumn(9).setPreferredWidth(80);
-            tableitensorcamento.getColumnModel().getColumn(9).setMaxWidth(80);
+            tableitensorcamento.getColumnModel().getColumn(9).setMinWidth(95);
+            tableitensorcamento.getColumnModel().getColumn(9).setPreferredWidth(95);
+            tableitensorcamento.getColumnModel().getColumn(9).setMaxWidth(95);
             tableitensorcamento.getColumnModel().getColumn(10).setMinWidth(90);
             tableitensorcamento.getColumnModel().getColumn(10).setPreferredWidth(90);
             tableitensorcamento.getColumnModel().getColumn(10).setMaxWidth(90);

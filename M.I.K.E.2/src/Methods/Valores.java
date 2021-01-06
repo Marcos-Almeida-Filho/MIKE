@@ -7,6 +7,8 @@ package Methods;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 import javax.swing.JTextField;
 
 /**
@@ -18,20 +20,21 @@ public class Valores {
     public static String TransformarValorFloatEmDinheiro(String valor) {
         DecimalFormat formatter = new DecimalFormat("#,###.00");
         String valorf;
-        
+
         if (valor.equals("0.0")) {
             valorf = "0,00";
         } else {
             BigDecimal valortotal = new BigDecimal(valor);
             valorf = formatter.format(valortotal);
         }
-        
+
         return valorf;
     }
 
     public static double TransformarDinheiroEmValorDouble(String valor) {
-        String v;
-        String valor2;
+        String v, valor2, valor3;
+
+        double vp;
 
         if (valor.contains(".")) {
             v = valor.replace(".", "");
@@ -40,14 +43,22 @@ public class Valores {
             valor2 = valor.replace(",", ".");
         }
 
-        double vp = Float.parseFloat(valor2);
-
+        vp = Float.parseFloat(valor2);
+        
         return vp;
     }
 
     public static String TransformarStringDinheiroEmStringDouble(String valor) {
-        String replace1 = valor.replace(".", "");
-        String replace2 = replace1.replace(",", ".");
+        String replace1, replace2;
+
+        if (valor.contains("R$")) {
+            String valor2 = valor.replace("R$ ", "");
+            replace1 = valor2.replace(".", "");
+        } else {
+            replace1 = valor.replace(".", "");
+        }
+
+        replace2 = replace1.replace(",", ".");
 
         return replace2;
     }
@@ -62,18 +73,16 @@ public class Valores {
     public static String TransformarDoubleDBemString(double valordb) {
         String valor;
 
-        DecimalFormat formatter = new DecimalFormat("#,###.00");
+        DecimalFormat formatter = new DecimalFormat("#,##0.00");
         valor = formatter.format(valordb);
 
         return valor;
     }
-    
+
     public static String TransformarDoubleDBemDinheiro(double valordb) {
-        String valor;
+        Locale locale = new Locale("pt", "BR");
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
 
-        DecimalFormat formatter = new DecimalFormat("#,###.00");
-        valor = "R$ " + formatter.format(valordb);
-
-        return valor;
+        return currencyFormatter.format(valordb);
     }
 }

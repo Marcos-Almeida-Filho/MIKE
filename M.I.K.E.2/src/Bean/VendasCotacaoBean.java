@@ -19,8 +19,10 @@ public class VendasCotacaoBean {
     private String condicao;
     private String representante;
     private String vendedor;
+    private double frete;
     private double total;
     private String status;
+    private String motivo;
 
     public int getId() {
         return id;
@@ -86,6 +88,14 @@ public class VendasCotacaoBean {
         this.vendedor = vendedor;
     }
 
+    public double getFrete() {
+        return frete;
+    }
+
+    public void setFrete(double frete) {
+        this.frete = frete;
+    }
+
     public double getTotal() {
         return total;
     }
@@ -102,4 +112,11 @@ public class VendasCotacaoBean {
         this.status = status;
     }
 
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
 }

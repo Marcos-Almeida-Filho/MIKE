@@ -22,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
 
     static OPMPDAO ompd = new OPMPDAO();
+    static InsumosDAO id = new InsumosDAO();
 
     /**
      * Creates new form ProcuraMaterialVenda
@@ -38,15 +39,23 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tablemateriais.getModel();
         model.setNumRows(0);
 
-        InsumosDAO id = new InsumosDAO();
-
-        id.read().forEach(ib -> {
-            model.addRow(new Object[]{
-                ib.getId(),
-                ib.getCodigo(),
-                ib.getDescricao()
+        if (txtPesquisa.getText().length() > 0) {
+            id.readPesquisa(txtPesquisa.getText()).forEach(ib -> {
+                model.addRow(new Object[]{
+                    ib.getId(),
+                    ib.getCodigo(),
+                    ib.getDescricao()
+                });
             });
-        });
+        } else {
+            id.read().forEach(ib -> {
+                model.addRow(new Object[]{
+                    ib.getId(),
+                    ib.getCodigo(),
+                    ib.getDescricao()
+                });
+            });
+        }
     }
 
     /**
@@ -62,7 +71,7 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablemateriais = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        txtpesquisa = new javax.swing.JTextField();
+        txtPesquisa = new javax.swing.JTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
@@ -108,17 +117,22 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
         jPanel2.setName("jPanel2"); // NOI18N
 
-        txtpesquisa.setName("txtpesquisa"); // NOI18N
+        txtPesquisa.setName("txtPesquisa"); // NOI18N
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtpesquisa)
+            .addComponent(txtPesquisa)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(txtpesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -190,12 +204,16 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tablemateriaisMouseClicked
 
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        readtablemateriais();
+    }//GEN-LAST:event_txtPesquisaKeyReleased
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTable tablemateriais;
-    public javax.swing.JTextField txtpesquisa;
+    public static javax.swing.JTextField txtPesquisa;
     // End of variables declaration//GEN-END:variables
 }

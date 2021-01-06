@@ -5,6 +5,7 @@
  */
 package View.vendas;
 
+import Connection.ConnectionFactory;
 import Connection.Session;
 import DAO.AltDAO;
 import DAO.VendasCotacaoDAO;
@@ -13,6 +14,7 @@ import DAO.VendasCotacaoItensDAO;
 import DAO.VendasCotacaoObsDAO;
 import DAO.VendasPedidoDAO;
 import DAO.VendasPedidoItensDAO;
+import DAO.VendasPedidoObsDAO;
 import Methods.Dates;
 import Methods.Docs;
 import Methods.SendEmail;
@@ -29,13 +31,21 @@ import View.Geral.ProcurarVendedor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 
 /**
  *
@@ -51,10 +61,13 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     static VendasCotacaoObsDAO vcod = new VendasCotacaoObsDAO();
     static VendasPedidoDAO vpd = new VendasPedidoDAO();
     static VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
+    static VendasPedidoObsDAO vpod = new VendasPedidoObsDAO();
     static AltDAO ad = new AltDAO();
 
     public static String clienteOriginal, condicaoOriginal, representanteOriginal, vendedorOriginal;
     public static int numDocsOriginal, numObsOriginal, numItensOriginal;
+
+    static double totalCotacao;
 
     /**
      * Creates new form CotacaoVenda
@@ -77,7 +90,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     }
 
     public static void camposPorStatus() {
-        if (txtStatus.getText().equals("Desativado") || txtStatus.getText().equals("Fechado")) {
+        if (txtStatus.getText().equals("Desativado") || txtStatus.getText().equals("Fechado") || txtStatus.getText().equals("Perdido")) {
             txtCliente.setEditable(false);
             btnProcurarCliente.setEnabled(false);
             btnCondPag.setEnabled(false);
@@ -91,13 +104,32 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             btnDelItem.setEnabled(false);
             btnAddPedido.setEnabled(false);
             btnSalvar.setEnabled(false);
-            btnSendCotacao.setEnabled(false);
             btnMarcarTodos.setEnabled(false);
             radioCadastrado.setEnabled(false);
             radioNaoCadastrado.setEnabled(false);
             tableObs.setEnabled(false);
             tableDocs.setEnabled(false);
             tableItens.setEnabled(false);
+        } else {
+            txtCliente.setEditable(true);
+            btnProcurarCliente.setEnabled(true);
+            btnCondPag.setEnabled(true);
+            btnRep.setEnabled(true);
+            btnVendedor.setEnabled(true);
+            btnAddObs.setEnabled(true);
+            btnDelObs.setEnabled(true);
+            btnAddDoc.setEnabled(true);
+            btnDelDoc.setEnabled(true);
+            btnAddItem.setEnabled(true);
+            btnDelItem.setEnabled(true);
+            btnAddPedido.setEnabled(true);
+            btnSalvar.setEnabled(true);
+            btnMarcarTodos.setEnabled(true);
+            radioCadastrado.setEnabled(true);
+            radioNaoCadastrado.setEnabled(true);
+            tableObs.setEnabled(true);
+            tableDocs.setEnabled(true);
+            tableItens.setEnabled(true);
         }
     }
 
@@ -106,41 +138,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
         modelTableCotacoes.setNumRows(0);
 
+        String status = cbStatus.getSelectedItem().toString();
+
         if (txtPesquisa.getText().equals("")) {
-            switch (cbStatus.getSelectedItem().toString()) {
-                case "Em Aberto":
-                    vcd.readCotacoesAbertas().forEach(vcb -> {
-                        modelTableCotacoes.addRow(new Object[]{
-                            vcb.getId(),
-                            false,
-                            vcb.getCotacao(),
-                            vcb.getCliente(),
-                            vcb.getStatus()
-                        });
-                    });
-                    break;
-                case "Fechado":
-                    vcd.readCotacoesFechadas().forEach(vcb -> {
-                        modelTableCotacoes.addRow(new Object[]{
-                            vcb.getId(),
-                            false,
-                            vcb.getCotacao(),
-                            vcb.getCliente(),
-                            vcb.getStatus()
-                        });
-                    });
-                    break;
-                case "Desativado":
-                    vcd.readCotacoesDesativadas().forEach(vcb -> {
-                        modelTableCotacoes.addRow(new Object[]{
-                            vcb.getId(),
-                            false,
-                            vcb.getCotacao(),
-                            vcb.getCliente(),
-                            vcb.getStatus()
-                        });
-                    });
-                    break;
+            switch (status) {
                 case "Todos":
                     vcd.readCotacoes().forEach(vcb -> {
                         modelTableCotacoes.addRow(new Object[]{
@@ -148,13 +149,52 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                             false,
                             vcb.getCotacao(),
                             vcb.getCliente(),
+                            vcb.getVendedor(),
+                            vcb.getStatus()
+                        });
+                    });
+                    break;
+                default:
+                    vcd.readCotacoesStatus(status).forEach(vcb -> {
+                        modelTableCotacoes.addRow(new Object[]{
+                            vcb.getId(),
+                            false,
+                            vcb.getCotacao(),
+                            vcb.getCliente(),
+                            vcb.getVendedor(),
                             vcb.getStatus()
                         });
                     });
                     break;
             }
         } else {
-
+            String pesquisa = txtPesquisa.getText();
+            switch (status) {
+                case "Todos":
+                    vcd.readCotacoesPesquisa(pesquisa).forEach(vcb -> {
+                        modelTableCotacoes.addRow(new Object[]{
+                            vcb.getId(),
+                            false,
+                            vcb.getCotacao(),
+                            vcb.getCliente(),
+                            vcb.getVendedor(),
+                            vcb.getStatus()
+                        });
+                    });
+                    break;
+                default:
+                    vcd.readCotacoesStatusPesquisa(status, pesquisa).forEach(vcb -> {
+                        modelTableCotacoes.addRow(new Object[]{
+                            vcb.getId(),
+                            false,
+                            vcb.getCotacao(),
+                            vcb.getCliente(),
+                            vcb.getVendedor(),
+                            vcb.getStatus()
+                        });
+                    });
+                    break;
+            }
         }
     }
 
@@ -173,9 +213,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             txtVendedor.setText(vcb.getVendedor());
             txtRep.setText(vcb.getRepresentante());
             txtCondPag.setText(vcb.getCondicao());
+            txtFrete.setText(Valores.TransformarDoubleDBemString(vcb.getFrete()));
         });
 
-        if (txtStatus.getText().equals("Desativado")) {
+        if (vcd.checkMotivo(cotacao)) {
             btnMotivo.setVisible(true);
         }
 
@@ -184,8 +225,6 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         lerDocumentosCotacao(cotacao);
 
         lerObsCotacao(cotacao);
-
-        txtTotal();
 
         clienteCadastrado();
 
@@ -200,7 +239,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
         vcid = new VendasCotacaoItensDAO();
 
+        totalCotacao = Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(txtFrete.getText().replace("R$ ", "")));
+
         vcid.readItens(cotacao).forEach(vcib -> {
+            totalCotacao += vcib.getValortotal();
+
             modelItens.addRow(new Object[]{
                 vcib.getId(),
                 vcib.isCadastrado(),
@@ -216,6 +259,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 vcib.getIdmaterial()
             });
         });
+
+        txtValorTotal.setText(Valores.TransformarDoubleDBemDinheiro(totalCotacao));
     }
 
     public static void lerDocumentosCotacao(String cotacao) {
@@ -250,18 +295,6 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 vcob.getObs()
             });
         });
-    }
-
-    public static void txtTotal() {
-        double valorItem, valorTotal = 0;
-        for (int i = 0; i < tableItens.getRowCount(); i++) {
-            String valor = tableItens.getValueAt(i, 7).toString().replace(".", "");
-            String replace = valor.replace(",", ".");
-            valorItem = Double.parseDouble(replace);
-            valorTotal += valorItem;
-            String valorTotalS = Valores.TransformarDoubleDBemString(valorTotal);
-            txtValorTotal.setText(valorTotalS);
-        }
     }
 
     public static void clienteCadastrado() {
@@ -377,6 +410,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         jLabel7 = new javax.swing.JLabel();
         btnMarcarTodos = new javax.swing.JButton();
         btnAddPedido = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        txtFrete = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
         btnSalvar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         btnSendCotacao = new javax.swing.JButton();
@@ -395,19 +431,20 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
 
+        tableCotacoes.setAutoCreateRowSorter(true);
         tableCotacoes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "", "Orçamento", "Cliente", "Status"
+                "ID", "", "Orçamento", "Cliente", "Vendedor", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, false
+                false, true, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -446,6 +483,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         jPanel9.setName("jPanel9"); // NOI18N
 
         txtPesquisa.setName("txtPesquisa"); // NOI18N
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -461,7 +503,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
         jPanel10.setName("jPanel10"); // NOI18N
 
-        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Fechado", "Desativado", "Todos" }));
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ativo", "Parcialmente Fechado", "Fechado", "Perdido", "Todos" }));
         cbStatus.setName("cbStatus"); // NOI18N
         cbStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1007,7 +1049,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         txtValorTotal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtValorTotal.setName("txtValorTotal"); // NOI18N
 
-        jLabel7.setText("Total: R$");
+        jLabel7.setText("Total:");
         jLabel7.setName("jLabel7"); // NOI18N
 
         btnMarcarTodos.setText("Marcar Todos");
@@ -1026,6 +1068,20 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton3.setBackground(new java.awt.Color(255, 51, 51));
+        jButton3.setText("Lançar Itens Perdidos");
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        txtFrete.setName("txtFrete"); // NOI18N
+
+        jLabel9.setText("Frete: R$");
+        jLabel9.setName("jLabel9"); // NOI18N
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -1037,11 +1093,17 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(btnMarcarTodos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddPedido)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelItem)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAddItem)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFrete, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1060,7 +1122,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     .addComponent(txtValorTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
                     .addComponent(btnMarcarTodos)
-                    .addComponent(btnAddPedido))
+                    .addComponent(btnAddPedido)
+                    .addComponent(jButton3)
+                    .addComponent(txtFrete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
                 .addContainerGap())
         );
 
@@ -1105,7 +1170,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tabItens, javax.swing.GroupLayout.DEFAULT_SIZE, 1192, Short.MAX_VALUE)
+                    .addComponent(tabItens)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addComponent(jButton14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1144,7 +1209,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabCotacoes, javax.swing.GroupLayout.DEFAULT_SIZE, 1204, Short.MAX_VALUE)
+            .addComponent(tabCotacoes)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1213,11 +1278,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     ic.idItemCotacao = Integer.parseInt(tableItens.getValueAt(row, 0).toString());
                 }
 
-                ItemCotacao.txtcodigo.setText(tableItens.getValueAt(row, 2).toString());
-                ItemCotacao.txtdesc.setText(tableItens.getValueAt(row, 3).toString());
-                ItemCotacao.txtqtd.setText(tableItens.getValueAt(row, 4).toString());
-                ItemCotacao.txtvalor.setText(tableItens.getValueAt(row, 5).toString());
-                ItemCotacao.txtpedido.setText(tableItens.getValueAt(row, 7).toString());
+                ItemCotacao.txtcodigo.setText(tableItens.getValueAt(row, 3).toString());
+                ItemCotacao.txtdesc.setText(tableItens.getValueAt(row, 4).toString());
+                ItemCotacao.txtqtd.setText(tableItens.getValueAt(row, 5).toString());
+                ItemCotacao.txtvalor.setText(tableItens.getValueAt(row, 6).toString());
+                ItemCotacao.txtpedido.setText(tableItens.getValueAt(row, 9).toString());
                 ItemCotacao.txtprazo.setText(tableItens.getValueAt(row, 8).toString().replace(" dias úteis", ""));
 
                 Telas.AparecerTela(ic);
@@ -1231,6 +1296,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
                 abrirPedido.addActionListener((ActionEvent e) -> {
                     PedidoVenda pv = new PedidoVenda();
+                    PedidoVenda.idPedido = vpd.readIdPedido(pedido);
                     PedidoVenda.tabPedidos.setSelectedIndex(1);
                     PedidoVenda.lerPedido(pedido);
 
@@ -1254,12 +1320,15 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         } else if (txtCondPag.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Nenhuma condição de pagamento selecionada.");
         } else {
+            if (txtFrete.getText().length() == 0) {
+                txtFrete.setText("0,00");
+            }
             if (idCotacao == 0) {
                 String cotacao = vcd.cotacaoAtual();
 
                 try {
                     //Criar nova cotação
-                    vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+                    vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText(), Valores.TransformarDinheiroEmValorDouble(txtFrete.getText()));
 
                     idCotacao = vcd.idCotacao(cotacao);
 
@@ -1323,14 +1392,14 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
                 try {
                     //Atualizar cotação
-                    vcd.update(cotacao, txtCliente.getText(), radioCadastrado.isSelected(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+                    vcd.update(cotacao, txtCliente.getText(), radioCadastrado.isSelected(), txtVendedor.getText(), txtRep.getText(), txtCondPag.getText(), Valores.TransformarDinheiroEmValorDouble(txtFrete.getText()));
 
                     //Criar itens da cotação que não existiam
                     for (int i = 0; i < tableItens.getRowCount(); i++) {
                         if (tableItens.getValueAt(i, 0).equals("")) {
                             vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
                         } else {
-                            vcid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 5).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 6).toString())), Double.parseDouble(Valores.TransformarStringDinheiroEmStringDouble(tableItens.getValueAt(i, 7).toString())), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                            vcid.update(Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()), Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
                         }
                     }
 
@@ -1507,11 +1576,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 //Pegar itens da Cotação no DB
                 lerItensCotacao(cotacao);
 
-                alterarStatus(cotacao);
-
                 ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
-
-                txtTotal();
 
                 lerCotacao(cotacao);
 
@@ -1559,7 +1624,58 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnMarcarTodosActionPerformed
 
     private void btnSendCotacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendCotacaoActionPerformed
-        JOptionPane.showMessageDialog(null, "Em Breve!");
+        if (txtCotacao.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione uma cotação primeiro.");
+        } else {
+            JOptionPane.showMessageDialog(null, "Enviando orçamento.");
+            try {
+                Connection con = ConnectionFactory.getConnection();
+
+                HashMap<String, Object> para = new HashMap<>();
+                para.put("cotacao", txtCotacao.getText());
+
+//                File f2 = new File("Q:\\MIKE_ERP\\src\\Reports\\primeiro_exemplo.jrxml");
+//                File f2 = new File("Q:\\MIKE_ERP\\src\\Reports\\primeiro_exemplo.jasper");
+                InputStream is = getClass().getResourceAsStream("/Reports/primeiro_exemplo.jrxml");
+//                URL resource = getClass().getResource("/Reports/primeiro_exemplo.jrxml");
+//                File file = new File(resource.toURI());
+
+                JasperReport jr = JasperCompileManager.compileReport(is);
+//                JasperReport jr = JasperCompileManager.compileReport(file.getAbsolutePath());
+//                JasperReport jr = (JasperReport) JRLoader.loadObjectFromFile(f2.getAbsolutePath());
+
+                JasperPrint j = JasperFillManager.fillReport(jr, para, con);
+
+//                JasperViewer.viewReport(j, false);
+                //Pasta que será colocar o documento
+                File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + txtCotacao.getText());
+
+                //Criar pasta no caso de já não existir
+                folder.mkdirs();
+
+                File f = new File("Q:\\MIKE_ERP\\cot_ven_arq\\" + txtCotacao.getText() + "\\orcamento.pdf");
+
+                JasperExportManager.exportReportToPdfFile(j, f.getPath());
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarOrcamento(f, Session.emailfabrica);
+                    }
+                }.start();
+            } catch (Exception e) {
+                String msg = "Erro ao gerar relatório.";
+                JOptionPane.showMessageDialog(null, msg + "\n" + e);
+                e.printStackTrace();
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
+        }
     }//GEN-LAST:event_btnSendCotacaoActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
@@ -1600,14 +1716,20 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 String dav = vpd.pedidoAtual();
 
                 try {
-                    vpd.create(dav, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText());
+                    vpd.create(dav, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText(), Valores.TransformarDinheiroEmValorDouble(txtFrete.getText()));
 
                     for (int i = 0; i < tableItens.getRowCount(); i++) {
                         if (tableItens.getValueAt(i, 2).equals(true)) {
                             vcid.updateDAV(dav, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
 
-                            vpid.create(dav, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), "", "");
+                            String dataEntrega = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 8).toString().replace(" dias úteis", "")));
+
+                            vpid.create(dav, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), dataEntrega, tableItens.getValueAt(i, 9).toString(), "", "");
                         }
+                    }
+
+                    for (int i = 0; i < tableObs.getRowCount(); i++) {
+                        vpod.create(dav, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
                     }
 
                     JOptionPane.showMessageDialog(null, "Pedido criado com sucesso.");
@@ -1715,6 +1837,79 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableItensMouseReleased
 
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        lerCotacoes();
+    }//GEN-LAST:event_txtPesquisaKeyReleased
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int resp2 = JOptionPane.showConfirmDialog(null, "Message", "Title", JOptionPane.YES_NO_OPTION);
+        
+        
+        int numTrue = 0;
+
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            if (tableItens.getValueAt(i, 2).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (txtCotacao.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione uma Cotação primeiro.");
+        } else if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Confirma que os itens foram perdidos?", "Itens Perdidos", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                String cotacao = txtCotacao.getText() + "P";
+                String motivo = JOptionPane.showInputDialog(null, "Qual o motivo para ter perdido os itens?", "Motivo", JOptionPane.YES_NO_OPTION);
+                try {
+                    if (!vcd.checkCotacao(cotacao)) {
+                        vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Perdido", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText(), Valores.TransformarDinheiroEmValorDouble(txtFrete.getText()));
+                        JOptionPane.showMessageDialog(null, "Cotação Perdida lançada com sucesso.\nLançando itens na Cotação.");
+                    }
+
+                    vcd.lancarMotivoPerdido(cotacao, motivo);
+                } catch (SQLException e) {
+                    String msg = "Erro.";
+
+                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+                    if (tableItens.getValueAt(i, 2).equals(true)) {
+                        try {
+                            vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 11).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(tableItens.getValueAt(i, 5).toString().replace(",", ".")), Double.parseDouble(tableItens.getValueAt(i, 6).toString().replace(",", ".")), Double.parseDouble(tableItens.getValueAt(i, 7).toString().replace(",", ".")), tableItens.getValueAt(i, 8).toString(), tableItens.getValueAt(i, 9).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+
+                            vcid.delete(Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+
+                            JOptionPane.showMessageDialog(null, "Itens lançados com sucesso.");
+                        } catch (SQLException e) {
+                            String msg = "Erro.";
+
+                            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
+                    }
+                }
+                lerCotacao(cotacao);
+            }
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddDoc;
@@ -1737,6 +1932,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton14;
     public javax.swing.JButton jButton15;
     public javax.swing.JButton jButton2;
+    public javax.swing.JButton jButton3;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -1745,6 +1941,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel6;
     public javax.swing.JLabel jLabel7;
     public javax.swing.JLabel jLabel8;
+    public javax.swing.JLabel jLabel9;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel10;
     public javax.swing.JPanel jPanel2;
@@ -1771,6 +1968,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtCondPag;
     public static javax.swing.JTextField txtCotacao;
     public static javax.swing.JTextField txtDataAbertura;
+    public static javax.swing.JTextField txtFrete;
     public static javax.swing.JTextField txtPesquisa;
     public static javax.swing.JTextField txtRep;
     public static javax.swing.JTextField txtStatus;

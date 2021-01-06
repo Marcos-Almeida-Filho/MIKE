@@ -7,6 +7,7 @@ package View.Geral;
 
 import DAO.LocalDAO;
 import View.vendas.VM;
+import View.vendas.VM1;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -14,12 +15,13 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class ProcurarLocal extends javax.swing.JInternalFrame {
-    
+
     private final String origem;
     private static final LocalDAO LD = new LocalDAO();
 
     /**
      * Creates new form ProcuraMaterialVenda
+     *
      * @param origin
      */
     public ProcurarLocal(String origin) {
@@ -27,11 +29,11 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
         readLocal();
         origem = origin;
     }
-    
+
     public static void readLocal() {
         DefaultTableModel modelLocal = (DefaultTableModel) tableLocal.getModel();
         modelLocal.setNumRows(0);
-        
+
         if (txtPesquisa.getText().length() == 0) {
             LD.readAtivo().forEach(lb -> {
                 modelLocal.addRow(new Object[]{
@@ -166,6 +168,9 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
                     break;
                 case "VM":
                     VM.txtLocal.setText(escolha);
+                    break;
+                case "VM1":
+                    VM1.txtLocal.setText(escolha);
                     break;
             }
             dispose();

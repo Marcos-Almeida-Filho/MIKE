@@ -58,12 +58,13 @@ public class VendasPedidoDAO {
      * @param vendedor
      * @param representante
      * @param condicaoPagamento
+     * @param frete
      * @throws java.sql.SQLException
      */
-    public void create(String pedido, String dataAbertura, String cliente, String status, String vendedor, String representante, String condicaoPagamento) throws SQLException {
+    public void create(String pedido, String dataAbertura, String cliente, String status, String vendedor, String representante, String condicaoPagamento, double frete) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO vendas_pedido (pedido, data_abertura, cliente, status, vendedor, representante, condicao) VALUES ('" + pedido + "','" + dataAbertura + "','" + cliente + "','" + status + "','" + vendedor + "','" + representante + "','" + condicaoPagamento + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_pedido (pedido, data_abertura, cliente, status, vendedor, representante, condicao, frete) VALUES ('" + pedido + "','" + dataAbertura + "','" + cliente + "','" + status + "','" + vendedor + "','" + representante + "','" + condicaoPagamento + "', " + frete + ")");
 
         stmt.executeUpdate();
 
@@ -103,12 +104,80 @@ public class VendasPedidoDAO {
 
         return listvp;
     }
+    
+    public List<VendasPedidoBean> readPedidosPesquisa(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE cliente LIKE '%" + pesquisa + "%' OR pedido LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vpb = new VendasPedidoBean();
+
+                vpb.setId(rs.getInt("id"));
+                vpb.setPedido(rs.getString("pedido"));
+                vpb.setCliente(rs.getString("cliente"));
+                vpb.setStatus(rs.getString("status"));
+
+                listvp.add(vpb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Pedidos abertos.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvp;
+    }
 
     public List<VendasPedidoBean> readPedidosAbertos() {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status <> 'Fechado' AND status <> 'Desativado'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status <> 'Faturado' AND status <> 'Desativado'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vpb = new VendasPedidoBean();
+
+                vpb.setId(rs.getInt("id"));
+                vpb.setPedido(rs.getString("pedido"));
+                vpb.setCliente(rs.getString("cliente"));
+                vpb.setStatus(rs.getString("status"));
+
+                listvp.add(vpb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Pedidos abertos.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvp;
+    }
+    
+    public List<VendasPedidoBean> readPedidosAbertosPesquisa(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status <> 'Fechado' AND status <> 'Desativado' AND pedido LIKE '%" + pesquisa + "%' OR status <> 'Fechado' AND status <> 'Desativado' AND cliente LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -205,6 +274,40 @@ public class VendasPedidoDAO {
 
         return listvp;
     }
+    
+    public List<VendasPedidoBean> readPedidosStatusPesquisa(String status, String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status = '" + status + "' AND pedido LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND cliente LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vpb = new VendasPedidoBean();
+
+                vpb.setId(rs.getInt("id"));
+                vpb.setPedido(rs.getString("pedido"));
+                vpb.setCliente(rs.getString("cliente"));
+                vpb.setStatus(rs.getString("status"));
+
+                listvp.add(vpb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Pedidos abertos.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvp;
+    }
 
     /**
      *
@@ -227,6 +330,7 @@ public class VendasPedidoDAO {
                 vpb.setVendedor(rs.getString("vendedor"));
                 vpb.setRepresentante(rs.getString("representante"));
                 vpb.setCondicao(rs.getString("condicao"));
+                vpb.setFrete(rs.getDouble("frete"));
                 vpb.setStatus(rs.getString("status"));
 
                 listvp.add(vpb);
@@ -248,6 +352,35 @@ public class VendasPedidoDAO {
         return listvp;
     }
 
+    public int readIdPedido(String pedido) {
+        rsList();
+
+        int id = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT id FROM vendas_pedido WHERE pedido = '" + pedido + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler último Pedido criado.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return id;
+    }
+    
     public String readLastCreated() {
         rsList();
 
@@ -305,6 +438,35 @@ public class VendasPedidoDAO {
 
         return motivo;
     }
+    
+    public String readCliente(String pedido) {
+        rsList();
+
+        String cliente = "";
+
+        try {
+            stmt = con.prepareStatement("SELECT cliente FROM vendas_pedido WHERE pedido = '" + pedido + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                cliente = rs.getString("cliente");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler último Pedido criado.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return cliente;
+    }
 
     public String pedidoAtual() {
 
@@ -353,10 +515,10 @@ public class VendasPedidoDAO {
      * @param condicaoPagamento
      * @throws java.sql.SQLException
      */
-    public void update(String pedido, String cliente, String vendedor, String representante, String condicaoPagamento) throws SQLException {
+    public void update(String pedido, String cliente, String vendedor, String representante, String condicaoPagamento, double frete) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("UPDATE vendas_pedido SET cliente = '" + cliente + "', vendedor = '" + vendedor + "', representante = '" + representante + "', condicao = '" + condicaoPagamento + "' WHERE pedido = '" + pedido + "'");
+        stmt = con.prepareStatement("UPDATE vendas_pedido SET cliente = '" + cliente + "', vendedor = '" + vendedor + "', representante = '" + representante + "', condicao = '" + condicaoPagamento + "', frete = " + frete + " WHERE pedido = '" + pedido + "'");
         stmt.executeUpdate();
 
         PedidoVenda.pedidoAtualizado = true;

@@ -131,12 +131,14 @@
                   <SubComponents>
                     <Component class="javax.swing.JTable" name="tableCotacoes">
                       <Properties>
+                        <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="5" rowCount="0">
+                          <Table columnCount="6" rowCount="0">
                             <Column editable="false" title="ID" type="java.lang.Object"/>
                             <Column editable="true" title="" type="java.lang.Boolean"/>
                             <Column editable="false" title="Or&#xe7;amento" type="java.lang.Object"/>
                             <Column editable="false" title="Cliente" type="java.lang.Object"/>
+                            <Column editable="false" title="Vendedor" type="java.lang.Object"/>
                             <Column editable="false" title="Status" type="java.lang.Object"/>
                           </Table>
                         </Property>
@@ -148,6 +150,11 @@
                               <Renderer/>
                             </Column>
                             <Column maxWidth="35" minWidth="35" prefWidth="35" resizable="true">
+                              <Title/>
+                              <Editor/>
+                              <Renderer/>
+                            </Column>
+                            <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                               <Title/>
                               <Editor/>
                               <Renderer/>
@@ -219,6 +226,9 @@
                       <Properties>
                         <Property name="name" type="java.lang.String" value="txtPesquisa" noResource="true"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtPesquisaKeyReleased"/>
+                      </Events>
                       <AuxValues>
                         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                       </AuxValues>
@@ -254,11 +264,12 @@
                     <Component class="javax.swing.JComboBox" name="cbStatus">
                       <Properties>
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                          <StringArray count="4">
-                            <StringItem index="0" value="Em Aberto"/>
-                            <StringItem index="1" value="Fechado"/>
-                            <StringItem index="2" value="Desativado"/>
-                            <StringItem index="3" value="Todos"/>
+                          <StringArray count="5">
+                            <StringItem index="0" value="Ativo"/>
+                            <StringItem index="1" value="Parcialmente Fechado"/>
+                            <StringItem index="2" value="Fechado"/>
+                            <StringItem index="3" value="Perdido"/>
+                            <StringItem index="4" value="Todos"/>
                           </StringArray>
                         </Property>
                         <Property name="name" type="java.lang.String" value="cbStatus" noResource="true"/>
@@ -983,11 +994,17 @@
                                       <Group type="102" attributes="0">
                                           <Component id="btnMarcarTodos" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
                                           <Component id="btnAddPedido" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="btnDelItem" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="btnAddItem" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="txtFrete" min="-2" pref="90" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
@@ -1011,6 +1028,9 @@
                                       <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="btnMarcarTodos" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="btnAddPedido" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtFrete" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -1161,7 +1181,7 @@
                         </Component>
                         <Component class="javax.swing.JLabel" name="jLabel7">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Total: R$"/>
+                            <Property name="text" type="java.lang.String" value="Total:"/>
                             <Property name="name" type="java.lang.String" value="jLabel7" noResource="true"/>
                           </Properties>
                         </Component>
@@ -1188,6 +1208,32 @@
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                           </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="jButton3">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="33" green="33" red="ff" type="rgb"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Lan&#xe7;ar Itens Perdidos"/>
+                            <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+                          </Events>
+                        </Component>
+                        <Component class="javax.swing.JTextField" name="txtFrete">
+                          <Properties>
+                            <Property name="name" type="java.lang.String" value="txtFrete" noResource="true"/>
+                          </Properties>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="jLabel9">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Frete: R$"/>
+                            <Property name="name" type="java.lang.String" value="jLabel9" noResource="true"/>
+                          </Properties>
                         </Component>
                       </SubComponents>
                     </Container>

@@ -113,11 +113,87 @@ public class OPDAO {
         return listob;
     }
 
+    public List<OPBean> readTodasOPsPesquisa(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op WHERE op LIKE '%" + pesquisa + "%' OR cliente LIKE '%" + pesquisa + "%' OR codigo LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OPBean ob = new OPBean();
+
+                ob.setId(rs.getInt("id"));
+                ob.setOp(rs.getString("op"));
+                ob.setDataabertura(rs.getString("dataabertura"));
+                ob.setDataprevista(rs.getString("dataprevista"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
+                ob.setStatus(rs.getString("status"));
+
+                listob.add(ob);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler OPs.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listob;
+    }
+
     public List<OPBean> readTodasOPsEmAberto() {
         rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM op WHERE status = 'Rascunho' OR status = 'Ativo'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OPBean ob = new OPBean();
+
+                ob.setId(rs.getInt("id"));
+                ob.setOp(rs.getString("op"));
+                ob.setDataabertura(rs.getString("dataabertura"));
+                ob.setDataprevista(rs.getString("dataprevista"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setDescricao(rs.getString("descricao"));
+                ob.setStatus(rs.getString("status"));
+
+                listob.add(ob);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler OPs.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listob;
+    }
+
+    public List<OPBean> readTodasOPsEmAbertoPesquisa(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op WHERE status = 'Rascunho' AND op LIKE '%" + pesquisa + "%' OR status = 'Rascunho' AND cliente LIKE '%" + pesquisa + "%' OR status = 'Rascunho' AND codigo LIKE '%" + pesquisa + "%' OR status = 'Ativo' AND op LIKE '%" + pesquisa + "%' OR status = 'Ativo' AND cliente LIKE '%" + pesquisa + "%' OR status = 'Ativo' AND codigo LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -302,6 +378,42 @@ public class OPDAO {
         return listob;
     }
 
+    public List<OPBean> readOPPorStatusPesquisa(String status, String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op WHERE status = '" + status + "' AND op LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND cliente LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND codigo LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OPBean ob = new OPBean();
+
+                ob.setId(rs.getInt("id"));
+                ob.setOp(rs.getString("op"));
+                ob.setDataprevista(rs.getString("dataprevista"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setStatus(rs.getString("status"));
+
+                listob.add(ob);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listob;
+    }
+
     /**
      *
      * @param op
@@ -311,12 +423,13 @@ public class OPDAO {
      * @param descricao
      * @param qtd
      * @param qtdOk
+     * @param dataPrevista
      * @throws java.sql.SQLException
      */
-    public void updateOP(String op, String cliente, int idMaterial, String codigo, String descricao, double qtd, double qtdOk) throws SQLException {
+    public void updateOP(String op, String cliente, int idMaterial, String codigo, String descricao, double qtd, double qtdOk, String dataPrevista) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + ", qtdok = " + qtdOk + " WHERE op = '" + op + "'");
+        stmt = con.prepareStatement("UPDATE op SET cliente = '" + cliente + "', idmaterial = " + idMaterial + ", codigo = '" + codigo + "', descricao = '" + descricao + "', qtd = " + qtd + ", qtdok = " + qtdOk + ", dataprevista = '" + dataPrevista + "' WHERE op = '" + op + "'");
 
         stmt.executeUpdate();
 
@@ -355,6 +468,28 @@ public class OPDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE op SET status = '" + status + "' WHERE op = '" + op + "'");
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateDataEntrega(String op, String data) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op SET dataprevista = '" + data + "' WHERE op = '" + op + "'");
 
             stmt.executeUpdate();
         } catch (SQLException e) {

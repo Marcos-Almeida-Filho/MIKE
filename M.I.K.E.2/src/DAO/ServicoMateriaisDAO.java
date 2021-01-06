@@ -74,6 +74,7 @@ public class ServicoMateriaisDAO {
                 sob.setId(rs.getInt("id"));
                 sob.setCodigo(rs.getString("codigo"));
                 sob.setDescricao(rs.getString("descricao"));
+                sob.setEstoque(rs.getInt("estoque"));
 
                 listso.add(sob);
             }
@@ -335,6 +336,7 @@ public class ServicoMateriaisDAO {
                 ub.setId(rs.getInt("id"));
                 ub.setCodigo(rs.getString("codigo"));
                 ub.setDescricao(rs.getString("descricao"));
+                ub.setEstoque(rs.getInt("estoque"));
 
                 listub.add(ub);
             }

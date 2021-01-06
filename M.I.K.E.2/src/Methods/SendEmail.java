@@ -26,6 +26,7 @@ import javax.activation.FileDataSource;
 import javax.imageio.ImageIO;
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.swing.JOptionPane;
 
 /*
  * @author Marcos Filho
@@ -193,6 +194,88 @@ public class SendEmail {
     }
 
     public static void EnviarErro2(String msg, SQLException e) {
+//        JOptionPane.showMessageDialog(null,"Enviando e-mail para suporte.");
+//        SplashScreen ss = new SplashScreen(3000);
+//        ss.showSplash();
+
+        Properties props = new Properties();
+        /**
+         * Parâmetros de conexão com servidor
+         */
+        props.put("mail.smtp.host", "email-ssl.com.br");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+
+        Session session = Session.getDefaultInstance(props,
+                new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("sistema@speedcut.com.br", "Sistema271113=");
+            }
+        });
+
+        /**
+         * Ativa Debug para sessão
+         */
+        session.setDebug(true);
+
+        String hostname = "Unknown";
+
+        try {
+            InetAddress addr;
+            addr = InetAddress.getLocalHost();
+            hostname = addr.getHostName();
+        } catch (UnknownHostException ex) {
+            System.out.println("Hostname can not be resolved");
+        }
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("sistema@speedcut.com.br")); //Remetente
+
+            Address[] toUser = InternetAddress //Destinatário(s)
+                    .parse("financeiro@speedcut.com.br");//"financeiro@speedcut.com.br, seucolega@hotmail.com, seuparente@yahoo.com.br"
+
+            message.setRecipients(Message.RecipientType.TO, toUser);
+            message.setSubject("Erro");//Assunto
+
+            Multipart multipart = new MimeMultipart();
+
+            MimeBodyPart textBodyPart = new MimeBodyPart();
+            textBodyPart.setText("Erro encontrado em " + hostname + "\n" + msg + "\n" + e);
+
+            MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+            Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+            BufferedImage capture = new Robot().createScreenCapture(screenRect);
+            File temp = File.createTempFile("screenshot", ".png");
+            ImageIO.write(capture, "png", temp);
+            DataSource source = new FileDataSource(temp); // ex : "C:\\test.pdf"
+            attachmentBodyPart.setDataHandler(new DataHandler(source));
+            attachmentBodyPart.setFileName("erro.png"); // ex : "test.pdf"
+
+            multipart.addBodyPart(textBodyPart);  // add the text part
+            multipart.addBodyPart(attachmentBodyPart); // add the attachment part
+
+            message.setContent(multipart);
+
+            /**
+             * Método para enviar a mensagem criada*
+             */
+            Transport.send(message);
+
+//            ss.dispose();
+//            JOptionPane.showMessageDialog(null,"E-mail enviado com sucesso para suporte.");
+            temp.delete();
+        } catch (MessagingException me) {
+            throw new RuntimeException(me);
+        } catch (AWTException | IOException ex) {
+            Logger.getLogger(SendEmail.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void EnviarErro2(String msg, Exception e) {
 //        JOptionPane.showMessageDialog(null,"Enviando e-mail para suporte.");
 //        SplashScreen ss = new SplashScreen(3000);
 //        ss.showSplash();
@@ -599,6 +682,89 @@ public class SendEmail {
             throw new RuntimeException(me);
         } catch (AWTException | IOException ex) {
             Logger.getLogger(SendEmail.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void EnviarOrcamento(File f, String emailVendedor) {
+//        JOptionPane.showMessageDialog(null,"Enviando e-mail para suporte.");
+//        SplashScreen ss = new SplashScreen(3000);
+//        ss.showSplash();
+
+        Properties props = new Properties();
+        /**
+         * Parâmetros de conexão com servidor
+         */
+        props.put("mail.smtp.host", "email-ssl.com.br");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+
+        Session session = Session.getDefaultInstance(props,
+                new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("sistema@speedcut.com.br", "Sistema271113=");
+            }
+        });
+
+        /**
+         * Ativa Debug para sessão
+         */
+        session.setDebug(true);
+
+        String hostname = "Unknown";
+
+        try {
+            InetAddress addr;
+            addr = InetAddress.getLocalHost();
+            hostname = addr.getHostName();
+        } catch (UnknownHostException e) {
+            String msg = "Hostname não pôde ser resolvido.";
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        }
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("sistema@speedcut.com.br")); //Remetente
+
+            Address[] toUser = InternetAddress //Destinatário(s)
+                    .parse(emailVendedor);//"financeiro@speedcut.com.br, seucolega@hotmail.com, seuparente@yahoo.com.br"
+
+            message.setRecipients(Message.RecipientType.TO, toUser);
+            message.setSubject("Orçamento");//Assunto
+
+            Multipart multipart = new MimeMultipart();
+
+            MimeBodyPart textBodyPart = new MimeBodyPart();
+            textBodyPart.setText("Olá!\n\nSegue em anexo orçamento solicitado.\n\nMuito obrigado\nQualquer dúvida, favor entrar em contato com seu vendedor.");
+
+            MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+            DataSource source = new FileDataSource(f); // ex : "C:\\test.pdf"
+            attachmentBodyPart.setDataHandler(new DataHandler(source));
+            attachmentBodyPart.setFileName("orcamento.pdf"); // ex : "test.pdf"
+
+            multipart.addBodyPart(textBodyPart);  // add the text part
+            multipart.addBodyPart(attachmentBodyPart); // add the attachment part
+
+            message.setContent(multipart);
+
+            /**
+             * Método para enviar a mensagem criada*
+             */
+            Transport.send(message);
+
+//            ss.dispose();
+            JOptionPane.showMessageDialog(null, "Orçamento enviado com sucesso!");
+        } catch (MessagingException me) {
+            JOptionPane.showMessageDialog(null, "Erro ao enviar orçamento.\n" + me);
+            throw new RuntimeException(me);
         }
     }
 }

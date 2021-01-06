@@ -64,27 +64,28 @@ public class VendasCotacaoDAO {
      * @param condicaoPagamento
      * @throws java.sql.SQLException
      */
-    public void create(String cotacao, String dataAbertura, String cliente, boolean cadastrado, String status, String vendedor, String representante, String condicaoPagamento) throws SQLException {
+    public void create(String cotacao, String dataAbertura, String cliente, boolean cadastrado, String status, String vendedor, String representante, String condicaoPagamento, double frete) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO vendas_cotacao (cotacao, data_abertura, cliente, cadastrado, status, vendedor, representante, condicao) VALUES ('" + cotacao + "','" + dataAbertura + "','" + cliente + "'," + cadastrado + ",'" + status + "','" + vendedor + "','" + representante + "','" + condicaoPagamento + "')");
+        stmt = con.prepareStatement("INSERT INTO vendas_cotacao (cotacao, data_abertura, cliente, cadastrado, status, vendedor, representante, condicao, frete) VALUES ('" + cotacao + "','" + dataAbertura + "','" + cliente + "'," + cadastrado + ",'" + status + "','" + vendedor + "','" + representante + "','" + condicaoPagamento + "', " + frete + ")");
 
         stmt.executeUpdate();
 
         ConnectionFactory.closeConnection(con, stmt);
     }
 
-    public List<VendasCotacaoBean> readCotacoesAbertas() {
+    public List<VendasCotacaoBean> readCotacoesStatus(String status) {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status <> 'Fechado' AND status <> 'Desativado'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status = '" + status + "'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
                 vcb = new VendasCotacaoBean();
 
                 vcb.setId(rs.getInt("id"));
+                vcb.setVendedor(rs.getString("vendedor"));
                 vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setStatus(rs.getString("status"));
@@ -108,17 +109,18 @@ public class VendasCotacaoDAO {
         return listvc;
     }
 
-    public List<VendasCotacaoBean> readCotacoesFechadas() {
+    public List<VendasCotacaoBean> readCotacoesStatusPesquisa(String status, String pesquisa) {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status = 'Fechado'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status = '" + status + "' AND cotacao LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND cliente LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
                 vcb = new VendasCotacaoBean();
 
                 vcb.setId(rs.getInt("id"));
+                vcb.setVendedor(rs.getString("vendedor"));
                 vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setStatus(rs.getString("status"));
@@ -126,7 +128,7 @@ public class VendasCotacaoDAO {
                 listvc.add(vcb);
             }
         } catch (SQLException e) {
-            String msg = "Erro ao ler cotações fechadas.";
+            String msg = "Erro ao ler cotações abertas.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
@@ -142,17 +144,53 @@ public class VendasCotacaoDAO {
         return listvc;
     }
 
-    public List<VendasCotacaoBean> readCotacoesDesativadas() {
+    public List<VendasCotacaoBean> readCotacoesStatusVendedor(String status, String vendedor) {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status = 'Desativado'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status = '" + status + "' AND vendedor = '" + vendedor + "'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
                 vcb = new VendasCotacaoBean();
 
                 vcb.setId(rs.getInt("id"));
+                vcb.setVendedor(rs.getString("vendedor"));
+                vcb.setCotacao(rs.getString("cotacao"));
+                vcb.setCliente(rs.getString("cliente"));
+                vcb.setStatus(rs.getString("status"));
+
+                listvc.add(vcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler cotações abertas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvc;
+    }
+
+    public List<VendasCotacaoBean> readCotacoesStatusPesquisaVendedor(String status, String pesquisa, String vendedor) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE status = '" + status + "' AND vendedor = '" + vendedor + "' AND cotacao LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND vendedor = '" + vendedor + "' AND cliente LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vcb = new VendasCotacaoBean();
+
+                vcb.setId(rs.getInt("id"));
+                vcb.setVendedor(rs.getString("vendedor"));
                 vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setStatus(rs.getString("status"));
@@ -187,6 +225,112 @@ public class VendasCotacaoDAO {
                 vcb = new VendasCotacaoBean();
 
                 vcb.setId(rs.getInt("id"));
+                vcb.setVendedor(rs.getString("vendedor"));
+                vcb.setCotacao(rs.getString("cotacao"));
+                vcb.setCliente(rs.getString("cliente"));
+                vcb.setStatus(rs.getString("status"));
+
+                listvc.add(vcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler cotações abertas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvc;
+    }
+
+    public List<VendasCotacaoBean> readCotacoesPesquisa(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE cotacao LIKE '%" + pesquisa + "%' OR cliente LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vcb = new VendasCotacaoBean();
+
+                vcb.setId(rs.getInt("id"));
+                vcb.setVendedor(rs.getString("vendedor"));
+                vcb.setCotacao(rs.getString("cotacao"));
+                vcb.setCliente(rs.getString("cliente"));
+                vcb.setStatus(rs.getString("status"));
+
+                listvc.add(vcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler cotações abertas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvc;
+    }
+
+    public List<VendasCotacaoBean> readCotacoesVendedor(String vendedor) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE vendedor = '" + vendedor + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vcb = new VendasCotacaoBean();
+
+                vcb.setId(rs.getInt("id"));
+                vcb.setVendedor(rs.getString("vendedor"));
+                vcb.setCotacao(rs.getString("cotacao"));
+                vcb.setCliente(rs.getString("cliente"));
+                vcb.setStatus(rs.getString("status"));
+
+                listvc.add(vcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler cotações abertas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listvc;
+    }
+
+    public List<VendasCotacaoBean> readCotacoesPesquisaVendedor(String pesquisa, String vendedor) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE cotacao LIKE '%" + pesquisa + "%' AND vendedor = '" + vendedor + "' OR cliente LIKE '%" + pesquisa + "%' AND vendedor = '" + vendedor + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                vcb = new VendasCotacaoBean();
+
+                vcb.setId(rs.getInt("id"));
+                vcb.setVendedor(rs.getString("vendedor"));
                 vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setStatus(rs.getString("status"));
@@ -233,6 +377,7 @@ public class VendasCotacaoDAO {
                 vcb.setVendedor(rs.getString("vendedor"));
                 vcb.setRepresentante(rs.getString("representante"));
                 vcb.setCondicao(rs.getString("condicao"));
+                vcb.setFrete(rs.getDouble("frete"));
                 vcb.setStatus(rs.getString("status"));
 
                 listvc.add(vcb);
@@ -289,7 +434,7 @@ public class VendasCotacaoDAO {
         String last = "";
 
         try {
-            stmt = con.prepareStatement("SELECT cotacao FROM vendas_cotacao WHERE cotacao <> '' ORDER BY id DESC LIMIT 1");
+            stmt = con.prepareStatement("SELECT cotacao FROM vendas_cotacao WHERE cotacao NOT LIKE '%P' ORDER BY id DESC LIMIT 1");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -387,10 +532,10 @@ public class VendasCotacaoDAO {
      * @param condicaoPagamento
      * @throws java.sql.SQLException
      */
-    public void update(String cotacao, String cliente, boolean cadastrado, String vendedor, String representante, String condicaoPagamento) throws SQLException {
+    public void update(String cotacao, String cliente, boolean cadastrado, String vendedor, String representante, String condicaoPagamento, double frete) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("UPDATE vendas_cotacao SET cliente = '" + cliente + "', cadastrado = " + cadastrado + ", vendedor = '" + vendedor + "', representante = '" + representante + "', condicao = '" + condicaoPagamento + "' WHERE cotacao = '" + cotacao + "'");
+        stmt = con.prepareStatement("UPDATE vendas_cotacao SET cliente = '" + cliente + "', cadastrado = " + cadastrado + ", vendedor = '" + vendedor + "', representante = '" + representante + "', condicao = '" + condicaoPagamento + "', frete = " + frete + " WHERE cotacao = '" + cotacao + "'");
         stmt.executeUpdate();
 
         ConnectionFactory.closeConnection(con, stmt);
@@ -436,5 +581,96 @@ public class VendasCotacaoDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
+    }
+
+    public void lancarMotivoPerdido(String cotacao, String motivo) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_cotacao SET motivo = '" + motivo + "' WHERE cotacao = '" + cotacao + "'");
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da Cotação de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public boolean checkMotivo(String cotacao) {
+        rsList();
+
+        boolean motivo = false;
+
+        try {
+            stmt = con.prepareStatement("SELECT motivo FROM vendas_cotacao WHERE cotacao = '" + cotacao + "'");
+
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                vcb = new VendasCotacaoBean();
+
+                vcb.setMotivo(rs.getString("motivo"));
+
+                if (vcb.getMotivo() != null && vcb.getMotivo().length() > 0) {
+                    motivo = true;
+                }
+            }
+
+        } catch (SQLException e) {
+            String msg = "Erro ao verificar motivo na Cotação.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return motivo;
+    }
+
+    public boolean checkCotacao(String cotacao) {
+        rsList();
+
+        boolean motivo = false;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_cotacao WHERE cotacao = '" + cotacao + "'");
+
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                motivo = true;
+            }
+
+        } catch (SQLException e) {
+            String msg = "Erro ao verificar motivo na Cotação.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return motivo;
     }
 }
