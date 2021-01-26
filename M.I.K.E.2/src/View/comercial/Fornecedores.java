@@ -54,9 +54,12 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         readtablefornecedores();
         tabletipo();
         btncep.setVisible(false);
+        id = 0;
     }
 
     public void zeracampos() {
+        id = 0;
+
         //Apagar txt's
         txtnomefornecedor.setText("");
         txtrazao.setText("");
@@ -363,6 +366,11 @@ public class Fornecedores extends javax.swing.JInternalFrame {
         }
 
         jButton3.setText("Novo");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
 
@@ -914,7 +922,7 @@ public class Fornecedores extends javax.swing.JInternalFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 355, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton6)
@@ -1520,6 +1528,13 @@ public class Fornecedores extends javax.swing.JInternalFrame {
     private void cbstatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbstatusActionPerformed
         readtablefornecedores();
     }//GEN-LAST:event_cbstatusActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int i = JOptionPane.showConfirmDialog(rootPane, "Deseja cadastrar um novo fornecedor?", "Novo Cadastro", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (i == 0) {
+            zeracampos();
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

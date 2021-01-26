@@ -994,7 +994,7 @@
                                       <Group type="102" attributes="0">
                                           <Component id="btnMarcarTodos" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
-                                          <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="btnItensPerdidos" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="btnAddPedido" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
@@ -1028,7 +1028,7 @@
                                       <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="btnMarcarTodos" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="btnAddPedido" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btnItensPerdidos" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="txtFrete" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -1051,7 +1051,7 @@
                             <Component class="javax.swing.JTable" name="tableItens">
                               <Properties>
                                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                                  <Table columnCount="12" rowCount="0">
+                                  <Table columnCount="11" rowCount="0">
                                     <Column editable="false" title="ID" type="java.lang.Object"/>
                                     <Column editable="false" title="Cadastrado" type="java.lang.Boolean"/>
                                     <Column editable="true" title="" type="java.lang.Boolean"/>
@@ -1061,7 +1061,6 @@
                                     <Column editable="false" title="Valor Unit&#xe1;rio" type="java.lang.Object"/>
                                     <Column editable="false" title="Valor Total" type="java.lang.Object"/>
                                     <Column editable="false" title="Prazo de Entrega" type="java.lang.Object"/>
-                                    <Column editable="false" title="Pedido do Cliente" type="java.lang.Object"/>
                                     <Column editable="false" title="DAV" type="java.lang.Object"/>
                                     <Column editable="false" title="idMaterial" type="java.lang.Object"/>
                                   </Table>
@@ -1104,11 +1103,6 @@
                                       <Renderer/>
                                     </Column>
                                     <Column maxWidth="100" minWidth="100" prefWidth="100" resizable="true">
-                                      <Title/>
-                                      <Editor/>
-                                      <Renderer/>
-                                    </Column>
-                                    <Column maxWidth="110" minWidth="110" prefWidth="110" resizable="true">
                                       <Title/>
                                       <Editor/>
                                       <Renderer/>
@@ -1209,17 +1203,20 @@
                             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                           </AuxValues>
                         </Component>
-                        <Component class="javax.swing.JButton" name="jButton3">
+                        <Component class="javax.swing.JButton" name="btnItensPerdidos">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                               <Color blue="33" green="33" red="ff" type="rgb"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Lan&#xe7;ar Itens Perdidos"/>
-                            <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
+                            <Property name="name" type="java.lang.String" value="btnItensPerdidos" noResource="true"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnItensPerdidosActionPerformed"/>
                           </Events>
+                          <AuxValues>
+                            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
+                          </AuxValues>
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtFrete">
                           <Properties>

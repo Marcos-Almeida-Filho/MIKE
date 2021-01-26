@@ -69,9 +69,6 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PedidoServico extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form PedidoServico
-     */
     OSDAO od = new OSDAO();
     OSBean ob = new OSBean();
 
@@ -84,15 +81,20 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     ServicoMateriaisBean smb = new ServicoMateriaisBean();
 
     //DAO e Bean para alterar pedido
-    ServicoPedidoDAO spd = new ServicoPedidoDAO();
+    static ServicoPedidoDAO spd = new ServicoPedidoDAO();
     ServicoPedidoBean spb = new ServicoPedidoBean();
 
     //DAO e Bean para criar movimentação do material
     ServicoMateriaisMovimentacaoDAO smmd = new ServicoMateriaisMovimentacaoDAO();
     ServicoMateriaisMovimentacaoBean smmb = new ServicoMateriaisMovimentacaoBean();
 
+    static ServicoPedidoItensNFDAO spinfd = new ServicoPedidoItensNFDAO();
+
     public static int vezes = 0;
 
+    /**
+     * Creates new form PedidoServico
+     */
     public PedidoServico() {
         initComponents();
         filltablepedidoorcamento();
@@ -101,15 +103,88 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     public static void filltablepedidoorcamento() {
         DefaultTableModel model = (DefaultTableModel) tablepedidoservico.getModel();
         model.setNumRows(0);
-        ServicoPedidoDAO spd = new ServicoPedidoDAO();
 
-        for (ServicoPedidoBean spb : spd.read()) {
-            model.addRow(new Object[]{
-                spb.getIdtela(),
-                spb.getCliente(),
-                spb.getStatus_retorno(),
-                spb.getStatus_cobranca()
-            });
+        String status = cbStatus.getSelectedItem().toString();
+
+        if (txtPesquisa.getText().equals("")) {
+            switch (status) {
+                case "Em Aberto":
+                    spd.readEmAberto().forEach(spb -> {
+                        model.addRow(new Object[]{
+                            spb.getIdtela(),
+                            spb.getCliente(),
+                            spb.getNfcliente(),
+                            spb.getPedidocliente(),
+                            spb.getStatus_retorno(),
+                            spb.getStatus_cobranca()
+                        });
+                    });
+                    break;
+                case "Todos":
+                    spd.readTodos().forEach(spb -> {
+                        model.addRow(new Object[]{
+                            spb.getIdtela(),
+                            spb.getCliente(),
+                            spb.getNfcliente(),
+                            spb.getPedidocliente(),
+                            spb.getStatus_retorno(),
+                            spb.getStatus_cobranca()
+                        });
+                    });
+                    break;
+                default:
+                    spd.readStatus(status).forEach(spb -> {
+                        model.addRow(new Object[]{
+                            spb.getIdtela(),
+                            spb.getCliente(),
+                            spb.getNfcliente(),
+                            spb.getPedidocliente(),
+                            spb.getStatus_retorno(),
+                            spb.getStatus_cobranca()
+                        });
+                    });
+                    break;
+            }
+        } else {
+            String pesquisa = txtPesquisa.getText();
+            switch (status) {
+                case "Em Aberto":
+                    spd.readEmAbertoPesquisa(pesquisa).forEach(spb -> {
+                        model.addRow(new Object[]{
+                            spb.getIdtela(),
+                            spb.getCliente(),
+                            spb.getNfcliente(),
+                            spb.getPedidocliente(),
+                            spb.getStatus_retorno(),
+                            spb.getStatus_cobranca()
+                        });
+                    });
+                    break;
+                case "Todos":
+                    spd.readTodosPesquisa(pesquisa).forEach(spb -> {
+                        model.addRow(new Object[]{
+                            spb.getIdtela(),
+                            spb.getCliente(),
+                            spb.getNfcliente(),
+                            spb.getPedidocliente(),
+                            spb.getStatus_retorno(),
+                            spb.getStatus_cobranca()
+                        });
+                    });
+                    break;
+                default:
+                    spd.readStatusPesquisa(status, pesquisa).forEach(spb -> {
+                        model.addRow(new Object[]{
+                            spb.getIdtela(),
+                            spb.getCliente(),
+                            spb.getNfcliente(),
+                            spb.getPedidocliente(),
+                            spb.getStatus_retorno(),
+                            spb.getStatus_cobranca()
+                        });
+                    });
+                    break;
+            }
         }
     }
 
@@ -153,10 +228,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         if (!txtorcamento.getText().equals("")) {
             txtorcamento.setEditable(false);
         }
-
-        if (!txtnfcliente.getText().equals("")) {
-            txtnfcliente.setEditable(false);
-        }
     }
 
     public static void readitenscobranca() {
@@ -174,7 +245,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 spib.getValor(),
                 spib.getTotal(),
                 spib.getPrazo(),
-                spib.getPedidocliente(),
                 spib.getOs(),
                 spib.getNf()
             });
@@ -184,9 +254,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     public static void readitensretorno() {
         DefaultTableModel model = (DefaultTableModel) tableitensnota.getModel();
         model.setNumRows(0);
-        ServicoPedidoItensNFDAO spid = new ServicoPedidoItensNFDAO();
 
-        for (ServicoPedidoItensNFBean spib : spid.readitens(txtnumeropedido.getText())) {
+        spinfd.readitens(txtnumeropedido.getText()).forEach(spib -> {
             model.addRow(new Object[]{
                 false,
                 spib.getId(),
@@ -197,7 +266,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 spib.getTotal(),
                 spib.getNfretorno()
             });
-        }
+        });
     }
 
     /**
@@ -213,11 +282,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        txtPesquisa = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablepedidoservico = new javax.swing.JTable();
         jPanel11 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbStatus = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -238,13 +307,14 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         txtnumeropedido = new javax.swing.JTextField();
         txtstatusretorno = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         txtorcamento = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         txtnfcliente = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         txtstatuscobranca = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        txtPedidoCliente = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         jPanel9 = new javax.swing.JPanel();
@@ -266,6 +336,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
         btnAll = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableitensnota = new javax.swing.JTable();
@@ -274,6 +345,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
+        btnSelecionarItensRetorno = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
 
@@ -289,6 +361,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel4.setText("Pesquisa");
 
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -297,7 +375,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+                .addComponent(txtPesquisa, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -306,7 +384,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -316,11 +394,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "Cliente", "Status Retorno", "Status Cobrança"
+                "ID", "Cliente", "Nota Fiscal Cliente", "Pedido Cliente", "Status Retorno", "Status Cobrança"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -341,7 +419,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Ativo", "Parcialmente Faturado", "Faturado", "Cancelado", "Todos" }));
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Ativo", "Parcialmente Faturado", "Faturado", "Cancelado", "Todos" }));
+        cbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbStatusActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -349,14 +432,14 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox1, 0, 169, Short.MAX_VALUE)
+                .addComponent(cbStatus, 0, 169, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -369,7 +452,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 562, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 563, Short.MAX_VALUE)
                         .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
@@ -524,13 +607,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         jLabel2.setText("Retorno");
 
-        jButton4.setText("Imprimir");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
         jLabel8.setText("Orçamento");
 
         txtorcamento.setEditable(false);
@@ -545,6 +621,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         txtstatuscobranca.setEditable(false);
         txtstatuscobranca.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
+        jLabel13.setText("Pedido do Cliente");
+
+        txtPedidoCliente.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -552,13 +632,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtnfcliente, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
-                        .addComponent(jButton4))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                    .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
@@ -575,7 +649,15 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtstatuscobranca, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
-                            .addComponent(txtorcamento))))
+                            .addComponent(txtorcamento)))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtnfcliente, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPedidoCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -595,17 +677,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel12)
                     .addComponent(txtstatuscobranca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton4)
-                        .addContainerGap())
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(txtnfcliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(txtnfcliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel13)
+                    .addComponent(txtPedidoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jButton1.setText("Salvar");
@@ -625,7 +703,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1261, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -704,7 +782,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1261, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton8)
@@ -731,14 +809,14 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "ID", "Código", "Descrição", "Qtde", "Valor Unitário", "Total", "Prazo de Entrega", "Pedido do Cliente", "OS", "NF Cobrança"
+                "", "ID", "Código", "Descrição", "Qtde", "Valor Unitário", "Total", "Prazo de Entrega", "OS", "NF Cobrança"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false, false, false, false, false, false
+                true, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -780,15 +858,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             tableitensorcamento.getColumnModel().getColumn(7).setMinWidth(110);
             tableitensorcamento.getColumnModel().getColumn(7).setPreferredWidth(110);
             tableitensorcamento.getColumnModel().getColumn(7).setMaxWidth(110);
-            tableitensorcamento.getColumnModel().getColumn(8).setMinWidth(110);
-            tableitensorcamento.getColumnModel().getColumn(8).setPreferredWidth(110);
-            tableitensorcamento.getColumnModel().getColumn(8).setMaxWidth(110);
-            tableitensorcamento.getColumnModel().getColumn(9).setMinWidth(95);
-            tableitensorcamento.getColumnModel().getColumn(9).setPreferredWidth(95);
-            tableitensorcamento.getColumnModel().getColumn(9).setMaxWidth(95);
-            tableitensorcamento.getColumnModel().getColumn(10).setMinWidth(90);
-            tableitensorcamento.getColumnModel().getColumn(10).setPreferredWidth(90);
-            tableitensorcamento.getColumnModel().getColumn(10).setMaxWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(8).setMinWidth(95);
+            tableitensorcamento.getColumnModel().getColumn(8).setPreferredWidth(95);
+            tableitensorcamento.getColumnModel().getColumn(8).setMaxWidth(95);
+            tableitensorcamento.getColumnModel().getColumn(9).setMinWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(9).setPreferredWidth(90);
+            tableitensorcamento.getColumnModel().getColumn(9).setMaxWidth(90);
         }
 
         jButton2.setText("Incluir");
@@ -832,6 +907,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton13.setText("Duplicar itens para Retorno");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -839,10 +921,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1261, Short.MAX_VALUE)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(btnAll)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 584, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 400, Short.MAX_VALUE)
+                        .addComponent(jButton13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton11)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton6)
@@ -869,7 +953,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(txttotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel10)
                     .addComponent(jButton11)
-                    .addComponent(btnAll))
+                    .addComponent(btnAll)
+                    .addComponent(jButton13))
                 .addContainerGap())
         );
 
@@ -933,11 +1018,23 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         });
 
         jButton10.setText("Excluir");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         jButton12.setText("Lançar Nota Fiscal de Retorno");
         jButton12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton12ActionPerformed(evt);
+            }
+        });
+
+        btnSelecionarItensRetorno.setText("Selecionar Todos");
+        btnSelecionarItensRetorno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelecionarItensRetornoActionPerformed(evt);
             }
         });
 
@@ -948,9 +1045,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1218, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1261, Short.MAX_VALUE)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSelecionarItensRetorno)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 655, Short.MAX_VALUE)
                         .addComponent(jButton12)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton10)
@@ -973,7 +1071,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(jLabel11)
                     .addComponent(jButton9)
                     .addComponent(jButton10)
-                    .addComponent(jButton12))
+                    .addComponent(jButton12)
+                    .addComponent(btnSelecionarItensRetorno))
                 .addContainerGap())
         );
 
@@ -1162,7 +1261,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
                     String year = simpleDateFormaty.format(ca.getTime());
                     String hua = "";
-                    for (ServicoPedidoBean spb2 : spd.read()) {
+                    for (ServicoPedidoBean spb2 : spd.readTodos()) {
                         hua = String.valueOf(spb2.getIdtela());
                     }
                     int yearint = Integer.parseInt(hua.replace("PS" + year + "-", ""));
@@ -1184,6 +1283,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             spb.setStatus_cobranca("Ativo");
             txtstatusretorno.setText("Ativo");
             spb.setNfcliente(txtnfcliente.getText());
+            spb.setPedidocliente(txtPedidoCliente.getText());
             Calendar date = Calendar.getInstance();
             String pattern = "dd/MM/yyyy HH:mm:ss";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -1200,16 +1300,14 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
                 spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
                 spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
-                spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
-                spib.setOs(tableitensorcamento.getValueAt(i, 9).toString());
-                spib.setNf(tableitensorcamento.getValueAt(i, 10).toString());
+                spib.setOs(tableitensorcamento.getValueAt(i, 8).toString());
+                spib.setNf(tableitensorcamento.getValueAt(i, 9).toString());
 
                 //idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
                 spid.create(spib);
             }
 
             //Criar itens do pedido (Nota Fiscal)
-            ServicoPedidoItensNFDAO spinfd = new ServicoPedidoItensNFDAO();
             ServicoPedidoItensNFBean spinfb = new ServicoPedidoItensNFBean();
 
             if (tableitensnota.getRowCount() > 0) {
@@ -1275,6 +1373,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             spb.setNotes(txtnotes.getText());
             spb.setStatus_retorno(txtstatusretorno.getText());
             spb.setNfcliente(txtnfcliente.getText());
+            spb.setPedidocliente(txtPedidoCliente.getText());
             spb.setIdtela(txtnumeropedido.getText());
 
             //cliente = ?, condicao = ?, representante = ?, vendedor = ?, notes = ?, nfcliente = ? WHERE idtela = ?
@@ -1289,9 +1388,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
                     spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
                     spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
-                    spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
-                    spib.setOs(tableitensorcamento.getValueAt(i, 9).toString());
-                    spib.setNf(tableitensorcamento.getValueAt(i, 10).toString());
+                    spib.setOs(tableitensorcamento.getValueAt(i, 8).toString());
+                    spib.setNf(tableitensorcamento.getValueAt(i, 9).toString());
 
                     //idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
                     spid.create(spib);
@@ -1303,9 +1401,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
                     spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
                     spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
-                    spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
-                    spib.setOs(tableitensorcamento.getValueAt(i, 9).toString());
-                    spib.setNf(tableitensorcamento.getValueAt(i, 10).toString());
+                    spib.setOs(tableitensorcamento.getValueAt(i, 8).toString());
+                    spib.setNf(tableitensorcamento.getValueAt(i, 9).toString());
                     spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
 
                     //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?
@@ -1315,7 +1412,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             }
 
             //Criar itens do pedido (Nota Fiscal)
-            ServicoPedidoItensNFDAO spinfd = new ServicoPedidoItensNFDAO();
             ServicoPedidoItensNFBean spinfb = new ServicoPedidoItensNFBean();
 
             if (tableitensnota.getRowCount() > 0) {
@@ -1407,6 +1503,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 txtnotes.setText(spb.getNotes());
                 txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
                 txtnfcliente.setText(spb.getNfcliente());
+                txtPedidoCliente.setText(spb.getPedidocliente());
             }
 
             camposeditaveis();
@@ -1432,10 +1529,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             });
         }
     }//GEN-LAST:event_tablepedidoservicoMouseClicked
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        JOptionPane.showMessageDialog(rootPane, "Em breve!");
-    }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja criar um novo pedido?", "Novo pedido", JOptionPane.YES_NO_OPTION);
@@ -1480,7 +1573,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 numerotrue++;
             }
             //Pegar número de notas lançadas antes de clicar no botão
-            if (tableitensorcamento.getValueAt(i, 0).equals(true) && !tableitensorcamento.getValueAt(i, 10).equals("")) {
+            if (tableitensorcamento.getValueAt(i, 0).equals(true) && !tableitensorcamento.getValueAt(i, 9).equals("")) {
                 numeronota++;
             }
         }
@@ -1555,7 +1648,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             readitenscobranca();
             //Pegar número de linhas com nota lançada depois de clicar no botão
             for (int i = 0; i < rc; i++) {
-                if (!tableitensorcamento.getValueAt(i, 10).equals("")) {
+                if (!tableitensorcamento.getValueAt(i, 9).equals("")) {
                     numeronota2++;
                 }
             }
@@ -1592,7 +1685,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 ItemPedidoServico.txtqtd.setText(tableitensorcamento.getValueAt(row, 4).toString());
                 ItemPedidoServico.txtvalor.setText(tableitensorcamento.getValueAt(row, 5).toString());
                 ItemPedidoServico.txtprazo.setText(tableitensorcamento.getValueAt(row, 7).toString());
-                ItemPedidoServico.txtpedido.setText(tableitensorcamento.getValueAt(row, 8).toString());
             }
         }
         if (evt.getButton() == 3) {
@@ -1601,7 +1693,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             das.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    String OSstring = tableitensorcamento.getValueAt(tableitensorcamento.getSelectedRow(), 9).toString();
+                    String OSstring = tableitensorcamento.getValueAt(tableitensorcamento.getSelectedRow(), 8).toString();
                     if (OSstring.equals("")) {
                         JOptionPane.showMessageDialog(rootPane, "Produto sem OS");
                     } else {
@@ -1706,7 +1798,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 }
             }
             if (numeronota2 < rc) {
-                spb.setStatus_retorno("Parcial");
+                spb.setStatus_retorno("Parcialmente Faturado");
                 spb.setIdtela(txtnumeropedido.getText());
 
                 //status_retorno = ? WHERE idtela = ?
@@ -1729,7 +1821,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
                 numerotrue++;
             }
-            if (tableitensorcamento.getValueAt(i, 0).equals(true) && !tableitensorcamento.getValueAt(i, 9).equals("")) {
+            if (tableitensorcamento.getValueAt(i, 0).equals(true) && !tableitensorcamento.getValueAt(i, 8).equals("")) {
                 numerooss++;
             }
         }
@@ -1767,7 +1859,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     //idtela, dateabertura, dateprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topob, reconstrucaob, completab, desenhob, raio, frontal
                     od.create(ob);
 
-                    String n = tableitensorcamento.getValueAt(i, 10).toString();
+                    String n = tableitensorcamento.getValueAt(i, 9).toString();
 
                     spib.setIdpedido(txtnumeropedido.getText());
                     spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
@@ -1776,7 +1868,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
                     spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
                     spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
-                    spib.setPedidocliente(tableitensorcamento.getValueAt(i, 8).toString());
                     spib.setOs(idos);
                     if (n.isEmpty()) {
                         spib.setNf("");
@@ -1790,8 +1881,6 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     spid.update(spib);
 
                     //Documentos do Produto na OS
-                    ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
-
                     int idmaterial = 0;
 
                     for (ServicoMateriaisBean smbb : smd.readid(tableitensorcamento.getValueAt(i, 2).toString())) {
@@ -1854,7 +1943,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 //
 //                    for (ServicoGrupoDeProcessosItensBean sgpib : sgpid.read(idgrupo)) {
 //
-                    String processo = "Separação de Material";
+                    String processo = "Rascunho";
 
                     opb.setIdos(idos);
                     opb.setProcesso(processo);
@@ -1928,7 +2017,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             if (resp == 0) {
                 for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
                     if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
-                        od.delete(tableitensorcamento.getValueAt(i, 9).toString());
+                        od.delete(tableitensorcamento.getValueAt(i, 8).toString());
 
                         spid.delete(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
                     }
@@ -1944,8 +2033,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja cancelar o pedido?", "Cancelar Pedido", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
-                ServicoPedidoDAO spd = new ServicoPedidoDAO();
-                ServicoPedidoBean spb = new ServicoPedidoBean();
+                spb = new ServicoPedidoBean();
 
                 spb.setStatus_cobranca("Cancelado");
                 spb.setStatus_retorno("Cancelado");
@@ -2012,6 +2100,94 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_btnAllActionPerformed
 
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        filltablepedidoorcamento();
+    }//GEN-LAST:event_txtPesquisaKeyReleased
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        try {
+            for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
+                ServicoPedidoItensNFBean spinfb = new ServicoPedidoItensNFBean();
+
+                spinfb.setIdpedido(txtnumeropedido.getText());
+                spinfb.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
+                spinfb.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
+                spinfb.setQtde(tableitensorcamento.getValueAt(i, 4).toString());
+                spinfb.setValor(tableitensorcamento.getValueAt(i, 5).toString());
+                spinfb.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
+                spinfb.setNfretorno("");
+
+                //idpedido, codigo, descricao, qtde, valor, total, nfretorno
+                spinfd.create(spinfb);
+            }
+
+            JOptionPane.showMessageDialog(null, "Itens lançados com sucesso!");
+
+            readitensretorno();
+        } catch (Exception e) {
+            String msg = "Erro.";
+
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        }
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void btnSelecionarItensRetornoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecionarItensRetornoActionPerformed
+        if (btnSelecionarItensRetorno.getText().equals("Selecionar Todos")) {
+            for (int i = 0; i < tableitensnota.getRowCount(); i++) {
+                tableitensnota.setValueAt(true, i, 0);
+            }
+            btnSelecionarItensRetorno.setText("Desmarcar Todos");
+        } else {
+            for (int i = 0; i < tableitensnota.getRowCount(); i++) {
+                tableitensnota.setValueAt(false, i, 0);
+            }
+            btnSelecionarItensRetorno.setText("Selecionar Todos");
+        }
+    }//GEN-LAST:event_btnSelecionarItensRetornoActionPerformed
+
+    private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
+        filltablepedidoorcamento();
+    }//GEN-LAST:event_cbStatusActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableitensnota.getRowCount(); i++) {
+            if (tableitensnota.getValueAt(i, 0).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir os Itens de Retorno selecionados?", "Excluir Itens de Retorno", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                DefaultTableModel model = (DefaultTableModel) tableitensnota.getModel();
+
+                for (int i = 0; i < tableitensnota.getRowCount(); i++) {
+                    if (tableitensnota.getValueAt(i, 0).equals(true)) {
+                        if (tableitensnota.getValueAt(i, 1).equals("")) {
+                            model.removeRow(i);
+                        } else {
+                            spinfd.delete(Integer.parseInt(tableitensnota.getValueAt(i, 1).toString()));
+                        }
+                    }
+                }
+
+                readitensretorno();
+            }
+        }
+    }//GEN-LAST:event_jButton10ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnCondicao;
@@ -2019,24 +2195,26 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private javax.swing.JButton BtnRepresentante;
     private javax.swing.JButton BtnVendedor;
     private javax.swing.JButton btnAll;
+    private javax.swing.JButton btnSelecionarItensRetorno;
+    private static javax.swing.JComboBox<String> cbStatus;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -2063,12 +2241,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
-    private javax.swing.JTextField jTextField3;
     public static javax.swing.JTable tabledocumentos;
     public static javax.swing.JTable tableitensnota;
     public static javax.swing.JTable tableitensorcamento;
     public static javax.swing.JTable tablepedidoservico;
     public static javax.swing.JTabbedPane tabpedidos;
+    private javax.swing.JTextField txtPedidoCliente;
+    private static javax.swing.JTextField txtPesquisa;
     public static javax.swing.JTextField txtclientepedido;
     public static javax.swing.JTextField txtcondicao;
     public static javax.swing.JTextField txtnfcliente;

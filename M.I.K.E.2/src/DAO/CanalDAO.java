@@ -48,10 +48,10 @@ public class CanalDAO {
         listc = new ArrayList<>();
     }
 
-    public void create(String nome) throws SQLException {
+    public void create(String nome, String codigo, String descricao) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO " + table + " (nome) VALUES ('" + nome + "')");
+        stmt = con.prepareStatement("INSERT INTO " + table + " (nome, codigo, descricao) VALUES ('" + nome + "', '" + codigo + "', '" + descricao + "')");
 
         stmt.executeUpdate();
 
@@ -71,6 +71,44 @@ public class CanalDAO {
 
                 cb.setId(rs.getInt("id"));
                 cb.setNome(rs.getString("nome"));
+                cb.setCodigo(rs.getString("codigo"));
+                cb.setDescricao(rs.getString("descricao"));
+
+                listc.add(cb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Canais cadastrados.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listc;
+    }
+
+    public List<CanalBean> readCanal(String canal) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE nome = '" + canal + "'");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                cb = new CanalBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setNome(rs.getString("nome"));
+                cb.setCodigo(rs.getString("codigo"));
+                cb.setDescricao(rs.getString("descricao"));
 
                 listc.add(cb);
             }
@@ -92,24 +130,77 @@ public class CanalDAO {
         return listc;
     }
     
-    public List<CanalBean> readCanal(String canal) {
+    public String readCodigoCanal(String canal) {
         rsList();
-
+        
+        String codigo = "";
+        
         try {
-            stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE nome = '" + canal + "'");
-
+            stmt = con.prepareStatement("SELECT codigo FROM " + table + " WHERE nome = '" + canal + "'");
+            
             rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                cb = new CanalBean();
-
-                cb.setId(rs.getInt("id"));
-                cb.setNome(rs.getString("nome"));
-
-                listc.add(cb);
+            
+            if (rs.next()) {
+                codigo = rs.getString("codigo");
             }
         } catch (SQLException e) {
-            String msg = "Erro ao ler Canais cadastrados.";
+            String msg = "Erro ao ler Código do Canal.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        
+        return codigo;
+    }
+    
+    public String readDescricaoCanal(String canal) {
+        rsList();
+        
+        String descricao = "";
+        
+        try {
+            stmt = con.prepareStatement("SELECT descricao FROM " + table + " WHERE nome = '" + canal + "'");
+            
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                descricao = rs.getString("descricao");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Descrição do Canal.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        
+        return descricao;
+    }
+
+    public void update(String nome, String codigo, String descricao, int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE " + table + " SET nome = '" + nome + "', codigo = '" + codigo + "', descricao = '" + descricao + "' WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar canal.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
@@ -120,10 +211,8 @@ public class CanalDAO {
                 }
             }.start();
         } finally {
-            ConnectionFactory.closeConnection(con, stmt, rs);
+            ConnectionFactory.closeConnection(con, stmt);
         }
-
-        return listc;
     }
 
     public void delete(int id) throws SQLException {

@@ -9,10 +9,12 @@ import Bean.CARBean;
 import Bean.CARDocumentosBean;
 import DAO.CARDAO;
 import DAO.CARDocumentosDAO;
+import DAO.CARObsDAO;
 import Methods.Dates;
 import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
+import View.Geral.AdicionarObs;
 import View.Geral.ProcuraXML;
 import View.Geral.ProcurarCliente;
 import java.awt.AWTException;
@@ -24,6 +26,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +38,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
+    
+    public static int idCliente;
 
     //DAO e Bean para salvar
     CARDAO cd = new CARDAO();
@@ -43,6 +48,8 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
     //DAO e Bean para salvar documento
     CARDocumentosDAO cdd = new CARDocumentosDAO();
     CARDocumentosBean cdb = new CARDocumentosBean();
+
+    CARObsDAO cod = new CARObsDAO();
 
     /**
      * Creates new form AdicionarContasPagar
@@ -102,6 +109,7 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tableobs = new javax.swing.JTable();
         jButton5 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         btnAddDoc = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -260,20 +268,53 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Usuário", "Data", "Observação"
+                "ID", "", "Data", "Usuário", "Observação"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane3.setViewportView(tableobs);
         if (tableobs.getColumnModel().getColumnCount() > 0) {
-            tableobs.getColumnModel().getColumn(0).setMinWidth(200);
-            tableobs.getColumnModel().getColumn(0).setPreferredWidth(200);
-            tableobs.getColumnModel().getColumn(0).setMaxWidth(200);
-            tableobs.getColumnModel().getColumn(1).setMinWidth(110);
-            tableobs.getColumnModel().getColumn(1).setPreferredWidth(110);
-            tableobs.getColumnModel().getColumn(1).setMaxWidth(110);
+            tableobs.getColumnModel().getColumn(0).setMinWidth(0);
+            tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableobs.getColumnModel().getColumn(1).setMinWidth(35);
+            tableobs.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableobs.getColumnModel().getColumn(1).setMaxWidth(35);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(110);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(110);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(110);
+            tableobs.getColumnModel().getColumn(3).setMinWidth(200);
+            tableobs.getColumnModel().getColumn(3).setPreferredWidth(200);
+            tableobs.getColumnModel().getColumn(3).setMaxWidth(200);
         }
 
         jButton5.setText("Incluir Observação");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Excluir Observação");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -285,6 +326,8 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 740, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5)))
                 .addContainerGap())
         );
@@ -294,7 +337,9 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton5)
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -490,15 +535,10 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
 
             //Criar CAR
             for (int i = 0; i < tableparcelas.getRowCount(); i++) {
-                cd.create(data, txtcliente.getText(), Integer.parseInt(txtnumero.getText()), Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()), Valores.TransformarDinheiroEmValorDouble(txttotal.getText()), tableparcelas.getValueAt(i, 0).toString(), Valores.TransformarDinheiroEmValorDouble(tableparcelas.getValueAt(i, 2).toString()), Dates.CriarDataCurtaDBComDataExistente(tableparcelas.getValueAt(i, 1).toString()));
-
-                //Variável para o ID
-                int id = 0;
+                cd.create(idCliente, data, txtcliente.getText(), Integer.parseInt(txtnumero.getText()), Dates.CriarDataCurtaDBComDataExistente(txtemissao.getText()), Valores.TransformarDinheiroEmValorDouble(txttotal.getText()), tableparcelas.getValueAt(i, 0).toString(), Valores.TransformarDinheiroEmValorDouble(tableparcelas.getValueAt(i, 2).toString()), Dates.CriarDataCurtaDBComDataExistente(tableparcelas.getValueAt(i, 1).toString()));
 
                 //Colocar valor na variável ID
-                for (CARBean cb2 : cd.readcreated(data)) {
-                    id = cb2.getId();
-                }
+                int id = cd.readcreated(data);
 
                 //Criar Documentos para o ID
                 for (int j = 0; j < tabledocumentos.getRowCount(); j++) {
@@ -529,6 +569,22 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
 
                     //idcar, descricao, local
                     cdd.create(cdb);
+                }
+                try {
+                    for (int j = 0; j < tableobs.getRowCount(); j++) {
+                        cod.create(id, Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(j, 2).toString()), tableobs.getValueAt(j, 3).toString(), tableobs.getValueAt(j, 4).toString());
+                    }
+                } catch (SQLException e) {
+                    String msg = "Erro.";
+
+                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
                 }
             }
 
@@ -643,12 +699,44 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tabledocumentosMouseClicked
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        AdicionarObs ao = new AdicionarObs(this.getClass().getSimpleName());
+        Telas.AparecerTela(ao);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableobs.getRowCount(); i++) {
+            if (tableobs.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma observação selecionada");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir as observações selecionadas?", "Excluir observações", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                DefaultTableModel model = (DefaultTableModel) tableobs.getModel();
+
+                for (int i = 0; i < tableobs.getRowCount(); i++) {
+                    if (tableobs.getValueAt(i, 1).equals(true)) {
+                        model.removeRow(i);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnAddDoc;
     public static javax.swing.JButton btnSalvar;
     public static javax.swing.JButton btnprocurar;
     public javax.swing.ButtonGroup buttonGroup1;
+    public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;

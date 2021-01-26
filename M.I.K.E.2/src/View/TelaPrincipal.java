@@ -14,6 +14,7 @@ import View.servicos.CotacaoServico;
 import View.vendas.OP;
 import View.arquivo.Email;
 import Methods.Telas;
+import View.Geral.MenusAbrir;
 import View.RH.SolicitacaoHoraExtra;
 import View.administracao.GrupoDeUsuarios;
 import View.administracao.Regioes;
@@ -39,8 +40,10 @@ import View.TI.Senhas;
 import View.TI.Tickets;
 import View.administracao.Usuarios;
 import View.arquivo.ProgramacaoMIKE;
+import View.comercial.FaturamentoDiario;
 import View.comercial.PlanejamentoFaturamento;
 import View.compras.ComprasCotacao;
+import View.configuracoes.Mensagens;
 import View.configuracoes.Menus;
 import View.financeiro.Cartoes;
 import View.financeiro.Extratos;
@@ -176,6 +179,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_categoria_preco = new javax.swing.JMenuItem();
         item_f_up = new javax.swing.JMenuItem();
         item_planejamento = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         menu_financeiro = new javax.swing.JMenu();
         item_car = new javax.swing.JMenuItem();
         item_cap = new javax.swing.JMenuItem();
@@ -223,6 +227,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_ots = new javax.swing.JMenuItem();
         menu_configuracoes = new javax.swing.JMenu();
         item_menus = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         menu_ajuda = new javax.swing.JMenu();
         item_trocar_senha = new javax.swing.JMenuItem();
         item_mike = new javax.swing.JMenuItem();
@@ -447,6 +452,16 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         menu_comercial.add(item_planejamento);
+
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/calendar_view_day.png"))); // NOI18N
+        jMenuItem1.setText("Faturamento Diário");
+        jMenuItem1.setName("item_faturamento_diario"); // NOI18N
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        menu_comercial.add(jMenuItem1);
 
         jMenuBar1.add(menu_comercial);
 
@@ -873,6 +888,16 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         menu_configuracoes.add(item_menus);
+
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/email_open.png"))); // NOI18N
+        jMenuItem2.setText("Mensagens Emails");
+        jMenuItem2.setName("item_mensagens_email"); // NOI18N
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        menu_configuracoes.add(jMenuItem2);
 
         jMenuBar1.add(menu_configuracoes);
 
@@ -1521,16 +1546,19 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_item_protocolosActionPerformed
 
     private void item_ticketsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_ticketsActionPerformed
-        JMenuItem menuItem = (JMenuItem) evt.getSource();
-        String menuItemName = menuItem.getName();
-
-        if (gupd.readPerm(Session.idnivel, menuItemName)) {
-            Tickets t = new Tickets();
-            Telas.AparecerTelaAumentada(t);
-        } else {
-            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
-        }
+        Tickets t = new Tickets();
+        MenusAbrir.acessoTela(evt, t);
     }//GEN-LAST:event_item_ticketsActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        FaturamentoDiario frame = new FaturamentoDiario();
+        MenusAbrir.acessoTela(evt, frame);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        Mensagens m = new Mensagens();
+        MenusAbrir.acessoTela(evt, m);
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1620,6 +1648,8 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenuItem item_vendas_produtos;
     public static javax.swing.JDesktopPane jDesktopPane1;
     public static javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     public static javax.swing.JLabel lblnome;
     public static javax.swing.JMenu menu_adm;

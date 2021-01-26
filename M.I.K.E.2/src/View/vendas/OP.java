@@ -376,6 +376,25 @@ public class OP extends javax.swing.JInternalFrame {
                 txtDataEntrega.setEnabled(true);
                 btnAddMP.setEnabled(true);
                 btnExcluirMP.setEnabled(true);
+                btnAddObs.setEnabled(true);
+                btnDelObs.setEnabled(true);
+                btnAddDoc.setEnabled(true);
+                btnDelDoc.setEnabled(true);
+                btnSalvar.setEnabled(true);
+                break;
+            case "Ativo":
+                TxtQtde.setEditable(false);
+                btnProcurarCliente.setEnabled(false);
+                btnProcurarProduto.setEnabled(false);
+                btnBaixaMP.setEnabled(false);
+                txtDataEntrega.setEnabled(false);
+                btnAddMP.setEnabled(false);
+                btnExcluirMP.setEnabled(false);
+                btnAddObs.setEnabled(true);
+                btnDelObs.setEnabled(true);
+                btnAddDoc.setEnabled(true);
+                btnDelDoc.setEnabled(true);
+                btnSalvar.setEnabled(false);
                 break;
             default:
                 TxtQtde.setEditable(false);
@@ -385,6 +404,11 @@ public class OP extends javax.swing.JInternalFrame {
                 txtDataEntrega.setEnabled(false);
                 btnAddMP.setEnabled(false);
                 btnExcluirMP.setEnabled(false);
+                btnAddObs.setEnabled(false);
+                btnDelObs.setEnabled(false);
+                btnAddDoc.setEnabled(false);
+                btnDelDoc.setEnabled(false);
+                btnSalvar.setEnabled(false);
                 break;
         }
     }
@@ -401,7 +425,7 @@ public class OP extends javax.swing.JInternalFrame {
         fub.setOp(op);
         fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(txtDataEntrega.getDate()));
         fub.setMaterial(TxtCodigo.getText());
-        fub.setProcesso("Separação de Material");
+        fub.setProcesso("Rascunho");
         fub.setDatacriacao(Dates.CriarDataCurtaDBSemDataExistente());
         fub.setNivel(5);
         fub.setValor(0);
@@ -432,7 +456,7 @@ public class OP extends javax.swing.JInternalFrame {
             fub.setOp(op);
             fub.setDataentrega(Dates.CriarDataCurtaDBJDateChooser(txtDataEntrega.getDate()));
             fub.setMaterial(TxtCodigo.getText());
-            fub.setProcesso("Separação de Material");
+            fub.setProcesso("Rascunho");
             fub.setDatacriacao(Dates.CriarDataCurtaDBSemDataExistente());
             fub.setNivel(5);
             fub.setValor(0);
@@ -513,6 +537,7 @@ public class OP extends javax.swing.JInternalFrame {
         txtPesquisa = new javax.swing.JTextField();
         jPanel13 = new javax.swing.JPanel();
         cbStatus = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         txtNumOP = new javax.swing.JTextField();
@@ -536,8 +561,8 @@ public class OP extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableObs = new javax.swing.JTable();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        btnAddObs = new javax.swing.JButton();
+        btnDelObs = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tableProcessos = new javax.swing.JTable();
@@ -603,10 +628,10 @@ public class OP extends javax.swing.JInternalFrame {
         jScrollPane7 = new javax.swing.JScrollPane();
         tableInspecao = new javax.swing.JTable();
         jPanel11 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
+        btnAddDoc = new javax.swing.JButton();
         jScrollPane8 = new javax.swing.JScrollPane();
         tableDocs = new javax.swing.JTable();
-        jButton8 = new javax.swing.JButton();
+        btnDelDoc = new javax.swing.JButton();
         jPanel15 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableMP = new javax.swing.JTable();
@@ -620,7 +645,7 @@ public class OP extends javax.swing.JInternalFrame {
         txtMortas = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnSalvar = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -718,6 +743,13 @@ public class OP extends javax.swing.JInternalFrame {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
+        jButton1.setText("Cancelar OP");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -728,8 +760,11 @@ public class OP extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -740,7 +775,9 @@ public class OP extends javax.swing.JInternalFrame {
                     .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 579, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 545, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
                 .addContainerGap())
         );
 
@@ -935,17 +972,17 @@ public class OP extends javax.swing.JInternalFrame {
             tableObs.getColumnModel().getColumn(3).setMaxWidth(250);
         }
 
-        jButton6.setText("Adicionar Observação");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnAddObs.setText("Adicionar Observação");
+        btnAddObs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnAddObsActionPerformed(evt);
             }
         });
 
-        jButton7.setText("Excluir Observação");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnDelObs.setText("Excluir Observação");
+        btnDelObs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                btnDelObsActionPerformed(evt);
             }
         });
 
@@ -956,9 +993,9 @@ public class OP extends javax.swing.JInternalFrame {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 940, Short.MAX_VALUE)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton7)
+                .addComponent(btnDelObs)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6))
+                .addComponent(btnAddObs))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -966,8 +1003,8 @@ public class OP extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7))
+                    .addComponent(btnAddObs)
+                    .addComponent(btnDelObs))
                 .addContainerGap())
         );
 
@@ -1533,10 +1570,10 @@ public class OP extends javax.swing.JInternalFrame {
 
         jPanel11.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton3.setText("Adicionar Arquivo");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnAddDoc.setText("Adicionar Arquivo");
+        btnAddDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnAddDocActionPerformed(evt);
             }
         });
 
@@ -1581,10 +1618,10 @@ public class OP extends javax.swing.JInternalFrame {
             tableDocs.getColumnModel().getColumn(4).setMaxWidth(0);
         }
 
-        jButton8.setText("Excluir Arquivo");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        btnDelDoc.setText("Excluir Arquivo");
+        btnDelDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                btnDelDocActionPerformed(evt);
             }
         });
 
@@ -1594,9 +1631,9 @@ public class OP extends javax.swing.JInternalFrame {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton8)
+                .addComponent(btnDelDoc)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3))
+                .addComponent(btnAddDoc))
             .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 940, Short.MAX_VALUE)
         );
         jPanel11Layout.setVerticalGroup(
@@ -1605,8 +1642,8 @@ public class OP extends javax.swing.JInternalFrame {
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton8)))
+                    .addComponent(btnAddDoc)
+                    .addComponent(btnDelDoc)))
         );
 
         jTabbedPane3.addTab("Arquivos", jPanel11);
@@ -1757,10 +1794,10 @@ public class OP extends javax.swing.JInternalFrame {
                     .addComponent(jLabel9)))
         );
 
-        jButton2.setText("Salvar");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnSalvarActionPerformed(evt);
             }
         });
 
@@ -1784,7 +1821,7 @@ public class OP extends javax.swing.JInternalFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
+                        .addComponent(btnSalvar))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1804,7 +1841,7 @@ public class OP extends javax.swing.JInternalFrame {
                 .addComponent(jTabbedPane3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
+                    .addComponent(btnSalvar)
                     .addComponent(jButton4))
                 .addContainerGap())
         );
@@ -1845,7 +1882,7 @@ public class OP extends javax.swing.JInternalFrame {
         txtCliente.requestFocus();
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         if (txtCliente.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Escolha uma cliente antes.");
         } else if (TxtCodigo.getText().equals("")) {
@@ -1923,7 +1960,7 @@ public class OP extends javax.swing.JInternalFrame {
             lerObs(op);
             lerProcessos(op);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void tableOPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableOPMouseClicked
         if (evt.getClickCount() == 2) {
@@ -1939,10 +1976,10 @@ public class OP extends javax.swing.JInternalFrame {
         readOPs();
     }//GEN-LAST:event_cbStatusActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btnAddObsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddObsActionPerformed
         AdicionarObs ao = new AdicionarObs(this.getClass().getSimpleName());
         Telas.AparecerTela(ao);
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btnAddObsActionPerformed
 
     private void tableProcessosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableProcessosMouseClicked
         if (evt.getClickCount() == 2) {
@@ -2033,7 +2070,7 @@ public class OP extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Produtos com baixa de estoque selecionados.");
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir as Matérias Primas selecionadas?", "Excluir Matéria Prima", JOptionPane.YES_NO_OPTION);
-            
+
             if (resp == 0) {
                 for (int i = 0; i < tableMP.getRowCount(); i++) {
                     if (tableMP.getValueAt(i, 1).equals(true)) {
@@ -2171,7 +2208,7 @@ public class OP extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableMPMouseClicked
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void btnDelDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelDocActionPerformed
         int numTrue = 0;
 
         for (int i = 0; i < tableDocs.getRowCount(); i++) {
@@ -2195,14 +2232,14 @@ public class OP extends javax.swing.JInternalFrame {
                 lerDocs(txtNumOP.getText());
             }
         }
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_btnDelDocActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnAddDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDocActionPerformed
         ProcurarDocumento pd = new ProcurarDocumento(this.getClass().getSimpleName());
         Telas.AparecerTela(pd);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnAddDocActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void btnDelObsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelObsActionPerformed
         int numTrue = 0;
 
         for (int i = 0; i < tableObs.getRowCount(); i++) {
@@ -2225,7 +2262,7 @@ public class OP extends javax.swing.JInternalFrame {
                 lerObs(txtNumOP.getText());
             }
         }
-    }//GEN-LAST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_btnDelObsActionPerformed
 
     private void tableObsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableObsMouseClicked
         if (tableObs.getSelectedColumn() == 1) {
@@ -2347,22 +2384,57 @@ public class OP extends javax.swing.JInternalFrame {
         readOPs();
     }//GEN-LAST:event_txtPesquisaKeyReleased
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableOP.getRowCount(); i++) {
+            if (tableOP.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhuma OP selecionada.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja cancelar as OPs selecionadas?", "Cancelar OPs", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                for (int i = 0; i < tableOP.getRowCount(); i++) {
+                    if (tableOP.getValueAt(i, 1).equals(true)) {
+                        String op = tableOP.getValueAt(i, 2).toString();
+                        od.updateStatus(op, "Cancelado");
+
+                        F_UPBean fb = new F_UPBean();
+
+                        fb.setProcesso("Cancelado");
+                        fb.setOp(op);
+
+                        //processo = ? WHERE op = ?
+                        fud.updateProcessoByOs(fb);
+                    }
+                }
+                readOPs();
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JTextField TxtCodigo;
     public static javax.swing.JTextField TxtDescricao;
     public static javax.swing.JTextField TxtQtde;
+    private static javax.swing.JButton btnAddDoc;
     private static javax.swing.JButton btnAddMP;
+    private static javax.swing.JButton btnAddObs;
     private static javax.swing.JButton btnBaixaMP;
+    private static javax.swing.JButton btnDelDoc;
+    private static javax.swing.JButton btnDelObs;
     private static javax.swing.JButton btnExcluirMP;
     private static javax.swing.JButton btnProcurarCliente;
     private static javax.swing.JButton btnProcurarProduto;
+    private static javax.swing.JButton btnSalvar;
     private static javax.swing.JComboBox<String> cbStatus;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

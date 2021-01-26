@@ -767,4 +767,80 @@ public class SendEmail {
             throw new RuntimeException(me);
         }
     }
+    
+    public static void LembreteCAR(String emailVendedor, String mensagemFinal) {
+//        JOptionPane.showMessageDialog(null,"Enviando e-mail para suporte.");
+//        SplashScreen ss = new SplashScreen(3000);
+//        ss.showSplash();
+
+        Properties props = new Properties();
+        /**
+         * Parâmetros de conexão com servidor
+         */
+        props.put("mail.smtp.host", "email-ssl.com.br");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+
+        Session session = Session.getDefaultInstance(props,
+                new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("sistema@speedcut.com.br", "Sistema271113=");
+            }
+        });
+
+        /**
+         * Ativa Debug para sessão
+         */
+        session.setDebug(true);
+
+        String hostname = "Unknown";
+
+        try {
+            InetAddress addr;
+            addr = InetAddress.getLocalHost();
+            hostname = addr.getHostName();
+        } catch (UnknownHostException e) {
+            String msg = "Hostname não pôde ser resolvido.";
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        }
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("sistema@speedcut.com.br")); //Remetente
+
+            Address[] toUser = InternetAddress //Destinatário(s)
+                    .parse(emailVendedor);//"financeiro@speedcut.com.br, seucolega@hotmail.com, seuparente@yahoo.com.br"
+
+            message.setRecipients(Message.RecipientType.TO, toUser);
+            message.setSubject("Lembrete de Vencimento");//Assunto
+
+            Multipart multipart = new MimeMultipart();
+
+            MimeBodyPart textBodyPart = new MimeBodyPart();
+            textBodyPart.setText(mensagemFinal);
+
+            multipart.addBodyPart(textBodyPart);// add the text part
+
+            message.setContent(multipart);
+
+            /**
+             * Método para enviar a mensagem criada*
+             */
+            Transport.send(message);
+
+//            ss.dispose();
+        } catch (MessagingException me) {
+            JOptionPane.showMessageDialog(null, "Erro ao enviar orçamento.\n" + me);
+            throw new RuntimeException(me);
+        }
+    }
 }

@@ -5,7 +5,6 @@
  */
 package View.servicos;
 
-import static View.servicos.ItemOrcamentoServico.txtpedido;
 import static View.servicos.ItemOrcamentoServico.txtprazo;
 import java.text.DecimalFormat;
 import javax.swing.JOptionPane;

@@ -36,7 +36,7 @@ public class ServicoPedidoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servicos_pedido (idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO servicos_pedido (idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data, pedidocliente) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, spb.getIdtela());
             stmt.setString(2, spb.getIdorcamento());
             stmt.setString(3, spb.getCliente());
@@ -48,6 +48,7 @@ public class ServicoPedidoDAO {
             stmt.setString(9, spb.getStatus_cobranca());
             stmt.setString(10, spb.getNfcliente());
             stmt.setString(11, spb.getData());
+            stmt.setString(12, spb.getPedidocliente());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
@@ -62,7 +63,7 @@ public class ServicoPedidoDAO {
         }
     }
 
-    public List<ServicoPedidoBean> read() {
+    public List<ServicoPedidoBean> readTodos() {
 
         Connection con = ConnectionFactory.getConnection();
 
@@ -73,7 +74,7 @@ public class ServicoPedidoDAO {
         List<ServicoPedidoBean> listsp = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * from servicos_pedido");
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -89,6 +90,268 @@ public class ServicoPedidoDAO {
                 spb.setStatus_retorno(rs.getString("status_retorno"));
                 spb.setStatus_cobranca(rs.getString("status_cobranca"));
                 spb.setNfcliente(rs.getString("nfcliente"));
+                spb.setPedidocliente(rs.getString("pedidocliente"));
+
+                listsp.add(spb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listsp;
+
+    }
+
+    public List<ServicoPedidoBean> readEmAberto() {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoPedidoBean> listsp = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE status_retorno = 'Ativo' OR status_cobranca = 'Ativo'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoPedidoBean spb = new ServicoPedidoBean();
+
+                spb.setIdtela(rs.getString("idtela"));
+                spb.setIdorcamento(rs.getString("idorcamento"));
+                spb.setCliente(rs.getString("cliente"));
+                spb.setCondicao(rs.getString("condicao"));
+                spb.setRepresentante(rs.getString("representante"));
+                spb.setVendedor(rs.getString("vendedor"));
+                spb.setNotes(rs.getString("notes"));
+                spb.setStatus_retorno(rs.getString("status_retorno"));
+                spb.setStatus_cobranca(rs.getString("status_cobranca"));
+                spb.setNfcliente(rs.getString("nfcliente"));
+                spb.setPedidocliente(rs.getString("pedidocliente"));
+
+                listsp.add(spb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listsp;
+
+    }
+
+    public String getCliente(String dav) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        String cliente = "";
+
+        try {
+            stmt = con.prepareStatement("SELECT cliente FROM servicos_pedido WHERE idtela = '" + dav + "'");
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                cliente = rs.getString("cliente");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return cliente;
+    }
+
+    public List<ServicoPedidoBean> readStatus(String status) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoPedidoBean> listsp = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE status_retorno = '" + status + "' AND status_cobranca = '" + status + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoPedidoBean spb = new ServicoPedidoBean();
+
+                spb.setIdtela(rs.getString("idtela"));
+                spb.setIdorcamento(rs.getString("idorcamento"));
+                spb.setCliente(rs.getString("cliente"));
+                spb.setCondicao(rs.getString("condicao"));
+                spb.setRepresentante(rs.getString("representante"));
+                spb.setVendedor(rs.getString("vendedor"));
+                spb.setNotes(rs.getString("notes"));
+                spb.setStatus_retorno(rs.getString("status_retorno"));
+                spb.setStatus_cobranca(rs.getString("status_cobranca"));
+                spb.setNfcliente(rs.getString("nfcliente"));
+                spb.setPedidocliente(rs.getString("pedidocliente"));
+
+                listsp.add(spb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listsp;
+
+    }
+
+    public List<ServicoPedidoBean> readTodosPesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoPedidoBean> listsp = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE idtela LIKE '%" + pesquisa + "%' OR cliente LIKE '%" + pesquisa + "%' OR nfcliente LIKE '%" + pesquisa + "%' OR pedidocliente LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoPedidoBean spb = new ServicoPedidoBean();
+
+                spb.setIdtela(rs.getString("idtela"));
+                spb.setIdorcamento(rs.getString("idorcamento"));
+                spb.setCliente(rs.getString("cliente"));
+                spb.setCondicao(rs.getString("condicao"));
+                spb.setRepresentante(rs.getString("representante"));
+                spb.setVendedor(rs.getString("vendedor"));
+                spb.setNotes(rs.getString("notes"));
+                spb.setStatus_retorno(rs.getString("status_retorno"));
+                spb.setStatus_cobranca(rs.getString("status_cobranca"));
+                spb.setNfcliente(rs.getString("nfcliente"));
+                spb.setPedidocliente(rs.getString("pedidocliente"));
+
+                listsp.add(spb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listsp;
+
+    }
+
+    public List<ServicoPedidoBean> readEmAbertoPesquisa(String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoPedidoBean> listsp = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE (status_retorno = 'Ativo' OR status_cobranca = 'Ativo') AND (idtela LIKE '%" + pesquisa + "%' OR cliente LIKE '%" + pesquisa + "%' OR nfcliente LIKE '%" + pesquisa + "%' OR pedidocliente LIKE '%" + pesquisa + "%')");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoPedidoBean spb = new ServicoPedidoBean();
+
+                spb.setIdtela(rs.getString("idtela"));
+                spb.setIdorcamento(rs.getString("idorcamento"));
+                spb.setCliente(rs.getString("cliente"));
+                spb.setCondicao(rs.getString("condicao"));
+                spb.setRepresentante(rs.getString("representante"));
+                spb.setVendedor(rs.getString("vendedor"));
+                spb.setNotes(rs.getString("notes"));
+                spb.setStatus_retorno(rs.getString("status_retorno"));
+                spb.setStatus_cobranca(rs.getString("status_cobranca"));
+                spb.setNfcliente(rs.getString("nfcliente"));
+                spb.setPedidocliente(rs.getString("pedidocliente"));
+
+                listsp.add(spb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listsp;
+
+    }
+
+    public List<ServicoPedidoBean> readStatusPesquisa(String status, String pesquisa) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoPedidoBean> listsp = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE status_retorno = '" + status + "' AND status_cobranca = '" + status + "' AND idtela LIKE '%" + pesquisa + "%' OR status_retorno = '" + status + "' AND status_cobranca = '" + status + "' AND cliente LIKE '%" + pesquisa + "%' OR status_retorno = '" + status + "' AND status_cobranca = '" + status + "' AND nfcliente LIKE '%" + pesquisa + "%' OR status_retorno = '" + status + "' AND status_cobranca = '" + status + "' AND pedidocliente LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoPedidoBean spb = new ServicoPedidoBean();
+
+                spb.setIdtela(rs.getString("idtela"));
+                spb.setIdorcamento(rs.getString("idorcamento"));
+                spb.setCliente(rs.getString("cliente"));
+                spb.setCondicao(rs.getString("condicao"));
+                spb.setRepresentante(rs.getString("representante"));
+                spb.setVendedor(rs.getString("vendedor"));
+                spb.setNotes(rs.getString("notes"));
+                spb.setStatus_retorno(rs.getString("status_retorno"));
+                spb.setStatus_cobranca(rs.getString("status_cobranca"));
+                spb.setNfcliente(rs.getString("nfcliente"));
+                spb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listsp.add(spb);
             }
@@ -211,6 +474,7 @@ public class ServicoPedidoDAO {
                 spb.setStatus_cobranca(rs.getString("status_cobranca"));
                 spb.setNfcliente(rs.getString("nfcliente"));
                 spb.setIdorcamento(rs.getString("idorcamento"));
+                spb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listsp.add(spb);
             }
@@ -236,14 +500,15 @@ public class ServicoPedidoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE servicos_pedido SET cliente = ?, condicao = ?, representante = ?, vendedor = ?, notes = ?, nfcliente = ? WHERE idtela = ?");
+            stmt = con.prepareStatement("UPDATE servicos_pedido SET cliente = ?, condicao = ?, representante = ?, vendedor = ?, notes = ?, nfcliente = ?, pedidocliente = ? WHERE idtela = ?");
             stmt.setString(1, spb.getCliente());
             stmt.setString(2, spb.getCondicao());
             stmt.setString(3, spb.getRepresentante());
             stmt.setString(4, spb.getVendedor());
             stmt.setString(5, spb.getNotes());
             stmt.setString(6, spb.getNfcliente());
-            stmt.setString(7, spb.getIdtela());
+            stmt.setString(7, spb.getPedidocliente());
+            stmt.setString(8, spb.getIdtela());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {

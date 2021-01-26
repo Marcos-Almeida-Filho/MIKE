@@ -162,7 +162,7 @@ public class CodigoPorCliente extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null,"Digite uma descrição.");
             txtdesc.requestFocus();
         } else {
-            DefaultTableModel model = (DefaultTableModel) VM.tabledesccli.getModel();
+            DefaultTableModel model = (DefaultTableModel) VM1.tabledesccli.getModel();
             model.addRow(new Object[]{
                 "",
                 false,

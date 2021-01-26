@@ -16,13 +16,14 @@ public class NovaMP extends javax.swing.JInternalFrame {
 
     MPDAO mpd = new MPDAO();
     
-    static int idMP = 0;
+    static int idMP;
 
     /**
      * Creates new form NovaMP
      */
     public NovaMP() {
         initComponents();
+        idMP = 0;
     }
 
     /**
@@ -141,7 +142,7 @@ public class NovaMP extends javax.swing.JInternalFrame {
             String nome = txtNome.getText();
             String codigo = txtCodigo.getText();
             String descricao = txtDescricao.getText();
-
+            
             if (idMP == 0) {
                 mpd.create(nome, codigo, descricao);
             } else {

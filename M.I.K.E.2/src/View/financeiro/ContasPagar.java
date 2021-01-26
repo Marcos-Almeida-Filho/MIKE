@@ -7,7 +7,6 @@ package View.financeiro;
 
 import Bean.CAPBean;
 import DAO.CAPDAO;
-import DAO.CAPObsDAO;
 import Methods.Colors;
 import Methods.Dates;
 import Methods.ExcelMethods;
@@ -34,6 +33,14 @@ public class ContasPagar extends javax.swing.JInternalFrame {
     /**
      * Creates new form ContasPagar
      */
+    public ContasPagar() {
+        initComponents();
+        datasJDateChooser();
+        readtablecap();
+        getNewRenderedTable(tablecap, 9);
+        valores();
+    }
+    
     private static JTable getNewRenderedTable(final JTable table, int coluna) {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -64,18 +71,10 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         });
         return table;
     }
-
+    
     public static void datasJDateChooser() {
         Dates.SetarDataJDateChooser(jdateinicio, Dates.primeiroDiaDoMes());
         Dates.SetarDataJDateChooser(jdatefim, Dates.ultimoDiaDoMes());
-    }
-
-    public ContasPagar() {
-        initComponents();
-        datasJDateChooser();
-        readtablecap();
-        getNewRenderedTable(tablecap, 9);
-        valores();
     }
 
     public static void valores() {
@@ -106,7 +105,6 @@ public class ContasPagar extends javax.swing.JInternalFrame {
         model.setNumRows(0);
 
         CAPDAO capd = new CAPDAO();
-        CAPObsDAO cod = new CAPObsDAO();
 
         if (txtPesquisa.getText().length() == 0) {
             switch (cbstatus.getSelectedIndex()) {

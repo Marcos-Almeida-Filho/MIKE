@@ -66,7 +66,7 @@ public class AddNF extends javax.swing.JInternalFrame {
                 });
             });
         } else {
-            nfd.readNotasPesquisa(txtPesquisa.getText()).forEach(nfb -> {
+            nfd.readNotasPesquisaBaixa(txtPesquisa.getText()).forEach(nfb -> {
                 model.addRow(new Object[]{
                     nfb.getId(),
                     nfb.getNumero(),
@@ -254,9 +254,9 @@ public class AddNF extends javax.swing.JInternalFrame {
                 if (qtd < vpib.getQtd()) {
                     double qtd2 = vpib.getQtd() - qtd;
                     try {
-                        vpid.update(vpib.getIdMaterial(), vpib.getCodigo(), vpib.getDescricao(), qtd, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), vpib.getPedido(), vpib.getId());
+                        vpid.updateNotaFiscal(nf, idItemPedido);
 
-                        vpid.create(PedidoVenda.txtPedido.getText(), 0, vpib.getCodigo(), vpib.getDescricao(), qtd2, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), vpib.getPedido(), "", vpib.getOp());
+                        vpid.create(PedidoVenda.txtPedido.getText(), 0, vpib.getCodigo(), vpib.getDescricao(), qtd2, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), "", vpib.getOp());
                     } catch (SQLException e) {
                         String msg = "Erro ao atualizar item do Pedido de Venda.";
                         JOptionPane.showMessageDialog(null, msg);
@@ -294,7 +294,7 @@ public class AddNF extends javax.swing.JInternalFrame {
                 PedidoVenda.lerItensPedido(PedidoVenda.txtPedido.getText());
                 int numNota = 0;
                 for (int i = 0; i < PedidoVenda.tableItens.getRowCount(); i++) {
-                    if (!PedidoVenda.tableItens.getValueAt(i, 11).equals("")) {
+                    if (!PedidoVenda.tableItens.getValueAt(i, 10).equals("")) {
                         numNota++;
                     }
                 }

@@ -7,6 +7,7 @@ package View.vendas;
 
 import DAO.CanalDAO;
 import Methods.SendEmail;
+import Methods.Telas;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -17,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class CadastroDeCanal extends javax.swing.JInternalFrame {
 
-    CanalDAO cd = new CanalDAO();
+    static CanalDAO cd = new CanalDAO();
 
     /**
      * Creates new form CadastroDeCanal
@@ -27,7 +28,7 @@ public class CadastroDeCanal extends javax.swing.JInternalFrame {
         lerCanais();
     }
 
-    private void lerCanais() {
+    public static void lerCanais() {
         DefaultTableModel model = (DefaultTableModel) tableCanais.getModel();
         model.setNumRows(0);
 
@@ -35,7 +36,9 @@ public class CadastroDeCanal extends javax.swing.JInternalFrame {
             model.addRow(new Object[]{
                 cb.getId(),
                 false,
-                cb.getNome()
+                cb.getNome(),
+                cb.getCodigo(),
+                cb.getDescricao()
             });
         });
     }
@@ -68,14 +71,14 @@ public class CadastroDeCanal extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Nome"
+                "ID", "", "Nome", "Código", "Descrição"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false
+                false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -87,6 +90,11 @@ public class CadastroDeCanal extends javax.swing.JInternalFrame {
             }
         });
         tableCanais.setName("tableCanais"); // NOI18N
+        tableCanais.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableCanaisMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tableCanais);
         if (tableCanais.getColumnModel().getColumnCount() > 0) {
             tableCanais.getColumnModel().getColumn(0).setMinWidth(0);
@@ -120,7 +128,7 @@ public class CadastroDeCanal extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 432, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton2)
@@ -155,27 +163,8 @@ public class CadastroDeCanal extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            String canal = JOptionPane.showInputDialog(null, "Qual o tipo de Canal?", "Novo Canal", JOptionPane.YES_NO_OPTION);
-
-            cd.create(canal);
-
-            JOptionPane.showMessageDialog(null, "Criado com sucesso!");
-
-            lerCanais();
-            VM1.lerCanais();
-        } catch (Exception e) {
-            String msg = "Erro.";
-
-            JOptionPane.showMessageDialog(null, msg + "\n" + e);
-
-            new Thread() {
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        }
+        NovoCanal nc = new NovoCanal();
+        Telas.AparecerTela(nc);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -221,12 +210,25 @@ public class CadastroDeCanal extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void tableCanaisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCanaisMouseClicked
+        if (evt.getClickCount() == 2) {
+            NovoCanal nc = new NovoCanal();
+            Telas.AparecerTela(nc);
+
+            NovoCanal.idCanal = Integer.parseInt(tableCanais.getValueAt(tableCanais.getSelectedRow(), 0).toString());
+
+            NovoCanal.txtNome.setText(tableCanais.getValueAt(tableCanais.getSelectedRow(), 2).toString());
+            NovoCanal.txtCodigo.setText(tableCanais.getValueAt(tableCanais.getSelectedRow(), 3).toString());
+            NovoCanal.txtDescricao.setText(tableCanais.getValueAt(tableCanais.getSelectedRow(), 4).toString());
+        }
+    }//GEN-LAST:event_tableCanaisMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JScrollPane jScrollPane1;
-    public javax.swing.JTable tableCanais;
+    public static javax.swing.JTable tableCanais;
     // End of variables declaration//GEN-END:variables
 }

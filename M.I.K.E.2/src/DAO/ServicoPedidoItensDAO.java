@@ -54,7 +54,7 @@ public class ServicoPedidoItensDAO {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servicos_pedido_itens_orcamento (idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, os, nf) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO servicos_pedido_itens_orcamento (idpedido, codigo, descricao, qtde, valor, total, prazo, os, nf) VALUES (?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, spib.getIdpedido());
             stmt.setString(2, spib.getCodigo());
             stmt.setString(3, spib.getDescricao());
@@ -62,9 +62,8 @@ public class ServicoPedidoItensDAO {
             stmt.setString(5, spib.getValor());
             stmt.setString(6, spib.getTotal());
             stmt.setString(7, spib.getPrazo());
-            stmt.setString(8, spib.getPedidocliente());
-            stmt.setString(9, spib.getOs());
-            stmt.setString(10, spib.getNf());
+            stmt.setString(8, spib.getOs());
+            stmt.setString(9, spib.getNf());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {
@@ -119,13 +118,53 @@ public class ServicoPedidoItensDAO {
 
         return listspib;
     }
+    
+    public List<ServicoPedidoItensBean> readitensSemNota() {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido_itens_orcamento WHERE nf = ''");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+
+                spib.setId(rs.getInt("id"));
+                spib.setIdpedido(rs.getString("idpedido"));
+                spib.setCodigo(rs.getString("codigo"));
+                spib.setDescricao(rs.getString("descricao"));
+                spib.setQtde(rs.getString("qtde"));
+                spib.setValor(rs.getString("valor"));
+                spib.setTotal(rs.getString("total"));
+                spib.setPrazo(rs.getString("prazo"));
+                spib.setPedidocliente(rs.getString("pedidocliente"));
+                spib.setOs(rs.getString("os"));
+                spib.setNf(rs.getString("nf"));
+
+                listspib.add(spib);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoItensDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listspib;
+    }
 
     public void update(ServicoPedidoItensBean spib) {
 
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, os = ?, nf = ? WHERE id = ?");
             stmt.setString(1, spib.getIdpedido());
             stmt.setString(2, spib.getCodigo());
             stmt.setString(3, spib.getDescricao());
@@ -133,10 +172,9 @@ public class ServicoPedidoItensDAO {
             stmt.setString(5, spib.getValor());
             stmt.setString(6, spib.getTotal());
             stmt.setString(7, spib.getPrazo());
-            stmt.setString(8, spib.getPedidocliente());
-            stmt.setString(9, spib.getOs());
-            stmt.setString(10, spib.getNf());
-            stmt.setInt(11, spib.getId());
+            stmt.setString(8, spib.getOs());
+            stmt.setString(9, spib.getNf());
+            stmt.setInt(10, spib.getId());
 
             stmt.executeUpdate();
         } catch (HeadlessException | SQLException e) {

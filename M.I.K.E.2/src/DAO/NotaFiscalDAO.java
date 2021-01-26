@@ -102,7 +102,111 @@ public class NotaFiscalDAO {
         }
     }
 
+    public double getValorFaturado(String dataInicio, String dataFim) {
+        rsList();
+
+        double valor = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM nf WHERE venda = " + true + " AND dataEmissao BETWEEN '" + dataInicio + "' AND '" + dataFim + "'");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                valor += rs.getDouble("valorTotalNotaFiscal");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Notas Fiscais.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return valor;
+    }
+
     public List<NotaFiscalBean> readNotas() {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM nf ORDER BY numero DESC");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                nfb = new NotaFiscalBean();
+
+                nfb.setId(rs.getInt("id"));
+                nfb.setNumero(rs.getInt("numero"));
+                nfb.setDestinatario(rs.getString("destinatario"));
+                nfb.setNatureza(rs.getString("natureza"));
+                nfb.setDataEmissao(rs.getString("dataEmissao"));
+                nfb.setStatus(rs.getString("status"));
+
+                listnf.add(nfb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Notas Fiscais.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listnf;
+    }
+
+    public List<NotaFiscalBean> readNotasPesquisa(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM nf WHERE numero LIKE '%" + pesquisa + "%' OR destinatario LIKE '%" + pesquisa + "%' ORDER BY numero DESC");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                nfb = new NotaFiscalBean();
+
+                nfb.setId(rs.getInt("id"));
+                nfb.setNumero(rs.getInt("numero"));
+                nfb.setDestinatario(rs.getString("destinatario"));
+                nfb.setNatureza(rs.getString("natureza"));
+                nfb.setDataEmissao(rs.getString("dataEmissao"));
+                nfb.setStatus(rs.getString("status"));
+
+                listnf.add(nfb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Notas Fiscais.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listnf;
+    }
+
+    public List<NotaFiscalBean> readNotasAtivas() {
         rsList();
 
         try {
@@ -138,7 +242,7 @@ public class NotaFiscalDAO {
         return listnf;
     }
 
-    public List<NotaFiscalBean> readNotasPesquisa(String pesquisa) {
+    public List<NotaFiscalBean> readNotasPesquisaBaixa(String pesquisa) {
         rsList();
 
         try {
@@ -291,6 +395,29 @@ public class NotaFiscalDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE nf SET statusInterno = 'Faturado' WHERE numero = " + numero);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da NF-e.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateVendas(int numero, boolean a) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE nf SET venda = " + a + " WHERE numero = " + numero);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

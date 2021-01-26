@@ -116,38 +116,61 @@ public class MudarStatus extends javax.swing.JInternalFrame {
                 dispose();
                 break;
             case "OSLote":
-                if (cbstatus.getSelectedItem().toString().equals("Fechado")) {
-                    for (int i = 0; i < OS.tableos.getRowCount(); i++) {
-                        if (OS.tableos.getValueAt(i, 0).equals(true)) {
-                            String idtela = OS.tableos.getValueAt(i, 1).toString();
-                            
-                            ob.setStatus(cbstatus.getSelectedItem().toString());
-                            ob.setIdtela(idtela);
+                switch (cbstatus.getSelectedItem().toString()) {
+                    case "Fechado":
+                        for (int i = 0; i < OS.tableos.getRowCount(); i++) {
+                            if (OS.tableos.getValueAt(i, 0).equals(true)) {
+                                String idtela = OS.tableos.getValueAt(i, 1).toString();
 
-                            //SET status = ? WHERE idtela = ?
-                            od.updatestatus(ob);
-                            
-                            fub.setProcesso("Encerrado");
-                            fub.setOp(idtela);
-                            
-                            //processo = ? WHERE op = ?
-                            fud.updateProcessoByOs(fub);
-                        }
-                    }
-                } else {
-                    for (int i = 0; i < OS.tableos.getRowCount(); i++) {
-                        if (OS.tableos.getValueAt(i, 0).equals(true)) {
-                            ob.setStatus(cbstatus.getSelectedItem().toString());
-                            ob.setIdtela(OS.tableos.getValueAt(i, 1).toString());
+                                ob.setStatus(cbstatus.getSelectedItem().toString());
+                                ob.setIdtela(idtela);
 
-                            //SET status = ? WHERE idtela = ?
-                            od.updatestatus(ob);
+                                //SET status = ? WHERE idtela = ?
+                                od.updatestatus(ob);
+
+                                fub.setProcesso("Encerrado");
+                                fub.setOp(idtela);
+
+                                //processo = ? WHERE op = ?
+                                fud.updateProcessoByOs(fub);
+                            }
                         }
-                    }
+                        break;
+                    case "Cancelado":
+                        for (int i = 0; i < OS.tableos.getRowCount(); i++) {
+                            if (OS.tableos.getValueAt(i, 0).equals(true)) {
+                                String idtela = OS.tableos.getValueAt(i, 1).toString();
+
+                                ob.setStatus(cbstatus.getSelectedItem().toString());
+                                ob.setIdtela(idtela);
+
+                                //SET status = ? WHERE idtela = ?
+                                od.updatestatus(ob);
+
+                                fub.setProcesso("Cancelado");
+                                fub.setOp(idtela);
+
+                                //processo = ? WHERE op = ?
+                                fud.updateProcessoByOs(fub);
+                            }
+                        }
+                        break;
+                    default:
+                        for (int i = 0; i < OS.tableos.getRowCount(); i++) {
+                            if (OS.tableos.getValueAt(i, 0).equals(true)) {
+                                ob.setStatus(cbstatus.getSelectedItem().toString());
+                                ob.setIdtela(OS.tableos.getValueAt(i, 1).toString());
+
+                                //SET status = ? WHERE idtela = ?
+                                od.updatestatus(ob);
+                            }
+                        }
+                        break;
                 }
                 OS.reados();
                 this.dispose();
                 break;
+
             case "OSnormal":
                 ob.setStatus(cbstatus.getSelectedItem().toString());
                 ob.setIdtela(OS.txtnumeroos.getText());

@@ -49,16 +49,34 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tableNF.getModel();
         model.setNumRows(0);
 
-        nfd.readNotas().forEach(nfb -> {
-            model.addRow(new Object[]{
-                nfb.getId(),
-                false,
-                nfb.getNumero(),
-                nfb.getDestinatario(),
-                nfb.getNatureza(),
-                nfb.getStatus()
+        String pesquisa = txtpesquisa.getText();
+
+        if (pesquisa.equals("")) {
+            nfd.readNotas().forEach(nfb -> {
+                model.addRow(new Object[]{
+                    nfb.getId(),
+                    false,
+                    nfb.getNumero(),
+                    nfb.getDestinatario(),
+                    nfb.getNatureza(),
+                    Dates.TransformarDataCompletaDoDB(nfb.getDataEmissao()),
+                    nfb.getStatus()
+                });
             });
-        });
+        } else {
+            nfd.readNotasPesquisa(pesquisa).forEach(nfb -> {
+                model.addRow(new Object[]{
+                    nfb.getId(),
+                    false,
+                    nfb.getNumero(),
+                    nfb.getDestinatario(),
+                    nfb.getNatureza(),
+                    Dates.TransformarDataCompletaDoDB(nfb.getDataEmissao()),
+                    nfb.getStatus()
+                });
+            });
+        }
+
     }
 
     public void readNF(int numero) {
@@ -230,14 +248,14 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Número", "Destinatário", "Natureza de Operação", "Status"
+                "ID", "", "Número", "Destinatário", "Natureza de Operação", "Data de Emissão", "Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false, false, false
+                false, true, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -268,6 +286,11 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         jPanel3.setName("jPanel3"); // NOI18N
 
         txtpesquisa.setName("txtpesquisa"); // NOI18N
+        txtpesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtpesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -318,7 +341,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -441,7 +464,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Itens", jPanel5);
@@ -464,7 +487,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Observações", jPanel7);
@@ -619,7 +642,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
                     .addComponent(jLabel28)
                     .addComponent(txtIPI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtFrete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel29)
                     .addComponent(jLabel30)
@@ -904,7 +927,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -918,7 +941,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabNF)
+            .addComponent(tabNF, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
         );
 
         pack();
@@ -942,7 +965,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         if (numTrue == 0) {
             JOptionPane.showMessageDialog(null, "Nenhuma nota selecionada.");
         } else {
-            int resp = JOptionPane.showConfirmDialog(null, "Deseja cancelar as Notas Fiscais canceladas?", "Cancelar Nota Fiscal", JOptionPane.YES_NO_OPTION);
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja cancelar as Notas Fiscais selecionadas?", "Cancelar Nota Fiscal", JOptionPane.YES_NO_OPTION);
 
             if (resp == 0) {
                 for (int i = 0; i < tableNF.getRowCount(); i++) {
@@ -985,6 +1008,10 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
             readNF(Integer.parseInt(tableNF.getValueAt(tableNF.getSelectedRow(), 2).toString()));
         }
     }//GEN-LAST:event_tableNFMouseClicked
+
+    private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
+        lerNotasFiscais();
+    }//GEN-LAST:event_txtpesquisaKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1068,6 +1095,6 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtTotalProdutos;
     public javax.swing.JTextField txtUFD;
     public javax.swing.JTextField txtUFT;
-    public javax.swing.JTextField txtpesquisa;
+    public static javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables
 }

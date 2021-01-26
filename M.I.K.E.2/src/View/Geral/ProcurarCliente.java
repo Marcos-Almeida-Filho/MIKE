@@ -11,6 +11,7 @@ import View.comercial.AdicionarOPFUP;
 import View.comercial.OPF_UP;
 import View.financeiro.AdicionarContasAPagar;
 import View.financeiro.AdicionarContasAReceber;
+import View.financeiro.ContaReceber;
 import View.logistica.RastreamentoDocumentos;
 import View.vendas.CodigoPorCliente;
 import View.vendas.CotacaoVenda;
@@ -178,6 +179,7 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
     private void tableclientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableclientesMouseClicked
         if (evt.getClickCount() == 2) {
             String cliente = tableclientes.getValueAt(tableclientes.getSelectedRow(), 1).toString();
+            int idCliente = Integer.parseInt(tableclientes.getValueAt(tableclientes.getSelectedRow(), 0).toString());
             cd.readPorNome(cliente).forEach(cb -> {
                 condicao = cb.getCondicaodepagamento();
                 vendedor = cb.getVendedor();
@@ -210,6 +212,7 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                     break;
                 case "CAR":
                     AdicionarContasAReceber.txtcliente.setText(cliente);
+                    AdicionarContasAReceber.idCliente = idCliente;
                     break;
                 case "CAP":
                     AdicionarContasAPagar.txtemitente.setText(cliente);
@@ -226,6 +229,9 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                 case "OP":
                     OP.txtCliente.setText(cliente);
                     break;
+                case "ContaReceber":
+                    ContaReceber.txtCliente.setText(cliente);
+                    ContaReceber.idCliente = idCliente;
             }
             dispose();
         }

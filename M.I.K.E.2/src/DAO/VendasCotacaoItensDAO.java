@@ -56,14 +56,13 @@ public class VendasCotacaoItensDAO {
      * @param valorunitario
      * @param valortotal
      * @param prazo
-     * @param pedido
      * @param cadastrado
      * @throws java.sql.SQLException
      */
-    public void create(String cotacao, int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, String pedido, boolean cadastrado) throws SQLException {
+    public void create(String cotacao, int idMaterial, String codigo, String descricao, double qtd, double valorunitario, double valortotal, String prazo, boolean cadastrado) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO vendas_cotacao_itens (cotacao, idmaterial, codigo, descricao, qtd, valorunitario, valortotal, prazo, pedido, cadastrado) VALUES ('" + cotacao + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + valorunitario + ", " + valortotal + ", '" + prazo + "', '" + pedido + "', " + cadastrado + ")");
+        stmt = con.prepareStatement("INSERT INTO vendas_cotacao_itens (cotacao, idmaterial, codigo, descricao, qtd, valorunitario, valortotal, prazo, cadastrado) VALUES ('" + cotacao + "', " + idMaterial + ", '" + codigo + "', '" + descricao + "', " + qtd + ", " + valorunitario + ", " + valortotal + ", '" + prazo + "', " + cadastrado + ")");
 
         stmt.executeUpdate();
 
@@ -88,7 +87,6 @@ public class VendasCotacaoItensDAO {
                 vcib.setValorunitario(rs.getDouble("valorunitario"));
                 vcib.setValortotal(rs.getDouble("valortotal"));
                 vcib.setPrazo(rs.getString("prazo"));
-                vcib.setPedido(rs.getString("pedido"));
                 vcib.setDav(rs.getString("dav"));
                 vcib.setCadastrado(rs.getBoolean("cadastrado"));
 
@@ -133,7 +131,6 @@ public class VendasCotacaoItensDAO {
                 vcib.setValorunitario(rs.getDouble("valorunitario"));
                 vcib.setValortotal(rs.getDouble("valortotal"));
                 vcib.setPrazo(rs.getString("prazo"));
-                vcib.setPedido(rs.getString("pedido"));
                 vcib.setDav(rs.getString("dav"));
                 vcib.setCadastrado(rs.getBoolean("cadastrado"));
 
@@ -183,6 +180,28 @@ public class VendasCotacaoItensDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE vendas_cotacao_itens SET dav = '" + pedido + "' WHERE id = " + id);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao lançar Pedido do item da cotação de venda";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updateMaterial(String codigo, String descricao, int idmaterial) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_cotacao_itens SET codigo = '" + codigo + "', descricao = '" + descricao + "' WHERE idmaterial = " + idmaterial);
+            
             stmt.executeUpdate();
         } catch (SQLException e) {
             String msg = "Erro ao lançar Pedido do item da cotação de venda";

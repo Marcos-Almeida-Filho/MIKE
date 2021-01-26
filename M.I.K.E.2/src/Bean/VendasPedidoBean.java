@@ -21,6 +21,7 @@ public class VendasPedidoBean {
     private double frete;
     private double total;
     private String status;
+    private String pedidocliente;
 
     public int getId() {
         return id;
@@ -100,5 +101,13 @@ public class VendasPedidoBean {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPedidocliente() {
+        return pedidocliente;
+    }
+
+    public void setPedidocliente(String pedidocliente) {
+        this.pedidocliente = pedidocliente;
     }
 }

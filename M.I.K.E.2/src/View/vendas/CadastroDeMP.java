@@ -170,13 +170,13 @@ public class CadastroDeMP extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             int idMP = Integer.parseInt(tableMP.getValueAt(tableMP.getSelectedRow(), 0).toString());
 
-            NovaMP.idMP = idMP;
-
             NovaMP nmp = new NovaMP();
             Telas.AparecerTela(nmp);
             nmp.txtNome.setText(tableMP.getValueAt(tableMP.getSelectedRow(), 2).toString());
             nmp.txtCodigo.setText(tableMP.getValueAt(tableMP.getSelectedRow(), 3).toString());
             nmp.txtDescricao.setText(tableMP.getValueAt(tableMP.getSelectedRow(), 4).toString());
+            
+            NovaMP.idMP = idMP;
         }
     }//GEN-LAST:event_tableMPMouseClicked
 

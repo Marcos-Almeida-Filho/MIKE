@@ -10,7 +10,6 @@ import DAO.OPMPDAO;
 import Methods.SendEmail;
 import View.vendas.EscolherMP;
 import View.vendas.OP;
-import View.vendas.VM;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -175,9 +174,6 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
             String codigo = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString();
             String desc = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString();
             switch (origem) {
-                case "VendasMaterial":
-                    VM.txtmaterialdeorigem.setText(codigo);
-                    break;
                 case "OP":
                     String op = OP.txtNumOP.getText();
                     try {

@@ -6,7 +6,6 @@
 package View.Geral;
 
 import DAO.LocalDAO;
-import View.vendas.VM;
 import View.vendas.VM1;
 import javax.swing.table.DefaultTableModel;
 
@@ -165,9 +164,6 @@ public class ProcurarLocal extends javax.swing.JInternalFrame {
             String escolha = tableLocal.getValueAt(tableLocal.getSelectedRow(), 1).toString();
             switch (origem) {
                 case "VendasMaterial":
-                    break;
-                case "VM":
-                    VM.txtLocal.setText(escolha);
                     break;
                 case "VM1":
                     VM1.txtLocal.setText(escolha);

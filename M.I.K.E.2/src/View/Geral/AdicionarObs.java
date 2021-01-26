@@ -6,17 +6,21 @@
 package View.Geral;
 
 import Methods.Obs;
+import Methods.SendEmail;
 import View.compras.ComprasSolicitacao;
 import View.compras.ComprasCotacao;
 import View.compras.Insumos;
 import View.compras.TiposInsumo;
+import View.financeiro.AdicionarContasAReceber;
 import View.financeiro.ContaPagar;
+import View.financeiro.ContaReceber;
 import View.vendas.CotacaoVenda;
 import View.vendas.OP;
 import View.vendas.PedidoVenda;
-import View.vendas.VM;
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 
 /**
  *
@@ -24,14 +28,17 @@ import javax.swing.JOptionPane;
  */
 public class AdicionarObs extends javax.swing.JInternalFrame {
 
+    String origem;
+    JTable table;
+
     /**
      * Creates new form AdicionarObs
+     *
+     * @param origin
      */
-    String origem;
-
     public AdicionarObs(String origin) {
         initComponents();
-        origem = origin;
+        this.origem = origin;
     }
 
     public void adicionar() {
@@ -47,9 +54,6 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                 case "Insumos":
                     Obs.AdicionarObs(Insumos.tableobs, obs);
                     break;
-                case "VM":
-                    Obs.AdicionarObs(VM.tableobs, obs);
-                    break;
                 case "ContaPagar":
                     Obs.AdicionarObs(ContaPagar.tableobs, obs);
                     break;
@@ -61,6 +65,22 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                     break;
                 case "OP":
                     Obs.AdicionarObs(OP.tableObs, obs);
+                    if (!OP.txtNumOP.getText().equals("")) {
+                        try {
+                            OP.salvarObs(OP.txtNumOP.getText());
+                        } catch (SQLException e) {
+                            String msg = "Erro.";
+
+                            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
+                    }
                     break;
                 case "ComprasSolicitacao":
                     Obs.AdicionarObs(ComprasSolicitacao.tableobs, obs);
@@ -68,6 +88,11 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                 case "CotacaoCompras":
                     Obs.AdicionarObs(ComprasCotacao.tableObs, obs);
                     break;
+                case "AdicionarContasAReceber":
+                    Obs.AdicionarObs(AdicionarContasAReceber.tableobs, obs);
+                    break;
+                case "ContaReceber":
+                    Obs.AdicionarObs(ContaReceber.tableObs, obs);
             }
             dispose();
         }

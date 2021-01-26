@@ -232,7 +232,7 @@ public class UsuariosDAO {
         }
         return listub;
     }
-    
+
     public List<UsuariosBean> vendedoresPorPesquisa(String pesquisa) {
 
         rsList();
@@ -411,6 +411,32 @@ public class UsuariosDAO {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
         return listub;
+    }
+
+    public String getEmail(String nome) {
+        rsList();
+
+        String email = "";
+
+        try {
+            stmt = con.prepareStatement("SELECT emailfabrica FROM usuarios WHERE nome = '" + nome + "'");
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                email = rs.getString("emailfabrica");
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(MenusDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(UsuariosDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return email;
     }
 
     public boolean checklogin(String login, String senha) {

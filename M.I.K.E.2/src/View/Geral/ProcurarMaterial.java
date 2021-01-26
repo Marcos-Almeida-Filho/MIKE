@@ -12,7 +12,6 @@ import View.comercial.CategoriaDePreco;
 import View.servicos.OS;
 import View.vendas.EscolherMP;
 import View.vendas.OP;
-import View.vendas.VM;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -213,9 +212,6 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
             String desc = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString();
             String qtd = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 3).toString();
             switch (origem) {
-                case "VM":
-                    VM.txtmaterialdeorigem.setText(codigo);
-                    break;
                 case "OS":
                     OS.txtcodigo.setText(codigo);
                     OS.txtdesc.setText(desc);

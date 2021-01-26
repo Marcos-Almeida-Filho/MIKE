@@ -36,7 +36,7 @@ public class F_UP extends javax.swing.JInternalFrame {
 
     static ProcessosServicoDAO psd = new ProcessosServicoDAO();
     static ServicoGrupoDeProcessosDAO sgdpd = new ServicoGrupoDeProcessosDAO();
-    
+
     static ProcessosVendasDAO pvd = new ProcessosVendasDAO();
 
     public F_UP() {
@@ -44,6 +44,7 @@ public class F_UP extends javax.swing.JInternalFrame {
         readops();
         statusOS();
         readOSs();
+        readFUP();
     }
 
     public static void tableHist() {
@@ -102,6 +103,112 @@ public class F_UP extends javax.swing.JInternalFrame {
         });
     }
 
+    public static void readFUP() {
+        DefaultTableModel model = (DefaultTableModel) tableGeral.getModel();
+        model.setNumRows(0);
+
+        String processo = cbStatusGeral.getSelectedItem().toString();
+
+        if (txtPesquisaGeral.getText().equals("")) {
+            switch (processo) {
+                case "Em Aberto":
+                    fud.readEmAberto().forEach(fub -> {
+                        model.addRow(new Object[]{
+                            fub.getId(),
+                            fub.getDav(),
+                            fub.getCliente(),
+                            fub.getMaterial(),
+                            Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
+                            fub.getOp(),
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
+                        });
+                    });
+                    break;
+                case "Todos":
+                    fud.readTodos().forEach(fub -> {
+                        model.addRow(new Object[]{
+                            fub.getId(),
+                            fub.getDav(),
+                            fub.getCliente(),
+                            fub.getMaterial(),
+                            Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
+                            fub.getOp(),
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
+                        });
+                    });
+                    break;
+                default:
+                    fud.readPorProcesso(processo).forEach(fub -> {
+                        model.addRow(new Object[]{
+                            fub.getId(),
+                            fub.getDav(),
+                            fub.getCliente(),
+                            fub.getMaterial(),
+                            Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
+                            fub.getOp(),
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
+                        });
+                    });
+                    break;
+            }
+        } else {
+            String pesquisa = txtPesquisaGeral.getText();
+            switch (processo) {
+                case "Em Aberto":
+                    fud.readEmAbertoPesquisa(pesquisa).forEach(fub -> {
+                        model.addRow(new Object[]{
+                            fub.getId(),
+                            fub.getDav(),
+                            fub.getCliente(),
+                            fub.getMaterial(),
+                            Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
+                            fub.getOp(),
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
+                        });
+                    });
+                    break;
+                case "Todos":
+                    fud.readTodosPesquisa(pesquisa).forEach(fub -> {
+                        model.addRow(new Object[]{
+                            fub.getId(),
+                            fub.getDav(),
+                            fub.getCliente(),
+                            fub.getMaterial(),
+                            Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
+                            fub.getOp(),
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
+                        });
+                    });
+                    break;
+                default:
+                    fud.readProcessoPesquisa(processo, pesquisa).forEach(fub -> {
+                        model.addRow(new Object[]{
+                            fub.getId(),
+                            fub.getDav(),
+                            fub.getCliente(),
+                            fub.getMaterial(),
+                            Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
+                            fub.getOp(),
+                            fub.getNivel(),
+                            fub.getProcesso(),
+                            fub.getObservacao()
+                        });
+                    });
+                    break;
+            }
+        }
+    }
+
     public static void readops() {
         DefaultTableModel model = (DefaultTableModel) tablefup.getModel();
         model.setNumRows(0);
@@ -115,6 +222,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -129,6 +237,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -143,6 +252,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -161,6 +271,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -175,6 +286,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -189,6 +301,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -306,11 +419,11 @@ public class F_UP extends javax.swing.JInternalFrame {
         psd.read().forEach(sgdpd -> {
             cbStatusOS.addItem(sgdpd.getNome());
         });
-        
+
         pvd.readTodos().forEach(pvb -> {
             cbStatusOP.addItem(pvb.getNome());
         });
-        
+
         cbStatusOS.addItem("Encerrado");
         cbStatusOP.addItem("Encerrado");
     }
@@ -326,6 +439,13 @@ public class F_UP extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel8 = new javax.swing.JPanel();
+        jPanel9 = new javax.swing.JPanel();
+        txtPesquisaGeral = new javax.swing.JTextField();
+        jPanel10 = new javax.swing.JPanel();
+        cbStatusGeral = new javax.swing.JComboBox<>();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableGeral = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         txtpesquisa = new javax.swing.JTextField();
@@ -349,6 +469,125 @@ public class F_UP extends javax.swing.JInternalFrame {
         jPanel1.setName("jPanel1"); // NOI18N
 
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setName("jPanel8"); // NOI18N
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
+        jPanel9.setName("jPanel9"); // NOI18N
+
+        txtPesquisaGeral.setName("txtPesquisaGeral"); // NOI18N
+        txtPesquisaGeral.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaGeralKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtPesquisaGeral, javax.swing.GroupLayout.DEFAULT_SIZE, 751, Short.MAX_VALUE)
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(txtPesquisaGeral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtro"));
+        jPanel10.setName("jPanel10"); // NOI18N
+
+        cbStatusGeral.setMaximumRowCount(10);
+        cbStatusGeral.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Em Aberto", "Todos", "Rascunho" }));
+        cbStatusGeral.setName("cbStatusGeral"); // NOI18N
+        cbStatusGeral.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbStatusGeralActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(cbStatusGeral, javax.swing.GroupLayout.Alignment.TRAILING, 0, 216, Short.MAX_VALUE)
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(cbStatusGeral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        tableGeral.setAutoCreateRowSorter(true);
+        tableGeral.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "DAV", "Cliente", "Material", "Data de Entrega", "OP", "Nível", "Processo Atual", "Observação"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableGeral.setName("tableGeral"); // NOI18N
+        tableGeral.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableGeralMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tableGeral);
+        if (tableGeral.getColumnModel().getColumnCount() > 0) {
+            tableGeral.getColumnModel().getColumn(0).setMinWidth(0);
+            tableGeral.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableGeral.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableGeral.getColumnModel().getColumn(1).setMinWidth(80);
+            tableGeral.getColumnModel().getColumn(1).setPreferredWidth(80);
+            tableGeral.getColumnModel().getColumn(1).setMaxWidth(80);
+            tableGeral.getColumnModel().getColumn(4).setMinWidth(100);
+            tableGeral.getColumnModel().getColumn(4).setPreferredWidth(100);
+            tableGeral.getColumnModel().getColumn(4).setMaxWidth(100);
+            tableGeral.getColumnModel().getColumn(5).setMinWidth(80);
+            tableGeral.getColumnModel().getColumn(5).setPreferredWidth(80);
+            tableGeral.getColumnModel().getColumn(5).setMaxWidth(80);
+            tableGeral.getColumnModel().getColumn(6).setMinWidth(45);
+            tableGeral.getColumnModel().getColumn(6).setPreferredWidth(45);
+            tableGeral.getColumnModel().getColumn(6).setMaxWidth(45);
+        }
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1029, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Geral", jPanel8);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setName("jPanel4"); // NOI18N
@@ -405,11 +644,11 @@ public class F_UP extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "DAV", "Material", "Data de Entrega", "OP", "Nível", "Processo Atual", "Observação"
+                "ID", "DAV", "Cliente", "Material", "Data de Entrega", "OP", "Nível", "Processo Atual", "Observação"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -430,15 +669,15 @@ public class F_UP extends javax.swing.JInternalFrame {
             tablefup.getColumnModel().getColumn(1).setMinWidth(80);
             tablefup.getColumnModel().getColumn(1).setPreferredWidth(80);
             tablefup.getColumnModel().getColumn(1).setMaxWidth(80);
-            tablefup.getColumnModel().getColumn(3).setMinWidth(100);
-            tablefup.getColumnModel().getColumn(3).setPreferredWidth(100);
-            tablefup.getColumnModel().getColumn(3).setMaxWidth(100);
-            tablefup.getColumnModel().getColumn(4).setMinWidth(80);
-            tablefup.getColumnModel().getColumn(4).setPreferredWidth(80);
-            tablefup.getColumnModel().getColumn(4).setMaxWidth(80);
-            tablefup.getColumnModel().getColumn(5).setMinWidth(45);
-            tablefup.getColumnModel().getColumn(5).setPreferredWidth(45);
-            tablefup.getColumnModel().getColumn(5).setMaxWidth(45);
+            tablefup.getColumnModel().getColumn(4).setMinWidth(100);
+            tablefup.getColumnModel().getColumn(4).setPreferredWidth(100);
+            tablefup.getColumnModel().getColumn(4).setMaxWidth(100);
+            tablefup.getColumnModel().getColumn(5).setMinWidth(80);
+            tablefup.getColumnModel().getColumn(5).setPreferredWidth(80);
+            tablefup.getColumnModel().getColumn(5).setMaxWidth(80);
+            tablefup.getColumnModel().getColumn(6).setMinWidth(45);
+            tablefup.getColumnModel().getColumn(6).setPreferredWidth(45);
+            tablefup.getColumnModel().getColumn(6).setMaxWidth(45);
         }
 
         jButton2.setText("Exportar para Excel");
@@ -639,7 +878,6 @@ public class F_UP extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tablefupMouseClicked
 
     private void cbStatusOPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusOPActionPerformed
-        //txtpesquisa.setText("");
         readops();
     }//GEN-LAST:event_cbStatusOPActionPerformed
 
@@ -670,23 +908,42 @@ public class F_UP extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableFUPOSMouseClicked
 
+    private void txtPesquisaGeralKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaGeralKeyReleased
+        readFUP();
+    }//GEN-LAST:event_txtPesquisaGeralKeyReleased
+
+    private void cbStatusGeralActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusGeralActionPerformed
+        readFUP();
+    }//GEN-LAST:event_cbStatusGeralActionPerformed
+
+    private void tableGeralMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableGeralMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableGeralMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public static javax.swing.JComboBox<String> cbStatusGeral;
     public static javax.swing.JComboBox<String> cbStatusOP;
     public static javax.swing.JComboBox<String> cbStatusOS;
     public javax.swing.JButton jButton2;
     public javax.swing.JPanel jPanel1;
+    public javax.swing.JPanel jPanel10;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
     public javax.swing.JPanel jPanel4;
     public javax.swing.JPanel jPanel5;
     public javax.swing.JPanel jPanel6;
     public javax.swing.JPanel jPanel7;
+    public javax.swing.JPanel jPanel8;
+    public javax.swing.JPanel jPanel9;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
+    public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JTabbedPane jTabbedPane1;
     public static javax.swing.JTable tableFUPOS;
+    public static javax.swing.JTable tableGeral;
     public static javax.swing.JTable tablefup;
+    public static javax.swing.JTextField txtPesquisaGeral;
     public static javax.swing.JTextField txtPesquisaOS;
     public static javax.swing.JTextField txtpesquisa;
     // End of variables declaration//GEN-END:variables

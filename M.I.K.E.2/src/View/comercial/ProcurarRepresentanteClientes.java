@@ -150,7 +150,7 @@ public class ProcurarRepresentanteClientes extends javax.swing.JInternalFrame {
     private void tablerepresentanteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablerepresentanteMouseClicked
         if (evt.getClickCount() == 2) {
             Clientes.txtrepresentante.setText(tablerepresentante.getValueAt(tablerepresentante.getSelectedRow(), 1).toString());
-            Clientes.lblidrepresentante.setText(tablerepresentante.getValueAt(tablerepresentante.getSelectedRow(), 0).toString());
+            Clientes.idRepresentante = Integer.parseInt(tablerepresentante.getValueAt(tablerepresentante.getSelectedRow(), 0).toString());
             dispose();
         }
     }//GEN-LAST:event_tablerepresentanteMouseClicked

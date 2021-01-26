@@ -12,6 +12,7 @@ package Bean;
 public class CARBean {
 
     private int id;
+    private int idCliente;
     private String datalancamento;
     private String cliente;
     private int notafiscal;
@@ -33,6 +34,14 @@ public class CARBean {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getDatalancamento() {

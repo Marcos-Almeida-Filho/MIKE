@@ -6,6 +6,7 @@
 package View.Geral;
 
 import Methods.Arquivos;
+import Methods.SendEmail;
 import View.compras.ComprasCotacao;
 import View.compras.Insumos;
 import View.financeiro.AdicionarContasAPagar;
@@ -13,8 +14,8 @@ import View.servicos.*;
 import View.vendas.CotacaoVenda;
 import View.vendas.OP;
 import View.vendas.PedidoVenda;
-import View.vendas.VM;
 import java.io.File;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
@@ -129,9 +130,6 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                     case "CotacaoServico":
                         Arquivos.AdicionarArquivoEmTable(CotacaoServico.tabledocumentos, filestring, this);
                         break;
-                    case "VM":
-                        Arquivos.AdicionarArquivoEmTable(VM.tabledocumentos, filestring, this);
-                        break;
                     case "CotacaoVenda":
                         Arquivos.AdicionarArquivoEmTable(CotacaoVenda.tableDocs, filestring, this);
                         break;
@@ -140,6 +138,22 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                         break;
                     case "OP":
                         Arquivos.AdicionarArquivoEmTable(OP.tableDocs, filestring, this);
+                        if (!OP.txtNumOP.getText().equals("")) {
+                            try {
+                                OP.salvarDocs(OP.txtNumOP.getText());
+                            } catch (SQLException e) {
+                                String msg = "Erro.";
+
+                                JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        SendEmail.EnviarErro2(msg, e);
+                                    }
+                                }.start();
+                            }
+                        }
                         break;
                     case "CotacaoCompras":
                         Arquivos.AdicionarArquivoEmTable(ComprasCotacao.tableDocs, filestring, this);

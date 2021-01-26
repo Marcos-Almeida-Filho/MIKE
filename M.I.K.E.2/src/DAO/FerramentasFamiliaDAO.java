@@ -129,6 +129,29 @@ public class FerramentasFamiliaDAO {
 
         return listff;
     }
+    
+    public void update(String nome, String codigo, String descricao, int idFamilia) {
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("UPDATE " + table + " SET nome = '" + nome + "', codigo = '" + codigo + "', descricao = '" + descricao + "' WHERE id = " + idFamilia);
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar família de ferramenta.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 
     public void delete(int id) throws SQLException {
         conStmt();

@@ -40,6 +40,26 @@ public class Dates {
 
         return data;
     }
+    
+    public static String CriarDataCompletaParaDBInicio(String data) {
+        datanormal = "";
+        String dia = data.substring(0, 2);
+        String mes = data.substring(3, 5);
+        String ano = data.substring(6, 10);
+        datanormal = ano + "-" + mes + "-" + dia + " 00:00:00";
+
+        return datanormal;
+    }
+    
+    public static String CriarDataCompletaParaDBFim(String data) {
+        datanormal = "";
+        String dia = data.substring(0, 2);
+        String mes = data.substring(3, 5);
+        String ano = data.substring(6, 10);
+        datanormal = ano + "-" + mes + "-" + dia + " 23:59:59";
+
+        return datanormal;
+    }
 
     public static String CriarDataCurta() {
         date = Calendar.getInstance();

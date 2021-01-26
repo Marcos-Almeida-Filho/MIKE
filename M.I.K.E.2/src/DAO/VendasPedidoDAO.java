@@ -59,12 +59,13 @@ public class VendasPedidoDAO {
      * @param representante
      * @param condicaoPagamento
      * @param frete
+     * @param pedidocliente
      * @throws java.sql.SQLException
      */
-    public void create(String pedido, String dataAbertura, String cliente, String status, String vendedor, String representante, String condicaoPagamento, double frete) throws SQLException {
+    public void create(String pedido, String dataAbertura, String cliente, String status, String vendedor, String representante, String condicaoPagamento, double frete, String pedidocliente) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO vendas_pedido (pedido, data_abertura, cliente, status, vendedor, representante, condicao, frete) VALUES ('" + pedido + "','" + dataAbertura + "','" + cliente + "','" + status + "','" + vendedor + "','" + representante + "','" + condicaoPagamento + "', " + frete + ")");
+        stmt = con.prepareStatement("INSERT INTO vendas_pedido (pedido, data_abertura, cliente, status, vendedor, representante, condicao, frete, pedidocliente) VALUES ('" + pedido + "','" + dataAbertura + "','" + cliente + "','" + status + "','" + vendedor + "','" + representante + "','" + condicaoPagamento + "', " + frete + ", '" + pedidocliente + "')");
 
         stmt.executeUpdate();
 
@@ -85,6 +86,7 @@ public class VendasPedidoDAO {
                 vpb.setPedido(rs.getString("pedido"));
                 vpb.setCliente(rs.getString("cliente"));
                 vpb.setStatus(rs.getString("status"));
+                vpb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listvp.add(vpb);
             }
@@ -104,12 +106,12 @@ public class VendasPedidoDAO {
 
         return listvp;
     }
-    
+
     public List<VendasPedidoBean> readPedidosPesquisa(String pesquisa) {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE cliente LIKE '%" + pesquisa + "%' OR pedido LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE cliente LIKE '%" + pesquisa + "%' OR pedido LIKE '%" + pesquisa + "%' OR pedidocliente LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -119,6 +121,7 @@ public class VendasPedidoDAO {
                 vpb.setPedido(rs.getString("pedido"));
                 vpb.setCliente(rs.getString("cliente"));
                 vpb.setStatus(rs.getString("status"));
+                vpb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listvp.add(vpb);
             }
@@ -153,6 +156,7 @@ public class VendasPedidoDAO {
                 vpb.setPedido(rs.getString("pedido"));
                 vpb.setCliente(rs.getString("cliente"));
                 vpb.setStatus(rs.getString("status"));
+                vpb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listvp.add(vpb);
             }
@@ -172,12 +176,12 @@ public class VendasPedidoDAO {
 
         return listvp;
     }
-    
+
     public List<VendasPedidoBean> readPedidosAbertosPesquisa(String pesquisa) {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status <> 'Fechado' AND status <> 'Desativado' AND pedido LIKE '%" + pesquisa + "%' OR status <> 'Fechado' AND status <> 'Desativado' AND cliente LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status <> 'Fechado' AND status <> 'Desativado' AND pedido LIKE '%" + pesquisa + "%' OR status <> 'Fechado' AND status <> 'Desativado' AND cliente LIKE '%" + pesquisa + "%' OR status <> 'Fechado' AND status <> 'Desativado' AND pedidocliente LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -187,6 +191,7 @@ public class VendasPedidoDAO {
                 vpb.setPedido(rs.getString("pedido"));
                 vpb.setCliente(rs.getString("cliente"));
                 vpb.setStatus(rs.getString("status"));
+                vpb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listvp.add(vpb);
             }
@@ -221,6 +226,7 @@ public class VendasPedidoDAO {
                 vpb.setPedido(rs.getString("pedido"));
                 vpb.setCliente(rs.getString("cliente"));
                 vpb.setStatus(rs.getString("status"));
+                vpb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listvp.add(vpb);
             }
@@ -255,6 +261,7 @@ public class VendasPedidoDAO {
                 vpb.setPedido(rs.getString("pedido"));
                 vpb.setCliente(rs.getString("cliente"));
                 vpb.setStatus(rs.getString("status"));
+                vpb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listvp.add(vpb);
             }
@@ -274,12 +281,12 @@ public class VendasPedidoDAO {
 
         return listvp;
     }
-    
+
     public List<VendasPedidoBean> readPedidosStatusPesquisa(String status, String pesquisa) {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status = '" + status + "' AND pedido LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND cliente LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido WHERE status = '" + status + "' AND pedido LIKE '%" + pesquisa + "%' OR status = '" + status + "' AND cliente LIKE '%" + pesquisa + "%' OR pedidocliente LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -289,6 +296,7 @@ public class VendasPedidoDAO {
                 vpb.setPedido(rs.getString("pedido"));
                 vpb.setCliente(rs.getString("cliente"));
                 vpb.setStatus(rs.getString("status"));
+                vpb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listvp.add(vpb);
             }
@@ -332,6 +340,7 @@ public class VendasPedidoDAO {
                 vpb.setCondicao(rs.getString("condicao"));
                 vpb.setFrete(rs.getDouble("frete"));
                 vpb.setStatus(rs.getString("status"));
+                vpb.setPedidocliente(rs.getString("pedidocliente"));
 
                 listvp.add(vpb);
             }
@@ -380,7 +389,7 @@ public class VendasPedidoDAO {
 
         return id;
     }
-    
+
     public String readLastCreated() {
         rsList();
 
@@ -438,7 +447,7 @@ public class VendasPedidoDAO {
 
         return motivo;
     }
-    
+
     public String readCliente(String pedido) {
         rsList();
 
@@ -513,12 +522,14 @@ public class VendasPedidoDAO {
      * @param vendedor
      * @param representante
      * @param condicaoPagamento
+     * @param frete
+     * @param pedidocliente
      * @throws java.sql.SQLException
      */
-    public void update(String pedido, String cliente, String vendedor, String representante, String condicaoPagamento, double frete) throws SQLException {
+    public void update(String pedido, String cliente, String vendedor, String representante, String condicaoPagamento, double frete, String pedidocliente) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("UPDATE vendas_pedido SET cliente = '" + cliente + "', vendedor = '" + vendedor + "', representante = '" + representante + "', condicao = '" + condicaoPagamento + "', frete = " + frete + " WHERE pedido = '" + pedido + "'");
+        stmt = con.prepareStatement("UPDATE vendas_pedido SET cliente = '" + cliente + "', vendedor = '" + vendedor + "', representante = '" + representante + "', condicao = '" + condicaoPagamento + "', frete = " + frete + ", pedidocliente = '" + pedidocliente + "' WHERE pedido = '" + pedido + "'");
         stmt.executeUpdate();
 
         PedidoVenda.pedidoAtualizado = true;

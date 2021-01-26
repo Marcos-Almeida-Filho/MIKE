@@ -68,9 +68,9 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class CotacaoServico extends javax.swing.JInternalFrame {
 
-    static ServicoOrcamentoItensDAO iosd;
-    static ServicoOrcamentoDocumentosDAO sodd;
-    static ServicoOrcamentoDAO sod;
+    static ServicoOrcamentoItensDAO iosd = new ServicoOrcamentoItensDAO();
+    static ServicoOrcamentoDocumentosDAO sodd = new ServicoOrcamentoDocumentosDAO();
+    static ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
 
     /**
      * Creates new form OrcamentoServico
@@ -168,7 +168,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 iosb.getValor(),
                 iosb.getTotal(),
                 iosb.getPrazo(),
-                iosb.getPedido(),
                 iosb.getDas()
             });
         });
@@ -184,7 +183,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 false,
                 sodb.getId(),
                 sodb.getDescricao(),
-                sodb.getLocal(),});
+                sodb.getLocal()
+            });
         });
     }
 
@@ -265,12 +265,11 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         c.setComponentZOrder(t, 0);
     }
 
-    public static void lerItensCotacao() {
+    public static void lerItensCotacao(String cotacao) {
         DefaultTableModel model = (DefaultTableModel) tableitens.getModel();
         model.setNumRows(0);
-        ServicoOrcamentoItensDAO iosd = new ServicoOrcamentoItensDAO();
 
-        for (ServicoOrcamentoItensBean iosb : iosd.readitens(txtnumeroorcamento.getText())) {
+        iosd.readitens(cotacao).forEach(iosb -> {
             model.addRow(new Object[]{
                 false,
                 iosb.getId(),
@@ -280,10 +279,9 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 iosb.getValor(),
                 iosb.getTotal(),
                 iosb.getPrazo(),
-                iosb.getPedido(),
                 iosb.getDas()
             });
-        }
+        });
     }
 
     /**
@@ -725,14 +723,14 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "ID", "Código", "Descrição", "Qtde", "Valor Unitário R$", "Total R$", "Prazo de Entrega", "Pedido do Cliente", "DAS"
+                "", "ID", "Código", "Descrição", "Qtde", "Valor Unitário R$", "Total R$", "Prazo de Entrega", "DAS"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Integer.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false, false, false, false, false
+                true, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -775,12 +773,9 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             tableitens.getColumnModel().getColumn(7).setMinWidth(110);
             tableitens.getColumnModel().getColumn(7).setPreferredWidth(110);
             tableitens.getColumnModel().getColumn(7).setMaxWidth(110);
-            tableitens.getColumnModel().getColumn(8).setMinWidth(110);
-            tableitens.getColumnModel().getColumn(8).setPreferredWidth(110);
-            tableitens.getColumnModel().getColumn(8).setMaxWidth(110);
-            tableitens.getColumnModel().getColumn(9).setMinWidth(80);
-            tableitens.getColumnModel().getColumn(9).setPreferredWidth(80);
-            tableitens.getColumnModel().getColumn(9).setMaxWidth(80);
+            tableitens.getColumnModel().getColumn(8).setMinWidth(80);
+            tableitens.getColumnModel().getColumn(8).setPreferredWidth(80);
+            tableitens.getColumnModel().getColumn(8).setMaxWidth(80);
         }
 
         btnincluiritem.setText("Incluir");
@@ -1094,7 +1089,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(rootPane, "Coloque pelo menos um item no orçamento!");
         } else if (txtnumeroorcamento.getText().equals("")) {
             ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
-            ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
 
             String c;
 
@@ -1123,7 +1117,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     sob.setIdtela(idtela);
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CotacaoServico.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
             sob.setCliente(txtnomecliente.getText());
             sob.setCondicao(txtcondicao.getText());
@@ -1157,8 +1152,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 soib.setValor(tableitens.getValueAt(i, 5).toString());
                 soib.setTotal(tableitens.getValueAt(i, 6).toString());
                 soib.setPrazo(tableitens.getValueAt(i, 7).toString());
-                soib.setPedido(tableitens.getValueAt(i, 8).toString());
-                soib.setDas(tableitens.getValueAt(i, 9).toString());
+                soib.setDas(tableitens.getValueAt(i, 8).toString());
                 //idorcamento, codigo, desc, qtd, valor, total, prazo, pedido, das
 
                 soid.create(soib);
@@ -1174,7 +1168,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     try {
                         Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
                     } catch (IOException ex) {
-                        Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DocumentosOrcamentoServico.class
+                                .getName()).log(Level.SEVERE, null, ex);
                         JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                         try {
                             SendEmail.EnviarErro(ex.toString());
@@ -1182,11 +1177,11 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         } catch (HeadlessException hex) {
                             JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
                         } catch (AWTException | IOException ex1) {
-                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                            Logger.getLogger(DocumentosOrcamentoServico.class
+                                    .getName()).log(Level.SEVERE, null, ex1);
                         }
                     }
                     ServicoOrcamentoDocumentosBean sodb = new ServicoOrcamentoDocumentosBean();
-                    ServicoOrcamentoDocumentosDAO sodd = new ServicoOrcamentoDocumentosDAO();
 
                     sodb.setIdorcamento(txtnumeroorcamento.getText());
                     sodb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
@@ -1202,7 +1197,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(rootPane, "Salvo com sucesso!");
         } else {
             ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
-            ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
 
             String st = txtstatus.getText();
 
@@ -1238,8 +1232,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     soib.setValor(tableitens.getValueAt(i, 5).toString());
                     soib.setTotal(tableitens.getValueAt(i, 6).toString());
                     soib.setPrazo(tableitens.getValueAt(i, 7).toString());
-                    soib.setPedido(tableitens.getValueAt(i, 8).toString());
-                    soib.setDas(tableitens.getValueAt(i, 9).toString());
+                    soib.setDas(tableitens.getValueAt(i, 8).toString());
                     //idorcamento, codigo, desc, qtd, valor, total, prazo, pedido, das
 
                     soid.create(soib);
@@ -1250,8 +1243,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     soib.setValor(tableitens.getValueAt(i, 5).toString());
                     soib.setTotal(tableitens.getValueAt(i, 6).toString());
                     soib.setPrazo(tableitens.getValueAt(i, 7).toString());
-                    soib.setPedido(tableitens.getValueAt(i, 8).toString());
-                    soib.setDas(tableitens.getValueAt(i, 9).toString());
+                    soib.setDas(tableitens.getValueAt(i, 8).toString());
                     soib.setId(Integer.parseInt(tableitens.getValueAt(i, 1).toString()));
                     //codigo, descricao , qtd , valor , total , prazo , pedido , das, id
 
@@ -1270,7 +1262,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         try {
                             Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
                         } catch (IOException ex) {
-                            Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DocumentosOrcamentoServico.class
+                                    .getName()).log(Level.SEVERE, null, ex);
                             JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                             try {
                                 SendEmail.EnviarErro(ex.toString());
@@ -1278,11 +1271,11 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                             } catch (HeadlessException hex) {
                                 JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
                             } catch (AWTException | IOException ex1) {
-                                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                                Logger.getLogger(DocumentosOrcamentoServico.class
+                                        .getName()).log(Level.SEVERE, null, ex1);
                             }
                         }
                         ServicoOrcamentoDocumentosBean sodb = new ServicoOrcamentoDocumentosBean();
-                        ServicoOrcamentoDocumentosDAO sodd = new ServicoOrcamentoDocumentosDAO();
 
                         sodb.setIdorcamento(txtnumeroorcamento.getText());
                         sodb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
@@ -1292,7 +1285,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         sodd.create(sodb);
                     } else {
                         ServicoOrcamentoDocumentosBean sodb = new ServicoOrcamentoDocumentosBean();
-                        ServicoOrcamentoDocumentosDAO sodd = new ServicoOrcamentoDocumentosDAO();
 
                         sodb.setIdorcamento(txtnumeroorcamento.getText());
                         sodb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
@@ -1370,13 +1362,13 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         int rowclicked = tableitens.getSelectedRow();
         if (evt.getButton() == 1) {
             if (tableitens.getSelectedColumn() == 0) {
-                if (!tableitens.getValueAt(rowclicked, 9).toString().equals("")) {
+                if (!tableitens.getValueAt(rowclicked, 8).toString().equals("")) {
                     JOptionPane.showMessageDialog(rootPane, "Item incluído em DAS! Não pode ser selecionado novamente.");
                     tableitens.setValueAt(false, rowclicked, 0);
                 }
             }
             if (evt.getClickCount() == 2) {
-                if (!tableitens.getValueAt(tableitens.getSelectedRow(), 9).toString().equals("")) {
+                if (!tableitens.getValueAt(tableitens.getSelectedRow(), 8).toString().equals("")) {
                     JOptionPane.showMessageDialog(rootPane, "Item incluído em DAS! Não pode ser alterado.");
                 } else {
                     ItemOrcamentoServico ios = new ItemOrcamentoServico();
@@ -1394,7 +1386,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     ItemOrcamentoServico.txtqtd.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 4).toString());
                     ItemOrcamentoServico.txtvalor.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 5).toString());
                     ItemOrcamentoServico.txtprazo.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 7).toString());
-                    ItemOrcamentoServico.txtpedido.setText(tableitens.getValueAt(tableitens.getSelectedRow(), 8).toString());
                 }
             }
         }
@@ -1404,7 +1395,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
             das.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent ae) {
-                    String DAS = tableitens.getValueAt(tableitens.getSelectedRow(), 9).toString();
+                    String DAS = tableitens.getValueAt(tableitens.getSelectedRow(), 8).toString();
                     if (DAS.equals("")) {
                         JOptionPane.showMessageDialog(rootPane, "Produto sem DAS");
                     } else {
@@ -1414,7 +1405,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         try {
                             p.setMaximum(true);
                         } catch (PropertyVetoException ex) {
-                            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(TelaPrincipal.class
+                                    .getName()).log(Level.SEVERE, null, ex);
                         }
                         PedidoServico.txtnumeropedido.setText(DAS);
                         PedidoServico.tabpedidos.setSelectedIndex(1);
@@ -1445,7 +1437,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                                 spib.getValor(),
                                 spib.getTotal(),
                                 spib.getPrazo(),
-                                spib.getPedidocliente(),
                                 spib.getNf()
                             });
                         }
@@ -1463,7 +1454,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                                 false,
                                 spdb.getId(),
                                 spdb.getDescricao(),
-                                spdb.getLocal(),});
+                                spdb.getLocal()
+                            });
                         }
                     }
                 }
@@ -1478,11 +1470,10 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     private void tableorcamentoservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableorcamentoservicoMouseClicked
         if (evt.getClickCount() == 2) {
             taborcamentos.setSelectedIndex(1);
-            txtnumeroorcamento.setText(tableorcamentoservico.getValueAt(tableorcamentoservico.getSelectedRow(), 0).toString());
+            String cotacao = tableorcamentoservico.getValueAt(tableorcamentoservico.getSelectedRow(), 0).toString();
+            txtnumeroorcamento.setText(cotacao);
 
-            ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
-
-            for (ServicoOrcamentoBean sob : sod.click(txtnumeroorcamento.getText())) {
+            sod.click(txtnumeroorcamento.getText()).forEach(sob -> {
                 if (sob.getClientecadastro().equals("true")) {
                     radioc.setSelected(true);
                 } else {
@@ -1495,27 +1486,28 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 txtstatus.setText(sob.getStatus());
                 txtnotes.setText(sob.getNotes());
                 txtdata.setText(sob.getData());
-            }
+            });
             if (radionc.isSelected()) {
                 btncliente.setEnabled(false);
                 txtnomecliente.setEditable(true);
             }
 
-            lerItensCotacao();
+            lerItensCotacao(cotacao);
 
             txtvalor();
 
             DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
             modeldoc.setNumRows(0);
-            ServicoOrcamentoDocumentosDAO sodd = new ServicoOrcamentoDocumentosDAO();
 
-            for (ServicoOrcamentoDocumentosBean sodb : sodd.readitens(txtnumeroorcamento.getText())) {
+            sodd.readitens(txtnumeroorcamento.getText()).forEach(sodb -> {
                 modeldoc.addRow(new Object[]{
                     sodb.getId(),
                     false,
                     sodb.getDescricao(),
-                    sodb.getLocal(),});
-            }
+                    sodb.getLocal()
+                });
+            });
+
             checkstatus();
         }
     }//GEN-LAST:event_tableorcamentoservicoMouseClicked
@@ -1529,7 +1521,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         String numorc = txtnumeroorcamento.getText();
         parametros.put("idtela", numorc);
         //pega o caminho físico até o arquivo .jasper
-        InputStream stream = CotacaoServico.class.getResourceAsStream("/Reports/CotacaoServico.jasper");
+        InputStream stream = CotacaoServico.class
+                .getResourceAsStream("/Reports/CotacaoServico.jasper");
         //chama fillreport
         try {
             @SuppressWarnings("unchecked")
@@ -1564,12 +1557,14 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     desk.open(new File((String) tabledocumentos.getValueAt(tabledocumentos.getSelectedRow(), 3)));
                 }
             } catch (IOException ex) {
-                Logger.getLogger(DocumentosOrcamentoServico.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DocumentosOrcamentoServico.class
+                        .getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo.\n" + ex);
                 try {
                     SendEmail.EnviarErro(ex.toString());
                 } catch (AWTException | IOException ex1) {
-                    Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                    Logger.getLogger(CotacaoServico.class
+                            .getName()).log(Level.SEVERE, null, ex1);
                 }
             }
         }
@@ -1589,12 +1584,12 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         try {
                             Files.delete(file.toPath());
                         } catch (IOException ex) {
-                            Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(CotacaoServico.class
+                                    .getName()).log(Level.SEVERE, null, ex);
                             JOptionPane.showMessageDialog(rootPane, "Erro!\n" + ex);
                         }
 
                         ServicoOrcamentoDocumentosBean sodb = new ServicoOrcamentoDocumentosBean();
-                        ServicoOrcamentoDocumentosDAO sodd = new ServicoOrcamentoDocumentosDAO();
 
                         sodb.setId(Integer.parseInt(tabledocumentos.getValueAt(i, 1).toString()));
                         //id
@@ -1650,7 +1645,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
                         String year = simpleDateFormaty.format(ca.getTime());
                         String hua = "";
-                        for (ServicoPedidoBean spb2 : spd.read()) {
+                        for (ServicoPedidoBean spb2 : spd.readTodos()) {
                             hua = String.valueOf(spb2.getIdtela());
                         }
                         int yearint = Integer.parseInt(hua.replace("PS" + year + "-", ""));
@@ -1659,7 +1654,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         spb.setIdtela(idtelanovo);
                     }
                 } catch (SQLException ex) {
-                    Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CotacaoServico.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
                 spb.setIdorcamento(txtnumeroorcamento.getText());
                 spb.setCliente(txtnomecliente.getText());
@@ -1703,10 +1699,9 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         spib.setValor(tableitens.getValueAt(i, 5).toString());
                         spib.setTotal(tableitens.getValueAt(i, 6).toString());
                         spib.setPrazo(tableitens.getValueAt(i, 7).toString());
-                        spib.setPedidocliente(tableitens.getValueAt(i, 8).toString());
                         spib.setOs("");
                         spib.setNf("");
-//                      idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, os, nf
+//                      idpedido, codigo, descricao, qtde, valor, total, prazo, os, nf
 
                         spid.create(spib);
 
@@ -1716,7 +1711,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         soib.setValor(tableitens.getValueAt(i, 5).toString());
                         soib.setTotal(tableitens.getValueAt(i, 6).toString());
                         soib.setPrazo(tableitens.getValueAt(i, 7).toString());
-                        soib.setPedido(tableitens.getValueAt(i, 8).toString());
                         soib.setDas(numpedido);
                         soib.setId(Integer.parseInt(tableitens.getValueAt(i, 1).toString()));
                         //codigo, descricao , qtd , valor , total , prazo , pedido , das, id
@@ -1737,7 +1731,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                             try {
                                 Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
                             } catch (IOException ex) {
-                                Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(DocumentosPedidoServico.class
+                                        .getName()).log(Level.SEVERE, null, ex);
                                 JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
                                 try {
                                     SendEmail.EnviarErro(ex.toString());
@@ -1745,7 +1740,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                                 } catch (HeadlessException hex) {
                                     JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
                                 } catch (AWTException | IOException ex1) {
-                                    Logger.getLogger(DocumentosPedidoServico.class.getName()).log(Level.SEVERE, null, ex1);
+                                    Logger.getLogger(DocumentosPedidoServico.class
+                                            .getName()).log(Level.SEVERE, null, ex1);
                                 }
                             }
 
@@ -1764,13 +1760,12 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                 }
                 int numerodas = 0;
                 for (int i = 0; i < tableitens.getRowCount(); i++) {
-                    if (!tableitens.getValueAt(i, 9).equals("")) {
+                    if (!tableitens.getValueAt(i, 8).equals("")) {
                         numerodas++;
                     }
                 }
                 if (tableitens.getRowCount() == numerodas) {
                     ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
-                    ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
 
                     sob.setStatus("Fechado");
                     sob.setIdtela(txtnumeroorcamento.getText());
@@ -1779,7 +1774,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                     sod.updatestatus(sob);
                 } else {
                     ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
-                    ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
 
                     sob.setStatus("Pedido Parcial");
                     sob.setIdtela(txtnumeroorcamento.getText());
@@ -1787,7 +1781,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
                     sod.updatestatus(sob);
                 }
-                ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
+
                 for (ServicoOrcamentoBean sob : sod.click(txtnumeroorcamento.getText())) {
                     txtstatus.setText(String.valueOf(sob.getStatus()));
                 }
@@ -1843,7 +1837,6 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     private void txtpesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtpesquisaKeyReleased
         DefaultTableModel model = (DefaultTableModel) tableorcamentoservico.getModel();
         model.setNumRows(0);
-        ServicoOrcamentoDAO sod = new ServicoOrcamentoDAO();
 
         for (ServicoOrcamentoBean sob : sod.pesquisa(txtpesquisa.getText())) {
             model.addRow(new Object[]{
@@ -1860,9 +1853,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             case 0:
                 DefaultTableModel model = (DefaultTableModel) tableorcamentoservico.getModel();
                 model.setNumRows(0);
-                ServicoOrcamentoDAO sod0 = new ServicoOrcamentoDAO();
 
-                for (ServicoOrcamentoBean sob : sod0.reademaberto()) {
+                for (ServicoOrcamentoBean sob : sod.reademaberto()) {
                     model.addRow(new Object[]{
                         sob.getIdtela(),
                         sob.getCliente(),
@@ -1873,9 +1865,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             case 5:
                 DefaultTableModel model5 = (DefaultTableModel) tableorcamentoservico.getModel();
                 model5.setNumRows(0);
-                ServicoOrcamentoDAO sod5 = new ServicoOrcamentoDAO();
 
-                for (ServicoOrcamentoBean sob : sod5.read()) {
+                for (ServicoOrcamentoBean sob : sod.read()) {
                     model5.addRow(new Object[]{
                         sob.getIdtela(),
                         sob.getCliente(),
@@ -1886,9 +1877,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             default:
                 DefaultTableModel modeld = (DefaultTableModel) tableorcamentoservico.getModel();
                 modeld.setNumRows(0);
-                ServicoOrcamentoDAO sodd = new ServicoOrcamentoDAO();
 
-                sodd.readstatus(cbstatus.getSelectedItem().toString()).forEach((sob) -> {
+                sod.readstatus(cbstatus.getSelectedItem().toString()).forEach((sob) -> {
                     modeld.addRow(new Object[]{
                         sob.getIdtela(),
                         sob.getCliente(),

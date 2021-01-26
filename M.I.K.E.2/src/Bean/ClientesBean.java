@@ -31,6 +31,10 @@ public class ClientesBean {
     private String uf;
     private String cep;
     private String visita;
+    private String cpf;
+    private String rg;
+    private boolean boleto;
+    private boolean pj;
 
     public int getId() {
         return id;
@@ -190,6 +194,38 @@ public class ClientesBean {
 
     public void setVisita(String visita) {
         this.visita = visita;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getRg() {
+        return rg;
+    }
+
+    public void setRg(String rg) {
+        this.rg = rg;
+    }
+
+    public boolean isBoleto() {
+        return boleto;
+    }
+
+    public void setBoleto(boolean boleto) {
+        this.boleto = boleto;
+    }
+
+    public boolean isPj() {
+        return pj;
+    }
+
+    public void setPj(boolean pj) {
+        this.pj = pj;
     }
 
 }

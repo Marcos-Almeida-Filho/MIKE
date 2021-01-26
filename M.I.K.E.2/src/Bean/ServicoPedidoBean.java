@@ -23,6 +23,7 @@ public class ServicoPedidoBean {
     private String status_cobranca;
     private String nfcliente;
     private String data;
+    private String pedidocliente;
 
     public int getId() {
         return id;
@@ -120,4 +121,11 @@ public class ServicoPedidoBean {
         this.data = data;
     }
 
+    public String getPedidocliente() {
+        return pedidocliente;
+    }
+
+    public void setPedidocliente(String pedidocliente) {
+        this.pedidocliente = pedidocliente;
+    }
 }

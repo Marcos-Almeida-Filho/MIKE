@@ -9,6 +9,7 @@ import DAO.FerramentasDAO;
 import DAO.FerramentasFamiliaDAO;
 import DAO.FerramentasTamanhoDAO;
 import Methods.SendEmail;
+import Methods.Telas;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -20,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
 public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
 
     FerramentasDAO fd = new FerramentasDAO();
-    FerramentasFamiliaDAO ffd = new FerramentasFamiliaDAO();
+    static FerramentasFamiliaDAO ffd = new FerramentasFamiliaDAO();
     FerramentasTamanhoDAO ftd = new FerramentasTamanhoDAO();
 
     int idFerramenta = 0;
@@ -58,7 +59,7 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
         lerTamanhos(nomeFerramenta);
     }
 
-    private void lerFamilias(String nomeFerramenta) {
+    public static void lerFamilias(String nomeFerramenta) {
         DefaultTableModel model = (DefaultTableModel) tableFamilias.getModel();
         model.setNumRows(0);
 
@@ -111,6 +112,7 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
         tableTamanhos = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Cadastro de Ferramentas");
@@ -294,6 +296,14 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton4.setText("Deletar Família");
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -313,6 +323,8 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jButton4)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jButton3)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -344,7 +356,8 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -370,9 +383,6 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
         if (txtNome.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Digite um nome primeiro.");
             txtNome.requestFocus();
-        } else if (txtDescricao.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Digite uma descrição primeiro.");
-            txtDescricao.requestFocus();
         } else {
             String nomeFerramenta = txtNome.getText();
 
@@ -454,24 +464,26 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        try {
-            String nome = JOptionPane.showInputDialog(null, "Digite o nome da família.", "Nome", JOptionPane.YES_NO_OPTION);
-            String codigo = JOptionPane.showInputDialog(null, "Digite o código da família.", "Código", JOptionPane.YES_NO_OPTION);
-            String descricao = JOptionPane.showInputDialog(null, "Digite a descrição da família.", "Descrição", JOptionPane.YES_NO_OPTION);
-
-            DefaultTableModel model = (DefaultTableModel) tableFamilias.getModel();
-
-            model.addRow(new Object[]{
-                "",
-                false,
-                nome,
-                codigo,
-                descricao
-            });
-        } catch (Exception e) {
-            String msg = "Erro.";
-            JOptionPane.showMessageDialog(null, msg);
-        }
+//        try {
+//            String nome = JOptionPane.showInputDialog(null, "Digite o nome da família.", "Nome", JOptionPane.YES_NO_OPTION);
+//            String codigo = JOptionPane.showInputDialog(null, "Digite o código da família.", "Código", JOptionPane.YES_NO_OPTION);
+//            String descricao = JOptionPane.showInputDialog(null, "Digite a descrição da família.", "Descrição", JOptionPane.YES_NO_OPTION);
+//
+//            DefaultTableModel model = (DefaultTableModel) tableFamilias.getModel();
+//
+//            model.addRow(new Object[]{
+//                "",
+//                false,
+//                nome,
+//                codigo,
+//                descricao
+//            });
+//        } catch (Exception e) {
+//            String msg = "Erro.";
+//            JOptionPane.showMessageDialog(null, msg);
+//        }
+        NovaFamilia nf = new NovaFamilia();
+        Telas.AparecerTela(nf);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void tableFerramentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableFerramentasMouseClicked
@@ -486,37 +498,64 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
 
     private void tableFamiliasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableFamiliasMouseClicked
         if (evt.getClickCount() == 2) {
-            int resp = JOptionPane.showConfirmDialog(null, "Deseja deletar a família " + tableFamilias.getValueAt(tableFamilias.getSelectedRow(), 2).toString() + "?", "Deletar Família", JOptionPane.YES_NO_OPTION);
+            NovaFamilia nf = new NovaFamilia();
+            Telas.AparecerTela(nf);
+            
+            NovaFamilia.idFamilia = Integer.parseInt(tableFamilias.getValueAt(tableFamilias.getSelectedRow(), 0).toString());
+            
+            NovaFamilia.txtNome.setText(tableFamilias.getValueAt(tableFamilias.getSelectedRow(), 2).toString());
+            NovaFamilia.txtCodigo.setText(tableFamilias.getValueAt(tableFamilias.getSelectedRow(), 3).toString());
+            NovaFamilia.txtDescricao.setText(tableFamilias.getValueAt(tableFamilias.getSelectedRow(), 4).toString());
+        }
+    }//GEN-LAST:event_tableFamiliasMouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tableFamilias.getRowCount(); i++) {
+            if (tableFamilias.getValueAt(i, 1).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum registro selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja deletar as famílias selecionadas?", "Deletar Famílias", JOptionPane.YES_NO_OPTION);
 
             if (resp == 0) {
-                int id = Integer.parseInt(tableFamilias.getValueAt(tableFamilias.getSelectedRow(), 0).toString());
-                try {
-                    ffd.delete(id);
+                for (int i = 0; i < tableFamilias.getRowCount(); i++) {
+                    if (tableFamilias.getValueAt(i, 1).equals(true)) {
+                        int id = Integer.parseInt(tableFamilias.getValueAt(i, 0).toString());
+                        try {
+                            ffd.delete(id);
 
-                    JOptionPane.showMessageDialog(null, "Excluído com sucesso.");
-                    VM1.cbtipo.setSelectedIndex(0);
-                } catch (SQLException e) {
-                    String msg = "Erro ao excluir.";
-                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+                            VM1.cbtipo.setSelectedIndex(0);
+                        } catch (SQLException e) {
+                            String msg = "Erro ao excluir.";
+                            JOptionPane.showMessageDialog(null, msg + "\n" + e);
 
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(msg, e);
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
                         }
-                    }.start();
+                    }
                 }
 
                 lerFamilias(txtNome.getText());
             }
         }
-    }//GEN-LAST:event_tableFamiliasMouseClicked
+    }//GEN-LAST:event_jButton4ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
+    public javax.swing.JButton jButton4;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JPanel jPanel1;
@@ -525,10 +564,10 @@ public class CadastroDeFerramenta extends javax.swing.JInternalFrame {
     public javax.swing.JScrollPane jScrollPane2;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JTabbedPane tabFerramentas;
-    public javax.swing.JTable tableFamilias;
+    public static javax.swing.JTable tableFamilias;
     public javax.swing.JTable tableFerramentas;
     public javax.swing.JTable tableTamanhos;
     public javax.swing.JTextField txtDescricao;
-    public javax.swing.JTextField txtNome;
+    public static javax.swing.JTextField txtNome;
     // End of variables declaration//GEN-END:variables
 }

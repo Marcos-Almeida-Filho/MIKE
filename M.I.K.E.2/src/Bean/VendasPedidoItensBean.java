@@ -23,6 +23,7 @@ public class VendasPedidoItensBean {
     private String prazo;
     private String op;
     private String nf;
+    private boolean separado;
 
     public int getId() {
         return id;
@@ -118,5 +119,13 @@ public class VendasPedidoItensBean {
 
     public void setNf(String nf) {
         this.nf = nf;
+    }
+
+    public boolean getSeparado() {
+        return separado;
+    }
+
+    public void setSeparado(boolean separado) {
+        this.separado = separado;
     }
 }

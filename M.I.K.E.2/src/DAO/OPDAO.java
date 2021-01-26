@@ -377,6 +377,42 @@ public class OPDAO {
 
         return listob;
     }
+    
+    public List<OPBean> readOPPorMaterial(int idMaterial) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op WHERE status = 'Ativo' AND idmaterial = " + idMaterial);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                OPBean ob = new OPBean();
+
+                ob.setId(rs.getInt("id"));
+                ob.setOp(rs.getString("op"));
+                ob.setDataprevista(rs.getString("dataprevista"));
+                ob.setCliente(rs.getString("cliente"));
+                ob.setCodigo(rs.getString("codigo"));
+                ob.setStatus(rs.getString("status"));
+
+                listob.add(ob);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listob;
+    }
 
     public List<OPBean> readOPPorStatusPesquisa(String status, String pesquisa) {
         rsList();
@@ -484,6 +520,28 @@ public class OPDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    public void updateMaterial(int idmaterial, String codigo, String descricao) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op SET codigo = '" + codigo + "', descricao = '" + descricao + "' WHERE idmaterial = " + idmaterial);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 
     public void updateDataEntrega(String op, String data) {
         conStmt();
@@ -505,6 +563,68 @@ public class OPDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }
+    }
+    
+    public int getOpsAtivasPorMaterial(int idmaterial) {
+        rsList();
+        
+        int idMaterialOP = 0;
+        
+        try {
+            stmt = con.prepareStatement("SELECT * FROM op WHERE idmaterial = " + idmaterial);
+            
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                idMaterialOP++;
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao verificar ID do material da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        
+        return idMaterialOP;
+    }
+    
+    public int getIdMaterialOP(String op) {
+        rsList();
+        
+        int idMaterialOP = 0;
+        
+        try {
+            stmt = con.prepareStatement("SELECT idmaterial FROM op WHERE op = '" + op + "'");
+            
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                idMaterialOP = rs.getInt("idmaterial");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao verificar ID do material da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        
+        return idMaterialOP;
     }
 
     /**

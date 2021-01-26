@@ -27,14 +27,38 @@ import javax.swing.JOptionPane;
  */
 public class ServicoPedidoItensNFDAO {
 
+    Connection con;
+
+    PreparedStatement stmt;
+
+    ResultSet rs;
+
+    List<ServicoPedidoItensNFBean> list;
+
+    String table = "servicos_pedido_itens_nota";
+
+    ServicoPedidoItensNFBean spib;
+
+    private void conStmt() {
+        con = ConnectionFactory.getConnection();
+
+        stmt = null;
+    }
+
+    private void rsList() {
+        conStmt();
+
+        rs = null;
+
+        list = new ArrayList<>();
+    }
+
     public void create(ServicoPedidoItensNFBean spib) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servicos_pedido_itens_nota (idpedido, codigo, descricao, qtde, valor, total, nfretorno) VALUES (?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO " + table + " (idpedido, codigo, descricao, qtde, valor, total, nfretorno) VALUES (?,?,?,?,?,?,?)");
             stmt.setString(1, spib.getIdpedido());
             stmt.setString(2, spib.getCodigo());
             stmt.setString(3, spib.getDescricao());
@@ -58,22 +82,16 @@ public class ServicoPedidoItensNFDAO {
 
     public List<ServicoPedidoItensNFBean> readitens(String idpedido) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
-
-        ResultSet rs = null;
-
-        List<ServicoPedidoItensNFBean> listspib = new ArrayList<>();
+        rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM servicos_pedido_itens_nota WHERE idpedido = ?");
+            stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE idpedido = ?");
             stmt.setString(1, idpedido);
 
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                ServicoPedidoItensNFBean spib = new ServicoPedidoItensNFBean();
+                spib = new ServicoPedidoItensNFBean();
 
                 spib.setId(rs.getInt("id"));
                 spib.setIdpedido(rs.getString("idpedido"));
@@ -84,7 +102,7 @@ public class ServicoPedidoItensNFDAO {
                 spib.setTotal(rs.getString("total"));
                 spib.setNfretorno(rs.getString("nfretorno"));
 
-                listspib.add(spib);
+                list.add(spib);
             }
         } catch (SQLException e) {
             Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
@@ -97,17 +115,15 @@ public class ServicoPedidoItensNFDAO {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
 
-        return listspib;
+        return list;
     }
 
     public void update(ServicoPedidoItensNFBean spib) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_nota SET idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?,  nfretorno = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE " + table + " SET idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?,  nfretorno = ? WHERE id = ?");
             stmt.setString(1, spib.getIdpedido());
             stmt.setString(2, spib.getCodigo());
             stmt.setString(3, spib.getDescricao());
@@ -132,23 +148,44 @@ public class ServicoPedidoItensNFDAO {
 
     public void updatenotaretorno(ServicoPedidoItensNFBean spib) {
 
-        Connection con = ConnectionFactory.getConnection();
-
-        PreparedStatement stmt = null;
+        conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_nota SET nfretorno = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE " + table + " SET nfretorno = ? WHERE id = ?");
             stmt.setString(1, spib.getNfretorno());
             stmt.setInt(2, spib.getId());
 
             stmt.executeUpdate();
-        } catch (HeadlessException | SQLException e) {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
                 SendEmail.EnviarErro(e.toString());
             } catch (AWTException | IOException ex) {
                 Logger.getLogger(ServicoPedidoItensNFDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void delete(int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM " + table + " WHERE id = " + id);
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao excluir Item de Retorno do Pedido de Serviço.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         } finally {
             ConnectionFactory.closeConnection(con, stmt);
         }

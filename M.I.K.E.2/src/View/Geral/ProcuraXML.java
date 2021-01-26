@@ -368,11 +368,36 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                             NodeList transList = doc.getElementsByTagName("transporta");
                             Node transNode = transList.item(0);
                             Element transElement = (Element) transNode;
-                            String transportadora = transElement.getElementsByTagName("xNome").item(0).getTextContent();
-                            String enderecoT = transElement.getElementsByTagName("xEnder").item(0).getTextContent();
-                            String cidadeT = transElement.getElementsByTagName("xMun").item(0).getTextContent();
-                            String ufT = transElement.getElementsByTagName("UF").item(0).getTextContent();
-                            String cnpjT = transElement.getElementsByTagName("CNPJ").item(0).getTextContent();
+                            String transportadora;
+                            try {
+                                transportadora = transElement.getElementsByTagName("xNome").item(0).getTextContent();
+                            } catch (Exception e) {
+                                transportadora = "";
+                            }
+                            String enderecoT;
+                            try {
+                                enderecoT = transElement.getElementsByTagName("xEnder").item(0).getTextContent();
+                            } catch (Exception e) {
+                                enderecoT = "";
+                            }
+                            String cidadeT;
+                            try {
+                                cidadeT = transElement.getElementsByTagName("xMun").item(0).getTextContent();
+                            } catch (Exception e) {
+                                cidadeT = "";
+                            }
+                            String ufT;
+                            try {
+                                ufT = transElement.getElementsByTagName("UF").item(0).getTextContent();
+                            } catch (Exception e) {
+                                ufT = "";
+                            }
+                            String cnpjT;
+                            try {
+                                cnpjT = transElement.getElementsByTagName("CNPJ").item(0).getTextContent();
+                            } catch (Exception e) {
+                                cnpjT = "";
+                            }
                             try {
                                 ieT = transElement.getElementsByTagName("IE").item(0).getTextContent();
                             } catch (NullPointerException e) {
@@ -417,13 +442,24 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                             //Buscar Duplicatas
                             NodeList dupList = doc.getElementsByTagName("dup");
                             for (int i = 0; i < dupList.getLength(); i++) {
+                                int idCliente;
+                                if (cnpjD.length() == 11) {
+                                    String cpf = cnpjD.substring(0, 3) + "." + cnpjD.substring(3, 6) + "." + cnpjD.substring(6, 9) + "-" + cnpjD.substring(9, 11);
+                                    idCliente = cd.getIdCpf(cpf);
+                                } else {
+                                    String cnpj = cnpjD.substring(0, 2) + "." + cnpjD.substring(2, 5) + "." + cnpjD.substring(5, 8) + "/" + cnpjD.substring(8, 12) + "-" + cnpjD.substring(12, 14);
+                                    idCliente = cd.getIdCnpj(cnpj);
+                                }
+                                if (idCliente == 0) {
+                                    JOptionPane.showMessageDialog(null, "Cliente não cadastrado. Favor cadastrar e atualizar CAR.");
+                                }
                                 Node dupNode = dupList.item(i);
                                 Element dupElement = (Element) dupNode;
                                 String duplicata = numero + "-" + dupElement.getElementsByTagName("nDup").item(0).getTextContent();
                                 String data = dupElement.getElementsByTagName("dVenc").item(0).getTextContent();
                                 double valor = Double.parseDouble(dupElement.getElementsByTagName("vDup").item(0).getTextContent());
 
-                                card.create(Dates.CriarDataCurtaDBSemDataExistente(), destinatario, numero, dataEmissao, valorTotalNotaFiscal, duplicata, valor, data);
+                                card.create(idCliente, Dates.CriarDataCurtaDBSemDataExistente(), destinatario, numero, dataEmissao, valorTotalNotaFiscal, duplicata, valor, data);
                             }
 
                             //Buscar Itens
@@ -489,6 +525,12 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                             }
 
                             nfd.create(numero, dataEmissao, destinatario, logradouroD, numeroD, complementoD, bairroD, cidadeD, ufD, cepD, cnpjD, ieD, natureza, transportadora, enderecoT, cidadeT, ufT, cnpjT, ieT, baseIcms, valorIcms, baseIcmsSt, valorIcmsSt, valorPis, valorCofins, valorIpi, valorProdutos, valorFrete, valorTotalNotaFiscal, obs, status);
+
+                            if (dupList.getLength() > 0) {
+                                nfd.updateVendas(numero, true);
+                            }
+
+                            JOptionPane.showMessageDialog(null, "Nota Fiscal " + numero + " lançada com sucesso!");
 
                             NotasFiscais.lerNotasFiscais();
                         }

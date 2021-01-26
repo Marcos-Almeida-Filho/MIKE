@@ -17,8 +17,8 @@ public class VendasMateriaisBean {
     private double estoque, estoqueMinimo, qtdMinimaOP;
     private String local;
     private String status;
-    private String d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal, tolD1, tolD2, tolD3, tolD4, tolD5;
-    private boolean importada, weldon, ri, md, hss, desbaste;
+    private String d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal, tolD1, tolD2, tolD3, tolD4, tolD5, mp;
+    private boolean importada, weldon, ri, md, hss, desbaste, aparecerExtra;
 
     public int getId() {
         return id;
@@ -412,4 +412,21 @@ public class VendasMateriaisBean {
         this.tolD5 = tolD5;
     }
 
+    public String getMp() {
+        return mp;
+    }
+
+    public void setMp(String mp) {
+        this.mp = mp;
+    }
+
+    public boolean isAparecerExtra() {
+        return aparecerExtra;
+    }
+
+    public void setAparecerExtra(boolean aparecerExtra) {
+        this.aparecerExtra = aparecerExtra;
+    }
+    
+    
 }
