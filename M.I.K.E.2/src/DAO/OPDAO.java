@@ -542,6 +542,28 @@ public class OPDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    public void updateMaterialOP(String op, int idmaterial, String codigo, String descricao) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op SET codigo = '" + codigo + "', descricao = '" + descricao + "', idmaterial = " + idmaterial + " WHERE op = '" + op + "'");
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 
     public void updateDataEntrega(String op, String data) {
         conStmt();
@@ -571,7 +593,7 @@ public class OPDAO {
         int idMaterialOP = 0;
         
         try {
-            stmt = con.prepareStatement("SELECT * FROM op WHERE idmaterial = " + idmaterial);
+            stmt = con.prepareStatement("SELECT * FROM op WHERE idmaterial = " + idmaterial + " AND (status = 'Rascunho' OR status = 'Ativo')");
             
             rs = stmt.executeQuery();
             
@@ -579,7 +601,7 @@ public class OPDAO {
                 idMaterialOP++;
             }
         } catch (SQLException e) {
-            String msg = "Erro ao verificar ID do material da OP.";
+            String msg = "Erro ao verificar quantidade de OPs em produção.";
             JOptionPane.showMessageDialog(null, msg);
             
             new Thread() {

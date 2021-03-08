@@ -364,12 +364,12 @@ public class InsumosDAO {
         return listi;
     }
 
-    public void update(String codigo, String descricao, String tipo, int id) {
+    public void update(String codigo, String descricao, String unidade, String tipo, int id) {
 
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE insumos SET codigo = '" + codigo + "', descricao = '" + descricao + "', tipo = '" + tipo + "' WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE insumos SET codigo = '" + codigo + "', descricao = '" + descricao + "', unidade = '" + unidade + "', tipo = '" + tipo + "' WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

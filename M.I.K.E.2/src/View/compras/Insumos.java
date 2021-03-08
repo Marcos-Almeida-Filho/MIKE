@@ -898,7 +898,7 @@ public class Insumos extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "Criado com sucesso.");
             } else {//Se for um item já cadastrado
 ////////////////Atualizar Insumo
-                idao.update(codigo, descricao, tipo, idInsumo);
+                idao.update(codigo, descricao, unidade, tipo, idInsumo);
 
 ////////////////Criar Documentos do Insumo
                 if (tabledocumentos.getRowCount() > 0) {
@@ -987,11 +987,12 @@ public class Insumos extends javax.swing.JInternalFrame {
             estoqueAtual = idao.readEstoque(idInsumo);
             try {
                 qtd = Double.parseDouble(JOptionPane.showInputDialog(null, "Qual a quantidade movimentada?", "Lançar Contagem", JOptionPane.YES_NO_OPTION));
+                String tipo = JOptionPane.showInputDialog(null, "Qual o tipo de Movimentação?", "Tipo Movimentação", JOptionPane.YES_NO_OPTION);
 
                 double estoqueFinal = estoqueAtual + qtd;
 
                 idao.updateEstoque(estoqueFinal, idInsumo);
-                imd.create(idInsumo, estoqueAtual, qtd, estoqueFinal, Dates.CriarDataCurtaDBSemDataExistente(), "Contagem Manual", Session.nome);
+                imd.create(idInsumo, estoqueAtual, qtd, estoqueFinal, Dates.CriarDataCurtaDBSemDataExistente(), tipo, Session.nome);
 
                 lerInsumo(idInsumo);
             } catch (Exception e) {

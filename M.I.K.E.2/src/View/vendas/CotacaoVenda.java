@@ -5,9 +5,12 @@
  */
 package View.vendas;
 
+import Bean.ClientesContatosBean;
 import Connection.ConnectionFactory;
 import Connection.Session;
 import DAO.AltDAO;
+import DAO.ClientesContatosDAO;
+import DAO.ClientesDAO;
 import DAO.VendasCotacaoDAO;
 import DAO.VendasCotacaoDocsDAO;
 import DAO.VendasCotacaoItensDAO;
@@ -36,7 +39,9 @@ import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -63,6 +68,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     static VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
     static VendasPedidoObsDAO vpod = new VendasPedidoObsDAO();
     static AltDAO ad = new AltDAO();
+    ClientesContatosDAO ccd = new ClientesContatosDAO();
+    ClientesDAO cd = new ClientesDAO();
 
     public static String clienteOriginal, condicaoOriginal, representanteOriginal, vendedorOriginal;
     public static int numDocsOriginal, numObsOriginal, numItensOriginal;
@@ -263,7 +270,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             });
         });
 
-        txtValorTotal.setText(Valores.TransformarDoubleDBemDinheiro(totalCotacao));
+        txtValorTotal.setText(Valores.TransformarDoubleDBemString(totalCotacao));
     }
 
     public static void lerDocumentosCotacao(String cotacao) {
@@ -347,6 +354,10 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         }
 
         lerCotacoes();
+    }
+
+    public void updateTotal(String cotacao) {
+        vcd.updateTotal(cotacao, Valores.TransformarDinheiroEmValorDouble(txtValorTotal.getText()));
     }
 
     /**
@@ -1386,6 +1397,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 }
 
                 lerCotacao(cotacao);
+
+                updateTotal(cotacao);
             } else {
                 String cotacao = txtCotacao.getText();
 
@@ -1480,10 +1493,11 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     ad.create(id, tipo, data, user, "Número de Itens", String.valueOf(numItensOriginal), String.valueOf(tableItens.getRowCount()));
                 }
 
-                lerCotacoes();
-
                 lerCotacao(cotacao);
+
+                updateTotal(cotacao);
             }
+            lerCotacoes();
         }
 
         valoresOriginais();
@@ -1626,6 +1640,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         if (txtCotacao.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Selecione uma cotação primeiro.");
         } else {
+            updateTotal(txtCotacao.getText());
+
             JOptionPane.showMessageDialog(null, "Enviando orçamento.");
             try {
                 Connection con = ConnectionFactory.getConnection();
@@ -1633,39 +1649,44 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                 HashMap<String, Object> para = new HashMap<>();
                 para.put("cotacao", txtCotacao.getText());
 
-//                File f2 = new File("Q:\\MIKE_ERP\\src\\Reports\\primeiro_exemplo.jrxml");
-//                File f2 = new File("Q:\\MIKE_ERP\\src\\Reports\\primeiro_exemplo.jasper");
+//                InputStream is = getClass().getResourceAsStream("/Reports/orcamento.jrxml");
                 InputStream is = getClass().getResourceAsStream("/Reports/primeiro_exemplo.jrxml");
-//                URL resource = getClass().getResource("/Reports/primeiro_exemplo.jrxml");
-//                File file = new File(resource.toURI());
+                if (is == null) {
+                    JOptionPane.showMessageDialog(null, "Report não foi encontrado.");
+                } else {
+//                    String file = "Q:\\MIKE_ERP\\reports\\orcamento.jrxml";
+//                    String file = "Q:\\MIKE_ERP\\reports\\primeiro_exemplo.jrxml";
+                    JasperReport jr = JasperCompileManager.compileReport(is);
 
-                JasperReport jr = JasperCompileManager.compileReport(is);
-//                JasperReport jr = JasperCompileManager.compileReport(file.getAbsolutePath());
-//                JasperReport jr = (JasperReport) JRLoader.loadObjectFromFile(f2.getAbsolutePath());
+                    JasperPrint j = JasperFillManager.fillReport(jr, para, con);
 
-                JasperPrint j = JasperFillManager.fillReport(jr, para, con);
+//                    JasperViewer.viewReport(j, false);
+                    //Pasta que será colocar o documento
+                    File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + txtCotacao.getText());
 
-//                JasperViewer.viewReport(j, false);
-                //Pasta que será colocar o documento
-                File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + txtCotacao.getText());
+                    //Criar pasta no caso de já não existir
+                    folder.mkdirs();
 
-                //Criar pasta no caso de já não existir
-                folder.mkdirs();
+                    File f = new File("Q:\\MIKE_ERP\\cot_ven_arq\\" + txtCotacao.getText() + "\\orcamento.pdf");
 
-                File f = new File("Q:\\MIKE_ERP\\cot_ven_arq\\" + txtCotacao.getText() + "\\orcamento.pdf");
+                    JasperExportManager.exportReportToPdfFile(j, f.getPath());
 
-                JasperExportManager.exportReportToPdfFile(j, f.getPath());
+                    int idCliente = cd.getIdNome(txtCliente.getText());
+                    List<ClientesContatosBean> destinatarios = ccd.readDestinatariosOrcamento(idCliente);
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarOrcamento(f, Session.emailfabrica);
+                    SendEmail.EnviarOrcamento(f, Session.emailfabrica);
+
+                    if (destinatarios.size() > 0) {
+                        destinatarios.forEach((destinatario) -> {
+                            SendEmail.EnviarOrcamento(f, destinatario.getEmail());
+                        });
+
+                        JOptionPane.showMessageDialog(null, "Orçamento enviado com sucesso!");
                     }
-                }.start();
+                }
             } catch (Exception e) {
-                String msg = "Erro ao gerar relatório.";
-                JOptionPane.showMessageDialog(null, msg + "\n" + e);
-                e.printStackTrace();
+                String msg = "Erro ao gerar relatório.\n" + e.getLocalizedMessage() + "\n" + Arrays.toString(e.getStackTrace());
+                JOptionPane.showMessageDialog(null, msg);
 
                 new Thread() {
                     @Override
@@ -1841,72 +1862,75 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtPesquisaKeyReleased
 
     private void btnItensPerdidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItensPerdidosActionPerformed
-        int resp2 = JOptionPane.showConfirmDialog(null, "Deseja lançar os itens selecionados como perdidos?", "Itens Perdidos", JOptionPane.YES_NO_OPTION);
+        int numTrue = 0;
 
-        if (resp2 == 0) {
-
-            int numTrue = 0;
-
-            for (int i = 0; i < tableItens.getRowCount(); i++) {
-                if (tableItens.getValueAt(i, 2).equals(true)) {
-                    numTrue++;
-                }
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            if (tableItens.getValueAt(i, 2).equals(true)) {
+                numTrue++;
             }
+        }
 
-            if (txtCotacao.getText().equals("")) {
-                JOptionPane.showMessageDialog(null, "Selecione uma Cotação primeiro.");
-            } else if (numTrue == 0) {
-                JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
-            } else {
-                int resp = JOptionPane.showConfirmDialog(null, "Confirma que os itens foram perdidos?", "Itens Perdidos", JOptionPane.YES_NO_OPTION);
+        if (txtCotacao.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Selecione uma Cotação primeiro.");
+        } else if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum item selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Confirma que os itens foram perdidos?", "Itens Perdidos", JOptionPane.YES_NO_OPTION);
 
-                if (resp == 0) {
-                    String cotacao = txtCotacao.getText() + "P";
-                    String motivo = JOptionPane.showInputDialog(null, "Qual o motivo para ter perdido os itens?", "Motivo", JOptionPane.YES_NO_OPTION);
-                    try {
-                        if (!vcd.checkCotacao(cotacao)) {
-                            vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Perdido", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText(), Valores.TransformarDinheiroEmValorDouble(txtFrete.getText()));
-                            JOptionPane.showMessageDialog(null, "Cotação Perdida lançada com sucesso.\nLançando itens na Cotação.");
-                        }
+            if (resp == 0) {
+                String cotacaoAtual = txtCotacao.getText();
+                String cotacao = cotacaoAtual + "P";
+                String motivo = JOptionPane.showInputDialog(null, "Qual o motivo para ter perdido os itens?", "Motivo", JOptionPane.YES_NO_OPTION);
 
-                        vcd.lancarMotivoPerdido(cotacao, motivo);
-                    } catch (SQLException e) {
-                        String msg = "Erro.";
-
-                        JOptionPane.showMessageDialog(null, msg + "\n" + e);
-
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                SendEmail.EnviarErro2(msg, e);
-                            }
-                        }.start();
+                try {
+                    if (!vcd.checkCotacao(cotacao)) {
+                        vcd.create(cotacao, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), radioCadastrado.isSelected(), "Perdido", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText(), Valores.TransformarDinheiroEmValorDouble(txtFrete.getText()));
+                        JOptionPane.showMessageDialog(null, "Cotação Perdida lançada com sucesso.\nLançando itens na Cotação.");
                     }
 
-                    for (int i = 0; i < tableItens.getRowCount(); i++) {
-                        if (tableItens.getValueAt(i, 2).equals(true)) {
-                            try {
-                                vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 10).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Double.parseDouble(tableItens.getValueAt(i, 5).toString().replace(",", ".")), Double.parseDouble(tableItens.getValueAt(i, 6).toString().replace(",", ".")), Double.parseDouble(tableItens.getValueAt(i, 7).toString().replace(",", ".")), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+                    vcd.lancarMotivoPerdido(cotacao, motivo);
+                } catch (SQLException e) {
+                    String msg = "Erro.";
 
-                                vcid.delete(Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
 
-                                JOptionPane.showMessageDialog(null, "Itens lançados com sucesso.");
-                            } catch (SQLException e) {
-                                String msg = "Erro.";
-
-                                JOptionPane.showMessageDialog(null, msg + "\n" + e);
-
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        SendEmail.EnviarErro2(msg, e);
-                                    }
-                                }.start();
-                            }
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
                         }
-                    }
-                    lerCotacao(cotacao);
+                    }.start();
                 }
+
+                for (int i = 0; i < tableItens.getRowCount(); i++) {
+                    if (tableItens.getValueAt(i, 2).equals(true)) {
+                        try {
+                            vcid.create(cotacao, Integer.parseInt(tableItens.getValueAt(i, 10).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarStringDinheiroEmDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarStringDinheiroEmDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarStringDinheiroEmDouble(tableItens.getValueAt(i, 7).toString()), tableItens.getValueAt(i, 8).toString(), Boolean.valueOf(tableItens.getValueAt(i, 1).toString()));
+
+                            vcid.delete(Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+
+                            JOptionPane.showMessageDialog(null, "Itens lançados com sucesso.");
+                        } catch (SQLException e) {
+                            String msg = "Erro.";
+
+                            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    SendEmail.EnviarErro2(msg, e);
+                                }
+                            }.start();
+                        }
+                    }
+                }
+
+                if (tableItens.getRowCount() == numTrue) {
+                    vcd.deletarCotacao(cotacaoAtual);
+                } else {
+                    alterarStatus(cotacaoAtual);
+                }
+                lerCotacao(cotacao);
             }
         }
     }//GEN-LAST:event_btnItensPerdidosActionPerformed

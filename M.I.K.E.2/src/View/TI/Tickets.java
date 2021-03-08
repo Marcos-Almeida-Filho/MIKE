@@ -33,6 +33,15 @@ public class Tickets extends javax.swing.JInternalFrame {
         idTicket = 0;
         lerTickets();
         txtSolicitante.setText(Session.nome);
+        tabs();
+    }
+
+    public static void tabs() {
+        if (Session.nivel.equals("TI")) {
+            txtResposta.setEditable(true);
+        } else {
+            txtResposta.setEditable(false);
+        }
     }
 
     public void lerTickets() {
@@ -115,6 +124,7 @@ public class Tickets extends javax.swing.JInternalFrame {
             txtAssunto.setText(tb.getAssunto());
             cbNivel.setSelectedIndex(tb.getNivel());
             txtDescricao.setText(tb.getDescricao());
+            txtResposta.setText(tb.getResposta());
         });
 
         camposPorStatus(txtStatus.getText());
@@ -135,28 +145,57 @@ public class Tickets extends javax.swing.JInternalFrame {
     }
 
     public void camposPorStatus(String status) {
-        switch (status) {
-            case "Fazendo":
-                txtAssunto.setEditable(false);
-                txtDescricao.setEditable(false);
-                cbNivel.setEnabled(false);
-                btnAlterarStatus.setEnabled(true);
-                btnSalvar.setEnabled(false);
-                break;
-            case "Fechado":
-                txtAssunto.setEditable(false);
-                txtDescricao.setEditable(false);
-                cbNivel.setEnabled(false);
-                btnAlterarStatus.setEnabled(false);
-                btnSalvar.setEnabled(false);
-                break;
-            default:
-                txtAssunto.setEditable(true);
-                txtDescricao.setEditable(true);
-                cbNivel.setEnabled(true);
-                btnAlterarStatus.setEnabled(true);
-                btnSalvar.setEnabled(true);
-                break;
+        if (Session.nivel.equals("TI")) {
+            switch (status) {
+                case "Fazendo":
+                    txtAssunto.setEditable(false);
+                    txtDescricao.setEditable(false);
+                    cbNivel.setEnabled(false);
+                    btnAlterarStatus.setEnabled(true);
+                    btnSalvar.setEnabled(true);
+                    txtResposta.setEditable(true);
+                    break;
+                case "Fechado":
+                    txtAssunto.setEditable(false);
+                    txtDescricao.setEditable(false);
+                    cbNivel.setEnabled(false);
+                    btnAlterarStatus.setEnabled(false);
+                    btnSalvar.setEnabled(false);
+                    txtResposta.setEditable(false);
+                    break;
+                default:
+                    txtAssunto.setEditable(true);
+                    txtDescricao.setEditable(true);
+                    cbNivel.setEnabled(true);
+                    btnAlterarStatus.setEnabled(true);
+                    btnSalvar.setEnabled(true);
+                    txtResposta.setEditable(true);
+                    break;
+            }
+        } else {
+            switch (status) {
+                case "Fazendo":
+                    txtAssunto.setEditable(false);
+                    txtDescricao.setEditable(false);
+                    cbNivel.setEnabled(false);
+                    btnAlterarStatus.setEnabled(true);
+                    btnSalvar.setEnabled(false);
+                    break;
+                case "Fechado":
+                    txtAssunto.setEditable(false);
+                    txtDescricao.setEditable(false);
+                    cbNivel.setEnabled(false);
+                    btnAlterarStatus.setEnabled(false);
+                    btnSalvar.setEnabled(false);
+                    break;
+                default:
+                    txtAssunto.setEditable(true);
+                    txtDescricao.setEditable(true);
+                    cbNivel.setEnabled(true);
+                    btnAlterarStatus.setEnabled(true);
+                    btnSalvar.setEnabled(true);
+                    break;
+            }
         }
     }
 
@@ -188,6 +227,10 @@ public class Tickets extends javax.swing.JInternalFrame {
         txtStatus = new javax.swing.JTextField();
         txtAbertura = new javax.swing.JTextField();
         txtEncerramento = new javax.swing.JTextField();
+        btnSalvar = new javax.swing.JButton();
+        btnAlterarStatus = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        tabTicket = new javax.swing.JTabbedPane();
         jPanel8 = new javax.swing.JPanel();
         txtSolicitante = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -198,9 +241,9 @@ public class Tickets extends javax.swing.JInternalFrame {
         txtDescricao = new javax.swing.JTextArea();
         jLabel8 = new javax.swing.JLabel();
         cbNivel = new javax.swing.JComboBox<>();
-        btnSalvar = new javax.swing.JButton();
-        btnAlterarStatus = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtResposta = new javax.swing.JTextArea();
 
         setClosable(true);
         setTitle("Tickets");
@@ -316,7 +359,7 @@ public class Tickets extends javax.swing.JInternalFrame {
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 196, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 407, Short.MAX_VALUE)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -402,7 +445,33 @@ public class Tickets extends javax.swing.JInternalFrame {
                 .addComponent(txtEncerramento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Solicitação"));
+        btnSalvar.setText("Salvar");
+        btnSalvar.setName("btnSalvar"); // NOI18N
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
+
+        btnAlterarStatus.setText("Alterar Status");
+        btnAlterarStatus.setName("btnAlterarStatus"); // NOI18N
+        btnAlterarStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarStatusActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Novo");
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        tabTicket.setName("tabTicket"); // NOI18N
+
+        jPanel8.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jPanel8.setName("jPanel8"); // NOI18N
 
         txtSolicitante.setEditable(false);
@@ -439,26 +508,31 @@ public class Tickets extends javax.swing.JInternalFrame {
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtSolicitante, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtAssunto, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbNivel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel7))
-                .addContainerGap(172, Short.MAX_VALUE))
-            .addComponent(jScrollPane2)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtAssunto, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbNivel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtSolicitante, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 397, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtSolicitante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
@@ -468,35 +542,44 @@ public class Tickets extends javax.swing.JInternalFrame {
                     .addComponent(jLabel6)
                     .addComponent(jLabel8)
                     .addComponent(cbNivel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        btnSalvar.setText("Salvar");
-        btnSalvar.setName("btnSalvar"); // NOI18N
-        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalvarActionPerformed(evt);
-            }
-        });
+        tabTicket.addTab("Solicitação", jPanel8);
 
-        btnAlterarStatus.setText("Alterar Status");
-        btnAlterarStatus.setName("btnAlterarStatus"); // NOI18N
-        btnAlterarStatus.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAlterarStatusActionPerformed(evt);
-            }
-        });
+        jPanel6.setName("jPanel6"); // NOI18N
 
-        jButton3.setText("Novo");
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        txtResposta.setColumns(20);
+        txtResposta.setLineWrap(true);
+        txtResposta.setRows(5);
+        txtResposta.setWrapStyleWord(true);
+        txtResposta.setName("txtResposta"); // NOI18N
+        jScrollPane3.setViewportView(txtResposta);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tabTicket.addTab("Resposta", jPanel6);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -505,7 +588,6 @@ public class Tickets extends javax.swing.JInternalFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -513,7 +595,8 @@ public class Tickets extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSalvar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
+                        .addComponent(jButton3))
+                    .addComponent(tabTicket, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -522,7 +605,7 @@ public class Tickets extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(tabTicket)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
@@ -573,7 +656,7 @@ public class Tickets extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableTicketsMouseClicked
 
     private void btnAlterarStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarStatusActionPerformed
-        if (Session.nome.equals("Marcos Antonio de Almeida Filho")) {
+        if (Session.nivel.equals("TI")) {
             if (idTicket == 0) {
                 JOptionPane.showMessageDialog(null, "Selecione um Ticket primeiro.");
             } else {
@@ -595,7 +678,7 @@ public class Tickets extends javax.swing.JInternalFrame {
                     new Thread() {
                         @Override
                         public void run() {
-                            SendEmail.EnviarAviso(email, "Alteração de Status de Ticket", "Seu Ticket " + txtNumTicket.getText() + " teve o status alterado para " + options[escolha] + "\nAssunto:\n" + txtAssunto.getText() + "\nDescrição: \n" + txtDescricao.getText());
+                            SendEmail.EnviarAviso(email, "Alteração de Status de Ticket", "Seu Ticket " + txtNumTicket.getText() + " teve o status alterado para " + options[escolha] + "\nAssunto:\n" + txtAssunto.getText() + "\nDescrição: \n" + txtDescricao.getText() + "\n\nResposta do Desenvolvedor:\n" + txtResposta.getText());
                         }
                     }.start();
 
@@ -632,7 +715,7 @@ public class Tickets extends javax.swing.JInternalFrame {
                     }
                 }.start();
             } else {
-                td.updateTicket(txtAssunto.getText(), cbNivel.getSelectedIndex(), txtDescricao.getText(), idTicket);
+                td.updateTicket(txtAssunto.getText(), cbNivel.getSelectedIndex(), txtDescricao.getText(), txtResposta.getText(), idTicket);
             }
 
             lerTicket(idTicket);
@@ -665,10 +748,13 @@ public class Tickets extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel3;
     public javax.swing.JPanel jPanel4;
     public javax.swing.JPanel jPanel5;
+    public javax.swing.JPanel jPanel6;
     public javax.swing.JPanel jPanel7;
     public javax.swing.JPanel jPanel8;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane2;
+    public javax.swing.JScrollPane jScrollPane3;
+    public static javax.swing.JTabbedPane tabTicket;
     public javax.swing.JTabbedPane tabTickets;
     public javax.swing.JTable tableTickets;
     public javax.swing.JTextField txtAbertura;
@@ -677,6 +763,7 @@ public class Tickets extends javax.swing.JInternalFrame {
     public javax.swing.JTextField txtEncerramento;
     public static javax.swing.JTextField txtNumTicket;
     public static javax.swing.JTextField txtPesquisa;
+    public static javax.swing.JTextArea txtResposta;
     public javax.swing.JTextField txtSolicitante;
     public static javax.swing.JTextField txtStatus;
     // End of variables declaration//GEN-END:variables

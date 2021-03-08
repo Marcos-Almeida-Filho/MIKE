@@ -13,6 +13,7 @@ public class ProcessosVendasMedicoesBean {
 
     private int id;
     private int idProcesso;
+    private int ordem;
     private String medida;
 
     public int getId() {
@@ -29,6 +30,14 @@ public class ProcessosVendasMedicoesBean {
 
     public void setIdProcesso(int idProcesso) {
         this.idProcesso = idProcesso;
+    }
+
+    public int getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
     }
 
     public String getMedida() {

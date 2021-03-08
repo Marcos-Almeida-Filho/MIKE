@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Bean;
 
 /**
@@ -11,15 +10,16 @@ package Bean;
  * @author Marcos Filho
  */
 public class VendasMateriaisMovBean {
-    
-     private int id;
-     private int idmaterial;
-     private double qtdInicial;
-     private double qtdMovimentada;
-     private double saldo;
-     private String tipo;
-     private String data;
-     private String usuario;
+
+    private int id;
+    private int idmaterial;
+    private double qtdInicial;
+    private double qtdMovimentada;
+    private double saldo;
+    private String tipo;
+    private String data;
+    private String usuario;
+    private double valorCobrado;
 
     public int getId() {
         return id;
@@ -84,6 +84,13 @@ public class VendasMateriaisMovBean {
     public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
-     
-     
+
+    public double getValorCobrado() {
+        return valorCobrado;
+    }
+
+    public void setValorCobrado(double valorCobrado) {
+        this.valorCobrado = valorCobrado;
+    }
+
 }

@@ -240,6 +240,35 @@ public class VendasPedidoItensDAO {
 
         return listvpi;
     }
+    
+    public int getIdItemNota(int id) {
+        rsList();
+
+        int idItemNota = 0;
+        
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido_itens WHERE id = " + id);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                idItemNota = rs.getInt("idItemNota");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler item do Pedido de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return idItemNota;
+    }
 
     /**
      *
@@ -262,11 +291,11 @@ public class VendasPedidoItensDAO {
         ConnectionFactory.closeConnection(con, stmt);
     }
 
-    public void updateNotaFiscal(String nf, int idItemPedido) {
+    public void updateNotaFiscal(String nf, int idItemPedido, int idItemNota) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET nf = '" + nf + "' WHERE id = " + idItemPedido);
+            stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET nf = '" + nf + "', idItemNota = " + idItemNota + " WHERE id = " + idItemPedido);
             stmt.executeUpdate();
         } catch (SQLException e) {
             String msg = "Erro ao atualizar nota fiscal do item do Pedido de Venda.";

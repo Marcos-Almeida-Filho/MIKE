@@ -42,10 +42,10 @@ public class OPMPDAO {
         listopmp = new ArrayList<>();
     }
 
-    public void create(String op, String codigo, String descricao, double qtd, boolean insumo) throws SQLException {
+    public void create(String op, String codigo, String descricao, double qtd, boolean insumo, String lote, int idInsumo) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO op_mp (op, codigo, descricao, qtd, insumo) VALUES ('" + op + "', '" + codigo + "', '" + descricao + "', " + qtd + ", " + insumo + ")");
+        stmt = con.prepareStatement("INSERT INTO op_mp (op, codigo, descricao, qtd, insumo, lote, idInsumo) VALUES ('" + op + "', '" + codigo + "', '" + descricao + "', " + qtd + ", " + insumo + ", '" + lote + "', " + idInsumo + ")");
 
         stmt.executeUpdate();
 
@@ -69,6 +69,8 @@ public class OPMPDAO {
                 omb.setQtd(rs.getDouble("qtd"));
                 omb.setBaixa(rs.getBoolean("baixa"));
                 omb.setInsumo(rs.getBoolean("insumo"));
+                omb.setLote(rs.getString("lote"));
+                omb.setIdInsumo(rs.getInt("idInsumo"));
 
                 listopmp.add(omb);
             }
@@ -94,6 +96,28 @@ public class OPMPDAO {
 
         try {
             stmt = con.prepareStatement("UPDATE op_mp SET qtd = " + qtd + " WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar matéria prima da OP.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updateMP(String codigo, String descricao, double qtd, String lote, int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE op_mp SET qtd = " + qtd + ", codigo = '" + codigo + "', descricao = '" + descricao + "', lote = '" + lote + "' WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

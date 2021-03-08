@@ -5,7 +5,6 @@
  */
 package View.Geral;
 
-import Bean.ClientesBean;
 import DAO.BancosDAO;
 import DAO.ClientesDAO;
 import View.financeiro.Extratos;
@@ -166,7 +165,7 @@ public class ProcurarBanco extends javax.swing.JInternalFrame {
             switch (origem) {
                 case "Extratos":
                     Extratos.txtbanco.setText(banco);
-                    switch  (banco) {
+                    switch (banco) {
                         case "Bradesco":
                             Extratos.tabextratomensal.setEnabledAt(0, true);
                             Extratos.tabextratomensal.setEnabledAt(1, false);
@@ -190,13 +189,13 @@ public class ProcurarBanco extends javax.swing.JInternalFrame {
         model.setNumRows(0);
         ClientesDAO cd = new ClientesDAO();
 
-        for (ClientesBean cb : cd.pesquisa(txtpesquisa.getText())) {
+        cd.pesquisaCliente(txtpesquisa.getText()).forEach((cb) -> {
             model.addRow(new Object[]{
                 cb.getId(),
                 cb.getNome(),
                 cb.getRazaosocial()
             });
-        }
+        });
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
 

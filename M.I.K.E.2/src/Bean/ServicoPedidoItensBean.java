@@ -19,6 +19,7 @@ public class ServicoPedidoItensBean {
     private String valor;
     private String total;
     private String prazo;
+    private String prazoDate;
     private String pedidocliente;
     private String os;
     private String nf;
@@ -85,6 +86,14 @@ public class ServicoPedidoItensBean {
 
     public void setPrazo(String prazo) {
         this.prazo = prazo;
+    }
+
+    public String getPrazoDate() {
+        return prazoDate;
+    }
+
+    public void setPrazoDate(String prazoDate) {
+        this.prazoDate = prazoDate;
     }
 
     public String getPedidocliente() {

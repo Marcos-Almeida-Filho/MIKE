@@ -71,6 +71,16 @@ public class VendasMateriaisMovDAO {
 
         ConnectionFactory.closeConnection(con, stmt);
     }
+    
+    public void createVenda(int idmaterial, double qtdinicial, double qtdmovimentada, double saldo, String tipo, String data, String user, double valorCobrado) throws SQLException {
+        conStmt();
+
+        stmt = con.prepareStatement("INSERT INTO vendas_materiais_mov (idmaterial, qtdinicial, qtdmov, saldo, tipo, data, usuario, valorCobrado) VALUES (" + idmaterial + "," + qtdinicial + "," + qtdmovimentada + "," + saldo + ",'" + tipo + "','" + data + "','" + user + "', " + valorCobrado + ")");
+
+        stmt.executeUpdate();
+
+        ConnectionFactory.closeConnection(con, stmt);
+    }
 
     /**
      * Método para retornar todas as movimentações de devido material.
@@ -98,6 +108,7 @@ public class VendasMateriaisMovDAO {
                 vmmb.setTipo(rs.getString("tipo"));
                 vmmb.setData(rs.getString("data"));
                 vmmb.setUsuario(rs.getString("usuario"));
+                vmmb.setValorCobrado(rs.getDouble("valorCobrado"));
 
                 listvmmb.add(vmmb);
             }

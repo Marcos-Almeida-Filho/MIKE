@@ -7,6 +7,7 @@ package View.Geral;
 
 import DAO.VendasCotacaoItensDAO;
 import Methods.SendEmail;
+import Methods.SoNumeros;
 import Methods.Telas;
 import View.servicos.*;
 import View.vendas.CotacaoVenda;
@@ -35,6 +36,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
     public ItemCotacao(String origem) {
         initComponents();
         origin = origem;
+        txtprazo.setDocument(new SoNumeros());
     }
 
     public void readItemDB() {
@@ -133,6 +135,12 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
         txtvalor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.00"))));
 
         jLabel6.setText("Prazo de Entrega");
+
+        txtprazo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtprazoKeyReleased(evt);
+            }
+        });
 
         jButton1.setText("Salvar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -256,6 +264,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
         txtdesc.setEditable(true);
         btnprocurar.setEnabled(false);
         txtcodigo.requestFocus();
+        idMaterial = 0;
     }//GEN-LAST:event_radioNaoCadastradoActionPerformed
 
     private void btnprocurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnprocurarActionPerformed
@@ -354,6 +363,10 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
             dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtprazoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtprazoKeyReleased
+        SoNumeros.verificarNumeros(txtprazo);
+    }//GEN-LAST:event_txtprazoKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

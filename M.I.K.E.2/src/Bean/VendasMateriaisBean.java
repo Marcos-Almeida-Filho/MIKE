@@ -17,8 +17,8 @@ public class VendasMateriaisBean {
     private double estoque, estoqueMinimo, qtdMinimaOP;
     private String local;
     private String status;
-    private String d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal, tolD1, tolD2, tolD3, tolD4, tolD5, mp;
-    private boolean importada, weldon, ri, md, hss, desbaste, aparecerExtra;
+    private String d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, tolD1, tolD2, mp, mpDados, conicidade, tipoFilete, alturaCostela, tipoRaio, anguloFrontal, tipoFrontal;
+    private boolean importada, weldon, ri, md, hss, desbaste, aparecerExtra, cs11, detalonado;
 
     public int getId() {
         return id;
@@ -316,14 +316,6 @@ public class VendasMateriaisBean {
         this.agressividade = agressividade;
     }
 
-    public String getFrontal() {
-        return frontal;
-    }
-
-    public void setFrontal(String frontal) {
-        this.frontal = frontal;
-    }
-
     public boolean isImportada() {
         return importada;
     }
@@ -388,30 +380,6 @@ public class VendasMateriaisBean {
         this.tolD2 = tolD2;
     }
 
-    public String getTolD3() {
-        return tolD3;
-    }
-
-    public void setTolD3(String tolD3) {
-        this.tolD3 = tolD3;
-    }
-
-    public String getTolD4() {
-        return tolD4;
-    }
-
-    public void setTolD4(String tolD4) {
-        this.tolD4 = tolD4;
-    }
-
-    public String getTolD5() {
-        return tolD5;
-    }
-
-    public void setTolD5(String tolD5) {
-        this.tolD5 = tolD5;
-    }
-
     public String getMp() {
         return mp;
     }
@@ -428,5 +396,76 @@ public class VendasMateriaisBean {
         this.aparecerExtra = aparecerExtra;
     }
     
+    public boolean isCs11() {
+        return cs11;
+    }
+    
+    public void setCs11(boolean cs11) {
+        this.cs11 = cs11;
+    }
+    
+    public boolean isDetalonado() {
+        return detalonado;
+    }
+    
+    public void setDetalonado(boolean detalonado) {
+        this.detalonado = detalonado;
+    }
+
+    public String getMpDados() {
+        return mpDados;
+    }
+
+    public void setMpDados(String mpDados) {
+        this.mpDados = mpDados;
+    }
+
+    public String getConicidade() {
+        return conicidade;
+    }
+
+    public void setConicidade(String conicidade) {
+        this.conicidade = conicidade;
+    }
+
+    public String getTipoFilete() {
+        return tipoFilete;
+    }
+
+    public void setTipoFilete(String tipoFilete) {
+        this.tipoFilete = tipoFilete;
+    }
+
+    public String getAlturaCostela() {
+        return alturaCostela;
+    }
+
+    public void setAlturaCostela(String alturaCostela) {
+        this.alturaCostela = alturaCostela;
+    }
+
+    public String getTipoRaio() {
+        return tipoRaio;
+    }
+
+    public void setTipoRaio(String tipoRaio) {
+        this.tipoRaio = tipoRaio;
+    }
+
+    public String getAnguloFrontal() {
+        return anguloFrontal;
+    }
+
+    public void setAnguloFrontal(String anguloFrontal) {
+        this.anguloFrontal = anguloFrontal;
+    }
+
+    public String getTipoFrontal() {
+        return tipoFrontal;
+    }
+
+    public void setTipoFrontal(String tipoFrontal) {
+        this.tipoFrontal = tipoFrontal;
+    }
     
 }

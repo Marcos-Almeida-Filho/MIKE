@@ -31,11 +31,9 @@ import View.financeiro.ContasPagar;
 import View.financeiro.ContasReceber;
 import View.logistica.RastreamentoDocumentos;
 import View.qualidade.InstrumentosMedicao;
-import View.servicos.GrupoDeProcessosServico;
 import View.servicos.OS;
 import View.servicos.ServicoMateriais;
 import View.servicos.PedidoServico;
-import View.servicos.ProcessosServico;
 import View.TI.Senhas;
 import View.TI.Tickets;
 import View.administracao.Usuarios;
@@ -221,8 +219,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_servicos_pedido = new javax.swing.JMenuItem();
         item_oss = new javax.swing.JMenuItem();
         item_servicos_produtos = new javax.swing.JMenuItem();
-        item_servicos_processo = new javax.swing.JMenuItem();
-        item_servicos_grupo_processo = new javax.swing.JMenuItem();
         menu_terceiros = new javax.swing.JMenu();
         item_ots = new javax.swing.JMenuItem();
         menu_configuracoes = new javax.swing.JMenu();
@@ -837,26 +833,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         });
         menu_servicos.add(item_servicos_produtos);
 
-        item_servicos_processo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_wrench_orange.png"))); // NOI18N
-        item_servicos_processo.setText("Processos");
-        item_servicos_processo.setName("item_servicos_processo"); // NOI18N
-        item_servicos_processo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                item_servicos_processoActionPerformed(evt);
-            }
-        });
-        menu_servicos.add(item_servicos_processo);
-
-        item_servicos_grupo_processo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/application_cascade_wrench_orange.png"))); // NOI18N
-        item_servicos_grupo_processo.setText("Grupo de Processos");
-        item_servicos_grupo_processo.setName("item_servicos_grupo_processo"); // NOI18N
-        item_servicos_grupo_processo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                item_servicos_grupo_processoActionPerformed(evt);
-            }
-        });
-        menu_servicos.add(item_servicos_grupo_processo);
-
         jMenuBar1.add(menu_servicos);
 
         menu_terceiros.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/link.png"))); // NOI18N
@@ -1189,30 +1165,6 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Acesso não permitido.");
         }
     }//GEN-LAST:event_item_fornecedoresActionPerformed
-
-    private void item_servicos_processoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_processoActionPerformed
-        JMenuItem menuItem = (JMenuItem) evt.getSource();
-        String menuItemName = menuItem.getName();
-
-        if (gupd.readPerm(Session.idnivel, menuItemName)) {
-            ProcessosServico ps = new ProcessosServico();
-            Telas.AparecerTela(ps);
-        } else {
-            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
-        }
-    }//GEN-LAST:event_item_servicos_processoActionPerformed
-
-    private void item_servicos_grupo_processoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_servicos_grupo_processoActionPerformed
-        JMenuItem menuItem = (JMenuItem) evt.getSource();
-        String menuItemName = menuItem.getName();
-
-        if (gupd.readPerm(Session.idnivel, menuItemName)) {
-            GrupoDeProcessosServico gps = new GrupoDeProcessosServico();
-            Telas.AparecerTela(gps);
-        } else {
-            JOptionPane.showMessageDialog(null, "Acesso não permitido.");
-        }
-    }//GEN-LAST:event_item_servicos_grupo_processoActionPerformed
 
     private void item_solicitacao_comprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_solicitacao_comprasActionPerformed
         JMenuItem menuItem = (JMenuItem) evt.getSource();
@@ -1630,9 +1582,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenuItem item_sair;
     private javax.swing.JMenuItem item_senhas;
     public static javax.swing.JMenuItem item_servicos_cotacoes;
-    public static javax.swing.JMenuItem item_servicos_grupo_processo;
     public static javax.swing.JMenuItem item_servicos_pedido;
-    public static javax.swing.JMenuItem item_servicos_processo;
     public static javax.swing.JMenuItem item_servicos_produtos;
     public static javax.swing.JMenuItem item_sobre;
     private javax.swing.JMenuItem item_solic_hora_extra;

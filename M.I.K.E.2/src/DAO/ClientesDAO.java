@@ -234,6 +234,36 @@ public class ClientesDAO {
         return check;
     }
     
+    public int getIdNome(String nome) {
+
+        rsList();
+
+        int id = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE nome = '" + nome + "'");
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro.";
+
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return id;
+    }
+    
     public int getIdCnpj(String cnpj) {
 
         rsList();
@@ -481,6 +511,9 @@ public class ClientesDAO {
                 cb.setId(rs.getInt("id"));
                 cb.setNome(rs.getString("nome"));
                 cb.setRazaosocial(rs.getString("razaosocial"));
+                cb.setCidade(rs.getString("cidade"));
+                cb.setUf(rs.getString("uf"));
+                cb.setRepresentante(rs.getString("representante"));
 
                 list.add(cb);
             }
@@ -576,12 +609,12 @@ public class ClientesDAO {
         }
     }
 
-    public List<ClientesBean> pesquisa(String pesquisa) {
+    public List<ClientesBean> pesquisa(String campo, String pesquisa) {
 
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE id LIKE '%" + pesquisa + "%' OR nome LIKE '%" + pesquisa + "%' OR razaosocial LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE " + campo + " LIKE '%" + pesquisa + "%'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -590,6 +623,82 @@ public class ClientesDAO {
                 cb.setId(rs.getInt("id"));
                 cb.setNome(rs.getString("nome"));
                 cb.setRazaosocial(rs.getString("razaosocial"));
+                cb.setCidade(rs.getString("cidade"));
+                cb.setUf(rs.getString("uf"));
+                cb.setRepresentante(rs.getString("representante"));
+
+                list.add(cb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro.";
+
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return list;
+    }
+    
+    public List<ClientesBean> pesquisaPorTelefone(String pesquisa) {
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE telefone LIKE '(" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                cb = new ClientesBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setNome(rs.getString("nome"));
+                cb.setRazaosocial(rs.getString("razaosocial"));
+                cb.setCidade(rs.getString("cidade"));
+                cb.setUf(rs.getString("uf"));
+                cb.setRepresentante(rs.getString("representante"));
+
+                list.add(cb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro.";
+
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return list;
+    }
+    
+    public List<ClientesBean> pesquisaCliente(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE nome LIKE '%" + pesquisa + "%' OR razaosocial LIKE '%" + pesquisa + "%'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                cb = new ClientesBean();
+
+                cb.setId(rs.getInt("id"));
+                cb.setNome(rs.getString("nome"));
+                cb.setRazaosocial(rs.getString("razaosocial"));
+                cb.setCidade(rs.getString("cidade"));
+                cb.setUf(rs.getString("uf"));
+                cb.setRepresentante(rs.getString("representante"));
 
                 list.add(cb);
             }

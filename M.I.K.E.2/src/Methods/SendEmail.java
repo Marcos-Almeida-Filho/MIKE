@@ -115,7 +115,16 @@ public class SendEmail {
              */
             Transport.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            String msg = "Erro ao enviar Aviso por e-mail.";
+            
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         }
     }
 
@@ -761,7 +770,6 @@ public class SendEmail {
             Transport.send(message);
 
 //            ss.dispose();
-            JOptionPane.showMessageDialog(null, "Orçamento enviado com sucesso!");
         } catch (MessagingException me) {
             JOptionPane.showMessageDialog(null, "Erro ao enviar orçamento.\n" + me);
             throw new RuntimeException(me);

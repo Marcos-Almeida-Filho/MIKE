@@ -58,7 +58,7 @@ public class AddNF extends javax.swing.JInternalFrame {
         model.setNumRows(0);
 
         if (txtPesquisa.getText().equals("")) {
-            nfd.readNotas().forEach(nfb -> {
+            nfd.readNotasNaoFaturadas().forEach(nfb -> {
                 model.addRow(new Object[]{
                     nfb.getId(),
                     nfb.getNumero(),
@@ -242,7 +242,7 @@ public class AddNF extends javax.swing.JInternalFrame {
 
     private void tableItensMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItensMouseClicked
         if (evt.getClickCount() == 2) {
-            int idItem = Integer.parseInt(tableItens.getValueAt(tableItens.getSelectedRow(), 0).toString());
+            int idItemNota = Integer.parseInt(tableItens.getValueAt(tableItens.getSelectedRow(), 0).toString());
 
             double estoqueAtual = vmd.readEstoque(idMaterial);
             double qtd = Double.parseDouble(tableItens.getValueAt(tableItens.getSelectedRow(), 3).toString());
@@ -254,7 +254,7 @@ public class AddNF extends javax.swing.JInternalFrame {
                 if (qtd < vpib.getQtd()) {
                     double qtd2 = vpib.getQtd() - qtd;
                     try {
-                        vpid.updateNotaFiscal(nf, idItemPedido);
+                        vpid.updateNotaFiscal(nf, idItemPedido, idItemNota);
 
                         vpid.create(PedidoVenda.txtPedido.getText(), 0, vpib.getCodigo(), vpib.getDescricao(), qtd2, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), "", vpib.getOp());
                     } catch (SQLException e) {
@@ -269,16 +269,16 @@ public class AddNF extends javax.swing.JInternalFrame {
                         }.start();
                     }
                 } else {
-                    vpid.updateNotaFiscal(nf, idItemPedido);
+                    vpid.updateNotaFiscal(nf, idItemPedido, idItemNota);
                 }
                 double estoque = estoqueAtual - qtd;
 
-                nfid.updateIdMaterial(idMaterial, idItem);
+                nfid.updateIdMaterial(idMaterial, idItemNota);
 
                 vmd.updateEstoque(estoque, idMaterial);
 
                 try {
-                    vmmd.create(idMaterial, estoqueAtual, qtd, estoque, "Nota Fiscal " + nf + " - " + destinatario, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                    vmmd.createVenda(idMaterial, estoqueAtual, qtd, estoque, "Nota Fiscal " + nf + " - " + destinatario, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome, vpib.getValorunitario());
                 } catch (SQLException e) {
                     String msg = "Erro ao criar movimentação do Material de Venda.";
                     JOptionPane.showMessageDialog(null, msg);

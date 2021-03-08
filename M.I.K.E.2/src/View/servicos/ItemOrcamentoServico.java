@@ -5,6 +5,7 @@
  */
 package View.servicos;
 
+import Methods.SoNumeros;
 import Methods.Telas;
 import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
@@ -22,6 +23,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
     public ItemOrcamentoServico() {
         initComponents();
         txtrowinvisible();
+        txtprazo.setDocument(new SoNumeros());
     }
 
     public static void txtrowinvisible() {
@@ -275,7 +277,7 @@ public class ItemOrcamentoServico extends javax.swing.JInternalFrame {
                     qtdf,
                     txtvalor.getText(),
                     totf,
-                    txtprazo.getText() + " dias",
+                    txtprazo.getText() + " dias úteis",
                     ""
                 });
                 CotacaoServico.txtvalor();

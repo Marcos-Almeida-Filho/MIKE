@@ -13,6 +13,7 @@ public class ProcessosVendasBean {
 
     private int id;
     private String nome;
+    private int ordem;
     private String status;
 
     public int getId() {
@@ -29,6 +30,14 @@ public class ProcessosVendasBean {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public int getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(int ordem) {
+        this.ordem = ordem;
     }
 
     public String getStatus() {

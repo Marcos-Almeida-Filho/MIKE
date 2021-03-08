@@ -46,11 +46,11 @@ public class ProcessosVendasDAO {
         listpvb = new ArrayList<>();
     }
 
-    public void create(String nome) {
+    public void create(String nome, int ordem) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO processos_vendas (nome, status) VALUES ('" + nome + "', 'Ativo')");
+            stmt = con.prepareStatement("INSERT INTO processos_vendas (nome, ordem, status) VALUES ('" + nome + "', " + ordem + ", 'Ativo')");
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -72,7 +72,7 @@ public class ProcessosVendasDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM processos_vendas");
+            stmt = con.prepareStatement("SELECT * FROM processos_vendas WHERE status <> 'Desativado' ORDER BY ordem");
 
             rs = stmt.executeQuery();
 
@@ -81,6 +81,7 @@ public class ProcessosVendasDAO {
 
                 pvb.setId(rs.getInt("id"));
                 pvb.setNome(rs.getString("nome"));
+                pvb.setOrdem(rs.getInt("ordem"));
                 pvb.setStatus(rs.getString("status"));
 
                 listpvb.add(pvb);
@@ -114,6 +115,7 @@ public class ProcessosVendasDAO {
                 pvb = new ProcessosVendasBean();
 
                 pvb.setNome(rs.getString("nome"));
+                pvb.setOrdem(rs.getInt("ordem"));
                 pvb.setStatus(rs.getString("status"));
 
                 listpvb.add(pvb);
@@ -165,11 +167,33 @@ public class ProcessosVendasDAO {
         return id;
     }
 
-    public void updateProcesso(int id, String nome) {
+    public void updateProcesso(int id, String nome, int ordem) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE processos_vendas SET nome = '" + nome + "' WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE processos_vendas SET nome = '" + nome + "', ordem = " + ordem + " WHERE id = " + id);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar Processo de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void updateOrdem(int id, int ordem) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE processos_vendas SET ordem = " + ordem + " WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

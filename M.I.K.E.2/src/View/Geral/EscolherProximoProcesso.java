@@ -9,7 +9,7 @@ import Bean.F_UPBean;
 import Bean.F_UP_HistBean;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
-import DAO.ProcessosServicoDAO;
+import DAO.ProcessosVendasDAO;
 import View.servicos.OS;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -20,6 +20,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class EscolherProximoProcesso extends javax.swing.JInternalFrame {
 
+    static ProcessosVendasDAO pvd = new ProcessosVendasDAO();
+    
     /**
      * Creates new form EscolherProximoProcesso
      *
@@ -36,10 +38,8 @@ public class EscolherProximoProcesso extends javax.swing.JInternalFrame {
     public static void pegarProcessos() {
         switch (origem) {
             case "OS":
-                ProcessosServicoDAO psd = new ProcessosServicoDAO();
-                
-                psd.read().forEach(psb -> {
-                    cbprocesso.addItem(psb.getNome());
+                pvd.readTodos().forEach(pvb -> {
+                    cbprocesso.addItem(pvb.getNome());
                 });
                 break;
             default:

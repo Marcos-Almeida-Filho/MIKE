@@ -13,6 +13,7 @@ public class VendasPedidoItensBean {
 
     private int id;
     private int idMaterial;
+    private int idItemNota;
     private String dav;
     private String pedido;
     private String codigo;
@@ -39,6 +40,14 @@ public class VendasPedidoItensBean {
 
     public void setIdMaterial(int idMaterial) {
         this.idMaterial = idMaterial;
+    }
+
+    public int getIdItemNota() {
+        return idItemNota;
+    }
+
+    public void setIdItemNota(int idItemNota) {
+        this.idItemNota = idItemNota;
     }
 
     public String getDav() {

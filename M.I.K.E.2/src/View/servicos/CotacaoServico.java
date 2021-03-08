@@ -18,6 +18,7 @@ import DAO.ServicoOrcamentoDocumentosDAO;
 import DAO.ServicoPedidoDAO;
 import DAO.ServicoPedidoDocumentosDAO;
 import DAO.ServicoPedidoItensDAO;
+import Methods.Dates;
 import Methods.SendEmail;
 import Methods.Telas;
 import View.Geral.ItemCotacao;
@@ -81,6 +82,51 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         tableitens();
         txtvalor();
         centertable();
+    }
+
+    public void lerCotacao(String cotacao) {
+        txtnumeroorcamento.setText(cotacao);
+
+        sod.click(cotacao).forEach(sob -> {
+            if (sob.getClientecadastro().equals("true")) {
+                radioc.setSelected(true);
+            } else {
+                radionc.setSelected(true);
+            }
+            txtnomecliente.setText(sob.getCliente());
+            txtcondicao.setText(sob.getCondicao());
+            txtrepresentante.setText(sob.getRepresentante());
+            txtvendedor.setText(sob.getVendedor());
+            txtstatus.setText(sob.getStatus());
+            txtnotes.setText(sob.getNotes());
+            txtdata.setText(sob.getData());
+        });
+        if (radionc.isSelected()) {
+            btncliente.setEnabled(false);
+            txtnomecliente.setEditable(true);
+        }
+
+        lerItensCotacao(cotacao);
+        
+        lerDocsCotacao(cotacao);
+
+        txtvalor();
+
+        checkstatus();
+    }
+    
+    public void lerDocsCotacao(String cotacao) {
+        DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
+        modeldoc.setNumRows(0);
+
+        sodd.readitens(cotacao).forEach(sodb -> {
+            modeldoc.addRow(new Object[]{
+                sodb.getId(),
+                false,
+                sodb.getDescricao(),
+                sodb.getLocal()
+            });
+        });
     }
 
     public static void filltableorcamentoservico() {
@@ -957,6 +1003,11 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         });
 
         btncancelarorcamento.setText("Cancelar Cotação");
+        btncancelarorcamento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btncancelarorcamentoActionPerformed(evt);
+            }
+        });
 
         btnnovoorcamento.setText("Nova Cotação");
         btnnovoorcamento.addActionListener(new java.awt.event.ActionListener() {
@@ -1471,44 +1522,8 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         if (evt.getClickCount() == 2) {
             taborcamentos.setSelectedIndex(1);
             String cotacao = tableorcamentoservico.getValueAt(tableorcamentoservico.getSelectedRow(), 0).toString();
-            txtnumeroorcamento.setText(cotacao);
 
-            sod.click(txtnumeroorcamento.getText()).forEach(sob -> {
-                if (sob.getClientecadastro().equals("true")) {
-                    radioc.setSelected(true);
-                } else {
-                    radionc.setSelected(true);
-                }
-                txtnomecliente.setText(sob.getCliente());
-                txtcondicao.setText(sob.getCondicao());
-                txtrepresentante.setText(sob.getRepresentante());
-                txtvendedor.setText(sob.getVendedor());
-                txtstatus.setText(sob.getStatus());
-                txtnotes.setText(sob.getNotes());
-                txtdata.setText(sob.getData());
-            });
-            if (radionc.isSelected()) {
-                btncliente.setEnabled(false);
-                txtnomecliente.setEditable(true);
-            }
-
-            lerItensCotacao(cotacao);
-
-            txtvalor();
-
-            DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
-            modeldoc.setNumRows(0);
-
-            sodd.readitens(txtnumeroorcamento.getText()).forEach(sodb -> {
-                modeldoc.addRow(new Object[]{
-                    sodb.getId(),
-                    false,
-                    sodb.getDescricao(),
-                    sodb.getLocal()
-                });
-            });
-
-            checkstatus();
+            lerCotacao(cotacao);
         }
     }//GEN-LAST:event_tableorcamentoservicoMouseClicked
 
@@ -1691,7 +1706,9 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
                 for (int i = 0; i < tableitens.getRowCount(); i++) {
                     if (tableitens.getValueAt(i, 0).equals(true)) {
-
+                        int dias = Integer.parseInt(tableitens.getValueAt(i, 7).toString().replace(" dias úteis", ""));
+                        String datePrazo = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(dias);
+                        
                         spib.setIdpedido(numpedido);
                         spib.setCodigo(tableitens.getValueAt(i, 2).toString());
                         spib.setDescricao(tableitens.getValueAt(i, 3).toString());
@@ -1699,6 +1716,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
                         spib.setValor(tableitens.getValueAt(i, 5).toString());
                         spib.setTotal(tableitens.getValueAt(i, 6).toString());
                         spib.setPrazo(tableitens.getValueAt(i, 7).toString());
+                        spib.setPrazoDate(datePrazo);
                         spib.setOs("");
                         spib.setNf("");
 //                      idpedido, codigo, descricao, qtde, valor, total, prazo, os, nf
@@ -1908,6 +1926,24 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         }
 
     }//GEN-LAST:event_btnAllActionPerformed
+
+    private void btncancelarorcamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btncancelarorcamentoActionPerformed
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja cancelar a cotação?", "Cancelar Cotação", JOptionPane.YES_NO_OPTION);
+
+        if (resp == 0) {
+            ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
+
+            sob.setStatus("Cancelado");
+            sob.setIdtela(txtnumeroorcamento.getText());
+
+            //status = ? WHERE idtela = ?
+            sod.updatestatus(sob);
+
+            lerCotacao(txtnumeroorcamento.getText());
+            
+            filltableorcamentoservico();
+        }
+    }//GEN-LAST:event_btncancelarorcamentoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -87,8 +87,8 @@ public class FaturamentoDiario extends javax.swing.JInternalFrame {
             double valorFaturado = cd.getValorFaturado(dataInicio, dataFim);
             valorAcumulado += valorFaturado;
             
-            tableFaturamentoDiario.setValueAt(Valores.TransformarDoubleDBemDinheiro(valorFaturado), j, 1);
-            tableFaturamentoDiario.setValueAt(Valores.TransformarDoubleDBemDinheiro(valorAcumulado), j, 2);
+            tableFaturamentoDiario.setValueAt(Valores.TransformarDoubleDBemDinheiroComLocal(valorFaturado), j, 1);
+            tableFaturamentoDiario.setValueAt(Valores.TransformarDoubleDBemDinheiroComLocal(valorAcumulado), j, 2);
         }
     }
 

@@ -17,6 +17,7 @@ import View.financeiro.ContaReceber;
 import View.vendas.CotacaoVenda;
 import View.vendas.OP;
 import View.vendas.PedidoVenda;
+import View.vendas.VM1;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -68,6 +69,7 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                     if (!OP.txtNumOP.getText().equals("")) {
                         try {
                             OP.salvarObs(OP.txtNumOP.getText());
+                            OP.lerObs(OP.txtNumOP.getText());
                         } catch (SQLException e) {
                             String msg = "Erro.";
 
@@ -93,6 +95,10 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                     break;
                 case "ContaReceber":
                     Obs.AdicionarObs(ContaReceber.tableObs, obs);
+                    break;
+                case "VM1":
+                    Obs.AdicionarObs(VM1.tableobs, obs);
+                    break;
             }
             dispose();
         }

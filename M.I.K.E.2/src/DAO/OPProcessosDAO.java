@@ -153,7 +153,7 @@ public class OPProcessosDAO {
 
         return listob;
     }
-
+    
     public int idUltimoProcesso(String op, String processo) {
         rsList();
 

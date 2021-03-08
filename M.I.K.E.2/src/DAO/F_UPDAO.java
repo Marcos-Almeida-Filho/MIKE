@@ -33,14 +33,16 @@ public class F_UPDAO {
     ResultSet rs;
 
     List<F_UPBean> listbb;
+    
+    String table = "f_up";
 
-    public void conStmt() {
+    private void conStmt() {
         con = ConnectionFactory.getConnection();
 
         stmt = null;
     }
 
-    public void rsList() {
+    private void rsList() {
         conStmt();
 
         rs = null;
@@ -77,7 +79,7 @@ public class F_UPDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public List<F_UPBean> readTodos() {
 
         rsList();
@@ -229,7 +231,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readEmAberto() {
 
         rsList();
@@ -311,7 +313,7 @@ public class F_UPDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE 'OS%' ORDER BY nivel, dataentrega");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE 'OS%' AND processo <> 'Cancelado' ORDER BY nivel, dataentrega");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -381,7 +383,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOPEmAbertoPesquisa(String pesquisa) {
 
         rsList();
@@ -425,7 +427,7 @@ public class F_UPDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE '%" + pesquisa + "%' AND op LIKE 'OS%' OR processo <> 'Encerrado' AND dav LIKE '%" + pesquisa + "%' AND op LIKE 'OS%' ORDER BY nivel, dataentrega");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE (processo <> 'Encerrado' AND processo <> 'Cancelado') AND (op LIKE '%" + pesquisa + "%' OR dav LIKE '%" + pesquisa + "%') AND op LIKE 'OS%' ORDER BY nivel, dataentrega");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -457,7 +459,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readTodosPesquisa(String pesquisa) {
 
         rsList();
@@ -571,7 +573,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readPorProcesso(String processo) {
 
         rsList();
@@ -723,7 +725,7 @@ public class F_UPDAO {
         }
         return listbb;
     }
-    
+
     public List<F_UPBean> readOPProcessoPesquisa(String processo, String pesquisa) {
 
         rsList();
@@ -904,26 +906,26 @@ public class F_UPDAO {
         }
         return id;
     }
-    
+
     public String getProcesso(String op) {
         rsList();
-        
+
         String processo = "";
-        
+
         try {
             stmt = con.prepareStatement("SELECT processo FROM f_up WHERE op = '" + op + "'");
-            
+
             rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 processo = rs.getString("processo");
             }
         } catch (SQLException e) {
             String msg = "Erro ao ler processo atual da OP.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
+
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg, e);
@@ -932,10 +934,10 @@ public class F_UPDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        
+
         return processo;
     }
-    
+
     public boolean existeFUP(String op) {
         rsList();
 
@@ -950,9 +952,9 @@ public class F_UPDAO {
             }
         } catch (SQLException e) {
             String msg = "Erro ao verificar se OP existe no F-UP.";
-            
+
             JOptionPane.showMessageDialog(null, msg + "\n" + e);
-            
+
             new Thread() {
                 @Override
                 public void run() {
@@ -997,13 +999,38 @@ public class F_UPDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-
+    
     public void updateDataEntrega(String op, String dataPrevista) {
 
         conStmt();
 
         try {
             stmt = con.prepareStatement("UPDATE f_up SET dataentrega = '" + dataPrevista + "' WHERE op = '" + op + "'");
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            String msg = "Errp ao atualizar F-UP.";
+
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void updateDataEntrega(String op, String dataPrevista, String cliente) {
+
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE f_up SET dataentrega = '" + dataPrevista + "', cliente = '" + cliente + "' WHERE op = '" + op + "'");
 
             stmt.executeUpdate();
 
@@ -1064,6 +1091,29 @@ public class F_UPDAO {
 
             new Thread() {
 
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void deletePorOP(String op) {
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("DELETE FROM " + table + " WHERE op = '" + op + "'");
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao excluir F-UP.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg, e);

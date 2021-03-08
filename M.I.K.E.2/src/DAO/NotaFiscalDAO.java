@@ -131,12 +131,49 @@ public class NotaFiscalDAO {
 
         return valor;
     }
-
+    
     public List<NotaFiscalBean> readNotas() {
         rsList();
 
         try {
             stmt = con.prepareStatement("SELECT * FROM nf ORDER BY numero DESC");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                nfb = new NotaFiscalBean();
+
+                nfb.setId(rs.getInt("id"));
+                nfb.setNumero(rs.getInt("numero"));
+                nfb.setDestinatario(rs.getString("destinatario"));
+                nfb.setNatureza(rs.getString("natureza"));
+                nfb.setDataEmissao(rs.getString("dataEmissao"));
+                nfb.setStatus(rs.getString("status"));
+
+                listnf.add(nfb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Notas Fiscais.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listnf;
+    }
+
+    public List<NotaFiscalBean> readNotasNaoFaturadas() {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM nf WHERE statusInterno = 'Ativo' ORDER BY numero DESC");
 
             rs = stmt.executeQuery();
 

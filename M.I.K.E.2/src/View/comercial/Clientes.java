@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -37,6 +38,8 @@ public class Clientes extends javax.swing.JInternalFrame {
     static int idCliente;
 
     public static int idRepresentante;
+
+    List<String> lists;
 
     /**
      * Creates new form TelaCadastroCliente
@@ -180,18 +183,99 @@ public class Clientes extends javax.swing.JInternalFrame {
                     cb.getId(),
                     false,
                     cb.getNome(),
-                    cb.getRazaosocial()
+                    cb.getRazaosocial(),
+                    cb.getCidade(),
+                    cb.getUf(),
+                    cb.getRepresentante()
                 });
             });
         } else {
-            cd.pesquisa(txtPesquisa.getText()).forEach(cb -> {
-                model.addRow(new Object[]{
-                    cb.getId(),
-                    false,
-                    cb.getNome(),
-                    cb.getRazaosocial()
-                });
-            });
+            String campo = "";
+            switch (cbCriterio.getSelectedItem().toString()) {
+                case "Nome":
+                    campo = "nome";
+                    cd.pesquisa(campo, txtPesquisa.getText()).forEach(cb -> {
+                        model.addRow(new Object[]{
+                            cb.getId(),
+                            false,
+                            cb.getNome(),
+                            cb.getRazaosocial(),
+                            cb.getCidade(),
+                            cb.getUf(),
+                            cb.getRepresentante()
+                        });
+                    });
+                    break;
+                case "Razão Social":
+                    campo = "razaosocial";
+                    cd.pesquisa(campo, txtPesquisa.getText()).forEach(cb -> {
+                        model.addRow(new Object[]{
+                            cb.getId(),
+                            false,
+                            cb.getNome(),
+                            cb.getRazaosocial(),
+                            cb.getCidade(),
+                            cb.getUf(),
+                            cb.getRepresentante()
+                        });
+                    });
+                    break;
+                case "Município":
+                    campo = "cidade";
+                    cd.pesquisa(campo, txtPesquisa.getText()).forEach(cb -> {
+                        model.addRow(new Object[]{
+                            cb.getId(),
+                            false,
+                            cb.getNome(),
+                            cb.getRazaosocial(),
+                            cb.getCidade(),
+                            cb.getUf(),
+                            cb.getRepresentante()
+                        });
+                    });
+                    break;
+                case "UF":
+                    campo = "uf";
+                    cd.pesquisa(campo, txtPesquisa.getText()).forEach(cb -> {
+                        model.addRow(new Object[]{
+                            cb.getId(),
+                            false,
+                            cb.getNome(),
+                            cb.getRazaosocial(),
+                            cb.getCidade(),
+                            cb.getUf(),
+                            cb.getRepresentante()
+                        });
+                    });
+                    break;
+                case "Representante":
+                    campo = "representante";
+                    cd.pesquisa(campo, txtPesquisa.getText()).forEach(cb -> {
+                        model.addRow(new Object[]{
+                            cb.getId(),
+                            false,
+                            cb.getNome(),
+                            cb.getRazaosocial(),
+                            cb.getCidade(),
+                            cb.getUf(),
+                            cb.getRepresentante()
+                        });
+                    });
+                    break;
+                case "DDD":
+                    cd.pesquisaPorTelefone(txtPesquisa.getText()).forEach(cb -> {
+                        model.addRow(new Object[]{
+                            cb.getId(),
+                            false,
+                            cb.getNome(),
+                            cb.getRazaosocial(),
+                            cb.getCidade(),
+                            cb.getUf(),
+                            cb.getRepresentante()
+                        });
+                    });
+                    break;
+            }
         }
     }
 
@@ -241,6 +325,8 @@ public class Clientes extends javax.swing.JInternalFrame {
         tableclientes = new javax.swing.JTable();
         jPanel10 = new javax.swing.JPanel();
         txtPesquisa = new javax.swing.JTextField();
+        jPanel13 = new javax.swing.JPanel();
+        cbCriterio = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         tabDadosCliente = new javax.swing.JTabbedPane();
         jPanel7 = new javax.swing.JPanel();
@@ -324,14 +410,14 @@ public class Clientes extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Nome", "Razão Social"
+                "ID", "", "Nome", "Razão Social", "Município", "UF", "Representante"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, true, false, false
+                false, true, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -355,6 +441,9 @@ public class Clientes extends javax.swing.JInternalFrame {
             tableclientes.getColumnModel().getColumn(1).setMinWidth(35);
             tableclientes.getColumnModel().getColumn(1).setPreferredWidth(35);
             tableclientes.getColumnModel().getColumn(1).setMaxWidth(35);
+            tableclientes.getColumnModel().getColumn(5).setMinWidth(50);
+            tableclientes.getColumnModel().getColumn(5).setPreferredWidth(50);
+            tableclientes.getColumnModel().getColumn(5).setMaxWidth(50);
         }
 
         jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
@@ -376,21 +465,49 @@ public class Clientes extends javax.swing.JInternalFrame {
             .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
+        jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder("Critério"));
+
+        cbCriterio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nome", "Razão Social", "Município", "UF", "Representante", "DDD" }));
+        cbCriterio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbCriterioActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(cbCriterio, 0, 179, Short.MAX_VALUE)
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addComponent(cbCriterio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1261, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(275, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE))
         );
@@ -702,7 +819,12 @@ public class Clientes extends javax.swing.JInternalFrame {
 
         jLabel16.setText("Condição de Pagamento");
 
-        txtrepresentante.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtvendedor.setEditable(false);
+
+        txtrepresentante.setEditable(false);
+        txtrepresentante.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+
+        txtcondicao.setEditable(false);
 
         jButton3.setText("Procurar");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -1291,12 +1413,17 @@ public class Clientes extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tablecontatosMouseClicked
 
+    private void cbCriterioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCriterioActionPerformed
+        readtableclientes();
+    }//GEN-LAST:event_cbCriterioActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btncep;
     private javax.swing.JButton btncnpj;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
+    private static javax.swing.JComboBox<String> cbCriterio;
     private javax.swing.JComboBox<String> cbgrupo;
     private javax.swing.JComboBox<String> cbuf;
     private javax.swing.JCheckBox checkBoleto;
@@ -1334,6 +1461,7 @@ public class Clientes extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

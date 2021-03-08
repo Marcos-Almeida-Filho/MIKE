@@ -242,6 +242,7 @@ public class TicketsDAO {
                 tb.setAssunto(rs.getString("assunto"));
                 tb.setNivel(rs.getInt("nivel"));
                 tb.setDescricao(rs.getString("descricao"));
+                tb.setResposta(rs.getString("resposta"));
 
                 listt.add(tb);
             }
@@ -261,26 +262,26 @@ public class TicketsDAO {
 
         return listt;
     }
-    
+
     public int ticketId(String ticket) {
         rsList();
-        
+
         int id = 0;
-        
+
         try {
             stmt = con.prepareStatement("SELECT id FROM " + table + " WHERE ticket = '" + ticket + "'");
-            
+
             rs = stmt.executeQuery();
-            
-            if(rs.next()) {
+
+            if (rs.next()) {
                 id = rs.getInt("id");
             }
         } catch (SQLException e) {
             String msg = "Erro ao ler ID do Ticket.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
+
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg, e);
@@ -289,7 +290,7 @@ public class TicketsDAO {
         } finally {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
-        
+
         return id;
     }
 
@@ -382,7 +383,7 @@ public class TicketsDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void encerrarTicket(int id, String data) {
         conStmt();
 
@@ -405,22 +406,22 @@ public class TicketsDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
-    public void updateTicket(String assunto, int nivel, String descricao, int id) {
+
+    public void updateTicket(String assunto, int nivel, String descricao, String resposta, int id) {
         conStmt();
-        
+
         try {
-            stmt = con.prepareStatement("UPDATE " + table + " SET assunto = '" + assunto + "', nivel = " + nivel + ", descricao = '" + descricao + "' WHERE id = " + id);
-            
+            stmt = con.prepareStatement("UPDATE " + table + " SET assunto = '" + assunto + "', nivel = " + nivel + ", descricao = '" + descricao + "', resposta = '" + resposta + "' WHERE id = " + id);
+
             stmt.executeUpdate();
-            
+
             JOptionPane.showMessageDialog(null, "Atualizado com sucesso.");
         } catch (SQLException e) {
             String msg = "Erro ao atualizar Ticket.";
             JOptionPane.showMessageDialog(null, msg);
-            
+
             new Thread() {
-                
+
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg, e);

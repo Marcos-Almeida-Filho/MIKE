@@ -38,7 +38,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
-    
+
     public static int idCliente;
 
     //DAO e Bean para salvar
@@ -116,6 +116,7 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabledocumentos = new javax.swing.JTable();
         btnprocurar = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setClosable(true);
         setResizable(true);
@@ -431,6 +432,13 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton2.setText("Procurar PDF");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -441,6 +449,8 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnprocurar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSalvar))
@@ -460,7 +470,8 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
-                    .addComponent(btnprocurar))
+                    .addComponent(btnprocurar)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -730,6 +741,23 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        JOptionPane.showMessageDialog(null, "Em breve.");
+//        PDFTextStripper pdfStripper = null;
+//        PDDocument pdDoc = null;
+//        File file = new File("C:/my.pdf");
+//        PDFParser parser = new PDFParser(new FileInputStream(file));
+//        parser.parse();
+//        try (COSDocument cosDoc = parser.getDocument()) {
+//            pdfStripper = new PDFTextStripper();
+//            pdDoc = new PDDocument(cosDoc);
+//            pdfStripper.setStartPage(1);
+//            pdfStripper.setEndPage(5);
+//            String parsedText = pdfStripper.getText(pdDoc);
+//            System.out.println(parsedText);
+//        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnAddDoc;
@@ -737,6 +765,7 @@ public class AdicionarContasAReceber extends javax.swing.JInternalFrame {
     public static javax.swing.JButton btnprocurar;
     public javax.swing.ButtonGroup buttonGroup1;
     public javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;

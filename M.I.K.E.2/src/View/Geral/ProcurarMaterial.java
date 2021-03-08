@@ -5,6 +5,7 @@
  */
 package View.Geral;
 
+import DAO.OPDAO;
 import DAO.OPMPDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.VendasMateriaisDAO;
@@ -12,6 +13,7 @@ import View.comercial.CategoriaDePreco;
 import View.servicos.OS;
 import View.vendas.EscolherMP;
 import View.vendas.OP;
+import View.vendas.ProcessoOP;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,6 +30,7 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
     static ServicoMateriaisDAO smd = new ServicoMateriaisDAO();
     static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
     static OPMPDAO ompd = new OPMPDAO();
+    static OPDAO od = new OPDAO();
 
     public ProcurarMaterial(String origin) {
         initComponents();
@@ -136,9 +139,9 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tablemateriais);
         if (tablemateriais.getColumnModel().getColumnCount() > 0) {
-            tablemateriais.getColumnModel().getColumn(0).setMinWidth(0);
-            tablemateriais.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tablemateriais.getColumnModel().getColumn(0).setMaxWidth(0);
+            tablemateriais.getColumnModel().getColumn(0).setMinWidth(50);
+            tablemateriais.getColumnModel().getColumn(0).setPreferredWidth(50);
+            tablemateriais.getColumnModel().getColumn(0).setMaxWidth(50);
             tablemateriais.getColumnModel().getColumn(1).setMinWidth(250);
             tablemateriais.getColumnModel().getColumn(1).setPreferredWidth(250);
             tablemateriais.getColumnModel().getColumn(1).setMaxWidth(500);
@@ -208,6 +211,7 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
 
     private void tablemateriaisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemateriaisMouseClicked
         if (evt.getClickCount() == 2) {
+            int idmaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
             String codigo = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString();
             String desc = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString();
             String qtd = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 3).toString();
@@ -239,10 +243,12 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     });
                     break;
                 case "CotacaoVenda":
+                    ItemCotacao.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
                     ItemCotacao.txtcodigo.setText(codigo);
                     ItemCotacao.txtdesc.setText(desc);
                     break;
                 case "CotacaoServico":
+                    ItemCotacao.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
                     ItemCotacao.txtcodigo.setText(codigo);
                     ItemCotacao.txtdesc.setText(desc);
                     break;
@@ -260,8 +266,11 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                     OP.TxtDescricao.setText(desc);
                     OP.TxtQtde.setText(qtd);
                     break;
+                case "ProcessoOP":
+                    od.updateMaterialOP(OP.txtNumOP.getText(), idmaterial, codigo, desc);
+                    ProcessoOP.criarProximoProcesso();
+                    break;
             }
-            ItemCotacao.idMaterial = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
             dispose();
         }
     }//GEN-LAST:event_tablemateriaisMouseClicked

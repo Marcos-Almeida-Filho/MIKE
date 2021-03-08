@@ -328,6 +328,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -342,6 +343,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -356,6 +358,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -374,6 +377,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -388,6 +392,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -402,6 +407,7 @@ public class F_UP extends javax.swing.JInternalFrame {
                         model.addRow(new Object[]{
                             fub.getId(),
                             fub.getDav(),
+                            fub.getCliente(),
                             fub.getMaterial(),
                             Dates.TransformarDataCurtaDoDB(fub.getDataentrega()),
                             fub.getOp(),
@@ -416,14 +422,13 @@ public class F_UP extends javax.swing.JInternalFrame {
     }
 
     public static void statusOS() {
-        psd.read().forEach(sgdpd -> {
-            cbStatusOS.addItem(sgdpd.getNome());
-        });
-
         pvd.readTodos().forEach(pvb -> {
             cbStatusOP.addItem(pvb.getNome());
+            cbStatusOS.addItem(pvb.getNome());
+            cbStatusGeral.addItem(pvb.getNome());
         });
 
+        cbStatusGeral.addItem("Encerrado");
         cbStatusOS.addItem("Encerrado");
         cbStatusOP.addItem("Encerrado");
     }
@@ -775,11 +780,11 @@ public class F_UP extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "DAV", "Material", "Data de Entrega", "OS", "Nível", "Processo Atual", "Observação"
+                "ID", "DAV", "Cliente", "Material", "Data de Entrega", "OS", "Nível", "Processo Atual", "Observação"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -800,15 +805,15 @@ public class F_UP extends javax.swing.JInternalFrame {
             tableFUPOS.getColumnModel().getColumn(1).setMinWidth(80);
             tableFUPOS.getColumnModel().getColumn(1).setPreferredWidth(80);
             tableFUPOS.getColumnModel().getColumn(1).setMaxWidth(80);
-            tableFUPOS.getColumnModel().getColumn(3).setMinWidth(100);
-            tableFUPOS.getColumnModel().getColumn(3).setPreferredWidth(100);
-            tableFUPOS.getColumnModel().getColumn(3).setMaxWidth(100);
-            tableFUPOS.getColumnModel().getColumn(4).setMinWidth(80);
-            tableFUPOS.getColumnModel().getColumn(4).setPreferredWidth(80);
-            tableFUPOS.getColumnModel().getColumn(4).setMaxWidth(80);
-            tableFUPOS.getColumnModel().getColumn(5).setMinWidth(45);
-            tableFUPOS.getColumnModel().getColumn(5).setPreferredWidth(45);
-            tableFUPOS.getColumnModel().getColumn(5).setMaxWidth(45);
+            tableFUPOS.getColumnModel().getColumn(4).setMinWidth(100);
+            tableFUPOS.getColumnModel().getColumn(4).setPreferredWidth(100);
+            tableFUPOS.getColumnModel().getColumn(4).setMaxWidth(100);
+            tableFUPOS.getColumnModel().getColumn(5).setMinWidth(80);
+            tableFUPOS.getColumnModel().getColumn(5).setPreferredWidth(80);
+            tableFUPOS.getColumnModel().getColumn(5).setMaxWidth(80);
+            tableFUPOS.getColumnModel().getColumn(6).setMinWidth(45);
+            tableFUPOS.getColumnModel().getColumn(6).setPreferredWidth(45);
+            tableFUPOS.getColumnModel().getColumn(6).setMaxWidth(45);
         }
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);

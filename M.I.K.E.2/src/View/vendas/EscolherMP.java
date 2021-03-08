@@ -23,12 +23,15 @@ public class EscolherMP extends javax.swing.JInternalFrame {
     OPMPDAO ompd = new OPMPDAO();
 
     boolean insumo;
+    public static int idMP;
+    static int id;
 
     /**
      * Creates new form EscolherMP
      */
     public EscolherMP() {
         initComponents();
+        id = 0;
     }
 
     /**
@@ -49,6 +52,8 @@ public class EscolherMP extends javax.swing.JInternalFrame {
         jButton2 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtDesc = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtLote = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
         setClosable(true);
@@ -84,6 +89,11 @@ public class EscolherMP extends javax.swing.JInternalFrame {
         txtDesc.setEditable(false);
         txtDesc.setName("txtDesc"); // NOI18N
 
+        jLabel4.setText("Lote");
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        txtLote.setName("txtLote"); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -106,7 +116,11 @@ public class EscolherMP extends javax.swing.JInternalFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtQtd, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtQtd, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtLote, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 156, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -125,7 +139,9 @@ public class EscolherMP extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtQtd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtQtd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(txtLote, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -201,24 +217,33 @@ public class EscolherMP extends javax.swing.JInternalFrame {
         } else if (txtQtd.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Digite uma quantidade.");
             txtQtd.requestFocus();
+        } else if (txtLote.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um lote.");
+            txtLote.requestFocus();
         } else {
             String op = OP.txtNumOP.getText();
             String codigo = txtCodigo.getText();
             String desc = txtDesc.getText();
             double qtd = Double.parseDouble(txtQtd.getText().replace(",", "."));
-            try {
-                ompd.create(op, codigo, desc, qtd, insumo);
-            } catch (SQLException e) {
-                String msg = "Erro ao criar matéria prima da OP.";
-                JOptionPane.showMessageDialog(null, msg);
+            String lote = txtLote.getText();
+            if (id == 0) {
+                try {
+                    ompd.create(op, codigo, desc, qtd, insumo, lote, idMP);
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar matéria prima da OP.";
+                    JOptionPane.showMessageDialog(null, msg);
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarErro2(msg, e);
-                    }
-                }.start();
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+            } else {
+                ompd.updateMP(codigo, desc, qtd, lote, id);
             }
+
             OP.lerMP(op);
 
             dispose();
@@ -232,10 +257,12 @@ public class EscolherMP extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
+    public javax.swing.JLabel jLabel4;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public static javax.swing.JTextField txtCodigo;
     public static javax.swing.JTextField txtDesc;
+    public javax.swing.JTextField txtLote;
     public static javax.swing.JTextField txtQtd;
     // End of variables declaration//GEN-END:variables
 }

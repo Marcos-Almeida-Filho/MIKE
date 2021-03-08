@@ -14,6 +14,7 @@ import View.servicos.*;
 import View.vendas.CotacaoVenda;
 import View.vendas.OP;
 import View.vendas.PedidoVenda;
+import View.vendas.VM1;
 import java.io.File;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -138,7 +139,7 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                         break;
                     case "OP":
                         Arquivos.AdicionarArquivoEmTable(OP.tableDocs, filestring, this);
-                        if (!OP.txtNumOP.getText().equals("")) {
+                        if (!OP.txtStatus.getText().equals("Rascunho")) {
                             try {
                                 OP.salvarDocs(OP.txtNumOP.getText());
                             } catch (SQLException e) {
@@ -153,10 +154,14 @@ public class ProcurarDocumento extends javax.swing.JInternalFrame {
                                     }
                                 }.start();
                             }
+                            OP.lerDocs(OP.txtNumOP.getText());
                         }
                         break;
                     case "CotacaoCompras":
                         Arquivos.AdicionarArquivoEmTable(ComprasCotacao.tableDocs, filestring, this);
+                        break;
+                    case "VM1":
+                        Arquivos.AdicionarArquivoEmTable(VM1.tabledocumentos, filestring, this);
                         break;
                 }
                 dispose();

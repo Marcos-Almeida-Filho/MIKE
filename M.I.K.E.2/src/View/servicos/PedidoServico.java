@@ -90,6 +90,12 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
     static ServicoPedidoItensNFDAO spinfd = new ServicoPedidoItensNFDAO();
 
+    ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+
+    ServicoPedidoItensNFBean spinfb;
+
+    F_UPDAO fud = new F_UPDAO();
+
     public static int vezes = 0;
 
     /**
@@ -188,6 +194,28 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         }
     }
 
+    public void checkStatusRetorno() {
+        int numeronota = 0;
+        for (int i = 0; i < tableitensnota.getRowCount(); i++) {
+            if (!tableitensnota.getValueAt(i, 7).equals("")) {
+                numeronota++;
+            }
+        }
+        if (numeronota < tableitensnota.getRowCount()) {
+            spb.setStatus_retorno("Parcialmente Faturado");
+            spb.setIdtela(txtnumeropedido.getText());
+
+            //status_retorno = ? WHERE idtela = ?
+            spd.updatestatusretorno(spb);
+        } else {
+            spb.setStatus_retorno("Faturado");
+            spb.setIdtela(txtnumeropedido.getText());
+
+            //status_retorno = ? WHERE idtela = ?
+            spd.updatestatusretorno(spb);
+        }
+    }
+
     public static void txtvalorcobranca() {
         if (tableitensorcamento.getRowCount() < 1) {
             txttotal.setText("");
@@ -204,6 +232,48 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             String valorf = formatter.format(vt);
             txttotal.setText(String.valueOf(valorf));
         }
+    }
+
+    public void lerDocs(String pedido) {
+        DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
+        modeldoc.setNumRows(0);
+
+        spdd.readitens(pedido).forEach((spdb) -> {
+            modeldoc.addRow(new Object[]{
+                false,
+                spdb.getId(),
+                spdb.getDescricao(),
+                spdb.getLocal(),});
+        });
+    }
+
+    public void lerPedido(String pedido) {
+        txtnumeropedido.setText(pedido);
+
+        for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
+            txtclientepedido.setText(spb.getCliente());
+            txtcondicao.setText(spb.getCondicao());
+            txtrepresentante.setText(spb.getRepresentante());
+            txtvendedor.setText(spb.getVendedor());
+            txtstatusretorno.setText(spb.getStatus_retorno());
+            txtstatuscobranca.setText(spb.getStatus_cobranca());
+            txtnotes.setText(spb.getNotes());
+            txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
+            txtnfcliente.setText(spb.getNfcliente());
+            txtPedidoCliente.setText(spb.getPedidocliente());
+        }
+
+        camposeditaveis();
+
+        readitenscobranca();
+
+        txtvalorcobranca();
+
+        readitensretorno();
+
+        txtvalorretorno();
+
+        lerDocs(pedido);
     }
 
     public static void txtvalorretorno() {
@@ -244,7 +314,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 spib.getQtde(),
                 spib.getValor(),
                 spib.getTotal(),
-                spib.getPrazo(),
+                Dates.TransformarDataCurtaDoDB(spib.getPrazoDate()),
                 spib.getOs(),
                 spib.getNf()
             });
@@ -1308,7 +1378,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             }
 
             //Criar itens do pedido (Nota Fiscal)
-            ServicoPedidoItensNFBean spinfb = new ServicoPedidoItensNFBean();
+            spinfb = new ServicoPedidoItensNFBean();
 
             if (tableitensnota.getRowCount() > 0) {
                 for (int i = 0; i < tableitensnota.getRowCount(); i++) {
@@ -1326,7 +1396,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             }
 
             //Criar documentos do pedido
-            ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
+            spdd = new ServicoPedidoDocumentosDAO();
             ServicoPedidoDocumentosBean spdb = new ServicoPedidoDocumentosBean();
 
             if (tabledocumentos.getRowCount() > 0) {
@@ -1394,25 +1464,22 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     //idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
                     spid.create(spib);
                 } else {
-                    spib.setIdpedido(txtnumeropedido.getText());
                     spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
                     spib.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
                     spib.setQtde(tableitensorcamento.getValueAt(i, 4).toString());
                     spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
                     spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
                     spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
-                    spib.setOs(tableitensorcamento.getValueAt(i, 8).toString());
-                    spib.setNf(tableitensorcamento.getValueAt(i, 9).toString());
                     spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
 
-                    //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?
+                    //codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ? WHERE id = ?
                     spid.update(spib);
                 }
 
             }
 
             //Criar itens do pedido (Nota Fiscal)
-            ServicoPedidoItensNFBean spinfb = new ServicoPedidoItensNFBean();
+            spinfb = new ServicoPedidoItensNFBean();
 
             if (tableitensnota.getRowCount() > 0) {
                 for (int i = 0; i < tableitensnota.getRowCount(); i++) {
@@ -1491,42 +1558,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
     private void tablepedidoservicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablepedidoservicoMouseClicked
         if (evt.getClickCount() == 2) {
             tabpedidos.setSelectedIndex(1);
-            txtnumeropedido.setText(tablepedidoservico.getValueAt(tablepedidoservico.getSelectedRow(), 0).toString());
 
-            for (ServicoPedidoBean spb : spd.click(txtnumeropedido.getText())) {
-                txtclientepedido.setText(spb.getCliente());
-                txtcondicao.setText(spb.getCondicao());
-                txtrepresentante.setText(spb.getRepresentante());
-                txtvendedor.setText(spb.getVendedor());
-                txtstatusretorno.setText(spb.getStatus_retorno());
-                txtstatuscobranca.setText(spb.getStatus_cobranca());
-                txtnotes.setText(spb.getNotes());
-                txtorcamento.setText(String.valueOf(spb.getIdorcamento()));
-                txtnfcliente.setText(spb.getNfcliente());
-                txtPedidoCliente.setText(spb.getPedidocliente());
-            }
-
-            camposeditaveis();
-
-            readitenscobranca();
-
-            txtvalorcobranca();
-
-            readitensretorno();
-
-            txtvalorretorno();
-
-            DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
-            modeldoc.setNumRows(0);
-            ServicoPedidoDocumentosDAO spdd = new ServicoPedidoDocumentosDAO();
-
-            spdd.readitens(txtnumeropedido.getText()).forEach((spdb) -> {
-                modeldoc.addRow(new Object[]{
-                    false,
-                    spdb.getId(),
-                    spdb.getDescricao(),
-                    spdb.getLocal(),});
-            });
+            lerPedido(tablepedidoservico.getValueAt(tablepedidoservico.getSelectedRow(), 0).toString());
         }
     }//GEN-LAST:event_tablepedidoservicoMouseClicked
 
@@ -1654,7 +1687,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             }
             //Alterar status do pedido de acordo com o número de linhas com notas lançadas
             if (numeronota2 < rc) {
-                spb.setStatus_cobranca("Parcial");
+                spb.setStatus_cobranca("Parcialmente Faturado");
                 spb.setIdtela(txtnumeropedido.getText());
 
                 //status_cobranca = ? WHERE idtela = ?
@@ -1684,7 +1717,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 ItemPedidoServico.txtdesc.setText(tableitensorcamento.getValueAt(row, 3).toString());
                 ItemPedidoServico.txtqtd.setText(tableitensorcamento.getValueAt(row, 4).toString());
                 ItemPedidoServico.txtvalor.setText(tableitensorcamento.getValueAt(row, 5).toString());
-                ItemPedidoServico.txtprazo.setText(tableitensorcamento.getValueAt(row, 7).toString());
+                Dates.SetarDataJDateChooser(ItemPedidoServico.datePrazo, Dates.CriarDataCurtaDBComDataExistente(tableitensorcamento.getValueAt(row, 7).toString()));
             }
         }
         if (evt.getButton() == 3) {
@@ -1775,41 +1808,24 @@ public class PedidoServico extends javax.swing.JInternalFrame {
         } else if (numeronota > 0) {
             JOptionPane.showMessageDialog(rootPane, "Item selecionado já com nota fiscal.");
         } else {
-            ServicoPedidoDAO spd = new ServicoPedidoDAO();
-            ServicoPedidoBean spb = new ServicoPedidoBean();
+            spb = new ServicoPedidoBean();
 
             String nota = JOptionPane.showInputDialog(rootPane, "Qual o número da nota de retorno?", "Nota de Retorno", JOptionPane.YES_NO_OPTION);
             for (int i = 0; i < rc; i++) {
                 if (tableitensnota.getValueAt(i, 0).equals(true)) {
-                    ServicoPedidoItensNFDAO spid = new ServicoPedidoItensNFDAO();
-                    ServicoPedidoItensNFBean spib = new ServicoPedidoItensNFBean();
+                    spinfb = new ServicoPedidoItensNFBean();
 
-                    spib.setNfretorno(nota);
-                    spib.setId(Integer.parseInt(tableitensnota.getValueAt(i, 1).toString()));
+                    spinfb.setNfretorno(nota);
+                    spinfb.setId(Integer.parseInt(tableitensnota.getValueAt(i, 1).toString()));
 
                     //nf = ? WHERE id = ?
-                    spid.updatenotaretorno(spib);
+                    spinfd.updatenotaretorno(spinfb);
                 }
             }
             readitensretorno();
-            for (int i = 0; i < rc; i++) {
-                if (!tableitensnota.getValueAt(i, 7).equals("")) {
-                    numeronota2++;
-                }
-            }
-            if (numeronota2 < rc) {
-                spb.setStatus_retorno("Parcialmente Faturado");
-                spb.setIdtela(txtnumeropedido.getText());
 
-                //status_retorno = ? WHERE idtela = ?
-                spd.updatestatusretorno(spb);
-            } else {
-                spb.setStatus_retorno("Faturado");
-                spb.setIdtela(txtnumeropedido.getText());
+            checkStatusRetorno();
 
-                //status_retorno = ? WHERE idtela = ?
-                spd.updatestatusretorno(spb);
-            }
             filltablepedidoorcamento();
         }
     }//GEN-LAST:event_jButton12ActionPerformed
@@ -1837,8 +1853,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     ob.setIdtela(idos);
                     String data = Dates.CriarDataCompletaParaDB();
                     ob.setDateabertura(data);
-                    int days = Integer.parseInt(tableitensorcamento.getValueAt(i, 7).toString().replace(" dias úteis", ""));
-                    String dataPrevisao = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(days);
+                    String dataPrevista = tableitensorcamento.getValueAt(i, 7).toString();
+                    String dataPrevisao = Dates.CriarDataCurtaDBComDataExistente(dataPrevista);
                     ob.setDateprevisao(dataPrevisao);
                     ob.setStatus("Rascunho");
                     ob.setCliente(txtclientepedido.getText());
@@ -1859,26 +1875,11 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     //idtela, dateabertura, dateprevisao, status, cliente, das, codigo, descricao, qtdinicial, qtdok, qtdnaook, notes, topob, reconstrucaob, completab, desenhob, raio, frontal
                     od.create(ob);
 
-                    String n = tableitensorcamento.getValueAt(i, 9).toString();
-
-                    spib.setIdpedido(txtnumeropedido.getText());
-                    spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
-                    spib.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
-                    spib.setQtde(tableitensorcamento.getValueAt(i, 4).toString());
-                    spib.setValor(tableitensorcamento.getValueAt(i, 5).toString());
-                    spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
-                    spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
                     spib.setOs(idos);
-                    if (n.isEmpty()) {
-                        spib.setNf("");
-                    } else {
-                        spib.setNf(n);
-                    }
-
                     spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
 
-                    //idpedido = ?, codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ?, pedidocliente = ?, os = ?, nf = ? WHERE id = ?
-                    spid.update(spib);
+                    //os = ? WHERE id = ?
+                    spid.updateOS(spib);
 
                     //Documentos do Produto na OS
                     int idmaterial = 0;
@@ -2017,9 +2018,13 @@ public class PedidoServico extends javax.swing.JInternalFrame {
             if (resp == 0) {
                 for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
                     if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
-                        od.delete(tableitensorcamento.getValueAt(i, 8).toString());
+                        String op = tableitensorcamento.getValueAt(i, 8).toString();
+
+                        od.delete(op);
 
                         spid.delete(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
+
+                        fud.deletePorOP(op);
                     }
                 }
                 readitenscobranca();
@@ -2184,6 +2189,10 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 }
 
                 readitensretorno();
+
+                checkStatusRetorno();
+
+                lerPedido(txtnumeropedido.getText());
             }
         }
     }//GEN-LAST:event_jButton10ActionPerformed

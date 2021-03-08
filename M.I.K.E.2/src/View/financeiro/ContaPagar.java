@@ -281,7 +281,6 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Nota Fiscal");
 
-        txtnf.setEditable(false);
         txtnf.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         jLabel4.setText("Fornecedor");

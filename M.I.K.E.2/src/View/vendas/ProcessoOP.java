@@ -21,6 +21,7 @@ import Methods.Dates;
 import Methods.SendEmail;
 import Methods.SoNumeros;
 import Methods.Telas;
+import View.Geral.ProcurarMaterial;
 import java.sql.SQLException;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -41,6 +42,8 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
     static VendasMateriaisDAO vmd = new VendasMateriaisDAO();
     static VendasMateriaisMovDAO vmmd = new VendasMateriaisMovDAO();
     static ProcessosVendasMedicoesDAO pvmd = new ProcessosVendasMedicoesDAO();
+
+    static ProcurarMaterial pm;
 
     static double qtdTotalProcesso = 0;
     static double qtdFinalOP = 0;
@@ -192,42 +195,52 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
         int resp = JOptionPane.showConfirmDialog(null, "Deseja encerrar a OP?", "Encerrar OP", JOptionPane.YES_NO_OPTION);
 
         if (resp == 0) {
-            od.updateStatus(OP.txtNumOP.getText(), "Finalizado");
+            int idMaterialOP = od.getIdMaterialOP(OP.txtNumOP.getText());
 
-            int idMaterial = od.getIdMaterialOP(OP.txtNumOP.getText());
+            if (idMaterialOP == 0) {
+                JOptionPane.showMessageDialog(null, "Material incorreto. Favor atualizá-lo.");
 
-            double estoqueAtual = vmd.readEstoque(idMaterial);
+                pm = new ProcurarMaterial("ProcessoOP");
+                Telas.AparecerTela(pm);
+            } else {
+                od.updateStatus(OP.txtNumOP.getText(), "Finalizado");
 
-            od.readOP(OP.txtNumOP.getText()).forEach(od -> {
-                qtdFinalOP = od.getQtdok();
-            });
+                int idMaterial = od.getIdMaterialOP(OP.txtNumOP.getText());
 
-            F_UPBean fub = new F_UPBean();
-            fub.setProcesso("Encerrado");
-            fub.setOp(OP.txtNumOP.getText());
+                double estoqueAtual = vmd.readEstoque(idMaterial);
 
-            //processo = ? WHERE op = ?
-            fud.updateProcessoByOs(fub);
+                od.readOP(OP.txtNumOP.getText()).forEach(od -> {
+                    qtdFinalOP = od.getQtdok();
+                });
 
-            double estoque = estoqueAtual + qtdFinalOP;
+                F_UPBean fub = new F_UPBean();
+                fub.setProcesso("Encerrado");
+                fub.setOp(OP.txtNumOP.getText());
 
-            vmd.updateEstoque(estoque, idMaterial);
+                //processo = ? WHERE op = ?
+                fud.updateProcessoByOs(fub);
 
-            try {
-                vmmd.create(idMaterial, estoqueAtual, qtdFinalOP, estoque, OP.txtNumOP.getText(), Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
-            } catch (SQLException e) {
-                String msg = "Erro ao criar movimentação do Material de Venda.";
-                JOptionPane.showMessageDialog(null, msg);
+                double estoque = estoqueAtual + qtdFinalOP;
 
-                new Thread() {
-                    @Override
-                    public void run() {
-                        SendEmail.EnviarErro2(msg, e);
-                    }
-                }.start();
+                vmd.updateEstoque(estoque, idMaterial);
+
+                try {
+                    vmmd.create(idMaterial, estoqueAtual, qtdFinalOP, estoque, OP.txtNumOP.getText(), Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                } catch (SQLException e) {
+                    String msg = "Erro ao criar movimentação do Material de Venda.";
+                    JOptionPane.showMessageDialog(null, msg);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+
+                OP.readOPs();
+                OP.lerOP(OP.txtNumOP.getText());
             }
-
-            OP.readOPs();
         } else {
             JComboBox cbProcessos = new JComboBox();
 

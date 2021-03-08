@@ -18,6 +18,8 @@ public class OPMPBean {
     private double qtd;
     private boolean baixa;
     private boolean insumo;
+    private String lote;
+    private int idInsumo;
 
     public int getId() {
         return id;
@@ -75,4 +77,19 @@ public class OPMPBean {
         this.insumo = insumo;
     }
 
+    public String getLote() {
+        return lote;
+    }
+
+    public void setLote(String lote) {
+        this.lote = lote;
+    }
+    
+    public int getIdInsumo() {
+        return idInsumo;
+    }
+    
+    public void setIdInsumo(int idInsumo) {
+        this.idInsumo = idInsumo;
+    }
 }

@@ -58,7 +58,9 @@ public class VendasPedidoDocsDAO {
     public void create(String pedido, String descricao, String local) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO vendas_pedido_docs (pedido, descricao, local) VALUES ('" + pedido + "','" + descricao + "','" + local + "')");
+        String local2 = local.replace("\\", "\\\\");
+
+        stmt = con.prepareStatement("INSERT INTO vendas_pedido_docs (pedido, descricao, local) VALUES ('" + pedido + "', '" + descricao + "', '" + local2 + "')");
 
         stmt.executeUpdate();
 

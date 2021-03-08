@@ -120,7 +120,7 @@ public class ServicoPedidoDAO {
         List<ServicoPedidoBean> listsp = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE status_retorno = 'Ativo' OR status_cobranca = 'Ativo'");
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE status_retorno = 'Ativo' OR status_cobranca = 'Ativo' OR status_retorno = 'Parcialmente Faturado' OR status_cobranca = 'Parcialmente Faturado'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -289,7 +289,7 @@ public class ServicoPedidoDAO {
         List<ServicoPedidoBean> listsp = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE (status_retorno = 'Ativo' OR status_cobranca = 'Ativo') AND (idtela LIKE '%" + pesquisa + "%' OR cliente LIKE '%" + pesquisa + "%' OR nfcliente LIKE '%" + pesquisa + "%' OR pedidocliente LIKE '%" + pesquisa + "%')");
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE (status_retorno = 'Ativo' OR status_cobranca = 'Ativo' OR status_retorno = 'Parcialmente Faturado' OR status_cobranca = 'Parcialmente Faturado') AND (idtela LIKE '%" + pesquisa + "%' OR cliente LIKE '%" + pesquisa + "%' OR nfcliente LIKE '%" + pesquisa + "%' OR pedidocliente LIKE '%" + pesquisa + "%')");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

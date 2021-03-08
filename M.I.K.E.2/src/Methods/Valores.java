@@ -62,6 +62,22 @@ public class Valores {
 
         return replace2;
     }
+    
+    public static double TransformarStringDinheiroEmDouble(String valor) {
+        String replace1;
+        double replace2;
+
+        if (valor.contains("R$")) {
+            String valor2 = valor.replace("R$ ", "");
+            replace1 = valor2.replace(".", "");
+        } else {
+            replace1 = valor.replace(".", "");
+        }
+
+        replace2 = Double.parseDouble(replace1.replace(",", "."));
+
+        return replace2;
+    }
 
     public static void SetarTxtNumeroEmDinheiro(JTextField text) {
         DecimalFormat formatter = new DecimalFormat("#,###.00");
@@ -79,7 +95,7 @@ public class Valores {
         return valor;
     }
 
-    public static String TransformarDoubleDBemDinheiro(double valordb) {
+    public static String TransformarDoubleDBemDinheiroComLocal(double valordb) {
         Locale locale = new Locale("pt", "BR");
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
 

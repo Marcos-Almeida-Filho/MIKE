@@ -53,67 +53,10 @@ public class VendasMateriaisDAO {
         listvmb = new ArrayList<>();
     }
 
-    /**
-     * Método para criar um novo Material de Venda.Stmt = INSERT INTO
-     * vendas_materiais (codigo, descricao, estoque, status, local)
-     *
-     * @param codigo String do código do material
-     * @param descricao String da descrição do material
-     * @param estoque Double contendo o estoque do material criado
-     * @param estoqueMinimo
-     * @param status String com o status do material (Ex: "Ativo", "Desativado",
-     * etc.)
-     * @param local String do Local de Armazenagem
-     * @param d1
-     * @param d2
-     * @param d3
-     * @param d4
-     * @param d5
-     * @param l1
-     * @param l2
-     * @param l3
-     * @param l4
-     * @param l5
-     * @param materialOrigem
-     * @param rev
-     * @param raio
-     * @param importada
-     * @param weldon
-     * @param ri
-     * @param md
-     * @param hss
-     * @param tipo
-     * @param familia
-     * @param tamanho
-     * @param cortes
-     * @param topo
-     * @param canal
-     * @param extra
-     * @param helice
-     * @param nucleo
-     * @param concavidade
-     * @param topo1
-     * @param topo2
-     * @param alivio1
-     * @param alivio2
-     * @param filete
-     * @param agressividade
-     * @param frontal
-     * @param qtdMinimaOP
-     * @param desbaste
-     * @param tolD1
-     * @param tolD2
-     * @param tolD3
-     * @param tolD4
-     * @param tolD5
-     * @param mp
-     * @param aparecerExtra
-     * @throws java.sql.SQLException
-     */
-    public void create(String codigo, String descricao, double estoque, double estoqueMinimo, String status, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, double qtdMinimaOP, boolean desbaste, String tolD1, String tolD2, String tolD3, String tolD4, String tolD5, String mp, boolean aparecerExtra) throws SQLException {
+    public void create(String codigo, String descricao, double estoque, double estoqueMinimo, String status, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, double qtdMinimaOP, boolean desbaste, String tolD1, String tolD2, String mp, boolean aparecerExtra, boolean cs11, boolean detalonado, String mpDados, String conicidade, String tipoFilete, String alturaCostela, String tipoRaio, String anguloFrontal, String tipoFrontal) throws SQLException {
         conStmt();
 
-        stmt = con.prepareStatement("INSERT INTO vendas_materiais (codigo, descricao, estoque, estoqueMinimo, status, local, d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, importada, weldon, ri, md, hss, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, frontal, qtdMinimaOP, desbaste, tolD1, tolD2, tolD3, tolD4, tolD5, mp, aparecerExtra) VALUES ('" + codigo + "','" + descricao + "'," + estoque + "," + estoqueMinimo + ",'" + status + "','" + local + "','" + d1 + "','" + d2 + "','" + d3 + "','" + d4 + "','" + d5 + "','" + l1 + "','" + l2 + "','" + l3 + "','" + l4 + "','" + l5 + "','" + materialOrigem + "','" + rev + "','" + raio + "'," + importada + "," + weldon + "," + ri + "," + md + "," + hss + ",'" + tipo + "','" + familia + "','" + tamanho + "','" + cortes + "','" + topo + "','" + canal + "','" + extra + "','" + helice + "','" + nucleo + "','" + concavidade + "','" + topo1 + "','" + topo2 + "','" + alivio1 + "','" + alivio2 + "','" + filete + "','" + agressividade + "','" + frontal + "', " + qtdMinimaOP + ", " + desbaste + ", '" + tolD1 + "', '" + tolD2 + "', '" + tolD3 + "', '" + tolD4 + "', '" + tolD5 + "', '" + mp + "', " + aparecerExtra + ")");
+        stmt = con.prepareStatement("INSERT INTO vendas_materiais (codigo, descricao, estoque, estoqueMinimo, status, local, d1, d2, d3, d4, d5, l1, l2, l3, l4, l5, materialOrigem, rev, raio, importada, weldon, ri, md, hss, tipo, familia, tamanho, cortes, topo, canal, extra, helice, nucleo, concavidade, topo1, topo2, alivio1, alivio2, filete, agressividade, qtdMinimaOP, desbaste, tolD1, tolD2, mp, aparecerExtra, cs11, detalonado, mpDados, conicidade, tipoFilete, alturaCostela, tipoRaio, anguloFrontal, tipoFrontal) VALUES ('" + codigo + "','" + descricao + "'," + estoque + "," + estoqueMinimo + ",'" + status + "','" + local + "','" + d1 + "','" + d2 + "','" + d3 + "','" + d4 + "','" + d5 + "','" + l1 + "','" + l2 + "','" + l3 + "','" + l4 + "','" + l5 + "','" + materialOrigem + "','" + rev + "','" + raio + "'," + importada + "," + weldon + "," + ri + "," + md + "," + hss + ",'" + tipo + "','" + familia + "','" + tamanho + "','" + cortes + "','" + topo + "','" + canal + "','" + extra + "','" + helice + "','" + nucleo + "','" + concavidade + "','" + topo1 + "','" + topo2 + "','" + alivio1 + "','" + alivio2 + "','" + filete + "','" + agressividade + "', " + qtdMinimaOP + ", " + desbaste + ", '" + tolD1 + "', '" + tolD2 + "', '" + mp + "', " + aparecerExtra + ", " + cs11 + ", " + detalonado + ", '" + mpDados + "', '" + conicidade + "', '" + tipoFilete + "', '" + alturaCostela + "', '" + tipoRaio + "', '" + anguloFrontal + "', '" + tipoFrontal + "')");
 
         stmt.executeUpdate();
 
@@ -235,7 +178,6 @@ public class VendasMateriaisDAO {
     }
 
     public List<VendasMateriaisBean> readStatusPesquisa(String status, String pesquisa) {
-
         rsList();
 
         try {
@@ -466,9 +408,6 @@ public class VendasMateriaisDAO {
                 vmb.setExtra(rs.getString("extra"));
                 vmb.setTolD1(rs.getString("tolD1"));
                 vmb.setTolD2(rs.getString("tolD2"));
-                vmb.setTolD3(rs.getString("tolD3"));
-                vmb.setTolD4(rs.getString("tolD4"));
-                vmb.setTolD5(rs.getString("tolD5"));
                 vmb.setHelice(rs.getString("helice"));
                 vmb.setNucleo(rs.getString("nucleo"));
                 vmb.setConcavidade(rs.getString("concavidade"));
@@ -478,9 +417,17 @@ public class VendasMateriaisDAO {
                 vmb.setAlivio2(rs.getString("alivio2"));
                 vmb.setFilete(rs.getString("filete"));
                 vmb.setAgressividade(rs.getString("agressividade"));
-                vmb.setFrontal(rs.getString("frontal"));
                 vmb.setMp(rs.getString("mp"));
                 vmb.setAparecerExtra(rs.getBoolean("aparecerExtra"));
+                vmb.setCs11(rs.getBoolean("cs11"));
+                vmb.setDetalonado(rs.getBoolean("detalonado"));
+                vmb.setMpDados(rs.getString("mpDados"));
+                vmb.setConicidade(rs.getString("conicidade"));
+                vmb.setTipoFilete(rs.getString("tipoFilete"));
+                vmb.setAlturaCostela(rs.getString("alturaCostela"));
+                vmb.setTipoRaio(rs.getString("tipoRaio"));
+                vmb.setAnguloFrontal(rs.getString("anguloFrontal"));
+                vmb.setTipoFrontal(rs.getString("tipoFrontal"));
 
                 listvmb.add(vmb);
             }
@@ -497,64 +444,11 @@ public class VendasMateriaisDAO {
         return listvmb;
     }
 
-    /**
-     *
-     * @param codigo
-     * @param descricao
-     * @param estoqueMinimo
-     * @param local
-     * @param d1
-     * @param d2
-     * @param d3
-     * @param d4
-     * @param d5
-     * @param l1
-     * @param l2
-     * @param l3
-     * @param l4
-     * @param l5
-     * @param materialOrigem
-     * @param rev
-     * @param raio
-     * @param importada
-     * @param weldon
-     * @param ri
-     * @param md
-     * @param hss
-     * @param tipo
-     * @param familia
-     * @param tamanho
-     * @param cortes
-     * @param topo
-     * @param canal
-     * @param extra
-     * @param helice
-     * @param nucleo
-     * @param concavidade
-     * @param topo1
-     * @param topo2
-     * @param alivio1
-     * @param alivio2
-     * @param filete
-     * @param agressividade
-     * @param frontal
-     * @param qtdMinimaOP
-     * @param desbaste
-     * @param tolD1
-     * @param tolD2
-     * @param tolD3
-     * @param id
-     * @param tolD5
-     * @param mp
-     * @param aparecerExtra
-     * @param tolD4
-     * @throws SQLException
-     */
-    public void update(String codigo, String descricao, double estoqueMinimo, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, String frontal, double qtdMinimaOP, boolean desbaste, String tolD1, String tolD2, String tolD3, String tolD4, String tolD5, String mp, boolean aparecerExtra, int id) throws SQLException {
+    public void update(String codigo, String descricao, double estoqueMinimo, String local, String d1, String d2, String d3, String d4, String d5, String l1, String l2, String l3, String l4, String l5, String materialOrigem, String rev, String raio, boolean importada, boolean weldon, boolean ri, boolean md, boolean hss, String tipo, String familia, String tamanho, String cortes, String topo, String canal, String extra, String helice, String nucleo, String concavidade, String topo1, String topo2, String alivio1, String alivio2, String filete, String agressividade, double qtdMinimaOP, boolean desbaste, String tolD1, String tolD2, String mp, boolean aparecerExtra, boolean cs11, boolean detalonado, String mpDados, String conicidade, String tipoFilete, String alturaCostela, String tipoRaio, String anguloFrontal, String tipoFrontal, int id) throws SQLException {
 
         conStmt();
 
-        stmt = con.prepareStatement("UPDATE vendas_materiais SET codigo = '" + codigo + "', descricao = '" + descricao + "' , local = '" + local + "', estoqueMinimo = " + estoqueMinimo + ", d1 = '" + d1 + "', d2 = '" + d2 + "', d3 = '" + d3 + "', d4 = '" + d4 + "', d5 = '" + d5 + "', l1 = '" + l1 + "', l2 = '" + l2 + "', l3 = '" + l3 + "', l4 = '" + l4 + "', l5 = '" + l5 + "', materialOrigem = '" + materialOrigem + "', rev = '" + rev + "', raio = '" + raio + "', importada = " + importada + ", weldon = " + weldon + ", ri = " + ri + ", md = " + md + ", hss = " + hss + ", tipo = '" + tipo + "', familia = '" + familia + "', tamanho = '" + tamanho + "', cortes = '" + cortes + "', topo = '" + topo + "', canal = '" + canal + "', extra = '" + extra + "', helice = '" + helice + "', nucleo = '" + nucleo + "', concavidade = '" + concavidade + "', topo1 = '" + topo1 + "', topo2 = '" + topo2 + "', alivio1 = '" + alivio1 + "', alivio2 = '" + alivio2 + "', filete = '" + filete + "', agressividade = '" + agressividade + "', frontal = '" + frontal + "' , qtdMinimaOP = " + qtdMinimaOP + ", desbaste = " + desbaste + ", tolD1 = '" + tolD1 + "', tolD2 = '" + tolD2 + "', tolD3 = '" + tolD3 + "', tolD4 = '" + tolD4 + "', tolD5 = '" + tolD5 + "', mp = '" + mp + "', aparecerExtra = " + aparecerExtra + " WHERE id = " + id);
+        stmt = con.prepareStatement("UPDATE vendas_materiais SET codigo = '" + codigo + "', descricao = '" + descricao + "', local = '" + local + "', estoqueMinimo = " + estoqueMinimo + ", d1 = '" + d1 + "', d2 = '" + d2 + "', d3 = '" + d3 + "', d4 = '" + d4 + "', d5 = '" + d5 + "', l1 = '" + l1 + "', l2 = '" + l2 + "', l3 = '" + l3 + "', l4 = '" + l4 + "', l5 = '" + l5 + "', materialOrigem = '" + materialOrigem + "', rev = '" + rev + "', raio = '" + raio + "', importada = " + importada + ", weldon = " + weldon + ", ri = " + ri + ", md = " + md + ", hss = " + hss + ", tipo = '" + tipo + "', familia = '" + familia + "', tamanho = '" + tamanho + "', cortes = '" + cortes + "', topo = '" + topo + "', canal = '" + canal + "', extra = '" + extra + "', helice = '" + helice + "', nucleo = '" + nucleo + "', concavidade = '" + concavidade + "', topo1 = '" + topo1 + "', topo2 = '" + topo2 + "', alivio1 = '" + alivio1 + "', alivio2 = '" + alivio2 + "', filete = '" + filete + "', agressividade = '" + agressividade + "', qtdMinimaOP = " + qtdMinimaOP + ", desbaste = " + desbaste + ", tolD1 = '" + tolD1 + "', tolD2 = '" + tolD2 + "', mp = '" + mp + "', aparecerExtra = " + aparecerExtra + ", cs11 = " + cs11 + ", detalonado = " + detalonado + ", mpDados = '" + mpDados + "', conicidade = '" + conicidade + "', tipoFilete = '" + tipoFilete + "', alturaCostela = '" + alturaCostela + "', tipoRaio = '" + tipoRaio + "', anguloFrontal = '" + anguloFrontal + "', tipoFrontal = '" + tipoFrontal + "' WHERE id = " + id);
 
         stmt.executeUpdate();
 

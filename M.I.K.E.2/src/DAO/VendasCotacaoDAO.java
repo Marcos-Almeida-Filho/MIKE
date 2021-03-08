@@ -562,6 +562,27 @@ public class VendasCotacaoDAO {
         }
     }
 
+    public void updateTotal(String cotacao, Double total) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_cotacao SET total = " + total + " WHERE cotacao = '" + cotacao + "'");
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da Cotação de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
     public void desativarCotacao(String cotacao, String motivo) {
         conStmt();
 
@@ -672,5 +693,26 @@ public class VendasCotacaoDAO {
         }
 
         return motivo;
+    }
+
+    public void deletarCotacao(String cotacao) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM vendas_cotacao WHERE cotacao = '" + cotacao + "'");
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao excluir Cotação de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
     }
 }

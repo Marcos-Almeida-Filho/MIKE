@@ -8,11 +8,7 @@ package DAO;
 import Bean.CARBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -20,33 +16,9 @@ import javax.swing.JOptionPane;
  *
  * @author Marcos Filho
  */
-public class CARDAO {
+public class CARDAO extends GenericDAO {
 
-    Connection con;
-
-    PreparedStatement stmt;
-
-    ResultSet rs;
-
-    List<CARBean> listcb;
-
-    CARBean cb;
-    
     String table = "car";
-
-    private void conStmt() {
-        con = ConnectionFactory.getConnection();
-
-        stmt = null;
-    }
-
-    private void rsList() {
-        conStmt();
-
-        rs = null;
-
-        listcb = new ArrayList<>();
-    }
 
     public void create(int idCliente, String dataLancamento, String cliente, int notaFiscal, String dataEmissao, double total, String parcela, double valorParcela, String dataParcela) {
 
@@ -93,6 +65,7 @@ public class CARDAO {
                 cb.setTotal(rs.getDouble("total"));
                 cb.setParcela(rs.getString("parcela"));
                 cb.setValorparcela(rs.getDouble("valorparcela"));
+                cb.setValorrecebido(rs.getDouble("valorrecebido"));
                 cb.setDataparcela(rs.getString("dataparcela"));
                 cb.setDatarecebimento(rs.getString("datarecebimento"));
                 cb.setBanco(rs.getString("banco"));
@@ -117,7 +90,7 @@ public class CARDAO {
         }
         return listcb;
     }
-    
+
     public List<CARBean> readtodosPesquisa(String pesquisa, String dataInicio, String dataFim) {
 
         rsList();
@@ -139,6 +112,7 @@ public class CARDAO {
                 cb.setTotal(rs.getDouble("total"));
                 cb.setParcela(rs.getString("parcela"));
                 cb.setValorparcela(rs.getDouble("valorparcela"));
+                cb.setValorrecebido(rs.getDouble("valorrecebido"));
                 cb.setDataparcela(rs.getString("dataparcela"));
                 cb.setDatarecebimento(rs.getString("datarecebimento"));
                 cb.setBanco(rs.getString("banco"));
@@ -213,9 +187,9 @@ public class CARDAO {
     public int readcreated(String data) {
 
         rsList();
-        
+
         int id = 0;
-        
+
         try {
             stmt = con.prepareStatement("SELECT * FROM " + table + " WHERE datalancamento = ?");
             stmt.setString(1, data);
@@ -262,6 +236,7 @@ public class CARDAO {
                 cb.setTotal(rs.getDouble("total"));
                 cb.setParcela(rs.getString("parcela"));
                 cb.setValorparcela(rs.getDouble("valorparcela"));
+                cb.setValorrecebido(rs.getDouble("valorrecebido"));
                 cb.setDataparcela(rs.getString("dataparcela"));
                 cb.setDatarecebimento(rs.getString("datarecebimento"));
                 cb.setBanco(rs.getString("banco"));
@@ -286,7 +261,7 @@ public class CARDAO {
         }
         return listcb;
     }
-    
+
     public List<CARBean> readstatusPesquisa(String status, String pesquisa, String dataInicio, String dataFim) {
 
         rsList();
@@ -308,6 +283,7 @@ public class CARDAO {
                 cb.setTotal(rs.getDouble("total"));
                 cb.setParcela(rs.getString("parcela"));
                 cb.setValorparcela(rs.getDouble("valorparcela"));
+                cb.setValorrecebido(rs.getDouble("valorrecebido"));
                 cb.setDataparcela(rs.getString("dataparcela"));
                 cb.setDatarecebimento(rs.getString("datarecebimento"));
                 cb.setBanco(rs.getString("banco"));
@@ -377,7 +353,7 @@ public class CARDAO {
         }
         return listcb;
     }
-    
+
     public double getValorFaturado(String dataInicio, String dataFim) {
         rsList();
 
@@ -465,7 +441,7 @@ public class CARDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     /**
      *
      * @param dataRecebimento
@@ -484,7 +460,7 @@ public class CARDAO {
             stmt = con.prepareStatement("UPDATE " + table + " SET datarecebimento = '" + dataRecebimento + "', valorrecebido = " + valorRecebido + ", banco = '" + banco + "', metodo = '" + metodo + "', cheque = '" + cheque + "', status = '" + status + "' WHERE id = " + id);
 
             stmt.executeUpdate();
-            
+
             JOptionPane.showMessageDialog(null, "Recebido com sucesso!");
         } catch (SQLException e) {
             String msg = "Erro ao atualizar CAR.";

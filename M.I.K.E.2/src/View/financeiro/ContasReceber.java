@@ -22,6 +22,7 @@ import java.awt.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -135,18 +136,19 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         double valorRecebido = 0, valorAReceber = 0, valorTotal = 0;
         for (int i = 0; i < tablecar.getRowCount(); i++) {
             double valorParcela = Valores.TransformarDinheiroEmValorDouble(tablecar.getValueAt(i, 5).toString());
+            //valorRecebido = Valores.TransformarDinheiroEmValorDouble(tablecar.getValueAt(i, 5).toString());
             valorTotal += valorParcela;
 
-            if (tablecar.getValueAt(i, 7).equals("")) {
+            if (tablecar.getValueAt(i, 8).equals("")) {
                 valorAReceber += valorParcela;
             } else {
-                valorRecebido += valorParcela;
+                valorRecebido += Valores.TransformarDinheiroEmValorDouble(tablecar.getValueAt(i, 6).toString());
             }
         }
 
-        txtTotal.setText(Valores.TransformarDoubleDBemDinheiro(valorTotal));
-        txtAReceber.setText(Valores.TransformarDoubleDBemDinheiro(valorAReceber));
-        txtRecebido.setText(Valores.TransformarDoubleDBemDinheiro(valorRecebido));
+        txtTotal.setText(Valores.TransformarDoubleDBemDinheiroComLocal(valorTotal));
+        txtAReceber.setText(Valores.TransformarDoubleDBemDinheiroComLocal(valorAReceber));
+        txtRecebido.setText(Valores.TransformarDoubleDBemDinheiroComLocal(valorRecebido));
     }
 
     private static JTable getNewRenderedTable(final JTable table, int coluna) {
@@ -213,6 +215,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                             carb.getCliente(),
                             carb.getParcela(),
                             Valores.TransformarDoubleDBemString(carb.getValorparcela()),
+                            Valores.TransformarDoubleDBemString(carb.getValorrecebido()),
                             Dates.TransformarDataCurtaDoDB(carb.getDataparcela()),
                             datapagamento,
                             carb.getStatus(),
@@ -235,6 +238,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                             carb.getCliente(),
                             carb.getParcela(),
                             Valores.TransformarDoubleDBemString(carb.getValorparcela()),
+                            Valores.TransformarDoubleDBemString(carb.getValorrecebido()),
                             Dates.TransformarDataCurtaDoDB(carb.getDataparcela()),
                             datapagamento,
                             carb.getStatus(),
@@ -260,6 +264,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                             carb.getCliente(),
                             carb.getParcela(),
                             Valores.TransformarDoubleDBemString(carb.getValorparcela()),
+                            Valores.TransformarDoubleDBemString(carb.getValorrecebido()),
                             Dates.TransformarDataCurtaDoDB(carb.getDataparcela()),
                             datapagamento,
                             carb.getStatus(),
@@ -282,6 +287,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                             carb.getCliente(),
                             carb.getParcela(),
                             Valores.TransformarDoubleDBemString(carb.getValorparcela()),
+                            Valores.TransformarDoubleDBemString(carb.getValorrecebido()),
                             Dates.TransformarDataCurtaDoDB(carb.getDataparcela()),
                             datapagamento,
                             carb.getStatus(),
@@ -315,7 +321,6 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         cbstatus = new javax.swing.JComboBox<>();
         jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jdatefim = new com.toedter.calendar.JDateChooser();
@@ -330,6 +335,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         btnEnviarLembrete = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -367,14 +373,14 @@ public class ContasReceber extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "", "ID", "Nota Fiscal", "Cliente", "Parcela", "Valor Parcela", "Data de Vencimento", "Data de Recebimento", "Status", "idCliente"
+                "", "ID", "Nota Fiscal", "Cliente", "Parcela", "Valor Parcela", "Valor Recebido", "Data de Vencimento", "Data de Recebimento", "Status", "idCliente"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false, false, false, false, false
+                true, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -399,9 +405,9 @@ public class ContasReceber extends javax.swing.JInternalFrame {
             tablecar.getColumnModel().getColumn(1).setMinWidth(0);
             tablecar.getColumnModel().getColumn(1).setPreferredWidth(0);
             tablecar.getColumnModel().getColumn(1).setMaxWidth(0);
-            tablecar.getColumnModel().getColumn(9).setMinWidth(0);
-            tablecar.getColumnModel().getColumn(9).setPreferredWidth(0);
-            tablecar.getColumnModel().getColumn(9).setMaxWidth(0);
+            tablecar.getColumnModel().getColumn(10).setMinWidth(0);
+            tablecar.getColumnModel().getColumn(10).setPreferredWidth(0);
+            tablecar.getColumnModel().getColumn(10).setMaxWidth(0);
         }
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Pesquisa"));
@@ -468,14 +474,6 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Prescrever");
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
             }
         });
 
@@ -574,6 +572,14 @@ public class ContasReceber extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton5.setText("Alterar Status");
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -587,7 +593,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnEnviarLembrete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -635,9 +641,9 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton3)
-                    .addComponent(jButton2)
                     .addComponent(jButton4)
-                    .addComponent(btnEnviarLembrete))
+                    .addComponent(btnEnviarLembrete)
+                    .addComponent(jButton5))
                 .addContainerGap())
         );
 
@@ -671,7 +677,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
 
             ContaReceber.txtid.setText(String.valueOf(id));
             ContaReceber.id = id;
-            ContaReceber.idCliente = Integer.parseInt(tablecar.getValueAt(tablecar.getSelectedRow(), 9).toString());
+            ContaReceber.idCliente = Integer.parseInt(tablecar.getValueAt(tablecar.getSelectedRow(), 10).toString());
 
             card.click(id).forEach(cb -> {
                 ContaReceber.txtDataLancamento.setText(Dates.TransformarDataCurtaDoDB(cb.getDatalancamento()));
@@ -725,33 +731,6 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         readtablecar();
     }//GEN-LAST:event_txtPesquisaKeyReleased
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        int numTrue = 0;
-
-        for (int i = 0; i < tablecar.getRowCount(); i++) {
-            if (tablecar.getValueAt(i, 0).equals(true)) {
-                numTrue++;
-            }
-        }
-
-        if (numTrue == 0) {
-            JOptionPane.showMessageDialog(null, "Nenhum registro selecionado.");
-        } else {
-            int resp = JOptionPane.showConfirmDialog(null, "Deseja realmente prescrever os títulos selecionados?", "Prescrever Títulos", JOptionPane.YES_NO_OPTION);
-
-            if (resp == 0) {
-                for (int i = 0; i < tablecar.getRowCount(); i++) {
-                    if (tablecar.getValueAt(i, 0).equals(true)) {
-                        int id = Integer.parseInt(tablecar.getValueAt(i, 1).toString());
-                        card.updateStatus("Prescrito", id);
-                    }
-                }
-
-                readtablecar();
-            }
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (jButton4.getText().equals("Selecionar Todos")) {
             for (int i = 0; i < tablecar.getRowCount(); i++) {
@@ -789,14 +768,50 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnEnviarLembreteActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tablecar.getRowCount(); i++) {
+            if (tablecar.getValueAt(i, 0).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum registro selecionado.");
+        } else {
+            String[] options = {"Selecione", "Protestado", "Pequenas Causas", "Em Negociação", "Cancelado", "Prescrito"};
+
+            JComboBox cbStatus = new JComboBox();
+
+            for (String option : options) {
+                cbStatus.addItem(option);
+            }
+
+            JOptionPane.showMessageDialog(null, cbStatus, "Novo Status", JOptionPane.QUESTION_MESSAGE);
+
+            String status = cbStatus.getSelectedItem().toString();
+
+            if (!status.equals("Selecione")) {
+                for (int i = 0; i < tablecar.getRowCount(); i++) {
+                    if (tablecar.getValueAt(i, 0).equals(true)) {
+                        int id = Integer.parseInt(tablecar.getValueAt(i, 1).toString());
+                        card.updateStatus(status, id);
+                    }
+                }
+                readtablecar();
+            }
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnEnviarLembrete;
     public static javax.swing.JComboBox<String> cbstatus;
     public javax.swing.JButton jButton1;
-    public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
+    public javax.swing.JButton jButton5;
     public javax.swing.JButton jButton6;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;

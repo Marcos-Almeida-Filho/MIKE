@@ -5,6 +5,9 @@
  */
 package View.servicos;
 
+import Bean.ServicoPedidoItensBean;
+import DAO.ServicoPedidoItensDAO;
+import Methods.Dates;
 import java.awt.Dimension;
 import java.text.DecimalFormat;
 import javax.swing.JDesktopPane;
@@ -16,6 +19,8 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class ItemPedidoServico extends javax.swing.JInternalFrame {
+    
+    ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
 
     /**
      * Creates new form ItemOrcamentoServico
@@ -52,13 +57,13 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
         jLabel5 = new javax.swing.JLabel();
         txtpedido = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtprazo = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         txtid = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtcodigo = new javax.swing.JTextField();
         txtrow = new javax.swing.JLabel();
+        datePrazo = new com.toedter.calendar.JDateChooser();
 
         jLabel1.setText("jLabel1");
 
@@ -108,6 +113,8 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
 
         txtrow.setText("jLabel9");
 
+        datePrazo.setDateFormatString("dd/MM/yyyy");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -122,8 +129,8 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtprazo, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+                        .addComponent(datePrazo, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtrow)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
@@ -149,7 +156,7 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtvalor, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(0, 220, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnprocurar)))
                 .addContainerGap())
@@ -173,13 +180,14 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
                     .addComponent(jLabel4)
                     .addComponent(txtvalor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtpedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(txtprazo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
-                    .addComponent(txtrow))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(txtpedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
+                        .addComponent(jButton1)
+                        .addComponent(txtrow))
+                    .addComponent(datePrazo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -254,7 +262,7 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
                     qtdf,
                     txtvalor.getText(),
                     totf,
-                    txtprazo.getText() + " dias úteis",
+                    Dates.TransformarDataCurtaDoDB(Dates.CriarDataCurtaDBJDateChooser(datePrazo.getDate())),
                     txtpedido.getText(),
                     "",
                     ""
@@ -270,16 +278,22 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
             float valor = Float.parseFloat(v.replace(",", "."));
             float tot = qtd * valor;
             String totf = formatter.format(tot);
-            String nprazo = txtprazo.getText().replace(" dias úteis", "");
+            
+            ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
 
-            model.setValueAt(txtid.getText(), Integer.parseInt(txtrow.getText()), 1);
-            model.setValueAt(txtcodigo.getText(), Integer.parseInt(txtrow.getText()), 2);
-            model.setValueAt(txtdesc.getText(), Integer.parseInt(txtrow.getText()), 3);
-            model.setValueAt(txtqtd.getText(), Integer.parseInt(txtrow.getText()), 4);
-            model.setValueAt(txtvalor.getText(), Integer.parseInt(txtrow.getText()), 5);
-            model.setValueAt(totf, Integer.parseInt(txtrow.getText()), 6);
-            model.setValueAt(nprazo + " dias úteis", Integer.parseInt(txtrow.getText()), 7);
-            model.setValueAt(txtpedido.getText(), Integer.parseInt(txtrow.getText()), 8);
+            spib.setCodigo(txtcodigo.getText());
+            spib.setDescricao(txtdesc.getText());
+            spib.setQtde(txtqtd.getText());
+            spib.setValor(txtvalor.getText());
+            spib.setTotal(totf);
+            spib.setPrazo(Dates.CriarDataCurtaDBJDateChooser(datePrazo.getDate()));
+            spib.setId(Integer.parseInt(txtid.getText()));
+            
+            //codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ? WHERE id = ?
+            spid.update(spib);
+
+            PedidoServico.readitenscobranca();
+            
             dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -288,6 +302,7 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnprocurar;
     public javax.swing.ButtonGroup buttonGroup1;
+    public static com.toedter.calendar.JDateChooser datePrazo;
     public javax.swing.JButton jButton1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
@@ -303,7 +318,6 @@ public class ItemPedidoServico extends javax.swing.JInternalFrame {
     public static javax.swing.JTextField txtdesc;
     public static javax.swing.JTextField txtid;
     public static javax.swing.JTextField txtpedido;
-    public static javax.swing.JTextField txtprazo;
     public static javax.swing.JTextField txtqtd;
     public static javax.swing.JLabel txtrow;
     public static javax.swing.JFormattedTextField txtvalor;

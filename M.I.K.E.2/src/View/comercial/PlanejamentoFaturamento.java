@@ -91,10 +91,31 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
         });
         return table;
     }
+    
+    private static JTable getNewRenderedTableServico(final JTable table, int colunaProcesso) {
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+                String processo = table.getModel().getValueAt(row, colunaProcesso).toString();
+                if (processo.equals("Encerrado")) {
+                    setBackground(Colors.green);
+                    setForeground(Color.BLACK);
+                } else {
+                    setBackground(table.getBackground());
+                    setForeground(table.getForeground());
+                }
+                return this;
+            }
+        });
+        return table;
+    }
 
     public static void datasJDateChooser() {
         Dates.SetarDataJDateChooser(jdateinicio, Dates.primeiroDiaDoMes());
         Dates.SetarDataJDateChooser(jdatefim, Dates.ultimoDiaDoMes());
+        Dates.SetarDataJDateChooser(jdateinicio1, Dates.primeiroDiaDoMes());
+        Dates.SetarDataJDateChooser(jdatefim1, Dates.ultimoDiaDoMes());
     }
 
     public static void tableFill() {
@@ -108,6 +129,8 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
 
         String dataInicio = Dates.CriarDataCurtaDBJDateChooser(jdateinicio.getDate());
         String dataFim = Dates.CriarDataCurtaDBJDateChooser(jdatefim.getDate());
+        String dataInicio2 = Dates.CriarDataCurtaDBJDateChooser(jdateinicio1.getDate());
+        String dataFim2 = Dates.CriarDataCurtaDBJDateChooser(jdatefim1.getDate());
 
         switch (cbOrdem.getSelectedItem().toString()) {
             case "DAV":
@@ -135,10 +158,8 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 vpib.getSeparado()
             });
         });
-        
-        txtValores();
 
-        spid.readitensSemNota().forEach(spib -> {
+        spid.readitensSemNota(dataInicio2, dataFim2).forEach(spib -> {
             model1.addRow(new Object[]{
                 spib.getId(),
                 spib.getIdpedido(),
@@ -146,7 +167,9 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 spib.getCodigo(),
                 spib.getQtde(),
                 spib.getOs(),
-                ""
+                "",
+                spib.getTotal(),
+                Dates.TransformarDataCurtaDoDB(spib.getPrazoDate())
             });
         });
 
@@ -202,11 +225,13 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                         String op = tablePlanejamento1.getValueAt(i, 5).toString();
                         String processo = fd.getProcesso(op);
                         tablePlanejamento1.setValueAt(processo, i, 6);
+                        getNewRenderedTableServico(tablePlanejamento1, 6);
                     }
                 }
             }
         }.start();
 
+        //Ler cliente de Serviços
         new Thread() {
             @Override
             public void run() {
@@ -217,11 +242,13 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 }
             }
         }.start();
+        
+        txtValores();
     }
 
     public static void txtValores() {
         double valorAtrasado = 0, valorParcial, valorTotal = 0;
-        Date dataDate = new Date(), dataHoje = new Date();
+        Date dataDate = new Date(), dataHoje = new Date(), dataDateS = new Date();
 
         JTableHeader th = tablePlanejamento.getTableHeader();
         TableColumnModel tcm = th.getColumnModel();
@@ -243,7 +270,27 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
         }
 
         txtatrasado.setText("R$ " + Valores.TransformarValorFloatEmDinheiro(String.valueOf(valorAtrasado)));
-        txtTotal.setText(Valores.TransformarDoubleDBemDinheiro(valorTotal));
+        txtTotal.setText(Valores.TransformarDoubleDBemDinheiroComLocal(valorTotal));
+
+        double valorTotalServico = 0, valorAtrasadoS = 0;
+
+        for (int i = 0; i < tablePlanejamento1.getRowCount(); i++) {
+            double valorServico = Valores.TransformarStringDinheiroEmDouble(tablePlanejamento1.getValueAt(i, 7).toString());
+            valorTotalServico += valorServico;
+            
+            String dataNormal = tablePlanejamento1.getValueAt(i, 8).toString();
+            try {
+                dataDate = new SimpleDateFormat("dd/MM/yyyy").parse(dataNormal);
+            } catch (ParseException ex) {
+                Logger.getLogger(PlanejamentoFaturamento.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (dataDate.compareTo(dataHoje) < 0) {
+                valorAtrasadoS += valorServico;
+            }
+        }
+
+        txtTotalServico.setText(Valores.TransformarDoubleDBemDinheiroComLocal(valorTotalServico));
+        txtAtrasadoServico.setText(Valores.TransformarDoubleDBemDinheiroComLocal(valorAtrasadoS));
     }
 
     /**
@@ -279,6 +326,17 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
         tablePlanejamento1 = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
         cbOrdem1 = new javax.swing.JComboBox<>();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        txtAtrasadoServico = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtTotalServico = new javax.swing.JTextField();
+        jPanel9 = new javax.swing.JPanel();
+        jdatefim1 = new com.toedter.calendar.JDateChooser();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jdateinicio1 = new com.toedter.calendar.JDateChooser();
+        jButton7 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Planejamento De Faturamento");
@@ -473,7 +531,7 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jdateinicio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jdatefim, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(4, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jButton1.setText("Separar Materiais");
@@ -506,13 +564,13 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGap(2, 2, 2)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -532,11 +590,11 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "DAV", "Cliente", "Código", "Qtde Pedido", "OP", "Processo"
+                "ID", "DAV", "Cliente", "Código", "Qtde Pedido", "OP", "Processo", "Valor R$", "Prazo"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -558,6 +616,12 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
             tablePlanejamento1.getColumnModel().getColumn(5).setMinWidth(80);
             tablePlanejamento1.getColumnModel().getColumn(5).setPreferredWidth(80);
             tablePlanejamento1.getColumnModel().getColumn(5).setMaxWidth(80);
+            tablePlanejamento1.getColumnModel().getColumn(7).setMinWidth(90);
+            tablePlanejamento1.getColumnModel().getColumn(7).setPreferredWidth(90);
+            tablePlanejamento1.getColumnModel().getColumn(7).setMaxWidth(90);
+            tablePlanejamento1.getColumnModel().getColumn(8).setMinWidth(90);
+            tablePlanejamento1.getColumnModel().getColumn(8).setPreferredWidth(90);
+            tablePlanejamento1.getColumnModel().getColumn(8).setMaxWidth(90);
         }
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Ordenar Por"));
@@ -584,6 +648,100 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Valores"));
+        jPanel8.setName("jPanel8"); // NOI18N
+
+        jLabel5.setText("Atrasado");
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        txtAtrasadoServico.setEditable(false);
+        txtAtrasadoServico.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtAtrasadoServico.setName("txtAtrasadoServico"); // NOI18N
+
+        jLabel6.setText("Total");
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        txtTotalServico.setEditable(false);
+        txtTotalServico.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtTotalServico.setName("txtTotalServico"); // NOI18N
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtAtrasadoServico, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTotalServico, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel5)
+                .addComponent(txtAtrasadoServico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel6)
+                .addComponent(txtTotalServico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtro Data"));
+        jPanel9.setName("jPanel9"); // NOI18N
+
+        jdatefim1.setDateFormatString("dd/MM/yyyy");
+        jdatefim1.setName("jdatefim1"); // NOI18N
+
+        jLabel7.setText("Final");
+        jLabel7.setName("jLabel7"); // NOI18N
+
+        jLabel8.setText("Início");
+        jLabel8.setName("jLabel8"); // NOI18N
+
+        jdateinicio1.setDateFormatString("dd/MM/yyyy");
+        jdateinicio1.setName("jdateinicio1"); // NOI18N
+
+        jButton7.setText("Atualizar");
+        jButton7.setName("jButton7"); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jdateinicio1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jdatefim1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton7))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel9Layout.createSequentialGroup()
+                            .addGap(6, 6, 6)
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel7)
+                                .addComponent(jLabel8))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jdateinicio1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jdatefim1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -593,7 +751,10 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1162, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -601,9 +762,12 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -704,16 +868,25 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        tableFill();
+    }//GEN-LAST:event_jButton7ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JComboBox<String> cbOrdem;
     public javax.swing.JComboBox<String> cbOrdem1;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton6;
+    public javax.swing.JButton jButton7;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
+    public javax.swing.JLabel jLabel5;
+    public javax.swing.JLabel jLabel6;
+    public javax.swing.JLabel jLabel7;
+    public javax.swing.JLabel jLabel8;
     public javax.swing.JPanel jPanel1;
     public javax.swing.JPanel jPanel2;
     public javax.swing.JPanel jPanel3;
@@ -721,14 +894,20 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
     public javax.swing.JPanel jPanel5;
     public javax.swing.JPanel jPanel6;
     public javax.swing.JPanel jPanel7;
+    public javax.swing.JPanel jPanel8;
+    public javax.swing.JPanel jPanel9;
     public javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JScrollPane jScrollPane3;
     public javax.swing.JTabbedPane jTabbedPane1;
     public static com.toedter.calendar.JDateChooser jdatefim;
+    public static com.toedter.calendar.JDateChooser jdatefim1;
     public static com.toedter.calendar.JDateChooser jdateinicio;
+    public static com.toedter.calendar.JDateChooser jdateinicio1;
     public static javax.swing.JTable tablePlanejamento;
     public static javax.swing.JTable tablePlanejamento1;
+    public static javax.swing.JTextField txtAtrasadoServico;
     public static javax.swing.JTextField txtTotal;
+    public static javax.swing.JTextField txtTotalServico;
     public static javax.swing.JTextField txtatrasado;
     // End of variables declaration//GEN-END:variables
 }

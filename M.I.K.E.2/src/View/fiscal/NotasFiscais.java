@@ -109,16 +109,16 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
             txtUFT.setText(nfb.getUfT());
 
             //Valores
-            txtBaseICMS.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getBaseIcms()));
-            txtICMS.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getValorIcms()));
-            txtBaseICMSST.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getBaseIcmsSt()));
-            txtICMSST.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getValorIcmsSt()));
-            txtPIS.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getValorPis()));
-            txtCofins.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getValorCofins()));
-            txtIPI.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getValorIpi()));
-            txtFrete.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getValorFrete()));
-            txtTotalProdutos.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getValorProdutos()));
-            txtTotalNF.setText(Valores.TransformarDoubleDBemDinheiro(nfb.getValorTotalNotaFiscal()));
+            txtBaseICMS.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getBaseIcms()));
+            txtICMS.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getValorIcms()));
+            txtBaseICMSST.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getBaseIcmsSt()));
+            txtICMSST.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getValorIcmsSt()));
+            txtPIS.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getValorPis()));
+            txtCofins.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getValorCofins()));
+            txtIPI.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getValorIpi()));
+            txtFrete.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getValorFrete()));
+            txtTotalProdutos.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getValorProdutos()));
+            txtTotalNF.setText(Valores.TransformarDoubleDBemDinheiroComLocal(nfb.getValorTotalNotaFiscal()));
         });
 
         readItensNF(numero);

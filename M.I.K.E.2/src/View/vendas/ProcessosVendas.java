@@ -8,6 +8,7 @@ package View.vendas;
 import DAO.MedicoesDAO;
 import DAO.ProcessosVendasDAO;
 import DAO.ProcessosVendasMedicoesDAO;
+import Methods.SendEmail;
 import Methods.Telas;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -72,6 +73,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         pvd.readProcesso(idProcesso).forEach(pvb -> {
             txtNome.setText(pvb.getNome());
             txtStatus.setText(pvb.getStatus());
+            txtOrdem.setText(String.valueOf(pvb.getOrdem()));
         });
 
         DefaultTableModel model = (DefaultTableModel) tableMedicoes.getModel();
@@ -111,6 +113,8 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
         txtStatus = new javax.swing.JTextField();
+        txtOrdem = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -247,7 +251,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3)
@@ -275,27 +279,46 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         txtStatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtStatus.setName("txtStatus"); // NOI18N
 
+        txtOrdem.setName("txtOrdem"); // NOI18N
+
+        jLabel1.setText("Ordem");
+        jLabel1.setName("jLabel1"); // NOI18N
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel2)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtNome)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(txtNome, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(txtOrdem, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jLabel2))
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel3)
-                .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtOrdem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jButton4.setText("Salvar");
@@ -375,7 +398,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -430,7 +453,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabprocessos)
+            .addComponent(tabprocessos, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
         );
 
         pack();
@@ -471,20 +494,58 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tableProcessosMouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (idProcesso == 0) {
-            pvd.create(txtNome.getText());
-
-            idProcesso = pvd.idProcesso(txtNome.getText());
-
-            for (int i = 0; i < tableMedicoes.getRowCount(); i++) {
-                pvmd.create(idProcesso, tableMedicoes.getValueAt(i, 2).toString());
-            }
+        if (txtNome.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite um nome para o processo.");
+            txtNome.requestFocus();
+        } else if (txtOrdem.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Digite a ordem do processo.");
+            txtOrdem.requestFocus();
         } else {
-            pvd.updateProcesso(idProcesso, txtNome.getText());
+            if (idProcesso == 0) {
+                try {
+                    pvd.create(txtNome.getText(), Integer.parseInt(txtOrdem.getText()));
 
-            for (int i = 0; i < tableMedicoes.getRowCount(); i++) {
-                if (tableMedicoes.getValueAt(i, 0).equals("")) {
-                    pvmd.create(idProcesso, tableMedicoes.getValueAt(i, 2).toString());
+                    idProcesso = pvd.idProcesso(txtNome.getText());
+
+                    for (int i = 0; i < tableMedicoes.getRowCount(); i++) {
+                        pvmd.create(idProcesso, tableMedicoes.getValueAt(i, 2).toString());
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Processo criado com sucesso.");
+                } catch (Exception e) {
+                    String msg = "Erro.";
+
+                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
+                }
+            } else {
+                try {
+                    pvd.updateProcesso(idProcesso, txtNome.getText(), Integer.parseInt(txtOrdem.getText()));
+
+                    for (int i = 0; i < tableMedicoes.getRowCount(); i++) {
+                        if (tableMedicoes.getValueAt(i, 0).equals("")) {
+                            pvmd.create(idProcesso, tableMedicoes.getValueAt(i, 2).toString());
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Processo atualizado com sucesso.");
+                } catch (Exception e) {
+                    String msg = "Erro.";
+
+                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
                 }
             }
         }
@@ -503,7 +564,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         }
 
         if (numTrue == 0) {
-            JOptionPane.showMessageDialog(null, "Nenhum medida selecionada.");
+            JOptionPane.showMessageDialog(null, "Nenhuma medida selecionada.");
         } else if (idProcesso == 0) {
             JOptionPane.showMessageDialog(null, "Salve o Processo ou selecione um Processo primeiro.");
         } else {
@@ -539,6 +600,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton5;
     public javax.swing.JButton jButton6;
     public javax.swing.JComboBox<String> jComboBox1;
+    public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JPanel jPanel1;
@@ -553,6 +615,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     public static javax.swing.JTable tableProcessos;
     public javax.swing.JTabbedPane tabprocessos;
     public javax.swing.JTextField txtNome;
+    public javax.swing.JTextField txtOrdem;
     public javax.swing.JTextField txtPesquisa;
     public javax.swing.JTextField txtStatus;
     // End of variables declaration//GEN-END:variables

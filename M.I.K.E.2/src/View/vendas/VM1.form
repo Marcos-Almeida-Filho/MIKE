@@ -88,7 +88,7 @@
                           <Component id="jPanel19" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane5" pref="500" max="32767" attributes="0"/>
+                      <Component id="jScrollPane5" pref="565" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -187,10 +187,11 @@
                   <Properties>
                     <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="4" rowCount="0">
+                      <Table columnCount="5" rowCount="0">
                         <Column editable="false" title="ID" type="java.lang.Object"/>
                         <Column editable="false" title="C&#xf3;digo" type="java.lang.Object"/>
                         <Column editable="false" title="Descri&#xe7;&#xe3;o" type="java.lang.Object"/>
+                        <Column editable="false" title="Estoque" type="java.lang.Object"/>
                         <Column editable="false" title="Status" type="java.lang.Object"/>
                       </Table>
                     </Property>
@@ -207,6 +208,11 @@
                           <Renderer/>
                         </Column>
                         <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                          <Title/>
+                          <Editor/>
+                          <Renderer/>
+                        </Column>
+                        <Column maxWidth="100" minWidth="100" prefWidth="100" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
@@ -455,7 +461,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" pref="350" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" pref="415" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="btnAddObs" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -943,6 +949,11 @@
                                               <Component id="checkimportado" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="checkCS11" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="checkDetalonado" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -969,7 +980,12 @@
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="checkri" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="14" max="32767" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="checkCS11" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="checkDetalonado" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1066,6 +1082,16 @@
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddRevActionPerformed"/>
                           </Events>
                         </Component>
+                        <Component class="javax.swing.JCheckBox" name="checkCS11">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="CS11"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JCheckBox" name="checkDetalonado">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Detalonado"/>
+                          </Properties>
+                        </Component>
                       </SubComponents>
                     </Container>
                     <Container class="javax.swing.JPanel" name="jPanel12">
@@ -1085,9 +1111,9 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane6" min="-2" pref="292" max="-2" attributes="0"/>
+                                  <Component id="jScrollPane6" min="-2" pref="529" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane7" pref="447" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane7" pref="210" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -1101,10 +1127,20 @@
                       </Layout>
                       <SubComponents>
                         <Container class="javax.swing.JScrollPane" name="jScrollPane6">
+                          <Properties>
+                            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                              <Dimension value="[490, 300]"/>
+                            </Property>
+                          </Properties>
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                           <SubComponents>
                             <Container class="javax.swing.JPanel" name="paneldadostxt">
+                              <Properties>
+                                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                                  <Dimension value="[520, 300]"/>
+                                </Property>
+                              </Properties>
                               <AuxValues>
                                 <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                               </AuxValues>
@@ -1115,126 +1151,125 @@
                                       <Group type="102" attributes="0">
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel25" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel36" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel37" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel38" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel39" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel40" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel41" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel42" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel16" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel28" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel22" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel23" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel24" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel26" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel25" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel29" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel42" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel30" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel31" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="txtTolD5" pref="111" max="32767" attributes="0"/>
-                                              <Component id="txtTolD4" max="32767" attributes="0"/>
-                                              <Component id="txtTolD3" max="32767" attributes="0"/>
-                                              <Component id="txtTolD2" max="32767" attributes="0"/>
-                                              <Component id="txtTolD1" max="32767" attributes="0"/>
-                                              <Group type="102" attributes="0">
-                                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                                      <Component id="txthelice" alignment="0" pref="109" max="32767" attributes="0"/>
-                                                      <Component id="txtagressividade" max="32767" attributes="0"/>
-                                                      <Component id="txtespfilete" max="32767" attributes="0"/>
-                                                      <Component id="txtalivio2" max="32767" attributes="0"/>
-                                                      <Component id="txtalivio1" max="32767" attributes="0"/>
-                                                      <Component id="txtaliviotopo2" max="32767" attributes="0"/>
-                                                      <Component id="txtaliviotopo1" max="32767" attributes="0"/>
-                                                      <Component id="txtconcavidade" alignment="1" max="32767" attributes="0"/>
-                                                      <Component id="txtnucleo" alignment="0" pref="109" max="32767" attributes="0"/>
-                                                      <Component id="txtfrontal" alignment="0" max="32767" attributes="0"/>
-                                                  </Group>
-                                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                              <Component id="txtMPDados" alignment="0" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                                                  <Component id="txtTolD2" max="32767" attributes="0"/>
+                                                  <Component id="txtTolD1" alignment="1" min="-2" pref="109" max="-2" attributes="0"/>
+                                              </Group>
+                                              <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                                  <Component id="txtnucleo" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="txtConicidade" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="txtagressividade" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="txtTipoFilete" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="txtCostela" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="txthelice" min="-2" pref="109" max="-2" attributes="0"/>
                                               </Group>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="jLabel38" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel37" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel36" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel41" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel32" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel33" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel34" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel39" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel40" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="txtalivio2" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Component id="txtalivio1" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Component id="txtTipoFrontal" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Component id="txtAnguloFrontal" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Component id="txtTipoRaio" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Component id="txtespfilete" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Component id="txtconcavidade" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Component id="txtaliviotopo1" min="-2" pref="109" max="-2" attributes="0"/>
+                                              <Component id="txtaliviotopo2" min="-2" pref="109" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                                 </DimensionLayout>
                                 <DimensionLayout dim="1">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="1" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txtMPDados" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel41" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtespfilete" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel28" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="txtTolD1" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel21" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel36" alignment="3" min="-2" pref="16" max="-2" attributes="0"/>
+                                              <Component id="txtconcavidade" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="txtTolD2" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel22" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="txtTolD3" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel23" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="txtTolD4" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel24" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="txtTolD5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel26" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="txthelice" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="txtnucleo" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel25" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="txtconcavidade" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel36" alignment="3" min="-2" pref="16" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="txtaliviotopo1" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel37" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtaliviotopo1" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txthelice" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel38" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="txtaliviotopo2" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jLabel39" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="txtalivio1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtnucleo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel25" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel32" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtTipoRaio" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="jLabel40" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="txtalivio2" alignment="3" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="txtespfilete" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel41" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtConicidade" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel29" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel33" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtAnguloFrontal" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="txtagressividade" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel42" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel34" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtTipoFrontal" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="3" attributes="0">
-                                              <Component id="txtfrontal" alignment="3" min="-2" max="-2" attributes="0"/>
-                                              <Component id="jLabel16" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtTipoFilete" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel30" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel39" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtalivio1" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="3" attributes="0">
+                                              <Component id="txtCostela" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel31" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="jLabel40" alignment="3" min="-2" max="-2" attributes="0"/>
+                                              <Component id="txtalivio2" alignment="3" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="32767" attributes="0"/>
                                       </Group>
@@ -1395,44 +1430,12 @@
                                     <Property name="text" type="java.lang.String" value="Agressividade"/>
                                   </Properties>
                                 </Component>
-                                <Component class="javax.swing.JTextField" name="txtfrontal">
-                                  <Properties>
-                                    <Property name="name" type="java.lang.String" value="broca-be" noResource="true"/>
-                                  </Properties>
-                                  <Events>
-                                    <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtfrontalFocusGained"/>
-                                    <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtfrontalFocusLost"/>
-                                  </Events>
-                                  <AuxValues>
-                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
-                                  </AuxValues>
-                                </Component>
-                                <Component class="javax.swing.JLabel" name="jLabel16">
-                                  <Properties>
-                                    <Property name="text" type="java.lang.String" value="Frontal"/>
-                                  </Properties>
-                                </Component>
                                 <Component class="javax.swing.JTextField" name="txtTolD1">
                                   <AuxValues>
                                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                                   </AuxValues>
                                 </Component>
                                 <Component class="javax.swing.JTextField" name="txtTolD2">
-                                  <AuxValues>
-                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
-                                  </AuxValues>
-                                </Component>
-                                <Component class="javax.swing.JTextField" name="txtTolD3">
-                                  <AuxValues>
-                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
-                                  </AuxValues>
-                                </Component>
-                                <Component class="javax.swing.JTextField" name="txtTolD4">
-                                  <AuxValues>
-                                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
-                                  </AuxValues>
-                                </Component>
-                                <Component class="javax.swing.JTextField" name="txtTolD5">
                                   <AuxValues>
                                     <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                                   </AuxValues>
@@ -1447,19 +1450,53 @@
                                     <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D2"/>
                                   </Properties>
                                 </Component>
-                                <Component class="javax.swing.JLabel" name="jLabel23">
+                                <Component class="javax.swing.JTextField" name="txtMPDados">
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel28">
                                   <Properties>
-                                    <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D3"/>
+                                    <Property name="text" type="java.lang.String" value="Mat&#xe9;ria Prima"/>
                                   </Properties>
                                 </Component>
-                                <Component class="javax.swing.JLabel" name="jLabel24">
+                                <Component class="javax.swing.JTextField" name="txtConicidade">
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel29">
                                   <Properties>
-                                    <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D4"/>
+                                    <Property name="text" type="java.lang.String" value="Conicidade do Canal"/>
                                   </Properties>
                                 </Component>
-                                <Component class="javax.swing.JLabel" name="jLabel26">
+                                <Component class="javax.swing.JTextField" name="txtTipoFilete">
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel30">
                                   <Properties>
-                                    <Property name="text" type="java.lang.String" value="Toler&#xe2;ncia D5"/>
+                                    <Property name="text" type="java.lang.String" value="Filete (Tipo)"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="txtCostela">
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel31">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Altura da Costela"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="txtTipoRaio">
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="txtAnguloFrontal">
+                                </Component>
+                                <Component class="javax.swing.JTextField" name="txtTipoFrontal">
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel32">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Raio (Tipo)"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel33">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="&#xc2;ngulo do Frontal"/>
+                                  </Properties>
+                                </Component>
+                                <Component class="javax.swing.JLabel" name="jLabel34">
+                                  <Properties>
+                                    <Property name="text" type="java.lang.String" value="Frontal (Tipo)"/>
                                   </Properties>
                                 </Component>
                               </SubComponents>
@@ -1835,7 +1872,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane2" pref="350" max="32767" attributes="0"/>
+                              <Component id="jScrollPane2" pref="415" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="btnAddDoc" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1953,7 +1990,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane3" pref="350" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" pref="415" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="btnAddDescCliente" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -2084,7 +2121,7 @@
                                       <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="48" max="32767" attributes="0"/>
+                                      <EmptySpace min="0" pref="113" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="jScrollPane4" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -2105,9 +2142,10 @@
                         <Component class="javax.swing.JTable" name="tableMovimentacao">
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                              <Table columnCount="6" rowCount="0">
+                              <Table columnCount="7" rowCount="0">
                                 <Column editable="false" title="Data" type="java.lang.Object"/>
                                 <Column editable="false" title="Tipo de Movimenta&#xe7;&#xe3;o" type="java.lang.Object"/>
+                                <Column editable="false" title="Valor Cobrado" type="java.lang.Object"/>
                                 <Column editable="false" title="Estoque Anterior" type="java.lang.Object"/>
                                 <Column editable="false" title="Qtde Movimentada" type="java.lang.Object"/>
                                 <Column editable="false" title="Novo Estoque" type="java.lang.Object"/>
@@ -2122,6 +2160,11 @@
                                   <Renderer/>
                                 </Column>
                                 <Column maxWidth="350" minWidth="350" prefWidth="350" resizable="true">
+                                  <Title/>
+                                  <Editor/>
+                                  <Renderer/>
+                                </Column>
+                                <Column maxWidth="90" minWidth="90" prefWidth="90" resizable="true">
                                   <Title/>
                                   <Editor/>
                                   <Renderer/>

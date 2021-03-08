@@ -11,8 +11,10 @@ import Connection.Session;
 import DAO.AltDAO;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
+import DAO.NotaFiscalItensDAO;
 import DAO.OPDAO;
 import DAO.OPDocDAO;
+import DAO.OPObsDAO;
 import DAO.OPProcessosDAO;
 import DAO.VendasMateriaisDAO;
 import DAO.VendasMateriaisDocDAO;
@@ -21,6 +23,7 @@ import DAO.VendasPedidoDAO;
 import DAO.VendasPedidoDocsDAO;
 import DAO.VendasPedidoItensDAO;
 import DAO.VendasPedidoObsDAO;
+import Methods.Arquivos;
 import Methods.Colors;
 import Methods.Dates;
 import Methods.SendEmail;
@@ -71,11 +74,13 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     static VendasMateriaisMovDAO vmmd = new VendasMateriaisMovDAO();
     static F_UPDAO fud = new F_UPDAO();
     static F_UP_HistDAO fuhd = new F_UP_HistDAO();
+    static NotaFiscalItensDAO nfid = new NotaFiscalItensDAO();
+    static OPObsDAO ood = new OPObsDAO();
 
     static public boolean pedidoAtualizado, pedidoCriado, itensCriados, docsCriados, obsCriadas;
 
-    public String clienteOriginal, condicaoOriginal, representanteOriginal, vendedorOriginal;
-    public int numDocsOriginal, numObsOriginal, numItensOriginal;
+    public static String clienteOriginal, condicaoOriginal, representanteOriginal, vendedorOriginal;
+    public static int numDocsOriginal, numObsOriginal, numItensOriginal;
 
     /**
      * Creates new form CotacaoVenda
@@ -108,7 +113,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         return table;
     }
 
-    private void valoresOriginais() {
+    private static void valoresOriginais() {
         clienteOriginal = txtCliente.getText();
         condicaoOriginal = txtCondPag.getText();
         representanteOriginal = txtRep.getText();
@@ -227,6 +232,10 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         lerObsPedido(pedido);
 
         txtTotal();
+
+        camposPorStatus();
+
+        valoresOriginais();
     }
 
     public static void lerItensPedido(String pedido) {
@@ -904,6 +913,11 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             }
         });
         tableDocs.setName("tableDocs"); // NOI18N
+        tableDocs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableDocsMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tableDocs);
         if (tableDocs.getColumnModel().getColumnCount() > 0) {
             tableDocs.getColumnModel().getColumn(0).setMinWidth(0);
@@ -1323,22 +1337,28 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
             lancarNF.addActionListener((ActionEvent ae) -> {
                 int idMaterial = Integer.parseInt(tableItens.getValueAt(row, 11).toString());
-                int idItemPedido = Integer.parseInt(tableItens.getValueAt(row, 0).toString());
 
-                VendasPedidoItensBean vpib = new VendasPedidoItensBean();
-                vpib.setId(Integer.parseInt(tableItens.getValueAt(row, 0).toString()));
-                vpib.setPedido(txtPedido.getText());
-                vpib.setIdMaterial(Integer.parseInt(tableItens.getValueAt(row, 11).toString()));
-                vpib.setCodigo(tableItens.getValueAt(row, 2).toString());
-                vpib.setDescricao(tableItens.getValueAt(row, 3).toString());
-                vpib.setQtd(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 4).toString()));
-                vpib.setValorunitario(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 6).toString()));
-                vpib.setValortotal(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 7).toString()));
-                vpib.setPrazo(Dates.CriarDataCurtaDBComDataExistente(tableItens.getValueAt(row, 8).toString()));
-                vpib.setOp(tableItens.getValueAt(row, 9).toString());
+                if (idMaterial == 0) {
+                    JOptionPane.showMessageDialog(null, "Atualize o material por favor.");
+                } else {
+                    int idItemPedido = Integer.parseInt(tableItens.getValueAt(row, 0).toString());
 
-                AddNF anf = new AddNF(idMaterial, idItemPedido, vpib);
-                Telas.AparecerTela(anf);
+                    VendasPedidoItensBean vpib = new VendasPedidoItensBean();
+                    vpib.setId(Integer.parseInt(tableItens.getValueAt(row, 0).toString()));
+                    vpib.setPedido(txtPedido.getText());
+                    vpib.setIdMaterial(Integer.parseInt(tableItens.getValueAt(row, 11).toString()));
+                    vpib.setCodigo(tableItens.getValueAt(row, 2).toString());
+                    vpib.setDescricao(tableItens.getValueAt(row, 3).toString());
+                    vpib.setQtd(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 4).toString()));
+                    vpib.setValorunitario(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 6).toString()));
+                    vpib.setValortotal(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 7).toString()));
+                    vpib.setPrazo(Dates.CriarDataCurtaDBComDataExistente(tableItens.getValueAt(row, 8).toString()));
+                    vpib.setOp(tableItens.getValueAt(row, 9).toString());
+                    vpib.setValorunitario(Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(row, 6).toString()));
+
+                    AddNF anf = new AddNF(idMaterial, idItemPedido, vpib);
+                    Telas.AparecerTela(anf);
+                }
             });
 
             menu.add(abrirOP);
@@ -1393,7 +1413,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                         //Localicação do documento original
                         File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
                         //Pasta que será colocar o documento
-                        File folder = new File("Q:/MIKE_ERP/cot_ven_arq/" + String.valueOf(pedido));
+                        File folder = new File("Q:/MIKE_ERP/ped_ven_arq/" + pedido);
                         //Documento copiado do original
                         File filecopy = new File(folder + "/" + fileoriginal.getName());
 
@@ -1414,7 +1434,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                             }.start();
                         }
 
-                        vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
+                        vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
                     }
 
                     //Criar observações da cotação
@@ -1455,7 +1475,31 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     //Criar documentos do pedido que não existiam
                     for (int i = 0; i < tableDocs.getRowCount(); i++) {
                         if (tableDocs.getValueAt(i, 0).equals("")) {
-                            vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), tableDocs.getValueAt(i, 3).toString());
+                            //Localicação do documento original
+                            File fileoriginal = new File(tableDocs.getValueAt(i, 4).toString());
+                            //Pasta que será colocar o documento
+                            File folder = new File("Q:/MIKE_ERP/ped_ven_arq/" + pedido);
+                            //Documento copiado do original
+                            File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                            //Criar pasta no caso de já não existir
+                            folder.mkdirs();
+                            try {
+                                //Criar o documento copiado na pasta
+                                Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                            } catch (IOException e) {
+                                String msg = "Erro ao criar documento em rede.";
+                                JOptionPane.showMessageDialog(null, msg);
+
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        SendEmail.EnviarErro2(msg, e);
+                                    }
+                                }.start();
+                            }
+
+                            vpdd.create(pedido, tableDocs.getValueAt(i, 2).toString(), filecopy.toString());
                         }
                     }
 
@@ -1526,12 +1570,6 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
             //Pegar dados da Cotação no DB
             lerPedido(cotacao);
-
-            txtTotal();
-
-            camposPorStatus();
-
-            valoresOriginais();
         }
     }//GEN-LAST:event_tablePedidosMouseClicked
 
@@ -1679,12 +1717,96 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     if (tableItens.getValueAt(i, 1).equals(true)) {
                         int idMaterial = Integer.parseInt(tableItens.getValueAt(i, 11).toString());
 
-                        int opsAtivas = od.getOpsAtivasPorMaterial(idMaterial);
+                        if (idMaterial == 0) {
+                            JOptionPane.showMessageDialog(null, "Atualize o material " + tableItens.getValueAt(i, 2).toString() + " para poder abrir OP.");
+                        } else {
+                            int opsAtivas = od.getOpsAtivasPorMaterial(idMaterial);
 
-                        if (opsAtivas > 0) {
-                            int resp1 = JOptionPane.showConfirmDialog(null, "Já existe(m) " + opsAtivas + " OP(s) ativa(s) com este material.\nDeseja abrir outra OP?", "OP's Ativas", JOptionPane.YES_NO_OPTION);
+                            if (opsAtivas > 0) {
+                                int resp1 = JOptionPane.showConfirmDialog(null, "Já existe(m) " + opsAtivas + " OP(s) ativa(s) com o material " + tableItens.getValueAt(i, 2).toString() + ".\nDeseja abrir outra OP?", "OP's Ativas", JOptionPane.YES_NO_OPTION);
 
-                            if (resp1 == 0) {
+                                if (resp1 == 0) {
+                                    String op = od.opAtual();
+                                    double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString().replace(".", "").replace(",", "."));
+                                    String dataEntrega = Dates.CriarDataCurtaDBComDataExistente(tableItens.getValueAt(i, 8).toString());
+                                    String material = tableItens.getValueAt(i, 2).toString();
+                                    String dataCriacao = Dates.CriarDataCurtaDBSemDataExistente();
+
+                                    try {
+                                        od.create(op, dataCriacao, dataEntrega, txtCliente.getText(), txtPedido.getText(), idMaterial, material, tableItens.getValueAt(i, 3).toString(), qtd, qtd, "Rascunho");
+
+                                        ood.create(op, Dates.CriarDataCurtaDBSemDataExistente(), "Sistema", "OP criada mesmo com aviso que existia outra aberta.");
+                                    } catch (SQLException e) {
+                                        String msg = "Erro ao criar OP.";
+                                        JOptionPane.showMessageDialog(null, msg);
+
+                                        new Thread() {
+                                            @Override
+                                            public void run() {
+                                                SendEmail.EnviarErro2(msg, e);
+                                            }
+                                        }.start();
+                                    }
+
+                                    F_UPBean fub = new F_UPBean();
+
+                                    fub.setDav(txtPedido.getText());
+                                    fub.setOp(op);
+                                    fub.setDataentrega(dataEntrega);
+                                    fub.setMaterial(material);
+                                    fub.setProcesso("Rascunho");
+                                    fub.setDatacriacao(dataCriacao);
+                                    fub.setNivel(5);
+                                    fub.setValor(Double.parseDouble(tableItens.getValueAt(i, 6).toString().replace(".", "").replace(",", ".")));//
+                                    fub.setObservacao("");
+                                    fub.setCliente(txtCliente.getText());
+
+                                    //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
+                                    fud.create(fub);
+
+                                    vpid.updateOP(op, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+
+                                    vmdd.read(idMaterial).forEach(vmdb -> {
+                                        //Localicação do documento original
+                                        File fileoriginal = new File(vmdb.getLocal());
+                                        //Pasta que será colocar o documento
+                                        File folder = new File("Q:/MIKE_ERP/op_arq/" + String.valueOf(op));
+                                        //Documento copiado do original
+                                        File filecopy = new File(folder + "/" + fileoriginal.getName());
+
+                                        //Criar pasta no caso de já não existir
+                                        folder.mkdirs();
+                                        try {
+                                            //Criar o documento copiado na pasta
+                                            Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                                        } catch (IOException e) {
+                                            String msg = "Erro ao criar documento em rede.";
+                                            JOptionPane.showMessageDialog(null, msg);
+
+                                            new Thread() {
+                                                @Override
+                                                public void run() {
+                                                    SendEmail.EnviarErro2(msg, e);
+                                                }
+                                            }.start();
+                                        }
+
+                                        try {
+                                            odd.create(op, vmdb.getDescricao(), filecopy.toString().replace("//", "////"));
+                                        } catch (SQLException e) {
+                                            String msg = "Erro ao criar documento da OP.";
+                                            JOptionPane.showMessageDialog(null, msg);
+
+                                            new Thread() {
+                                                @Override
+                                                public void run() {
+                                                    SendEmail.EnviarErro2(msg, e);
+                                                }
+                                            }.start();
+                                        }
+                                    });
+                                }
+                            } else {
                                 String op = od.opAtual();
                                 double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString().replace(".", "").replace(",", "."));
                                 String dataEntrega = Dates.CriarDataCurtaDBComDataExistente(tableItens.getValueAt(i, 8).toString());
@@ -1723,7 +1845,8 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
                                 vpid.updateOP(op, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
 
-                                vmdd.read(idMaterial).forEach(vmdb -> {
+                                vmdd.read(idMaterial
+                                ).forEach(vmdb -> {
                                     //Localicação do documento original
                                     File fileoriginal = new File(vmdb.getLocal());
                                     //Pasta que será colocar o documento
@@ -1763,85 +1886,6 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                                     }
                                 });
                             }
-                        } else {
-                            String op = od.opAtual();
-                            double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString().replace(".", "").replace(",", "."));
-                            String dataEntrega = Dates.CriarDataCurtaDBComDataExistente(tableItens.getValueAt(i, 8).toString());
-                            String material = tableItens.getValueAt(i, 2).toString();
-                            String dataCriacao = Dates.CriarDataCurtaDBSemDataExistente();
-
-                            try {
-                                od.create(op, dataCriacao, dataEntrega, txtCliente.getText(), txtPedido.getText(), idMaterial, material, tableItens.getValueAt(i, 3).toString(), qtd, qtd, "Rascunho");
-                            } catch (SQLException e) {
-                                String msg = "Erro ao criar OP.";
-                                JOptionPane.showMessageDialog(null, msg);
-
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        SendEmail.EnviarErro2(msg, e);
-                                    }
-                                }.start();
-                            }
-
-                            F_UPBean fub = new F_UPBean();
-
-                            fub.setDav(txtPedido.getText());
-                            fub.setOp(op);
-                            fub.setDataentrega(dataEntrega);
-                            fub.setMaterial(material);
-                            fub.setProcesso("Rascunho");
-                            fub.setDatacriacao(dataCriacao);
-                            fub.setNivel(5);
-                            fub.setValor(Double.parseDouble(tableItens.getValueAt(i, 6).toString().replace(".", "").replace(",", ".")));//
-                            fub.setObservacao("");
-                            fub.setCliente(txtCliente.getText());
-
-                            //dav, op, dataentrega, material, processo, datacriacao, nivel, valor, observacao, cliente
-                            fud.create(fub);
-
-                            vpid.updateOP(op, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
-
-                            vmdd.read(idMaterial
-                            ).forEach(vmdb -> {
-                                //Localicação do documento original
-                                File fileoriginal = new File(vmdb.getLocal());
-                                //Pasta que será colocar o documento
-                                File folder = new File("Q:/MIKE_ERP/op_arq/" + String.valueOf(op));
-                                //Documento copiado do original
-                                File filecopy = new File(folder + "/" + fileoriginal.getName());
-
-                                //Criar pasta no caso de já não existir
-                                folder.mkdirs();
-                                try {
-                                    //Criar o documento copiado na pasta
-                                    Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                                } catch (IOException e) {
-                                    String msg = "Erro ao criar documento em rede.";
-                                    JOptionPane.showMessageDialog(null, msg);
-
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            SendEmail.EnviarErro2(msg, e);
-                                        }
-                                    }.start();
-                                }
-
-                                try {
-                                    odd.create(op, vmdb.getDescricao(), filecopy.toString().replace("//", "////"));
-                                } catch (SQLException e) {
-                                    String msg = "Erro ao criar documento da OP.";
-                                    JOptionPane.showMessageDialog(null, msg);
-
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            SendEmail.EnviarErro2(msg, e);
-                                        }
-                                    }.start();
-                                }
-                            });
                         }
                     }
                 }
@@ -1897,6 +1941,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     }
                 }
             }
+            lerPedidosAbertos();
         }
     }//GEN-LAST:event_jButton15ActionPerformed
 
@@ -1970,7 +2015,9 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     for (int i = 0; i < tableItens.getRowCount(); i++) {
                         if (tableItens.getValueAt(i, 1).equals(true)) {
                             int idItemPedido = Integer.parseInt(tableItens.getValueAt(i, 0).toString());
-                            vpid.updateNotaFiscal("", idItemPedido);
+                            int idItemNota = vpid.getIdItemNota(idItemPedido);
+                            vpid.updateNotaFiscal("", idItemPedido, 0);
+                            nfid.updateIdMaterial(0, idItemNota);
 
                             int idMaterial = Integer.parseInt(tableItens.getValueAt(i, 11).toString());
                             double estoqueAtual = vmd.readEstoque(idMaterial);
@@ -1998,6 +2045,26 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "Extornado com sucesso!");
 
                     lerItensPedido(txtPedido.getText());
+
+                    int numNota = 0;
+                    for (int i = 0; i < tableItens.getRowCount(); i++) {
+                        if (!tableItens.getValueAt(i, 10).equals("")) {
+                            numNota++;
+                        }
+                    }
+
+                    String pedido = txtPedido.getText();
+                    if (numNota == tableItens.getRowCount()) {
+                        vpd.updateStatus(pedido, "Faturado");
+                    } else {
+                        if (numNota == 0) {
+                            vpd.updateStatus(pedido, "Ativo");
+                        } else {
+                            vpd.updateStatus(pedido, "Parcialmente Faturado");
+                        }
+                    }
+
+                    lerPedido(pedido);
                 } catch (Exception e) {
                     String msg = "Erro.";
 
@@ -2013,6 +2080,16 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             }
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void tableDocsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableDocsMouseClicked
+        if (evt.getClickCount() == 2) {
+            if (tableDocs.getValueAt(tableDocs.getSelectedRow(), 3).toString().equals("")) {
+                Arquivos.abrirArquivo(tableDocs.getValueAt(tableDocs.getSelectedRow(), 4).toString());
+            } else {
+                Arquivos.abrirArquivo(tableDocs.getValueAt(tableDocs.getSelectedRow(), 3).toString());
+            }
+        }
+    }//GEN-LAST:event_tableDocsMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -20,6 +20,7 @@ public class TicketsBean {
     private String assunto;
     private int nivel;
     private String descricao;
+    private String resposta;
 
     public int getId() {
         return id;
@@ -91,5 +92,13 @@ public class TicketsBean {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+    
+    public String getResposta() {
+        return resposta;
+    }
+    
+    public void setResposta(String resposta) {
+        this.resposta = resposta;
     }
 }

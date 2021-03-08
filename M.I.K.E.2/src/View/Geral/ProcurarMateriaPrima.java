@@ -105,9 +105,9 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tablemateriais);
         if (tablemateriais.getColumnModel().getColumnCount() > 0) {
-            tablemateriais.getColumnModel().getColumn(0).setMinWidth(0);
-            tablemateriais.getColumnModel().getColumn(0).setPreferredWidth(0);
-            tablemateriais.getColumnModel().getColumn(0).setMaxWidth(0);
+            tablemateriais.getColumnModel().getColumn(0).setMinWidth(50);
+            tablemateriais.getColumnModel().getColumn(0).setPreferredWidth(50);
+            tablemateriais.getColumnModel().getColumn(0).setMaxWidth(50);
             tablemateriais.getColumnModel().getColumn(1).setMinWidth(150);
             tablemateriais.getColumnModel().getColumn(1).setPreferredWidth(150);
             tablemateriais.getColumnModel().getColumn(1).setMaxWidth(150);
@@ -171,13 +171,14 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
 
     private void tablemateriaisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablemateriaisMouseClicked
         if (evt.getClickCount() == 2) {
+            int idInsumo = Integer.parseInt(tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 0).toString());
             String codigo = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 1).toString();
             String desc = tablemateriais.getValueAt(tablemateriais.getSelectedRow(), 2).toString();
             switch (origem) {
                 case "OP":
                     String op = OP.txtNumOP.getText();
                     try {
-                        ompd.create(op, codigo, desc, 0, true);
+                        ompd.create(op, codigo, desc, 0, true, "", idInsumo);
                     } catch (SQLException e) {
                         String msg = "Erro ao criar matéria prima da OP.";
                         JOptionPane.showMessageDialog(null, msg);
@@ -194,6 +195,7 @@ public class ProcurarMateriaPrima extends javax.swing.JInternalFrame {
                 case "EscolherMP":
                     EscolherMP.txtCodigo.setText(codigo);
                     EscolherMP.txtDesc.setText(desc);
+                    EscolherMP.idMP = idInsumo;
                     break;
             }
             dispose();

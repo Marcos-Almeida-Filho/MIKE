@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Methods;
 
+import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
@@ -20,6 +20,10 @@ public class SoNumeros extends PlainDocument {
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         super.insertString(offs, str.replaceAll("[^0-9],", ""), a);
     }
-    
-    
+
+    public static void verificarNumeros(JTextField field) {
+        if (field.getText().length() > 0) {
+            field.setText(field.getText().replaceAll("[^0-9]", ""));
+        }
+    }
 }

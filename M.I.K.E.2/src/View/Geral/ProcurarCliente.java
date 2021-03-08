@@ -101,9 +101,9 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tableclientes);
         if (tableclientes.getColumnModel().getColumnCount() > 0) {
-            tableclientes.getColumnModel().getColumn(0).setMinWidth(40);
-            tableclientes.getColumnModel().getColumn(0).setPreferredWidth(40);
-            tableclientes.getColumnModel().getColumn(0).setMaxWidth(40);
+            tableclientes.getColumnModel().getColumn(0).setMinWidth(0);
+            tableclientes.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableclientes.getColumnModel().getColumn(0).setMaxWidth(0);
             tableclientes.getColumnModel().getColumn(1).setResizable(false);
             tableclientes.getColumnModel().getColumn(2).setResizable(false);
         }
@@ -242,7 +242,7 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
         model.setNumRows(0);
         cd = new ClientesDAO();
 
-        cd.pesquisa(txtpesquisa.getText()).forEach((cb) -> {
+        cd.pesquisaCliente(txtpesquisa.getText()).forEach((cb) -> {
             model.addRow(new Object[]{
                 cb.getId(),
                 cb.getNome(),
