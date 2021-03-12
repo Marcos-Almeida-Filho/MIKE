@@ -1295,6 +1295,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     ItemPedido.txtdesc.setText(tableItens.getValueAt(row, 3).toString());
                     ItemPedido.txtqtd.setText(tableItens.getValueAt(row, 4).toString());
                     ItemPedido.txtvalor.setText(tableItens.getValueAt(row, 6).toString());
+                    ItemPedido.idMaterial = Integer.parseInt(tableItens.getValueAt(row, 11).toString());
                     Dates.SetarDataJDateChooser(ItemPedido.txtprazo, Dates.CriarDataCurtaDBComDataExistente(tableItens.getValueAt(row, 8).toString()));
 
                     Telas.AparecerTela(ip);

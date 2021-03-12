@@ -1102,7 +1102,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_radiocActionPerformed
 
     private void btnclienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnclienteActionPerformed
-        ProcurarCliente p = new ProcurarCliente("ServiçoCotação");
+        ProcurarCliente p = new ProcurarCliente(this.getClass().getSimpleName());
         Telas.AparecerTela(p);
     }//GEN-LAST:event_btnclienteActionPerformed
 
@@ -1706,7 +1706,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
 
                 for (int i = 0; i < tableitens.getRowCount(); i++) {
                     if (tableitens.getValueAt(i, 0).equals(true)) {
-                        int dias = Integer.parseInt(tableitens.getValueAt(i, 7).toString().replace(" dias úteis", ""));
+                        int dias = Integer.parseInt(tableitens.getValueAt(i, 7).toString().replace(" dias", "").replace(" úteis", ""));
                         String datePrazo = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(dias);
                         
                         spib.setIdpedido(numpedido);

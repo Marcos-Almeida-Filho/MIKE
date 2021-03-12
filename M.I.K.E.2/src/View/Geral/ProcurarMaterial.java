@@ -9,6 +9,7 @@ import DAO.OPDAO;
 import DAO.OPMPDAO;
 import DAO.ServicoMateriaisDAO;
 import DAO.VendasMateriaisDAO;
+import View.administracao.relatorios.RelatorioVendaDeProduto;
 import View.comercial.CategoriaDePreco;
 import View.servicos.OS;
 import View.vendas.EscolherMP;
@@ -260,6 +261,7 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                 case "EscolherMP":
                     EscolherMP.txtCodigo.setText(codigo);
                     EscolherMP.txtDesc.setText(desc);
+                    EscolherMP.idMP = idmaterial;
                     break;
                 case "OP":
                     OP.TxtCodigo.setText(codigo);
@@ -269,6 +271,10 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                 case "ProcessoOP":
                     od.updateMaterialOP(OP.txtNumOP.getText(), idmaterial, codigo, desc);
                     ProcessoOP.criarProximoProcesso();
+                    break;
+                case "RelatorioVendaDeProduto":
+                    RelatorioVendaDeProduto.txtProduto.setText(codigo);
+                    RelatorioVendaDeProduto.idMaterial = idmaterial;
                     break;
             }
             dispose();

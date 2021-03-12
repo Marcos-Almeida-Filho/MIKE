@@ -1894,9 +1894,9 @@ public class OP extends javax.swing.JInternalFrame {
             tableMP.getColumnModel().getColumn(7).setMinWidth(0);
             tableMP.getColumnModel().getColumn(7).setPreferredWidth(0);
             tableMP.getColumnModel().getColumn(7).setMaxWidth(0);
-            tableMP.getColumnModel().getColumn(8).setMinWidth(50);
-            tableMP.getColumnModel().getColumn(8).setPreferredWidth(50);
-            tableMP.getColumnModel().getColumn(8).setMaxWidth(50);
+            tableMP.getColumnModel().getColumn(8).setMinWidth(0);
+            tableMP.getColumnModel().getColumn(8).setPreferredWidth(0);
+            tableMP.getColumnModel().getColumn(8).setMaxWidth(0);
         }
 
         btnBaixaMP.setText("Separar");
@@ -2270,6 +2270,49 @@ public class OP extends javax.swing.JInternalFrame {
                     if (tableMP.getValueAt(i, 1).equals(true)) {
                         int id = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
                         omd.delete(id);
+                        if (tableMP.getValueAt(i, 6).equals(true)) {
+                            double qtd = Double.parseDouble(tableMP.getValueAt(i, 5).toString());
+                            int idInsumo = Integer.parseInt(tableMP.getValueAt(i, 8).toString());
+                            if (tableMP.getValueAt(i, 7).equals(true)) {//Insumo
+                                double estoqueAtual = idao.readEstoque(idInsumo);
+                                double qtdFinal = estoqueAtual + qtd;
+
+                                idao.updateEstoque(qtdFinal, idInsumo);
+                                try {
+                                    imdao.create(idInsumo, estoqueAtual, qtd, qtdFinal, Dates.CriarDataCurtaDBSemDataExistente(), txtNumOP.getText() + " - Estorno MP", Session.nome);
+                                } catch (SQLException e) {
+                                    String msg = "Erro.";
+
+                                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            SendEmail.EnviarErro2(msg, e);
+                                        }
+                                    }.start();
+                                }
+                            } else {
+                                double estoqueAtual = vmd.readEstoque(idInsumo);
+                                double qtdFinal = estoqueAtual + qtd;
+
+                                vmd.updateEstoque(qtdFinal, idInsumo);
+                                try {
+                                    vmmd.create(idInsumo, estoqueAtual, qtd, qtdFinal, txtNumOP.getText() + " - Estorno MP", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                                } catch (SQLException e) {
+                                    String msg = "Erro.";
+
+                                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            SendEmail.EnviarErro2(msg, e);
+                                        }
+                                    }.start();
+                                }
+                            }
+                        }
                     }
                 }
                 lerMP(txtNumOP.getText());
@@ -2285,10 +2328,10 @@ public class OP extends javax.swing.JInternalFrame {
     private void btnBaixaMPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBaixaMPActionPerformed
         int rows = tableMP.getRowCount(), numBaixa = 0, numZero = 0;
         for (int i = 0; i < rows; i++) {
-            if (tableMP.getValueAt(i, 5).equals(true)) {
+            if (tableMP.getValueAt(i, 6).equals(true)) {
                 numBaixa++;
             }
-            if (Double.parseDouble(tableMP.getValueAt(i, 4).toString()) == 0) {
+            if (Double.parseDouble(tableMP.getValueAt(i, 5).toString()) == 0) {
                 numZero++;
             }
         }
@@ -2307,12 +2350,12 @@ public class OP extends javax.swing.JInternalFrame {
             int qtdNaoOk = 0;
 
             for (int i = 0; i < rows; i++) {
-                if (tableMP.getValueAt(i, 5).equals(false)) {
+                if (tableMP.getValueAt(i, 6).equals(false)) {
                     String material = tableMP.getValueAt(i, 2).toString();
-                    if (tableMP.getValueAt(i, 6).equals(true)) {
+                    if (tableMP.getValueAt(i, 7).equals(true)) {
                         int idmaterial = idao.idCreated(material);
                         double estoqueAtual = idao.readEstoque(idmaterial);
-                        double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+                        double qtd = Double.parseDouble(tableMP.getValueAt(i, 5).toString().replace(",", "."));
                         if (qtd > estoqueAtual) {
                             JOptionPane.showMessageDialog(null, "Estoque do insumo " + material + " é inferior ao selecionado para dar baixa.");
                             qtdNaoOk++;
@@ -2320,7 +2363,7 @@ public class OP extends javax.swing.JInternalFrame {
                     } else {
                         int idmaterial = vmd.idProduto(material);
                         double estoqueAtual = vmd.readEstoque(idmaterial);
-                        double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+                        double qtd = Double.parseDouble(tableMP.getValueAt(i, 5).toString().replace(",", "."));
                         if (qtd > estoqueAtual) {
                             JOptionPane.showMessageDialog(null, "Estoque do material " + material + " é inferior ao selecionado para dar baixa.");
                             qtdNaoOk++;
@@ -2331,12 +2374,12 @@ public class OP extends javax.swing.JInternalFrame {
 
             if (qtdNaoOk == 0) {
                 for (int i = 0; i < rows; i++) {
-                    if (tableMP.getValueAt(i, 5).equals(false)) {
+                    if (tableMP.getValueAt(i, 6).equals(false)) {
                         String material = tableMP.getValueAt(i, 2).toString();
-                        if (tableMP.getValueAt(i, 6).equals(true)) {
+                        if (tableMP.getValueAt(i, 7).equals(true)) {
                             int idmaterial = idao.idCreated(material);
                             double estoqueAtual = idao.readEstoque(idmaterial);
-                            double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+                            double qtd = Double.parseDouble(tableMP.getValueAt(i, 5).toString().replace(",", "."));
 
                             int idmp = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
                             omd.updateBaixa(idmp);
@@ -2354,7 +2397,7 @@ public class OP extends javax.swing.JInternalFrame {
                         } else {
                             int idmaterial = vmd.idProduto(material);
                             double estoqueAtual = vmd.readEstoque(idmaterial);
-                            double qtd = Double.parseDouble(tableMP.getValueAt(i, 4).toString().replace(",", "."));
+                            double qtd = Double.parseDouble(tableMP.getValueAt(i, 5).toString().replace(",", "."));
 
                             int idmp = Integer.parseInt(tableMP.getValueAt(i, 0).toString());
                             omd.updateBaixa(idmp);
@@ -2380,7 +2423,9 @@ public class OP extends javax.swing.JInternalFrame {
                         }
                     }
                 }
-                escolherPrimeiroProcesso();
+                if (txtStatus.getText().equals("Rascunho")) {
+                    escolherPrimeiroProcesso();
+                }
 
                 String op = txtNumOP.getText();
 
@@ -2399,7 +2444,7 @@ public class OP extends javax.swing.JInternalFrame {
         if (tableMP.getValueAt(tableMP.getSelectedRow(), 5).equals(true) && tableMP.getSelectedColumn() == 4) {
             JOptionPane.showMessageDialog(null, "Produto já dado baixa de estoque.");
         } else {
-            
+
         }
     }//GEN-LAST:event_tableMPMouseClicked
 

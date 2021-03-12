@@ -6,12 +6,9 @@
 package Methods;
 
 import View.TelaPrincipal;
-import java.awt.AWTException;
+import View.administracao.Relatorios;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
@@ -46,14 +43,43 @@ public class Telas {
             frame.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
             frame.setVisible(true);
             frame.setMaximum(true);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(null, "Erro: " + ex);
-            try {
-                SendEmail.EnviarErro(ex.toString());
-            } catch (AWTException | IOException ex1) {
-                Logger.getLogger(Telas.class.getName()).log(Level.SEVERE, null, ex1);
-            }
+        } catch (PropertyVetoException e) {
+            String msg = "Erro.";
+            
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        }
+    }
+    
+    public static void AbrirRelatorio(JInternalFrame frame) {
+        int comp = Relatorios.jDesktopPane1.getComponentCount();
+        if (comp > 0) {
+            Relatorios.jDesktopPane1.removeAll();
+        }
+        try {
+            Relatorios.jDesktopPane1.add(frame);
+            Dimension desktopsize = TelaPrincipal.jDesktopPane1.getSize();
+            Dimension jinternalframesize = frame.getSize();
+            frame.setLocation((desktopsize.width - jinternalframesize.width) / 2, (desktopsize.height - jinternalframesize.height) / 2);
+            frame.setVisible(true);
+            frame.setMaximum(true);
+        } catch (PropertyVetoException e) {
+            String msg = "Erro.";
+            
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         }
     }
 }

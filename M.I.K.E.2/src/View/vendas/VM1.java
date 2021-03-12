@@ -3112,7 +3112,7 @@ public class VM1 extends javax.swing.JInternalFrame {
 
                 try {
                     vmd.updateEstoque(saldo, idmaterial);
-                    vmmd.create(idmaterial, estoqueAtual, qtdMovimentada, saldo, tipo, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                    vmmd.create(idmaterial, estoqueAtual, qtdMovimentada, saldo, "Manual - " + tipo, Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
 
                     JOptionPane.showMessageDialog(null, "Movimentação criada com sucesso.");
 

@@ -36,6 +36,7 @@ import View.servicos.ServicoMateriais;
 import View.servicos.PedidoServico;
 import View.TI.Senhas;
 import View.TI.Tickets;
+import View.administracao.Relatorios;
 import View.administracao.Usuarios;
 import View.arquivo.ProgramacaoMIKE;
 import View.comercial.FaturamentoDiario;
@@ -167,6 +168,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         item_grupo_usuarios = new javax.swing.JMenuItem();
         item_representantes = new javax.swing.JMenuItem();
         item_regioes_atuacao = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         menu_fiscal = new javax.swing.JMenu();
         item_nf = new javax.swing.JMenuItem();
         item_natureza = new javax.swing.JMenuItem();
@@ -257,7 +259,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
         jDesktopPane1.setLayout(jDesktopPane1Layout);
         jDesktopPane1Layout.setHorizontalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 1161, Short.MAX_VALUE)
+            .addComponent(lblnome, javax.swing.GroupLayout.DEFAULT_SIZE, 1268, Short.MAX_VALUE)
         );
         jDesktopPane1Layout.setVerticalGroup(
             jDesktopPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,6 +358,16 @@ public final class TelaPrincipal extends javax.swing.JFrame {
             }
         });
         menu_adm.add(item_regioes_atuacao);
+
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/page_white_magnify.png"))); // NOI18N
+        jMenuItem3.setText("Relatórios");
+        jMenuItem3.setName("item_relatorios"); // NOI18N
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        menu_adm.add(jMenuItem3);
 
         jMenuBar1.add(menu_adm);
 
@@ -1499,18 +1511,23 @@ public final class TelaPrincipal extends javax.swing.JFrame {
 
     private void item_ticketsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_item_ticketsActionPerformed
         Tickets t = new Tickets();
-        MenusAbrir.acessoTela(evt, t);
+        MenusAbrir.acessoTela(evt, t, false);
     }//GEN-LAST:event_item_ticketsActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         FaturamentoDiario frame = new FaturamentoDiario();
-        MenusAbrir.acessoTela(evt, frame);
+        MenusAbrir.acessoTela(evt, frame, false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         Mensagens m = new Mensagens();
-        MenusAbrir.acessoTela(evt, m);
+        MenusAbrir.acessoTela(evt, m, false);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        Relatorios r = new Relatorios();
+        MenusAbrir.acessoTela(evt, r, true);
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1600,6 +1617,7 @@ public final class TelaPrincipal extends javax.swing.JFrame {
     public static javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     public static javax.swing.JLabel lblnome;
     public static javax.swing.JMenu menu_adm;

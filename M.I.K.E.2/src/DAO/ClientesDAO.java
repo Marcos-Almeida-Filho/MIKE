@@ -408,7 +408,7 @@ public class ClientesDAO {
         }
         return list;
     }
-
+    
     public List<ClientesBean> readrepresentantexcliente(Integer idrep) {
 
         rsList();

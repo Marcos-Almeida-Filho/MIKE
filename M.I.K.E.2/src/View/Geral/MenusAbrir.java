@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package View.Geral;
 
 import Connection.Session;
@@ -19,15 +18,19 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class MenusAbrir {
-    
+
     static GrupoDeUsuariosPermDAO gupd = new GrupoDeUsuariosPermDAO();
-    
-    public static void acessoTela(ActionEvent evt, JInternalFrame frame) {
+
+    public static void acessoTela(ActionEvent evt, JInternalFrame frame, boolean aumentado) {
         JMenuItem menuItem = (JMenuItem) evt.getSource();
         String menuItemName = menuItem.getName();
 
         if (gupd.readPerm(Session.idnivel, menuItemName)) {
-            Telas.AparecerTela(frame);
+            if (aumentado) {
+                Telas.AparecerTelaAumentada(frame);
+            } else {
+                Telas.AparecerTela(frame);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Acesso não permitido.");
         }

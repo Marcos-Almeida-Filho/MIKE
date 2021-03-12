@@ -5,6 +5,7 @@
  */
 package DAO;
 
+import Bean.RelatorioVendaDeProdutoBean;
 import Bean.VendasPedidoItensBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
@@ -29,9 +30,13 @@ public class VendasPedidoItensDAO {
     static ResultSet rs;
 
     static List<VendasPedidoItensBean> listvpi;
+    
+    static List<RelatorioVendaDeProdutoBean> listrvdpb;
 
     static VendasPedidoItensBean vpib;
 
+    static RelatorioVendaDeProdutoBean rvdpb;
+    
     public static void conStmt() {
         con = ConnectionFactory.getConnection();
 
@@ -44,6 +49,8 @@ public class VendasPedidoItensDAO {
         rs = null;
 
         listvpi = new ArrayList<>();
+        
+        listrvdpb = new ArrayList<>();
     }
 
     /**
@@ -156,6 +163,42 @@ public class VendasPedidoItensDAO {
         return listvpi;
     }
 
+    public List<RelatorioVendaDeProdutoBean> readItensRelatorioDeVendas(int id, String dataInicio, String dataFim) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT vendas_pedido.data_abertura, vendas_pedido.pedido, vendas_pedido.cliente, vendas_pedido_itens.valorunitario, vendas_pedido_itens.qtd, vendas_pedido_itens.nf FROM vendas_pedido_itens, vendas_pedido WHERE vendas_pedido_itens.idmaterial = " + id + " AND vendas_pedido_itens.dav = vendas_pedido.pedido AND vendas_pedido.data_abertura BETWEEN '" + dataInicio + "' AND '" + dataFim + "' AND vendas_pedido.status <> 'Desativado'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                rvdpb = new RelatorioVendaDeProdutoBean();
+
+                rvdpb.setDataAbertura(rs.getString("vendas_pedido.data_abertura"));
+                rvdpb.setPedido(rs.getString("vendas_pedido.pedido"));
+                rvdpb.setCliente(rs.getString("vendas_pedido.cliente"));
+                rvdpb.setQtd(rs.getDouble("vendas_pedido_itens.qtd"));
+                rvdpb.setValorUnitario(rs.getDouble("vendas_pedido_itens.valorunitario"));
+                rvdpb.setNf(rs.getString("vendas_pedido_itens.nf"));
+
+                listrvdpb.add(rvdpb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler vendas do produto.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listrvdpb;
+    }
+    
     public List<VendasPedidoItensBean> readItensSemOp(String dav, String codigo) {
         rsList();
 

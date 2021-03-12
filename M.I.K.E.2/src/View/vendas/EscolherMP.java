@@ -241,7 +241,7 @@ public class EscolherMP extends javax.swing.JInternalFrame {
                     }.start();
                 }
             } else {
-                ompd.updateMP(codigo, desc, qtd, lote, id);
+                ompd.updateMP(codigo, desc, qtd, lote, id, idMP);
             }
 
             OP.lerMP(op);

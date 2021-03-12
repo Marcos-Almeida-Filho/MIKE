@@ -186,8 +186,11 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                 representante = cb.getRepresentante();
             });
             switch (origem) {
-                case "ServiçoCotação":
+                case "CotacaoServico":
                     CotacaoServico.txtnomecliente.setText(cliente);
+                    CotacaoServico.txtcondicao.setText(condicao);
+                    CotacaoServico.txtrepresentante.setText(representante);
+                    CotacaoServico.txtvendedor.setText(vendedor);
                     break;
                 case "ServiçoPedido":
                     PedidoServico.txtclientepedido.setText(cliente);

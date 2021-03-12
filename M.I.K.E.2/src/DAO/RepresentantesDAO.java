@@ -63,6 +63,39 @@ public class RepresentantesDAO {
         }
     }
 
+    public int getIdRepresentante(String nome) {
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        int id = 0;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM representantes WHERE nome = '" + nome + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                id = rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro.";
+            
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return id;
+    }
+    
     public List<RepresentantesBean> read() {
 
         Connection con = ConnectionFactory.getConnection();

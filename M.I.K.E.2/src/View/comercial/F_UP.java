@@ -429,7 +429,9 @@ public class F_UP extends javax.swing.JInternalFrame {
         });
 
         cbStatusGeral.addItem("Encerrado");
+        cbStatusOS.addItem("Excluído");
         cbStatusOS.addItem("Encerrado");
+        cbStatusOP.addItem("Excluído");
         cbStatusOP.addItem("Encerrado");
     }
 

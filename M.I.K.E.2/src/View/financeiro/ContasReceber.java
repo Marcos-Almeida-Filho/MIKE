@@ -6,6 +6,7 @@
 package View.financeiro;
 
 import Bean.ClientesContatosBean;
+import Connection.Session;
 import DAO.CARDAO;
 import DAO.CARDocumentosDAO;
 import DAO.CARObsDAO;
@@ -113,6 +114,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                         destinatarios.forEach((destinatario) -> {
                             SendEmail.LembreteCAR(destinatario.getEmail(), mensagemFinal);
                         });
+                        SendEmail.LembreteCAR(Session.emailfabrica, mensagemFinal);
                     }
                 }
             }
@@ -336,6 +338,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         jLabel6 = new javax.swing.JLabel();
         btnEnviarLembrete = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -580,6 +583,14 @@ public class ContasReceber extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton2.setText("Estornar Recebimento");
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -591,6 +602,8 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEnviarLembrete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5)
@@ -643,7 +656,8 @@ public class ContasReceber extends javax.swing.JInternalFrame {
                     .addComponent(jButton3)
                     .addComponent(jButton4)
                     .addComponent(btnEnviarLembrete)
-                    .addComponent(jButton5))
+                    .addComponent(jButton5)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
@@ -804,11 +818,40 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        int numTrue = 0;
+
+        for (int i = 0; i < tablecar.getRowCount(); i++) {
+            if (tablecar.getValueAt(i, 0).equals(true)) {
+                numTrue++;
+            }
+        }
+
+        if (numTrue == 0) {
+            JOptionPane.showMessageDialog(null, "Nenhum registro selecionado.");
+        } else {
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja estornar os recebimentos selecionados?", "Estornar Recebimentos", JOptionPane.YES_NO_OPTION);
+
+            if (resp == 0) {
+                for (int i = 0; i < tablecar.getRowCount(); i++) {
+                    if (tablecar.getValueAt(i, 0).equals(true)) {
+                        int id = Integer.parseInt(tablecar.getValueAt(i, 1).toString());
+
+                        card.estornarRecebimento(id);
+                    }
+                }
+
+                readtablecar();
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnEnviarLembrete;
     public static javax.swing.JComboBox<String> cbstatus;
     public javax.swing.JButton jButton1;
+    public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;

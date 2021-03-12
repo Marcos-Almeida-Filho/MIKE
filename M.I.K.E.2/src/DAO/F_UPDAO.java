@@ -237,7 +237,7 @@ public class F_UPDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND processo <> 'Cancelado' ORDER BY nivel, dataentrega");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND processo <> 'Cancelado' and processo <> 'Excluído' ORDER BY nivel, dataentrega");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -275,7 +275,7 @@ public class F_UPDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op NOT LIKE 'os%' AND processo <> 'Cancelado' ORDER BY nivel, dataentrega");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op NOT LIKE 'os%' AND processo <> 'Cancelado' AND processo <> 'Excluído' ORDER BY nivel, dataentrega");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -313,7 +313,7 @@ public class F_UPDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE 'OS%' AND processo <> 'Cancelado' ORDER BY nivel, dataentrega");
+            stmt = con.prepareStatement("SELECT * FROM f_up WHERE processo <> 'Encerrado' AND op LIKE 'OS%' AND processo <> 'Cancelado' and processo <> 'Excluído' ORDER BY nivel, dataentrega");
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -1075,7 +1075,6 @@ public class F_UPDAO {
     }
 
     public void updateProcessoByOs(F_UPBean fb) {
-
         conStmt();
 
         try {

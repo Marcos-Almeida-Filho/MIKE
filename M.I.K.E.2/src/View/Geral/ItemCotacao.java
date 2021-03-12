@@ -53,7 +53,7 @@ public class ItemCotacao extends javax.swing.JInternalFrame {
                         txtdesc.setText(vcib.getDescricao());
                         txtqtd.setText(String.valueOf(vcib.getQtd()));
                         txtvalor.setText(String.valueOf(vcib.getValorunitario()));
-                        txtprazo.setText(vcib.getPrazo().replace(" dias úteis", ""));
+                        txtprazo.setText(vcib.getPrazo().replace(" dias", "").replace(" úteis", ""));
                     });
                     break;
                 default:

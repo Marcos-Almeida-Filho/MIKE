@@ -5,7 +5,6 @@
  */
 package View.administracao;
 
-import Bean.ClientesBean;
 import Bean.RegioesBean;
 import Bean.RepresentantesBean;
 import DAO.ClientesDAO;
@@ -36,12 +35,12 @@ public class Representantes extends javax.swing.JInternalFrame {
         model.setNumRows(0);
 
         ClientesDAO cd = new ClientesDAO();
-        for (ClientesBean cb : cd.readrepresentantexcliente(Integer.parseInt(txtid.getText()))) {
+        cd.readrepresentantexcliente(Integer.parseInt(txtid.getText())).forEach((cb) -> {
             model.addRow(new Object[]{
                 cb.getNome(),
                 cb.getVisita()
             });
-        }
+        });
     }
 
     public void zeracampos() {
@@ -207,7 +206,6 @@ public class Representantes extends javax.swing.JInternalFrame {
         jLabel1.setText("ID");
 
         txtid.setEditable(false);
-        txtid.setBackground(new java.awt.Color(255, 255, 255));
         txtid.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtid.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -469,7 +467,6 @@ public class Representantes extends javax.swing.JInternalFrame {
         jLabel16.setText("Status");
 
         txtstatus.setEditable(false);
-        txtstatus.setBackground(new java.awt.Color(255, 255, 255));
         txtstatus.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtstatus.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
@@ -491,9 +488,8 @@ public class Representantes extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtstatus, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );

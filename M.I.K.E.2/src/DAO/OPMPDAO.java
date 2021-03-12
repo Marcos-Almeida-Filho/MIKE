@@ -113,11 +113,11 @@ public class OPMPDAO {
         }
     }
     
-    public void updateMP(String codigo, String descricao, double qtd, String lote, int id) {
+    public void updateMP(String codigo, String descricao, double qtd, String lote, int id, int idInsumo) {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE op_mp SET qtd = " + qtd + ", codigo = '" + codigo + "', descricao = '" + descricao + "', lote = '" + lote + "' WHERE id = " + id);
+            stmt = con.prepareStatement("UPDATE op_mp SET qtd = " + qtd + ", codigo = '" + codigo + "', descricao = '" + descricao + "', lote = '" + lote + "', idInsumo = " + idInsumo + " WHERE id = " + id);
 
             stmt.executeUpdate();
         } catch (SQLException e) {

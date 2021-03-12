@@ -477,6 +477,29 @@ public class CARDAO extends GenericDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
+    
+    public void estornarRecebimento(int id) {
+        conStmt();
+        
+        try {
+            stmt = con.prepareStatement("UPDATE " + table + " SET datarecebimento = NULL, valorrecebido = NULL, banco = NULL, metodo = NULL, cheque = '', status = 'Pendente' WHERE id = " + id);
+            
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao estornar recebimento.";
+            JOptionPane.showMessageDialog(null, msg);
+            
+            new Thread() {
+                
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 
     public void cancelarConta(int notaFiscal) {
 

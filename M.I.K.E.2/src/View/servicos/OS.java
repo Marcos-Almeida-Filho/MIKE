@@ -2400,7 +2400,15 @@ public class OS extends javax.swing.JInternalFrame {
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         for (int i = 0; i < tableos.getRowCount(); i++) {
             if (tableos.getValueAt(i, 0).equals(true)) {
-                od.delete(tableos.getValueAt(i, 1).toString());
+                String os = tableos.getValueAt(i, 1).toString();
+                od.delete(os);
+                fub = new F_UPBean();
+
+                fub.setProcesso("Excluído");
+                fub.setOp(os);
+
+                //processo = ? WHERE op = ?
+                fud.updateProcessoByOs(fub);
             }
         }
         reados();
