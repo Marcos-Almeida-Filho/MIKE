@@ -274,6 +274,35 @@ public class VendasMateriaisDAO {
         }
         return estoque;
     }
+    
+    public String codigoProduto(int id) {
+        String codigo = "";
+
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT codigo FROM vendas_materiais WHERE id = " + id);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                codigo = rs.getString("codigo");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler ID do produto.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return codigo;
+    }
 
     public int idProduto(String codigo) {
         int produto = 0;

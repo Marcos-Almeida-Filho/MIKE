@@ -173,7 +173,7 @@ public class NotaFiscalDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM nf WHERE statusInterno = 'Ativo' ORDER BY numero DESC");
+            stmt = con.prepareStatement("SELECT * FROM nf WHERE statusInterno = 'Ativo' AND venda = true ORDER BY numero DESC");
 
             rs = stmt.executeQuery();
 
@@ -283,7 +283,7 @@ public class NotaFiscalDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM nf WHERE statusInterno = 'Ativo' AND numero LIKE '%" + pesquisa + "%' OR statusInterno = 'Ativo' AND destinatario LIKE '%" + pesquisa + "%' ORDER BY numero DESC");
+            stmt = con.prepareStatement("SELECT * FROM nf WHERE statusInterno = 'Ativo' AND (numero LIKE '%" + pesquisa + "%' OR destinatario LIKE '%" + pesquisa + "%') AND venda = true ORDER BY numero DESC");
 
             rs = stmt.executeQuery();
 
@@ -417,6 +417,29 @@ public class NotaFiscalDAO {
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void estornarStatus(int numero) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE nf SET statusInterno = 'Ativo' WHERE numero = " + numero);
+
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status da NF-e.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+
                 @Override
                 public void run() {
                     SendEmail.EnviarErro2(msg, e);

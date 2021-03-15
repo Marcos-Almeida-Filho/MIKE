@@ -11,6 +11,7 @@ import Connection.Session;
 import DAO.AltDAO;
 import DAO.F_UPDAO;
 import DAO.F_UP_HistDAO;
+import DAO.NotaFiscalDAO;
 import DAO.NotaFiscalItensDAO;
 import DAO.OPDAO;
 import DAO.OPDocDAO;
@@ -74,6 +75,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     static VendasMateriaisMovDAO vmmd = new VendasMateriaisMovDAO();
     static F_UPDAO fud = new F_UPDAO();
     static F_UP_HistDAO fuhd = new F_UP_HistDAO();
+    static NotaFiscalDAO nfdao = new NotaFiscalDAO();
     static NotaFiscalItensDAO nfid = new NotaFiscalItensDAO();
     static OPObsDAO ood = new OPObsDAO();
 
@@ -320,7 +322,11 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             valorItem = Double.parseDouble(replace);
             valorTotal += valorItem;
         }
-        valorTotal += Double.parseDouble(txtFrete.getText().replace(",", "."));
+        double frete = 0;
+        if (txtFrete.getText().length() > 0) {
+            frete = Double.parseDouble(txtFrete.getText().replace(",", "."));
+        }
+        valorTotal += frete;
         String valorTotalS = Valores.TransformarDoubleDBemString(valorTotal);
         txtValorTotal.setText(valorTotalS);
     }
@@ -416,6 +422,8 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         btnMotivo = new javax.swing.JButton();
         txtPedidoCliente = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -648,6 +656,22 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         jLabel10.setText("Pedido de Compra");
         jLabel10.setName("jLabel10"); // NOI18N
 
+        jButton3.setText(">");
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("<");
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -655,7 +679,11 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -682,13 +710,16 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel8)
                     .addComponent(txtPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addComponent(txtStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnMotivo))
+                    .addComponent(btnMotivo)
+                    .addComponent(jButton3)
+                    .addComponent(jButton4)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5)
+                        .addComponent(txtDataAbertura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -1041,9 +1072,9 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             tableItens.getColumnModel().getColumn(10).setMinWidth(80);
             tableItens.getColumnModel().getColumn(10).setPreferredWidth(80);
             tableItens.getColumnModel().getColumn(10).setMaxWidth(80);
-            tableItens.getColumnModel().getColumn(11).setMinWidth(0);
-            tableItens.getColumnModel().getColumn(11).setPreferredWidth(0);
-            tableItens.getColumnModel().getColumn(11).setMaxWidth(0);
+            tableItens.getColumnModel().getColumn(11).setMinWidth(50);
+            tableItens.getColumnModel().getColumn(11).setPreferredWidth(50);
+            tableItens.getColumnModel().getColumn(11).setMaxWidth(50);
         }
 
         btnAddItem.setText("Adicionar Item");
@@ -1077,7 +1108,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             }
         });
 
-        btnOpenOP.setText("Abrir OP's");
+        btnOpenOP.setText("Gerar OP's");
         btnOpenOP.setName("btnOpenOP"); // NOI18N
         btnOpenOP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1093,12 +1124,18 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
             }
         });
 
+        txtFrete.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txtFrete.setName("txtFrete"); // NOI18N
+        txtFrete.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFreteFocusGained(evt);
+            }
+        });
 
         jLabel9.setText("Frete: R$");
         jLabel9.setName("jLabel9"); // NOI18N
 
-        jButton1.setText("Extornar NF-e Lançada");
+        jButton1.setText("Estornar NF-e Lançada");
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1338,8 +1375,11 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
             lancarNF.addActionListener((ActionEvent ae) -> {
                 int idMaterial = Integer.parseInt(tableItens.getValueAt(row, 11).toString());
+                
+                String codigoItem = tableItens.getValueAt(row, 2).toString();
+                String codigo = vmd.codigoProduto(idMaterial);
 
-                if (idMaterial == 0) {
+                if (idMaterial == 0 || !codigoItem.equals(codigo)) {
                     JOptionPane.showMessageDialog(null, "Atualize o material por favor.");
                 } else {
                     int idItemPedido = Integer.parseInt(tableItens.getValueAt(row, 0).toString());
@@ -1399,10 +1439,10 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                     for (int i = 0; i < tableItens.getRowCount(); i++) {
                         int idMaterial = Integer.parseInt(tableItens.getValueAt(i, 11).toString());
                         String codigo = tableItens.getValueAt(i, 2).toString();
-                        String descricao = tableItens.getValueAt(i, 3).toString();;
+                        String descricao = tableItens.getValueAt(i, 3).toString();
                         double qtd = Double.parseDouble(tableItens.getValueAt(i, 4).toString());
-                        double valorunitario = Double.parseDouble(tableItens.getValueAt(i, 6).toString());
-                        double valortotal = Double.parseDouble(tableItens.getValueAt(i, 7).toString());
+                        double valorunitario = Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString());
+                        double valortotal = Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString());
                         String prazo = tableItens.getValueAt(i, 8).toString();
                         String nf = tableItens.getValueAt(i, 10).toString();
                         String op = tableItens.getValueAt(i, 9).toString();
@@ -1712,7 +1752,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         } else if (!txtCliente.getText().equals(clienteOriginal) || !txtCondPag.getText().equals(condicaoOriginal) || !txtRep.getText().equals(representanteOriginal) || !txtVendedor.getText().equals(vendedorOriginal) || numDocsOriginal != tableDocs.getRowCount() || numObsOriginal != tableObs.getRowCount() || numItensOriginal != tableItens.getRowCount()) {
             JOptionPane.showMessageDialog(null, "Salve o Pedido para que as alterações entrem em vigor primeiro.");
         } else {
-            int resp = JOptionPane.showConfirmDialog(null, "Deseja abrir OPs para os itens selecionados?", "Criar OPs", JOptionPane.YES_NO_OPTION);
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja gerar OPs para os itens selecionados?", "Gerar OPs", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
                 for (int i = 0; i < tableItens.getRowCount(); i++) {
                     if (tableItens.getValueAt(i, 1).equals(true)) {
@@ -1724,7 +1764,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                             int opsAtivas = od.getOpsAtivasPorMaterial(idMaterial);
 
                             if (opsAtivas > 0) {
-                                int resp1 = JOptionPane.showConfirmDialog(null, "Já existe(m) " + opsAtivas + " OP(s) ativa(s) com o material " + tableItens.getValueAt(i, 2).toString() + ".\nDeseja abrir outra OP?", "OP's Ativas", JOptionPane.YES_NO_OPTION);
+                                int resp1 = JOptionPane.showConfirmDialog(null, "Já existe(m) " + opsAtivas + " OP(s) ativa(s) com o material " + tableItens.getValueAt(i, 2).toString() + ".\nDeseja gerar outra OP?", "OP's Ativas", JOptionPane.YES_NO_OPTION);
 
                                 if (resp1 == 0) {
                                     String op = od.opAtual();
@@ -2009,16 +2049,19 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         } else if (numSemNota > 0) {
             JOptionPane.showMessageDialog(null, "Itens sem nota fiscal selecionados.");
         } else {
-            int resp = JOptionPane.showConfirmDialog(null, "Deseja extornar as notas ficais lançadas nos itens selecionados?", "Extornar NF-e", JOptionPane.YES_NO_OPTION);
+            int resp = JOptionPane.showConfirmDialog(null, "Deseja estornar as notas ficais lançadas nos itens selecionados?", "Estornar NF-e", JOptionPane.YES_NO_OPTION);
 
             if (resp == 0) {
                 try {
                     for (int i = 0; i < tableItens.getRowCount(); i++) {
                         if (tableItens.getValueAt(i, 1).equals(true)) {
+                            int nf = Integer.parseInt(tableItens.getValueAt(i, 10).toString());
                             int idItemPedido = Integer.parseInt(tableItens.getValueAt(i, 0).toString());
                             int idItemNota = vpid.getIdItemNota(idItemPedido);
                             vpid.updateNotaFiscal("", idItemPedido, 0);
                             nfid.updateIdMaterial(0, idItemNota);
+
+                            nfdao.estornarStatus(nf);
 
                             int idMaterial = Integer.parseInt(tableItens.getValueAt(i, 11).toString());
                             double estoqueAtual = vmd.readEstoque(idMaterial);
@@ -2028,7 +2071,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
                             vmd.updateEstoque(estoque, idMaterial);
                             try {
-                                vmmd.create(idMaterial, estoqueAtual, qtd, estoque, "Extorno de Nota Fiscal", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
+                                vmmd.create(idMaterial, estoqueAtual, qtd, estoque, "Estorno de Nota Fiscal", Dates.CriarDataCurtaDBSemDataExistente(), Session.nome);
                             } catch (SQLException e) {
                                 String msg = "Erro.";
 
@@ -2043,7 +2086,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                             }
                         }
                     }
-                    JOptionPane.showMessageDialog(null, "Extornado com sucesso!");
+                    JOptionPane.showMessageDialog(null, "Estornado com sucesso!");
 
                     lerItensPedido(txtPedido.getText());
 
@@ -2092,6 +2135,30 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_tableDocsMouseClicked
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (txtPedido.getText().length() > 0) {
+            String inicio = txtPedido.getText().substring(0, 5);
+            int numero = Integer.parseInt(txtPedido.getText().substring(5));
+            numero++;
+            txtPedido.setText(inicio + String.format("%04d", numero));
+            lerPedido(txtPedido.getText());
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if (txtPedido.getText().length() > 0) {
+            String inicio = txtPedido.getText().substring(0, 5);
+            int numero = Integer.parseInt(txtPedido.getText().substring(5));
+            numero--;
+            txtPedido.setText(inicio + String.format("%04d", numero));
+            lerPedido(txtPedido.getText());
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void txtFreteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFreteFocusGained
+        txtFrete.selectAll();
+    }//GEN-LAST:event_txtFreteFocusGained
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton btnAddDoc;
@@ -2116,6 +2183,8 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
     public javax.swing.JButton jButton14;
     public javax.swing.JButton jButton15;
     public javax.swing.JButton jButton2;
+    public javax.swing.JButton jButton3;
+    public javax.swing.JButton jButton4;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel10;
     public javax.swing.JLabel jLabel2;

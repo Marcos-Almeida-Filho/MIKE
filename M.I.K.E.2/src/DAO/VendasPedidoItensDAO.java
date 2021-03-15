@@ -333,6 +333,27 @@ public class VendasPedidoItensDAO {
 
         ConnectionFactory.closeConnection(con, stmt);
     }
+    
+    public void updateNotaFiscalParcial(String nf, int idItemPedido, int idItemNota, double qtd) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_pedido_itens SET nf = '" + nf + "', idItemNota = " + idItemNota + ", qtd = " + qtd + " WHERE id = " + idItemPedido);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar nota fiscal do item do Pedido de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
 
     public void updateNotaFiscal(String nf, int idItemPedido, int idItemNota) {
         conStmt();

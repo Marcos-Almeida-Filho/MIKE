@@ -254,7 +254,7 @@ public class AddNF extends javax.swing.JInternalFrame {
                 if (qtd < vpib.getQtd()) {
                     double qtd2 = vpib.getQtd() - qtd;
                     try {
-                        vpid.updateNotaFiscal(nf, idItemPedido, idItemNota);
+                        vpid.updateNotaFiscalParcial(nf, idItemPedido, idItemNota, qtd);
 
                         vpid.create(PedidoVenda.txtPedido.getText(), 0, vpib.getCodigo(), vpib.getDescricao(), qtd2, vpib.getValorunitario(), vpib.getValortotal(), vpib.getPrazo(), "", vpib.getOp());
                     } catch (SQLException e) {

@@ -369,7 +369,11 @@
                           <Group type="102" attributes="0">
                               <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton4" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="txtPedido" min="-2" pref="100" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton3" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -400,13 +404,17 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtDataAbertura" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtPedido" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="txtStatus" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="btnMotivo" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton3" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="3" groupAlignment="3" attributes="0">
+                                      <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="txtDataAbertura" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -525,6 +533,24 @@
                         <Property name="text" type="java.lang.String" value="Pedido de Compra"/>
                         <Property name="name" type="java.lang.String" value="jLabel10" noResource="true"/>
                       </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jButton3">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&gt;"/>
+                        <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jButton4">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&lt;"/>
+                        <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -1104,7 +1130,7 @@
                                       <Editor/>
                                       <Renderer/>
                                     </Column>
-                                    <Column maxWidth="0" minWidth="0" prefWidth="0" resizable="true">
+                                    <Column maxWidth="50" minWidth="50" prefWidth="50" resizable="true">
                                       <Title/>
                                       <Editor/>
                                       <Renderer/>
@@ -1180,7 +1206,7 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="btnOpenOP">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Abrir OP&apos;s"/>
+                            <Property name="text" type="java.lang.String" value="Gerar OP&apos;s"/>
                             <Property name="name" type="java.lang.String" value="btnOpenOP" noResource="true"/>
                           </Properties>
                           <Events>
@@ -1204,8 +1230,12 @@
                         </Component>
                         <Component class="javax.swing.JTextField" name="txtFrete">
                           <Properties>
+                            <Property name="horizontalAlignment" type="int" value="0"/>
                             <Property name="name" type="java.lang.String" value="txtFrete" noResource="true"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txtFreteFocusGained"/>
+                          </Events>
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="9"/>
                           </AuxValues>
@@ -1218,7 +1248,7 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton1">
                           <Properties>
-                            <Property name="text" type="java.lang.String" value="Extornar NF-e Lan&#xe7;ada"/>
+                            <Property name="text" type="java.lang.String" value="Estornar NF-e Lan&#xe7;ada"/>
                             <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
                           </Properties>
                           <Events>

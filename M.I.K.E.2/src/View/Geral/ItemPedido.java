@@ -100,9 +100,20 @@ public class ItemPedido extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Quantidade");
 
+        txtqtd.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtqtdFocusGained(evt);
+            }
+        });
+
         jLabel4.setText("Valor Unitário R$");
 
         txtvalor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,###.00"))));
+        txtvalor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtvalorFocusGained(evt);
+            }
+        });
 
         jLabel6.setText("Prazo de Entrega");
 
@@ -292,6 +303,14 @@ public class ItemPedido extends javax.swing.JInternalFrame {
             dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtqtdFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtqtdFocusGained
+        txtqtd.selectAll();
+    }//GEN-LAST:event_txtqtdFocusGained
+
+    private void txtvalorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtvalorFocusGained
+        txtvalor.selectAll();
+    }//GEN-LAST:event_txtvalorFocusGained
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
