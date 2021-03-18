@@ -7,6 +7,7 @@ package View.Geral;
 
 import View.servicos.*;
 import DAO.ClientesDAO;
+import View.administracao.relatorios.RelatorioVendaPorCliente;
 import View.comercial.AdicionarOPFUP;
 import View.comercial.OPF_UP;
 import View.financeiro.AdicionarContasAPagar;
@@ -235,6 +236,9 @@ public class ProcurarCliente extends javax.swing.JInternalFrame {
                 case "ContaReceber":
                     ContaReceber.txtCliente.setText(cliente);
                     ContaReceber.idCliente = idCliente;
+                case "RelatorioVendaPorCliente":
+                    RelatorioVendaPorCliente.txtCliente.setText(cliente);
+                    break;
             }
             dispose();
         }

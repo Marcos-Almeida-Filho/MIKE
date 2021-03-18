@@ -6,6 +6,7 @@
 package DAO;
 
 import Bean.RelatorioVendaDeProdutoBean;
+import Bean.RelatorioVendasPorClienteBean;
 import Bean.VendasPedidoItensBean;
 import Connection.ConnectionFactory;
 import Methods.SendEmail;
@@ -33,9 +34,13 @@ public class VendasPedidoItensDAO {
     
     static List<RelatorioVendaDeProdutoBean> listrvdpb;
 
+    static List<RelatorioVendasPorClienteBean> listrvpcb;
+    
     static VendasPedidoItensBean vpib;
 
     static RelatorioVendaDeProdutoBean rvdpb;
+    
+    static RelatorioVendasPorClienteBean rvpcb;
     
     public static void conStmt() {
         con = ConnectionFactory.getConnection();
@@ -51,6 +56,8 @@ public class VendasPedidoItensDAO {
         listvpi = new ArrayList<>();
         
         listrvdpb = new ArrayList<>();
+        
+        listrvpcb = new ArrayList<>();
     }
 
     /**
@@ -197,6 +204,44 @@ public class VendasPedidoItensDAO {
         }
 
         return listrvdpb;
+    }
+    
+    public List<RelatorioVendasPorClienteBean> readItensVendasPorCliente(String cliente, String inicio, String fim) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido_itens, vendas_pedido WHERE vendas_pedido.cliente = '" + cliente + "' AND vendas_pedido.status <> 'Desativado' AND vendas_pedido.pedido = vendas_pedido_itens.dav AND vendas_pedido.data_abertura BETWEEN '" + inicio + "' AND '" + fim + "' ORDER BY vendas_pedido_itens.codigo");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                rvpcb = new RelatorioVendasPorClienteBean();
+                
+                rvpcb.setData(rs.getString("vendas_pedido.data_abertura"));
+                rvpcb.setDav(rs.getString("vendas_pedido_itens.dav"));
+                rvpcb.setCodigo(rs.getString("vendas_pedido_itens.codigo"));
+                rvpcb.setDescricao(rs.getString("vendas_pedido_itens.descricao"));
+                rvpcb.setValorUnitario(rs.getDouble("vendas_pedido_itens.valorunitario"));
+                rvpcb.setQtd(rs.getDouble("vendas_pedido_itens.qtd"));
+                rvpcb.setNf(rs.getString("vendas_pedido_itens.nf"));
+                rvpcb.setPedido(rs.getString("vendas_pedido.pedidocliente"));
+
+                listrvpcb.add(rvpcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler os itens do Pedido de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listrvpcb;
     }
     
     public List<VendasPedidoItensBean> readItensSemOp(String dav, String codigo) {

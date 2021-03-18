@@ -1372,6 +1372,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
                 spib.setOs(tableitensorcamento.getValueAt(i, 8).toString());
                 spib.setNf(tableitensorcamento.getValueAt(i, 9).toString());
+                spib.setPrazoDate(Dates.CriarDataCurtaDBComDataExistente(tableitensorcamento.getValueAt(i, 7).toString()));
 
                 //idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
                 spid.create(spib);
@@ -1451,6 +1452,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
             for (int i = 0; i < tableitensorcamento.getRowCount(); i++) {
                 if (tableitensorcamento.getValueAt(i, 1).equals("")) {
+                    spib = new ServicoPedidoItensBean();
+
                     spib.setIdpedido(txtnumeropedido.getText());
                     spib.setCodigo(tableitensorcamento.getValueAt(i, 2).toString());
                     spib.setDescricao(tableitensorcamento.getValueAt(i, 3).toString());
@@ -1460,6 +1463,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
                     spib.setOs(tableitensorcamento.getValueAt(i, 8).toString());
                     spib.setNf(tableitensorcamento.getValueAt(i, 9).toString());
+                    spib.setPrazoDate(Dates.CriarDataCurtaDBComDataExistente(tableitensorcamento.getValueAt(i, 7).toString()));
 
                     //idpedido, codigo, descricao, qtde, valor, total, prazo, pedidocliente, nf
                     spid.create(spib);
@@ -2020,7 +2024,9 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     if (tableitensorcamento.getValueAt(i, 0).equals(true)) {
                         String op = tableitensorcamento.getValueAt(i, 8).toString();
 
-                        od.delete(op);
+                        if (!tableitensorcamento.getValueAt(i, 8).toString().equals("")) {
+                            od.delete(op);
+                        }
 
                         spid.delete(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
 
