@@ -267,11 +267,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
 
         readitenscobranca();
 
-        txtvalorcobranca();
-
         readitensretorno();
-
-        txtvalorretorno();
 
         lerDocs(pedido);
     }
@@ -319,6 +315,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 spib.getNf()
             });
         }
+        
+        txtvalorcobranca();
     }
 
     public static void readitensretorno() {
@@ -337,6 +335,8 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                 spib.getNfretorno()
             });
         });
+        
+        txtvalorretorno();
     }
 
     /**

@@ -200,6 +200,10 @@ public class ProcessoOP extends javax.swing.JInternalFrame {
             if (idMaterialOP == 0) {
                 JOptionPane.showMessageDialog(null, "Material incorreto. Favor atualizá-lo.");
 
+                opd.tirarFechamentoProcesso(ProcessoOP.idProcesso);
+
+                OP.lerOP(OP.txtNumOP.getText());
+
                 pm = new ProcurarMaterial("ProcessoOP");
                 Telas.AparecerTela(pm);
             } else {

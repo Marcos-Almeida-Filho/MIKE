@@ -167,13 +167,13 @@ public class ServicoPedidoItensDAO {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE servicos_pedido_itens_orcamento SET codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazoDate = ? WHERE id = ?");
             stmt.setString(1, spib.getCodigo());
             stmt.setString(2, spib.getDescricao());
             stmt.setString(3, spib.getQtde());
             stmt.setString(4, spib.getValor());
             stmt.setString(5, spib.getTotal());
-            stmt.setString(6, spib.getPrazo());
+            stmt.setString(6, spib.getPrazoDate());
             stmt.setInt(7, spib.getId());
 
             stmt.executeUpdate();

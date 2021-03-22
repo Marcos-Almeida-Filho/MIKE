@@ -924,7 +924,10 @@ public class F_UP extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbStatusGeralActionPerformed
 
     private void tableGeralMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableGeralMouseClicked
-        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            JTable jt = (JTable) evt.getSource();
+            click(jt);
+        }
     }//GEN-LAST:event_tableGeralMouseClicked
 
 
