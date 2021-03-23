@@ -33,19 +33,59 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     public ProcessosVendas() {
         initComponents();
         lerProcessosDeVenda();
+        btnReativar.setVisible(false);
     }
 
     public static void lerProcessosDeVenda() {
         DefaultTableModel model = (DefaultTableModel) tableProcessos.getModel();
         model.setNumRows(0);
 
-        pvd.readTodos().forEach(pvb -> {
-            model.addRow(new Object[]{
-                pvb.getId(),
-                false,
-                pvb.getNome()
-            });
-        });
+        String pesquisa = txtPesquisa.getText();
+        String status = cbStatus.getSelectedItem().toString();
+
+        if (pesquisa.length() > 0) {
+            switch (cbStatus.getSelectedItem().toString()) {
+                case "Todos":
+                    pvd.readTodosPesquisa(pesquisa).forEach(pvb -> {
+                        model.addRow(new Object[]{
+                            pvb.getId(),
+                            false,
+                            pvb.getNome()
+                        });
+                    });
+                    break;
+                default:
+                    pvd.readStatusPesquisa(status, pesquisa).forEach(pvb -> {
+                        model.addRow(new Object[]{
+                            pvb.getId(),
+                            false,
+                            pvb.getNome()
+                        });
+                    });
+                    break;
+            }
+        } else {
+            switch (cbStatus.getSelectedItem().toString()) {
+                case "Todos":
+                    pvd.readTodos().forEach(pvb -> {
+                        model.addRow(new Object[]{
+                            pvb.getId(),
+                            false,
+                            pvb.getNome()
+                        });
+                    });
+                    break;
+                default:
+                    pvd.readStatus(status).forEach(pvb -> {
+                        model.addRow(new Object[]{
+                            pvb.getId(),
+                            false,
+                            pvb.getNome()
+                        });
+                    });
+                    break;
+            }
+        }
     }
 
     public void novoProcesso() {
@@ -74,6 +114,12 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
             txtNome.setText(pvb.getNome());
             txtStatus.setText(pvb.getStatus());
             txtOrdem.setText(String.valueOf(pvb.getOrdem()));
+
+            if (pvb.getStatus().equals("Desativado")) {
+                btnReativar.setVisible(true);
+            } else {
+                btnReativar.setVisible(false);
+            }
         });
 
         DefaultTableModel model = (DefaultTableModel) tableMedicoes.getModel();
@@ -106,7 +152,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         txtPesquisa = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbStatus = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -122,6 +168,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        btnReativar = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setClosable(true);
@@ -186,6 +233,11 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         jPanel4.setName("jPanel4"); // NOI18N
 
         txtPesquisa.setName("txtPesquisa"); // NOI18N
+        txtPesquisa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtPesquisaKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -209,19 +261,24 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
         jPanel6.setName("jPanel6"); // NOI18N
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ativo", "Desativado", "Todos" }));
-        jComboBox1.setName("jComboBox1"); // NOI18N
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ativo", "Desativado", "Todos" }));
+        cbStatus.setName("cbStatus"); // NOI18N
+        cbStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbStatusActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jComboBox1, 0, 132, Short.MAX_VALUE)
+            .addComponent(cbStatus, 0, 132, Short.MAX_VALUE)
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -413,6 +470,14 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
             }
         });
 
+        btnReativar.setText("Reativar");
+        btnReativar.setName("btnReativar"); // NOI18N
+        btnReativar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReativarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -423,7 +488,8 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnReativar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)))
@@ -439,7 +505,8 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
-                    .addComponent(jButton6))
+                    .addComponent(jButton6)
+                    .addComponent(btnReativar))
                 .addContainerGap())
         );
 
@@ -453,7 +520,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabprocessos, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+            .addComponent(tabprocessos)
         );
 
         pack();
@@ -483,6 +550,8 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
                         pvd.desativarProcesso(Integer.parseInt(tableProcessos.getValueAt(i, 0).toString()));
                     }
                 }
+                
+                lerProcessosDeVenda();
             }
         }
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -591,15 +660,36 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
         novoProcesso();
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
+        lerProcessosDeVenda();
+    }//GEN-LAST:event_txtPesquisaKeyReleased
+
+    private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
+        lerProcessosDeVenda();
+    }//GEN-LAST:event_cbStatusActionPerformed
+
+    private void btnReativarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReativarActionPerformed
+        int resp = JOptionPane.showConfirmDialog(null, "Deseja reativar o processo " + txtNome.getText() + "?", "Reativar Processo", JOptionPane.YES_NO_OPTION);
+
+        if (resp == 0) {
+            pvd.reativarProcesso(idProcesso);
+
+            lerProcesso(idProcesso);
+            
+            lerProcessosDeVenda();
+        }
+    }//GEN-LAST:event_btnReativarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton btnReativar;
+    public static javax.swing.JComboBox<String> cbStatus;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
     public javax.swing.JButton jButton4;
     public javax.swing.JButton jButton5;
     public javax.swing.JButton jButton6;
-    public javax.swing.JComboBox<String> jComboBox1;
     public javax.swing.JLabel jLabel1;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
@@ -616,7 +706,7 @@ public class ProcessosVendas extends javax.swing.JInternalFrame {
     public javax.swing.JTabbedPane tabprocessos;
     public javax.swing.JTextField txtNome;
     public javax.swing.JTextField txtOrdem;
-    public javax.swing.JTextField txtPesquisa;
+    public static javax.swing.JTextField txtPesquisa;
     public javax.swing.JTextField txtStatus;
     // End of variables declaration//GEN-END:variables
 }

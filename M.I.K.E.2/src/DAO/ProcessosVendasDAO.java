@@ -67,12 +67,117 @@ public class ProcessosVendasDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-
+    
     public List<ProcessosVendasBean> readTodos() {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM processos_vendas WHERE status <> 'Desativado' ORDER BY ordem");
+            stmt = con.prepareStatement("SELECT * FROM processos_vendas ORDER BY ordem");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                pvb = new ProcessosVendasBean();
+
+                pvb.setId(rs.getInt("id"));
+                pvb.setNome(rs.getString("nome"));
+                pvb.setOrdem(rs.getInt("ordem"));
+                pvb.setStatus(rs.getString("status"));
+
+                listpvb.add(pvb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Processos de Vendas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listpvb;
+    }
+    
+    public List<ProcessosVendasBean> readTodosPesquisa(String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM processos_vendas WHERE nome LIKE '%" + pesquisa + "%' ORDER BY ordem");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                pvb = new ProcessosVendasBean();
+
+                pvb.setId(rs.getInt("id"));
+                pvb.setNome(rs.getString("nome"));
+                pvb.setOrdem(rs.getInt("ordem"));
+                pvb.setStatus(rs.getString("status"));
+
+                listpvb.add(pvb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Processos de Vendas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listpvb;
+    }
+
+    public List<ProcessosVendasBean> readStatus(String status) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM processos_vendas WHERE status = '" + status + "' ORDER BY ordem");
+
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                pvb = new ProcessosVendasBean();
+
+                pvb.setId(rs.getInt("id"));
+                pvb.setNome(rs.getString("nome"));
+                pvb.setOrdem(rs.getInt("ordem"));
+                pvb.setStatus(rs.getString("status"));
+
+                listpvb.add(pvb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler Processos de Vendas.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listpvb;
+    }
+    
+    public List<ProcessosVendasBean> readStatusPesquisa(String status, String pesquisa) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM processos_vendas WHERE status = '" + status + "' AND nome LIKE '%" + pesquisa + "%' ORDER BY ordem");
 
             rs = stmt.executeQuery();
 
@@ -218,6 +323,30 @@ public class ProcessosVendasDAO {
             stmt = con.prepareStatement("UPDATE processos_vendas SET status = 'Desativado' WHERE id = " + id);
 
             stmt.executeUpdate();
+        } catch (SQLException e) {
+            String msg = "Erro ao atualizar status do Processo de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+    
+    public void reativarProcesso(int id) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE processos_vendas SET status = 'Ativo' WHERE id = " + id);
+
+            stmt.executeUpdate();
+            
+            JOptionPane.showMessageDialog(null, "Processo reativado com sucesso!");
         } catch (SQLException e) {
             String msg = "Erro ao atualizar status do Processo de Venda.";
             JOptionPane.showMessageDialog(null, msg);
