@@ -244,6 +244,45 @@ public class VendasPedidoItensDAO {
         return listrvpcb;
     }
     
+    public List<RelatorioVendasPorClienteBean> readItensVendasPorPeriodo(String inicio, String fim) {
+        rsList();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM vendas_pedido_itens, vendas_pedido WHERE vendas_pedido.status <> 'Desativado' AND vendas_pedido.pedido = vendas_pedido_itens.dav AND vendas_pedido.data_abertura BETWEEN '" + inicio + "' AND '" + fim + "' ORDER BY vendas_pedido_itens.codigo, vendas_pedido_itens.dav");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                rvpcb = new RelatorioVendasPorClienteBean();
+                
+                rvpcb.setData(rs.getString("vendas_pedido.data_abertura"));
+                rvpcb.setDav(rs.getString("vendas_pedido_itens.dav"));
+                rvpcb.setCliente(rs.getString("vendas_pedido.cliente"));
+                rvpcb.setCodigo(rs.getString("vendas_pedido_itens.codigo"));
+                rvpcb.setDescricao(rs.getString("vendas_pedido_itens.descricao"));
+                rvpcb.setValorUnitario(rs.getDouble("vendas_pedido_itens.valorunitario"));
+                rvpcb.setQtd(rs.getDouble("vendas_pedido_itens.qtd"));
+                rvpcb.setNf(rs.getString("vendas_pedido_itens.nf"));
+                rvpcb.setPedido(rs.getString("vendas_pedido.pedidocliente"));
+
+                listrvpcb.add(rvpcb);
+            }
+        } catch (SQLException e) {
+            String msg = "Erro ao ler os itens do Pedido de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listrvpcb;
+    }
+    
     public List<VendasPedidoItensBean> readItensSemOp(String dav, String codigo) {
         rsList();
 

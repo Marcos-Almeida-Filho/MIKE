@@ -13,6 +13,7 @@ public class RelatorioVendasPorClienteBean {
 
     private String data;
     private String dav;
+    private String cliente;
     private String codigo;
     private String descricao;
     private double valorUnitario;
@@ -34,6 +35,14 @@ public class RelatorioVendasPorClienteBean {
 
     public void setDav(String dav) {
         this.dav = dav;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
     }
 
     public String getCodigo() {

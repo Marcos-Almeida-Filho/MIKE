@@ -149,6 +149,14 @@ public class ExcelMethods {
         }
     }
 
+    /**
+     * Método para exportação de tabelas em Excel
+     * 
+     * @param table Tabela que serão passados os dados
+     * @param file Nome do arquivo que será exportado
+     * @param col Coluna inicial para pegar os dados
+     * @throws IOException 
+     */
     public static void exportTable(JTable table, File file, int col) throws IOException {
         File home = FileSystemView.getFileSystemView().getHomeDirectory();
         File filePronto = new File(home + file.toString());

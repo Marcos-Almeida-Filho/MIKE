@@ -9,6 +9,7 @@ import Methods.Telas;
 import View.administracao.relatorios.RelatorioComissao;
 import View.administracao.relatorios.RelatorioVendaDeProduto;
 import View.administracao.relatorios.RelatorioVendaPorCliente;
+import View.administracao.relatorios.RelatorioVendaPorPeriodo;
 
 /**
  *
@@ -47,7 +48,7 @@ public class Relatorios extends javax.swing.JInternalFrame {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Relatório"));
         jPanel2.setName("jPanel2"); // NOI18N
 
-        cbRelatorio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Comissão de Representante", "Vendas por Cliente", "Vendas de Produto" }));
+        cbRelatorio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Comissão de Representante", "Vendas por Cliente", "Vendas de Produto", "Vendas Geral" }));
         cbRelatorio.setName("cbRelatorio"); // NOI18N
 
         jButton1.setText("OK");
@@ -137,6 +138,10 @@ public class Relatorios extends javax.swing.JInternalFrame {
             case 3:
                 RelatorioVendaDeProduto rvdp = new RelatorioVendaDeProduto();
                 Telas.AbrirRelatorio(rvdp);
+                break;
+            case 4:
+                RelatorioVendaPorPeriodo rvpp = new RelatorioVendaPorPeriodo();
+                Telas.AbrirRelatorio(rvpp);
                 break;
         }
     }//GEN-LAST:event_jButton1ActionPerformed
