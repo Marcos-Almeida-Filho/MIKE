@@ -1475,6 +1475,7 @@ public class PedidoServico extends javax.swing.JInternalFrame {
                     spib.setTotal(tableitensorcamento.getValueAt(i, 6).toString());
                     spib.setPrazo(tableitensorcamento.getValueAt(i, 7).toString());
                     spib.setId(Integer.parseInt(tableitensorcamento.getValueAt(i, 1).toString()));
+                    spib.setPrazoDate(Dates.CriarDataCurtaDBComDataExistente(tableitensorcamento.getValueAt(i, 7).toString()));
 
                     //codigo = ?, descricao = ?, qtde = ?, valor = ?, total = ?, prazo = ? WHERE id = ?
                     spid.update(spib);
