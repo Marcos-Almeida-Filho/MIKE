@@ -24,6 +24,7 @@ import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
 import View.Geral.AdicionarObs;
+import View.Geral.EscolherPedido;
 import View.Geral.HistoricoAlteracao;
 import View.Geral.ItemCotacao;
 import View.Geral.ProcurarCliente;
@@ -94,6 +95,66 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         numObsOriginal = tableObs.getRowCount();
         numDocsOriginal = tableDocs.getRowCount();
         numItensOriginal = tableItens.getRowCount();
+    }
+
+    public static void criarPedidoVenda(String pedido) {
+        String dav;
+        if (pedido.length() > 0) {
+            dav = pedido;
+        } else {
+            dav = vpd.pedidoAtual();
+
+            try {
+                vpd.create(dav, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText(), Valores.TransformarDinheiroEmValorDouble(txtFrete.getText()), "");
+            } catch (SQLException e) {
+                String msg = "Erro.";
+
+                JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
+        }
+
+        try {
+            for (int i = 0; i < tableItens.getRowCount(); i++) {
+                if (tableItens.getValueAt(i, 2).equals(true)) {
+                    vcid.updateDAV(dav, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
+
+                    String dataEntrega = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 8).toString().replace(" dias úteis", "")));
+
+                    vpid.create(dav, Integer.parseInt(tableItens.getValueAt(i, 10).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), dataEntrega, "", "");
+                }
+            }
+
+            for (int i = 0; i < tableObs.getRowCount(); i++) {
+                vpod.create(dav, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
+            }
+
+            JOptionPane.showMessageDialog(null, "Pedido criado com sucesso.");
+        } catch (SQLException e) {
+            String msg = "Erro ao criar Pedido de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        }
+
+        String cotacao = txtCotacao.getText();
+
+        lerItensCotacao(cotacao);
+
+        alterarStatus(cotacao);
+
+        lerCotacao(cotacao);
     }
 
     public static void camposPorStatus() {
@@ -340,7 +401,7 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
 
     }
 
-    public void alterarStatus(String cotacao) {
+    public static void alterarStatus(String cotacao) {
         int numPedido = 0;
         for (int i = 0; i < tableItens.getRowCount(); i++) {
             if (!tableItens.getValueAt(i, 9).equals("")) {
@@ -1731,47 +1792,17 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
         } else if (numPedido > 0) {
             JOptionPane.showMessageDialog(null, "Itens com Pedido selecionados.");
         } else {
-            int resp = JOptionPane.showConfirmDialog(null, "Deseja criar um pedido com os itens selecionados?", "Criar Pedido", JOptionPane.YES_NO_OPTION);
-            if (resp == 0) {
-                String dav = vpd.pedidoAtual();
-
-                try {
-                    vpd.create(dav, Dates.CriarDataCurtaDBSemDataExistente(), txtCliente.getText(), "Ativo", txtVendedor.getText(), txtRep.getText(), txtCondPag.getText(), Valores.TransformarDinheiroEmValorDouble(txtFrete.getText()), "");
-
-                    for (int i = 0; i < tableItens.getRowCount(); i++) {
-                        if (tableItens.getValueAt(i, 2).equals(true)) {
-                            vcid.updateDAV(dav, Integer.parseInt(tableItens.getValueAt(i, 0).toString()));
-
-                            String dataEntrega = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(Integer.parseInt(tableItens.getValueAt(i, 8).toString().replace(" dias úteis", "")));
-
-                            vpid.create(dav, Integer.parseInt(tableItens.getValueAt(i, 10).toString()), tableItens.getValueAt(i, 3).toString(), tableItens.getValueAt(i, 4).toString(), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 5).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 6).toString()), Valores.TransformarDinheiroEmValorDouble(tableItens.getValueAt(i, 7).toString()), dataEntrega, "", "");
-                        }
-                    }
-
-                    for (int i = 0; i < tableObs.getRowCount(); i++) {
-                        vpod.create(dav, Dates.CriarDataCurtaDBComDataExistente(tableObs.getValueAt(i, 2).toString()), tableObs.getValueAt(i, 3).toString(), tableObs.getValueAt(i, 4).toString());
-                    }
-
-                    JOptionPane.showMessageDialog(null, "Pedido criado com sucesso.");
-                } catch (SQLException e) {
-                    String msg = "Erro ao criar Pedido de Venda.";
-                    JOptionPane.showMessageDialog(null, msg);
-
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            SendEmail.EnviarErro2(msg, e);
-                        }
-                    }.start();
-                }
+            String[] opt = {"Novo Pedido", "Pedido já existente"};
+            int resp = JOptionPane.showOptionDialog(null, "Incluir itens em um:", "Pedido de Venda", JOptionPane.PLAIN_MESSAGE, JOptionPane.QUESTION_MESSAGE, frameIcon, opt, iconable);
+            switch (resp) {
+                case 0:
+                    criarPedidoVenda("");
+                    break;
+                case 1:
+                    EscolherPedido ep = new EscolherPedido(this.getClass().getSimpleName(), txtCliente.getText());
+                    Telas.AparecerTela(ep);
+                    break;
             }
-            String cotacao = txtCotacao.getText();
-
-            lerItensCotacao(cotacao);
-
-            alterarStatus(cotacao);
-
-            lerCotacao(cotacao);
         }
     }//GEN-LAST:event_btnAddPedidoActionPerformed
 

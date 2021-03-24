@@ -154,6 +154,52 @@ public class ServicoPedidoDAO {
         return listsp;
 
     }
+    
+    public List<ServicoPedidoBean> readEmAbertoPorCliente(String cliente) {
+
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        List<ServicoPedidoBean> listsp = new ArrayList<>();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM servicos_pedido WHERE cliente = '" + cliente + "' AND (status_retorno = 'Ativo' OR status_cobranca = 'Ativo' OR status_retorno = 'Parcialmente Faturado' OR status_cobranca = 'Parcialmente Faturado')");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                ServicoPedidoBean spb = new ServicoPedidoBean();
+
+                spb.setIdtela(rs.getString("idtela"));
+                spb.setIdorcamento(rs.getString("idorcamento"));
+                spb.setCliente(rs.getString("cliente"));
+                spb.setCondicao(rs.getString("condicao"));
+                spb.setRepresentante(rs.getString("representante"));
+                spb.setVendedor(rs.getString("vendedor"));
+                spb.setNotes(rs.getString("notes"));
+                spb.setStatus_retorno(rs.getString("status_retorno"));
+                spb.setStatus_cobranca(rs.getString("status_cobranca"));
+                spb.setNfcliente(rs.getString("nfcliente"));
+                spb.setPedidocliente(rs.getString("pedidocliente"));
+
+                listsp.add(spb);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(ServicoOrcamentoDAO.class.getName()).log(Level.SEVERE, null, e);
+            try {
+                SendEmail.EnviarErro(e.toString());
+            } catch (AWTException | IOException ex) {
+                Logger.getLogger(ServicoPedidoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return listsp;
+
+    }
 
     public String getCliente(String dav) {
 

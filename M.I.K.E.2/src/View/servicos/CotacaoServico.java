@@ -21,6 +21,7 @@ import DAO.ServicoPedidoItensDAO;
 import Methods.Dates;
 import Methods.SendEmail;
 import Methods.Telas;
+import View.Geral.EscolherPedido;
 import View.Geral.ItemCotacao;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarCondicaoDePagamento;
@@ -84,6 +85,175 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         centertable();
     }
 
+    public static void criarPedido(String pedido) {
+        ServicoPedidoBean spb = new ServicoPedidoBean();
+        ServicoPedidoDAO spd = new ServicoPedidoDAO();
+
+        String numpedido = "";
+        try {
+            if (pedido.length() > 0) {
+                numpedido = pedido;
+            } else {
+                if (spd.readnome() == false) {
+                    Calendar ca = Calendar.getInstance();
+                    String patterny = "yy";
+                    SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+                    String year = simpleDateFormaty.format(ca.getTime());
+                    String idtela = "PS" + year + "-0001";
+                    spb.setIdtela(idtela);
+                } else {
+                    Calendar ca = Calendar.getInstance();
+                    String patterny = "yy";
+                    SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
+                    String year = simpleDateFormaty.format(ca.getTime());
+                    String hua = "";
+                    for (ServicoPedidoBean spb2 : spd.readTodos()) {
+                        hua = String.valueOf(spb2.getIdtela());
+                    }
+                    int yearint = Integer.parseInt(hua.replace("PS" + year + "-", ""));
+                    int yearnovo = yearint + 1;
+                    String idtelanovo = "PS" + year + "-" + String.format("%04d", yearnovo);
+                    spb.setIdtela(idtelanovo);
+                }
+                spb.setIdorcamento(txtnumeroorcamento.getText());
+                spb.setCliente(txtnomecliente.getText());
+                spb.setCondicao(txtcondicao.getText());
+                spb.setRepresentante(txtrepresentante.getText());
+                spb.setVendedor(txtvendedor.getText());
+                spb.setNotes(txtnotes.getText());
+                spb.setStatus_retorno("Ativo");
+                spb.setStatus_cobranca("Ativo");
+                spb.setNfcliente("");
+
+                Calendar date = Calendar.getInstance();
+                String pattern = "dd/MM/yyyy HH:mm:ss";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+                String data = simpleDateFormat.format(date.getTime());
+
+                spb.setData(data);
+//              idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data
+
+                spd.create(spb);
+
+                ServicoPedidoDAO spdd = new ServicoPedidoDAO();
+                for (ServicoPedidoBean spbb : spdd.readcreated(txtnomecliente.getText(), data)) {
+                    numpedido = spbb.getIdtela();
+                }
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(CotacaoServico.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
+        ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
+
+        ServicoOrcamentoItensBean soib = new ServicoOrcamentoItensBean();
+        ServicoOrcamentoItensDAO soid = new ServicoOrcamentoItensDAO();
+
+        for (int i = 0; i < tableitens.getRowCount(); i++) {
+            if (tableitens.getValueAt(i, 0).equals(true)) {
+                int dias = Integer.parseInt(tableitens.getValueAt(i, 7).toString().replace(" dias", "").replace(" úteis", ""));
+                String datePrazo = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(dias);
+
+                spib.setIdpedido(numpedido);
+                spib.setCodigo(tableitens.getValueAt(i, 2).toString());
+                spib.setDescricao(tableitens.getValueAt(i, 3).toString());
+                spib.setQtde(tableitens.getValueAt(i, 4).toString());
+                spib.setValor(tableitens.getValueAt(i, 5).toString());
+                spib.setTotal(tableitens.getValueAt(i, 6).toString());
+                spib.setPrazo(tableitens.getValueAt(i, 7).toString());
+                spib.setPrazoDate(datePrazo);
+                spib.setOs("");
+                spib.setNf("");
+//                      idpedido, codigo, descricao, qtde, valor, total, prazo, os, nf
+
+                spid.create(spib);
+
+                soib.setCodigo(tableitens.getValueAt(i, 2).toString());
+                soib.setDesc(tableitens.getValueAt(i, 3).toString());
+                soib.setQtd(tableitens.getValueAt(i, 4).toString());
+                soib.setValor(tableitens.getValueAt(i, 5).toString());
+                soib.setTotal(tableitens.getValueAt(i, 6).toString());
+                soib.setPrazo(tableitens.getValueAt(i, 7).toString());
+                soib.setDas(numpedido);
+                soib.setId(Integer.parseInt(tableitens.getValueAt(i, 1).toString()));
+                //codigo, descricao , qtd , valor , total , prazo , pedido , das, id
+
+                soid.update(soib);
+            }
+        }
+        tableitensatualizar();
+        if (tabledocumentos.getRowCount() > 0) {
+            int respdoc = JOptionPane.showConfirmDialog(null, "Deseja enviar os documentos deste orçamento para o pedido?", "Gerar pedido com documentos", JOptionPane.OK_CANCEL_OPTION);
+            if (respdoc == 0) {
+                int rcd = tabledocumentos.getRowCount();
+                for (int i = 0; i < rcd; i++) {
+                    File fileoriginal = new File(tabledocumentos.getValueAt(i, 3).toString());
+                    File folder = new File("Q:/MIKE_ERP/ped_ser_arq/" + numpedido);
+                    File filecopy = new File(folder + "/" + fileoriginal.getName());
+                    folder.mkdirs();
+                    try {
+                        Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
+                    } catch (IOException ex) {
+                        Logger.getLogger(DocumentosPedidoServico.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
+                        try {
+                            SendEmail.EnviarErro(ex.toString());
+                            JOptionPane.showMessageDialog(null, "E-mail com erro enviado com sucesso!");
+                        } catch (HeadlessException hex) {
+                            JOptionPane.showMessageDialog(null, "Erro!\n" + hex);
+                        } catch (AWTException | IOException ex1) {
+                            Logger.getLogger(DocumentosPedidoServico.class
+                                    .getName()).log(Level.SEVERE, null, ex1);
+                        }
+                    }
+
+                    //Salvar arquivos no DB
+                    ServicoPedidoDocumentosBean spdb = new ServicoPedidoDocumentosBean();
+                    ServicoPedidoDocumentosDAO spdod = new ServicoPedidoDocumentosDAO();
+
+                    spdb.setIdpedido(numpedido);
+                    spdb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
+                    spdb.setLocal(filecopy.toString());
+                    //idorcamento, descricao, local
+
+                    spdod.create(spdb);
+                }
+            }
+        }
+        int numerodas = 0;
+        for (int i = 0; i < tableitens.getRowCount(); i++) {
+            if (!tableitens.getValueAt(i, 8).equals("")) {
+                numerodas++;
+            }
+        }
+        if (tableitens.getRowCount() == numerodas) {
+            ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
+
+            sob.setStatus("Fechado");
+            sob.setIdtela(txtnumeroorcamento.getText());
+            //status, id
+
+            sod.updatestatus(sob);
+        } else {
+            ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
+
+            sob.setStatus("Pedido Parcial");
+            sob.setIdtela(txtnumeroorcamento.getText());
+            //status, id
+
+            sod.updatestatus(sob);
+        }
+
+        sod.click(txtnumeroorcamento.getText()).forEach((sob) -> {
+            txtstatus.setText(String.valueOf(sob.getStatus()));
+        });
+        JOptionPane.showMessageDialog(null, "Pedido criado com sucesso!");
+        filltableorcamentoservico();
+        checkstatus();
+    }
+
     public void lerCotacao(String cotacao) {
         txtnumeroorcamento.setText(cotacao);
 
@@ -107,14 +277,14 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         }
 
         lerItensCotacao(cotacao);
-        
+
         lerDocsCotacao(cotacao);
 
         txtvalor();
 
         checkstatus();
     }
-    
+
     public void lerDocsCotacao(String cotacao) {
         DefaultTableModel modeldoc = (DefaultTableModel) tabledocumentos.getModel();
         modeldoc.setNumRows(0);
@@ -1641,171 +1811,17 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
         } else if (numeronaocadastrado > 0) {
             JOptionPane.showMessageDialog(rootPane, "Cadastre todos os itens selecionados primeiro!");
         } else {
-            int resp = JOptionPane.showConfirmDialog(rootPane, "Deseja gerar um pedido com os dados deste orçamento?", "Gerar pedido", JOptionPane.OK_CANCEL_OPTION);
-            if (resp == 0) {
-                ServicoPedidoBean spb = new ServicoPedidoBean();
-                ServicoPedidoDAO spd = new ServicoPedidoDAO();
+            String[] opt = {"Novo Pedido", "Pedido já existente"};
+            int resp = JOptionPane.showOptionDialog(null, "Incluir itens em um:", "Pedido de Venda", JOptionPane.PLAIN_MESSAGE, JOptionPane.QUESTION_MESSAGE, frameIcon, opt, iconable);
 
-                try {
-                    if (spd.readnome() == false) {
-                        Calendar ca = Calendar.getInstance();
-                        String patterny = "yy";
-                        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-                        String year = simpleDateFormaty.format(ca.getTime());
-                        String idtela = "PS" + year + "-0001";
-                        spb.setIdtela(idtela);
-                    } else {
-                        Calendar ca = Calendar.getInstance();
-                        String patterny = "yy";
-                        SimpleDateFormat simpleDateFormaty = new SimpleDateFormat(patterny);
-                        String year = simpleDateFormaty.format(ca.getTime());
-                        String hua = "";
-                        for (ServicoPedidoBean spb2 : spd.readTodos()) {
-                            hua = String.valueOf(spb2.getIdtela());
-                        }
-                        int yearint = Integer.parseInt(hua.replace("PS" + year + "-", ""));
-                        int yearnovo = yearint + 1;
-                        String idtelanovo = "PS" + year + "-" + String.format("%04d", yearnovo);
-                        spb.setIdtela(idtelanovo);
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(CotacaoServico.class
-                            .getName()).log(Level.SEVERE, null, ex);
-                }
-                spb.setIdorcamento(txtnumeroorcamento.getText());
-                spb.setCliente(txtnomecliente.getText());
-                spb.setCondicao(txtcondicao.getText());
-                spb.setRepresentante(txtrepresentante.getText());
-                spb.setVendedor(txtvendedor.getText());
-                spb.setNotes(txtnotes.getText());
-                spb.setStatus_retorno("Ativo");
-                spb.setStatus_cobranca("Ativo");
-                spb.setNfcliente("");
-
-                Calendar date = Calendar.getInstance();
-                String pattern = "dd/MM/yyyy HH:mm:ss";
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-                String data = simpleDateFormat.format(date.getTime());
-
-                spb.setData(data);
-//              idtela, idorcamento, cliente, condicao, representante, vendedor, notes, status_retorno, status_cobranca, nfcliente, data
-
-                spd.create(spb);
-
-                String numpedido = "";
-                ServicoPedidoDAO spdd = new ServicoPedidoDAO();
-                for (ServicoPedidoBean spbb : spdd.readcreated(txtnomecliente.getText(), data)) {
-                    numpedido = spbb.getIdtela();
-                }
-
-                ServicoPedidoItensBean spib = new ServicoPedidoItensBean();
-                ServicoPedidoItensDAO spid = new ServicoPedidoItensDAO();
-
-                ServicoOrcamentoItensBean soib = new ServicoOrcamentoItensBean();
-                ServicoOrcamentoItensDAO soid = new ServicoOrcamentoItensDAO();
-
-                for (int i = 0; i < tableitens.getRowCount(); i++) {
-                    if (tableitens.getValueAt(i, 0).equals(true)) {
-                        int dias = Integer.parseInt(tableitens.getValueAt(i, 7).toString().replace(" dias", "").replace(" úteis", ""));
-                        String datePrazo = Dates.CriarDataCurtaDBSemDataExistenteComPrazo(dias);
-                        
-                        spib.setIdpedido(numpedido);
-                        spib.setCodigo(tableitens.getValueAt(i, 2).toString());
-                        spib.setDescricao(tableitens.getValueAt(i, 3).toString());
-                        spib.setQtde(tableitens.getValueAt(i, 4).toString());
-                        spib.setValor(tableitens.getValueAt(i, 5).toString());
-                        spib.setTotal(tableitens.getValueAt(i, 6).toString());
-                        spib.setPrazo(tableitens.getValueAt(i, 7).toString());
-                        spib.setPrazoDate(datePrazo);
-                        spib.setOs("");
-                        spib.setNf("");
-//                      idpedido, codigo, descricao, qtde, valor, total, prazo, os, nf
-
-                        spid.create(spib);
-
-                        soib.setCodigo(tableitens.getValueAt(i, 2).toString());
-                        soib.setDesc(tableitens.getValueAt(i, 3).toString());
-                        soib.setQtd(tableitens.getValueAt(i, 4).toString());
-                        soib.setValor(tableitens.getValueAt(i, 5).toString());
-                        soib.setTotal(tableitens.getValueAt(i, 6).toString());
-                        soib.setPrazo(tableitens.getValueAt(i, 7).toString());
-                        soib.setDas(numpedido);
-                        soib.setId(Integer.parseInt(tableitens.getValueAt(i, 1).toString()));
-                        //codigo, descricao , qtd , valor , total , prazo , pedido , das, id
-
-                        soid.update(soib);
-                    }
-                }
-                tableitensatualizar();
-                if (tabledocumentos.getRowCount() > 0) {
-                    int respdoc = JOptionPane.showConfirmDialog(rootPane, "Deseja enviar os documentos deste orçamento para o pedido?", "Gerar pedido com documentos", JOptionPane.OK_CANCEL_OPTION);
-                    if (respdoc == 0) {
-                        int rcd = tabledocumentos.getRowCount();
-                        for (int i = 0; i < rcd; i++) {
-                            File fileoriginal = new File(tabledocumentos.getValueAt(i, 3).toString());
-                            File folder = new File("Q:/MIKE_ERP/ped_ser_arq/" + numpedido);
-                            File filecopy = new File(folder + "/" + fileoriginal.getName());
-                            folder.mkdirs();
-                            try {
-                                Files.copy(fileoriginal.toPath(), filecopy.toPath(), COPY_ATTRIBUTES);
-                            } catch (IOException ex) {
-                                Logger.getLogger(DocumentosPedidoServico.class
-                                        .getName()).log(Level.SEVERE, null, ex);
-                                JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + ex + "\nEnviando e-mail para suporte.");
-                                try {
-                                    SendEmail.EnviarErro(ex.toString());
-                                    JOptionPane.showMessageDialog(rootPane, "E-mail com erro enviado com sucesso!");
-                                } catch (HeadlessException hex) {
-                                    JOptionPane.showMessageDialog(rootPane, "Erro!\n" + hex);
-                                } catch (AWTException | IOException ex1) {
-                                    Logger.getLogger(DocumentosPedidoServico.class
-                                            .getName()).log(Level.SEVERE, null, ex1);
-                                }
-                            }
-
-                            //Salvar arquivos no DB
-                            ServicoPedidoDocumentosBean spdb = new ServicoPedidoDocumentosBean();
-                            ServicoPedidoDocumentosDAO spdod = new ServicoPedidoDocumentosDAO();
-
-                            spdb.setIdpedido(numpedido);
-                            spdb.setDescricao(tabledocumentos.getValueAt(i, 2).toString());
-                            spdb.setLocal(filecopy.toString());
-                            //idorcamento, descricao, local
-
-                            spdod.create(spdb);
-                        }
-                    }
-                }
-                int numerodas = 0;
-                for (int i = 0; i < tableitens.getRowCount(); i++) {
-                    if (!tableitens.getValueAt(i, 8).equals("")) {
-                        numerodas++;
-                    }
-                }
-                if (tableitens.getRowCount() == numerodas) {
-                    ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
-
-                    sob.setStatus("Fechado");
-                    sob.setIdtela(txtnumeroorcamento.getText());
-                    //status, id
-
-                    sod.updatestatus(sob);
-                } else {
-                    ServicoOrcamentoBean sob = new ServicoOrcamentoBean();
-
-                    sob.setStatus("Pedido Parcial");
-                    sob.setIdtela(txtnumeroorcamento.getText());
-                    //status, id
-
-                    sod.updatestatus(sob);
-                }
-
-                for (ServicoOrcamentoBean sob : sod.click(txtnumeroorcamento.getText())) {
-                    txtstatus.setText(String.valueOf(sob.getStatus()));
-                }
-                JOptionPane.showMessageDialog(rootPane, "Pedido criado com sucesso!");
-                filltableorcamentoservico();
-                checkstatus();
+            switch (resp) {
+                case 0:
+                    criarPedido("");
+                    break;
+                case 1:
+                    EscolherPedido ep = new EscolherPedido(this.getClass().getSimpleName(), txtnomecliente.getText());
+                    Telas.AparecerTela(ep);
+                    break;
             }
         }
     }//GEN-LAST:event_btncriarpedidoActionPerformed
@@ -1940,7 +1956,7 @@ public class CotacaoServico extends javax.swing.JInternalFrame {
             sod.updatestatus(sob);
 
             lerCotacao(txtnumeroorcamento.getText());
-            
+
             filltableorcamentoservico();
         }
     }//GEN-LAST:event_btncancelarorcamentoActionPerformed
