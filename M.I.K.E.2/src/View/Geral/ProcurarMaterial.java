@@ -56,27 +56,7 @@ public class ProcurarMaterial extends javax.swing.JInternalFrame {
                 });
                 break;
             case "OS":
-                smd.read().forEach(smb -> {
-                    model.addRow(new Object[]{
-                        smb.getId(),
-                        smb.getCodigo(),
-                        smb.getDescricao(),
-                        0,
-                        smb.getEstoque()
-                    });
-                });
-                break;
             case "CategoriaDePreco":
-                smd.read().forEach(smb -> {
-                    model.addRow(new Object[]{
-                        smb.getId(),
-                        smb.getCodigo(),
-                        smb.getDescricao(),
-                        0,
-                        smb.getEstoque()
-                    });
-                });
-                break;
             case "CotacaoServico":
                 smd.read().forEach(smb -> {
                     model.addRow(new Object[]{

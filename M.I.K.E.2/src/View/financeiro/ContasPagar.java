@@ -10,15 +10,13 @@ import DAO.CAPDAO;
 import Methods.Colors;
 import Methods.Dates;
 import Methods.ExcelMethods;
+import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
 import View.Geral.MudarStatus;
 import java.awt.Color;
 import java.awt.Component;
-import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -803,9 +801,18 @@ public class ContasPagar extends javax.swing.JInternalFrame {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         try {
-            ExcelMethods.exportTable(tablecap, new File("/cap.xls"), 3);
-        } catch (IOException ex) {
-            Logger.getLogger(ContasPagar.class.getName()).log(Level.SEVERE, null, ex);
+            ExcelMethods.exportTable(tablecap, "cap", 3);
+        } catch (IOException e) {
+            String msg = "Erro.";
+            
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 

@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileSystemView;
@@ -151,36 +153,57 @@ public class ExcelMethods {
 
     /**
      * Método para exportação de tabelas em Excel
-     * 
+     *
      * @param table Tabela que serão passados os dados
      * @param file Nome do arquivo que será exportado
      * @param col Coluna inicial para pegar os dados
-     * @throws IOException 
+     * @throws IOException
      */
-    public static void exportTable(JTable table, File file, int col) throws IOException {
-        File home = FileSystemView.getFileSystemView().getHomeDirectory();
-        File filePronto = new File(home + file.toString());
-        
-        TableModel model = table.getModel();
-        FileWriter out = new FileWriter(filePronto);
+    public static void exportTable(JTable table, String file, int col) {
+        if (table.getRowCount() > 0) {
+            FileWriter out = null;
+            try {
+                File home = FileSystemView.getFileSystemView().getHomeDirectory();
+                File filePronto = new File(home + "\\" + file + ".xls");
+                TableModel model = table.getModel();
+                out = new FileWriter(filePronto);
+                for (int i = col; i < model.getColumnCount(); i++) {
+                    out.write(model.getColumnName(i) + "\t");
+                }
+                out.write("\n");
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    for (int j = col; j < model.getColumnCount(); j++) {
+                        if (model.getValueAt(i, j) != null) {
+                            out.write(model.getValueAt(i, j).toString() + "\t");
+                        } else {
+                            out.write(" \t");
+                        }
+                    }
+                    out.write("\n");
+                }
+                out.close();
+                JOptionPane.showMessageDialog(null, "Arquivo salvo em " + filePronto);
+//        System.out.println("write out to: " + file);
+            } catch (IOException ex) {
+                Logger.getLogger(ExcelMethods.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    String msg = "Erro.";
 
-        for (int i = col; i < model.getColumnCount(); i++) {
-            out.write(model.getColumnName(i) + "\t");
-        }
-        out.write("\n");
-        
-        for (int i = 0; i < model.getRowCount(); i++) {
-            for (int j = col; j < model.getColumnCount(); j++) {
-                if (model.getValueAt(i, j) != null) {
-                    out.write(model.getValueAt(i, j).toString() + "\t");
-                } else {
-                    out.write(" \t");
+                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            SendEmail.EnviarErro2(msg, e);
+                        }
+                    }.start();
                 }
             }
-            out.write("\n");
+        } else {
+            JOptionPane.showMessageDialog(null, "Sem dados para exportar.");
         }
-        out.close();
-        JOptionPane.showMessageDialog(null, "Arquivo salvo em " + filePronto);
-//        System.out.println("write out to: " + file);
     }
 }

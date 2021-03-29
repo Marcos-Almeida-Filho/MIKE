@@ -12,13 +12,11 @@ import DAO.ProcessosVendasDAO;
 import DAO.ServicoGrupoDeProcessosDAO;
 import Methods.Dates;
 import Methods.ExcelMethods;
+import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
-import View.financeiro.ContasPagar;
-import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -894,9 +892,18 @@ public class F_UP extends javax.swing.JInternalFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            ExcelMethods.exportTable(tablefup, new File("/f-up.xls"), 1);
-        } catch (IOException ex) {
-            Logger.getLogger(ContasPagar.class.getName()).log(Level.SEVERE, null, ex);
+            ExcelMethods.exportTable(tablefup, "f-up", 1);
+        } catch (IOException e) {
+            String msg = "Erro.";
+            
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+            
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

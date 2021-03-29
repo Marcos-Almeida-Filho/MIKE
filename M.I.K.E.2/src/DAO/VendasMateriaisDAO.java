@@ -109,7 +109,7 @@ public class VendasMateriaisDAO {
         rsList();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE codigo LIKE '%" + pesquisa + "%' OR descricao LIKE '%" + pesquisa + "%'");
+            stmt = con.prepareStatement("SELECT * FROM vendas_materiais WHERE (codigo LIKE '%" + pesquisa + "%' OR descricao LIKE '%" + pesquisa + "%') AND status = 'Ativo'");
             rs = stmt.executeQuery();
 
             while (rs.next()) {

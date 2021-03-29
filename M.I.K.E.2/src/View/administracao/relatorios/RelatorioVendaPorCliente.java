@@ -7,6 +7,7 @@ package View.administracao.relatorios;
 
 import DAO.VendasPedidoItensDAO;
 import Methods.Dates;
+import Methods.ExcelMethods;
 import Methods.Telas;
 import Methods.Valores;
 import View.Geral.ProcurarCliente;
@@ -18,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class RelatorioVendaPorCliente extends javax.swing.JInternalFrame {
-    
+
     VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
 
     /**
@@ -49,6 +50,7 @@ public class RelatorioVendaPorCliente extends javax.swing.JInternalFrame {
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tableVendas = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
 
         setClosable(true);
         setTitle("Relatório de Vendas Por Cliente");
@@ -175,6 +177,14 @@ public class RelatorioVendaPorCliente extends javax.swing.JInternalFrame {
             tableVendas.getColumnModel().getColumn(7).setMaxWidth(100);
         }
 
+        jButton3.setText("Exportar em Excel");
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -184,7 +194,8 @@ public class RelatorioVendaPorCliente extends javax.swing.JInternalFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 249, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
+                        .addComponent(jButton3))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
         );
@@ -192,7 +203,9 @@ public class RelatorioVendaPorCliente extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1)
                 .addContainerGap())
@@ -227,7 +240,7 @@ public class RelatorioVendaPorCliente extends javax.swing.JInternalFrame {
         } else {
             DefaultTableModel model = (DefaultTableModel) tableVendas.getModel();
             model.setNumRows(0);
-            
+
             vpid.readItensVendasPorCliente(txtCliente.getText(), Dates.CriarDataCurtaDBJDateChooser(dateInicio.getDate()), Dates.CriarDataCurtaDBJDateChooser(dateFinal.getDate())).forEach(v -> {
                 model.addRow(new Object[]{
                     Dates.TransformarDataCurtaDoDB(v.getData()),
@@ -243,12 +256,17 @@ public class RelatorioVendaPorCliente extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        ExcelMethods.exportTable(tableVendas, "Relatorio Venda Por Cliente - " + txtCliente.getText(), ERROR);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.toedter.calendar.JDateChooser dateFinal;
     private com.toedter.calendar.JDateChooser dateInicio;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

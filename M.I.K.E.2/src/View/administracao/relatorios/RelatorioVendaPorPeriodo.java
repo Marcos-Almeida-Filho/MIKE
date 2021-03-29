@@ -9,11 +9,6 @@ import DAO.VendasPedidoItensDAO;
 import Methods.Dates;
 import Methods.ExcelMethods;
 import Methods.Valores;
-import View.financeiro.ContasPagar;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Marcos Filho
  */
 public class RelatorioVendaPorPeriodo extends javax.swing.JInternalFrame {
-    
+
     VendasPedidoItensDAO vpid = new VendasPedidoItensDAO();
 
     /**
@@ -214,7 +209,7 @@ public class RelatorioVendaPorPeriodo extends javax.swing.JInternalFrame {
         } else {
             DefaultTableModel model = (DefaultTableModel) tableVendas.getModel();
             model.setNumRows(0);
-            
+
             vpid.readItensVendasPorPeriodo(Dates.CriarDataCurtaDBJDateChooser(dateInicio.getDate()), Dates.CriarDataCurtaDBJDateChooser(dateFinal.getDate())).forEach(v -> {
                 model.addRow(new Object[]{
                     Dates.TransformarDataCurtaDoDB(v.getData()),
@@ -232,11 +227,7 @@ public class RelatorioVendaPorPeriodo extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            ExcelMethods.exportTable(tableVendas, new File("/Relatorio Vendas Geral.xls"), 0);
-        } catch (IOException ex) {
-            Logger.getLogger(ContasPagar.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ExcelMethods.exportTable(tableVendas, "Relatorio Vendas Geral", 0);
     }//GEN-LAST:event_jButton1ActionPerformed
 
 
