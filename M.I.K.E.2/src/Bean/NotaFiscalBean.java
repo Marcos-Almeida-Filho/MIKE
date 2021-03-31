@@ -43,6 +43,7 @@ public class NotaFiscalBean {
     private double valorTotalNotaFiscal;
     private String obs;
     private String status;
+    private boolean venda;
 
     public int getId() {
         return id;
@@ -300,4 +301,11 @@ public class NotaFiscalBean {
         this.status = status;
     }
 
+    public boolean getVenda() {
+        return venda;
+    }
+
+    public void setVenda(boolean venda) {
+        this.venda = venda;
+    }
 }

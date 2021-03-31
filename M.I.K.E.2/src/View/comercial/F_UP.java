@@ -12,11 +12,8 @@ import DAO.ProcessosVendasDAO;
 import DAO.ServicoGrupoDeProcessosDAO;
 import Methods.Dates;
 import Methods.ExcelMethods;
-import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
-import java.io.IOException;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -891,20 +888,7 @@ public class F_UP extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            ExcelMethods.exportTable(tablefup, "f-up", 1);
-        } catch (IOException e) {
-            String msg = "Erro.";
-            
-            JOptionPane.showMessageDialog(null, msg + "\n" + e);
-            
-            new Thread() {
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        }
+        ExcelMethods.exportTable(tablefup, "f-up", 1);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void txtPesquisaOSKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaOSKeyReleased

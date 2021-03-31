@@ -131,7 +131,7 @@ public class NotaFiscalDAO {
 
         return valor;
     }
-    
+
     public List<NotaFiscalBean> readNotas() {
         rsList();
 
@@ -355,6 +355,7 @@ public class NotaFiscalDAO {
                 nfb.setValorTotalNotaFiscal(rs.getDouble("valorTotalNotaFiscal"));
                 nfb.setObs(rs.getString("obs"));
                 nfb.setStatus(rs.getString("status"));
+                nfb.setVenda(rs.getBoolean("venda"));
 
                 listnf.add(nfb);
             }
@@ -426,7 +427,7 @@ public class NotaFiscalDAO {
             ConnectionFactory.closeConnection(con, stmt);
         }
     }
-    
+
     public void estornarStatus(int numero) {
         conStmt();
 
@@ -473,26 +474,13 @@ public class NotaFiscalDAO {
         }
     }
 
-    public void updateVendas(int numero, boolean a) {
+    public void updateVendas(int numero, boolean a) throws SQLException {
         conStmt();
 
-        try {
-            stmt = con.prepareStatement("UPDATE nf SET venda = " + a + " WHERE numero = " + numero);
+        stmt = con.prepareStatement("UPDATE nf SET venda = " + a + " WHERE numero = " + numero);
 
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            String msg = "Erro ao atualizar status da NF-e.";
-            JOptionPane.showMessageDialog(null, msg);
+        stmt.executeUpdate();
 
-            new Thread() {
-
-                @Override
-                public void run() {
-                    SendEmail.EnviarErro2(msg, e);
-                }
-            }.start();
-        } finally {
-            ConnectionFactory.closeConnection(con, stmt);
-        }
+        ConnectionFactory.closeConnection(con, stmt);
     }
 }

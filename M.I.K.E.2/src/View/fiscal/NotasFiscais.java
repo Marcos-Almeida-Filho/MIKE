@@ -87,6 +87,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
             txtStatus.setText(nfb.getStatus());
             txtNatureza.setText(nfb.getNatureza());
             txtObs.setText(nfb.getObs());
+            checkVenda.setSelected(nfb.getVenda());
 
             //Dados Destinatário
             txtRazaoD.setText(nfb.getDestinatario());
@@ -168,6 +169,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         txtDataEmissao = new javax.swing.JTextField();
         txtStatus = new javax.swing.JTextField();
         txtNatureza = new javax.swing.JTextField();
+        checkVenda = new javax.swing.JCheckBox();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -384,6 +386,14 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         txtNatureza.setEditable(false);
         txtNatureza.setName("txtNatureza"); // NOI18N
 
+        checkVenda.setText("Venda");
+        checkVenda.setName("checkVenda"); // NOI18N
+        checkVenda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkVendaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -404,7 +414,8 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtNatureza, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(checkVenda))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -419,7 +430,8 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
                 .addGap(20, 20, 20)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtNatureza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(txtNatureza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkVenda)))
         );
 
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
@@ -927,7 +939,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
 
@@ -941,7 +953,7 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabNF, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
+            .addComponent(tabNF)
         );
 
         pack();
@@ -1013,8 +1025,33 @@ public class NotasFiscais extends javax.swing.JInternalFrame {
         lerNotasFiscais();
     }//GEN-LAST:event_txtpesquisaKeyReleased
 
+    private void checkVendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkVendaActionPerformed
+        if (txtNumero.getText().length() > 0) {
+            try {
+                nfd.updateVendas(Integer.parseInt(txtNumero.getText()), checkVenda.isSelected());
+                
+                JOptionPane.showMessageDialog(null, "Status de Venda alterado com sucesso!");
+            } catch (SQLException e) {
+                String msg = "Erro.";
+                
+                JOptionPane.showMessageDialog(null, msg + "\n" + e);
+                
+                new Thread() {
+                    @Override
+                    public void run() {
+                        SendEmail.EnviarErro2(msg, e);
+                    }
+                }.start();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Nenhuma nota selecionada.");
+            checkVenda.setSelected(false);
+        }
+    }//GEN-LAST:event_checkVendaActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JCheckBox checkVenda;
     public javax.swing.JButton jButton1;
     public javax.swing.JButton jButton2;
     public javax.swing.JLabel jLabel1;

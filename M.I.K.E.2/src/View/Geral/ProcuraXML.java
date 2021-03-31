@@ -21,6 +21,7 @@ import View.logistica.RastreamentoDocumentos;
 import java.awt.AWTException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Level;
@@ -527,7 +528,20 @@ public class ProcuraXML extends javax.swing.JInternalFrame {
                             nfd.create(numero, dataEmissao, destinatario, logradouroD, numeroD, complementoD, bairroD, cidadeD, ufD, cepD, cnpjD, ieD, natureza, transportadora, enderecoT, cidadeT, ufT, cnpjT, ieT, baseIcms, valorIcms, baseIcmsSt, valorIcmsSt, valorPis, valorCofins, valorIpi, valorProdutos, valorFrete, valorTotalNotaFiscal, obs, status);
 
                             if (dupList.getLength() > 0) {
-                                nfd.updateVendas(numero, true);
+                                try {
+                                    nfd.updateVendas(numero, true);
+                                } catch (SQLException e) {
+                                    String msg = "Erro.";
+
+                                    JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+                                    new Thread() {
+                                        @Override
+                                        public void run() {
+                                            SendEmail.EnviarErro2(msg, e);
+                                        }
+                                    }.start();
+                                }
                             }
 
                             JOptionPane.showMessageDialog(null, "Nota Fiscal " + numero + " lançada com sucesso!");
