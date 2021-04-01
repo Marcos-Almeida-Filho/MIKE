@@ -1412,7 +1412,7 @@ public class RastreamentoDocumentos extends javax.swing.JInternalFrame {
 
                 @Override
                 public void run() {
-                    SendEmail.EnviarAviso("financeiro@speedcut.com.br, alexandre.almeida@speedcut.com.br, samuel.almeida@speedcut.com.br", "Documento aprovado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi aprovado e necessita de lançamento no CAP.");
+                    SendEmail.EnviarAviso("tassiane.ventura@speedcut.com.br, samuel.almeida@speedcut.com.br", "Documento aprovado", "O documento " + txtnumero.getText() + " do emitente " + txtemitente.getText() + " foi aprovado e necessita de lançamento no CAP.");
                 }
             }.start();
         }
