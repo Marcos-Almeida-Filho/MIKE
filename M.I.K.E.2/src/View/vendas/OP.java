@@ -445,7 +445,7 @@ public class OP extends javax.swing.JInternalFrame {
                 break;
         }
 
-        if (Session.nivel.equals("Administrador") || Session.nome.contains("Roger") || Session.nome.contains("Hugo") || Session.nome.contains("Danilo")  || Session.nome.contains("Alex Sandro") || Session.nivel.equals("TI")) {
+        if (Session.alterarMPOP) {
             switch (status) {
                 case "Rascunho":
                     btnBaixaMP.setEnabled(true);

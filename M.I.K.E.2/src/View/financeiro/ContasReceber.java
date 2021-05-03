@@ -450,7 +450,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtro Status"));
         jPanel4.setName("jPanel4"); // NOI18N
 
-        cbstatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pendente", "Cancelado", "Em Negociação", "Pago", "Prescrito", "Protestado", "Protesto Pago", "Pequenas Causas", "Pequenas Causas Pago", "Todos" }));
+        cbstatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pendente", "Cancelado", "Em Negociação", "Pago", "Prescrito", "Protestado", "Protesto Pago", "Pequenas Causas", "Pequenas Causas Pago", "Recuperação Judicial", "Recuperação Judicial Pago", "Todos" }));
         cbstatus.setName("cbstatus"); // NOI18N
         cbstatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -737,8 +737,8 @@ public class ContasReceber extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tablecarMouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        PagarEmLote pel = new PagarEmLote();
-        Telas.AparecerTela(pel);
+        /*PagarEmLote pel = new PagarEmLote();
+        Telas.AparecerTela(pel);*/
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void txtPesquisaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPesquisaKeyReleased
@@ -794,7 +794,7 @@ public class ContasReceber extends javax.swing.JInternalFrame {
         if (numTrue == 0) {
             JOptionPane.showMessageDialog(null, "Nenhum registro selecionado.");
         } else {
-            String[] options = {"Selecione", "Protestado", "Pequenas Causas", "Em Negociação", "Cancelado", "Prescrito"};
+            String[] options = {"Selecione", "Protestado", "Pequenas Causas", "Em Negociação", "Cancelado", "Prescrito", "Recuperação Judicial"};
 
             JComboBox cbStatus = new JComboBox();
 

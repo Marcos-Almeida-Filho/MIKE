@@ -6,6 +6,7 @@
 package Methods;
 
 import View.arquivo.Email;
+import com.sun.mail.smtp.SMTPTransport;
 import java.awt.AWTException;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -86,8 +87,7 @@ public class SendEmail {
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.port", "465");
 
-        Session session = Session.getDefaultInstance(props,
-                new javax.mail.Authenticator() {
+        Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication("sistema@speedcut.com.br", "Sistema271113=");
@@ -112,7 +112,10 @@ public class SendEmail {
             /**
              * Método para enviar a mensagem criada*
              */
-            Transport.send(message);
+            //Transport.send(message);
+            SMTPTransport t = (SMTPTransport)session.getTransport("smtp");
+            t.connect("sistema@speedcut.com.br", "Sistema271113=");
+            t.sendMessage(message, message.getAllRecipients());
         } catch (MessagingException e) {
             String msg = "Erro ao enviar Aviso por e-mail.";
             

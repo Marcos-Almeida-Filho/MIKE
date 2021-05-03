@@ -54,7 +54,7 @@ public class UsuariosDAO {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("INSERT INTO usuarios (nome, emailpessoal, dataadmissao, telefonefixo, telefonecelular, datanascimento, datademissao, emailfabrica, vendedor, status, login, senha, cargo, cpf, pis, rg, livrofolha, nivel, salario) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO usuarios (nome, emailpessoal, dataadmissao, telefonefixo, telefonecelular, datanascimento, datademissao, emailfabrica, vendedor, status, login, senha, cargo, cpf, pis, rg, livrofolha, nivel, salario, alterarMPOP, aprovarCotacaoVenda) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, ub.getNome());
             stmt.setString(2, ub.getEmailpessoal());
             stmt.setString(3, ub.getDataadmissao());
@@ -74,6 +74,8 @@ public class UsuariosDAO {
             stmt.setString(17, ub.getLivrofolha());
             stmt.setString(18, ub.getNivel());
             stmt.setDouble(19, ub.getSalario());
+            stmt.setBoolean(19, ub.isAlterarMPOP());
+            stmt.setBoolean(20, ub.isAprovarCotacaoVenda());
 
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -127,6 +129,8 @@ public class UsuariosDAO {
                 ub.setSenha(rs.getString("senha"));
                 ub.setVendedor(rs.getBoolean("vendedor"));
                 ub.setNivel(rs.getString("nivel"));
+                ub.setAlterarMPOP(rs.getBoolean("alterarMPOP"));
+                ub.setAprovarCotacaoVenda(rs.getBoolean("aprovarCotacaoVenda"));
 
                 listub.add(ub);
             }
@@ -158,6 +162,8 @@ public class UsuariosDAO {
                 ub.setNome(rs.getString("nome"));
                 ub.setNivel(rs.getString("nivel"));
                 ub.setEmailfabrica(rs.getString("emailfabrica"));
+                ub.setAlterarMPOP(rs.getBoolean("alterarMPOP"));
+                ub.setAprovarCotacaoVenda(rs.getBoolean("aprovarCotacaoVenda"));
 
                 listub.add(ub);
             }
@@ -502,7 +508,7 @@ public class UsuariosDAO {
         conStmt();
 
         try {
-            stmt = con.prepareStatement("UPDATE usuarios SET nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ?, nivel = ?, salario = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE usuarios SET nome = ?, emailpessoal = ?, dataadmissao = ?, telefonefixo = ?, telefonecelular = ?, datanascimento = ?, datademissao = ?, emailfabrica = ?, vendedor = ?, status = ?, login = ?, senha = ?, cargo = ?, cpf = ?, pis = ?, rg = ?, livrofolha = ?, nivel = ?, salario = ?, alterarMPOP = ?, aprovarCotacaoVenda = ? WHERE id = ?");
             stmt.setString(1, ub.getNome());
             stmt.setString(2, ub.getEmailpessoal());
             stmt.setString(3, ub.getDataadmissao());
@@ -522,7 +528,9 @@ public class UsuariosDAO {
             stmt.setString(17, ub.getLivrofolha());
             stmt.setString(18, ub.getNivel());
             stmt.setDouble(19, ub.getSalario());
-            stmt.setInt(20, ub.getId());
+            stmt.setBoolean(20, ub.isAlterarMPOP());
+            stmt.setBoolean(21, ub.isAprovarCotacaoVenda());
+            stmt.setInt(22, ub.getId());
 
             stmt.executeUpdate();
         } catch (SQLException e) {

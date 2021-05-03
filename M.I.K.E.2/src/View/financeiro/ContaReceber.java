@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
  * @author Marcos Filho
  */
 public class ContaReceber extends javax.swing.JInternalFrame {
-    
+
     public static int idCliente;
 
     CARDAO card = new CARDAO();
@@ -622,7 +622,7 @@ public class ContaReceber extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtStatus.getText().equals("Pago") || txtStatus.getText().equals("Pequenas Causas Pago") || txtStatus.getText().equals("Protesto Pago")) {
+        if (txtStatus.getText().contains("Pago")) {
             dispose();
         } else {
             if (id == 0) {
@@ -689,6 +689,9 @@ public class ContaReceber extends javax.swing.JInternalFrame {
                             break;
                         case "Pequenas Causas":
                             status = "Pequenas Causas Pago";
+                            break;
+                        case "Recuperação Judicial":
+                            status = "Recuperação Judicial Pago";
                             break;
                     }
                     card.updaterecebimento(Dates.CriarDataCurtaDBJDateChooser(dcDataRecebimento.getDate()), Valores.TransformarDinheiroEmValorDouble(txtValorRecebido.getText()), cbbanco.getSelectedItem().toString(), cbmetodo.getSelectedItem().toString(), txtcheque.getText(), status, id);
@@ -766,6 +769,7 @@ public class ContaReceber extends javax.swing.JInternalFrame {
             options[1] = "Pequenas Causas";
             options[2] = "Em Negociação";
             options[3] = "Cancelar";
+            options[4] = "Recuperação Judicial";
 
             int escolha = JOptionPane.showInternalOptionDialog(TelaPrincipal.jDesktopPane1, "Qual o novo status?", "Escolher Status", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, iconable);
 

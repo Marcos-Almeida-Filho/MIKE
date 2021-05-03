@@ -91,7 +91,7 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
         });
         return table;
     }
-    
+
     private static JTable getNewRenderedTableServico(final JTable table, int colunaProcesso) {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -141,21 +141,21 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 break;
         }
 
-        vpid.readItensSemNF(ordem, dataInicio, dataFim).forEach(vpib -> {
+        vpid.readItensSemNF(ordem, dataInicio, dataFim).forEach(v -> {
             model.addRow(new Object[]{
-                vpib.getId(),
+                v.getId(),
                 false,
-                vpib.getDav(),
-                "",
-                vpib.getCodigo(),
-                Valores.TransformarDoubleDBemString(vpib.getQtd()),
-                0,
-                vpib.getOp(),
-                "",
-                Dates.TransformarDataCurtaDoDB(vpib.getPrazo()),
-                Valores.TransformarValorFloatEmDinheiro(String.valueOf(vpib.getValortotal())),
-                vpib.getIdMaterial(),
-                vpib.getSeparado()
+                v.getDav(),
+                v.getCliente(),
+                v.getCodigo(),
+                Valores.TransformarDoubleDBemString(v.getQtdPedido()),
+                Valores.TransformarDoubleDBemString(v.getQtdEstoque()),
+                v.getOp(),
+                v.getProcesso(),
+                Dates.TransformarDataCurtaDoDB(v.getDataEntrega()),
+                Valores.TransformarValorFloatEmDinheiro(String.valueOf(v.getValor())),
+                v.getIdMaterial(),
+                v.isSeparado()
             });
         });
 
@@ -176,50 +176,14 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
         JTableHeader th = tablePlanejamento.getTableHeader();
         TableColumnModel tcm = th.getColumnModel();
 
-        //Ler estoque do item
-        new Thread() {
-            @Override
-            public void run() {
-                int rowIdMaterial = tcm.getColumnIndex("IDMaterial");
-                int rowEstoque = tcm.getColumnIndex("Qtde Estoque");
-                int rowQtdPedido = tcm.getColumnIndex("Qtde Pedido");
-                for (int i = 0; i < tablePlanejamento.getRowCount(); i++) {
-                    int idMaterial = Integer.parseInt(tablePlanejamento.getValueAt(i, rowIdMaterial).toString());
-                    double qtd = vmd.readEstoque(idMaterial);
-                    tablePlanejamento.setValueAt(Valores.TransformarDoubleDBemString(qtd), i, rowEstoque);
-                    getNewRenderedTable(tablePlanejamento, rowQtdPedido, rowEstoque);
-                }
-            }
-        }.start();
-
-        //Ler Cliente do Pedido Vendas
-        new Thread() {
-            @Override
-            public void run() {
-                int rowPedido = tcm.getColumnIndex("DAV");
-                int rowCliente = tcm.getColumnIndex("Cliente");
-                for (int i = 0; i < tablePlanejamento.getRowCount(); i++) {
-                    String pedido = tablePlanejamento.getValueAt(i, rowPedido).toString();
-                    String cliente = vpd.readCliente(pedido);
-                    tablePlanejamento.setValueAt(cliente, i, rowCliente);
-                }
-            }
-        }.start();
+        int rowEstoque = tcm.getColumnIndex("Qtde Estoque");
+        int rowQtdPedido = tcm.getColumnIndex("Qtde Pedido");
+        getNewRenderedTable(tablePlanejamento, rowQtdPedido, rowEstoque);
 
         //Ler Processo da OP
         new Thread() {
             @Override
             public void run() {
-                int rowOP = tcm.getColumnIndex("OP");
-                int rowProcesso = tcm.getColumnIndex("Processo");
-                for (int i = 0; i < tablePlanejamento.getRowCount(); i++) {
-                    if (!tablePlanejamento.getValueAt(i, rowOP).toString().equals("")) {
-                        String op = tablePlanejamento.getValueAt(i, rowOP).toString();
-                        String processo = fd.getProcesso(op);
-                        tablePlanejamento.setValueAt(processo, i, rowProcesso);
-                    }
-                }
-
                 for (int i = 0; i < tablePlanejamento1.getRowCount(); i++) {
                     if (!tablePlanejamento1.getValueAt(i, 5).toString().equals("")) {
                         String op = tablePlanejamento1.getValueAt(i, 5).toString();
@@ -230,7 +194,7 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 }
             }
         }.start();
-
+        
         //Ler cliente de Serviços
         new Thread() {
             @Override
@@ -242,7 +206,7 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                 }
             }
         }.start();
-        
+
         txtValores();
     }
 
@@ -277,7 +241,7 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
         for (int i = 0; i < tablePlanejamento1.getRowCount(); i++) {
             double valorServico = Valores.TransformarStringDinheiroEmDouble(tablePlanejamento1.getValueAt(i, 7).toString());
             valorTotalServico += valorServico;
-            
+
             String dataNormal = tablePlanejamento1.getValueAt(i, 8).toString();
             try {
                 dataDate = new SimpleDateFormat("dd/MM/yyyy").parse(dataNormal);
@@ -571,8 +535,7 @@ public class PlanejamentoFaturamento extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addGap(2, 2, 2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())

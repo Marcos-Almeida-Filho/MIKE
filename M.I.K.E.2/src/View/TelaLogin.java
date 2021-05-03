@@ -45,6 +45,8 @@ public class TelaLogin extends javax.swing.JFrame {
             Session.nome = ub.getNome();
             Session.nivel = ub.getNivel();
             Session.emailfabrica = ub.getEmailfabrica();
+            Session.alterarMPOP = ub.isAlterarMPOP();
+            Session.aprovarCotacaoVenda = ub.isAprovarCotacaoVenda();
         });
         
         //DAO para pesquisar ID do nível do usuário

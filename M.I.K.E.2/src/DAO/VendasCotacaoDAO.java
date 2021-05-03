@@ -89,6 +89,7 @@ public class VendasCotacaoDAO {
                 vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setStatus(rs.getString("status"));
+                vcb.setSituacao(rs.getInt("situacao"));
 
                 listvc.add(vcb);
             }
@@ -124,6 +125,7 @@ public class VendasCotacaoDAO {
                 vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setStatus(rs.getString("status"));
+                vcb.setSituacao(rs.getInt("situacao"));
 
                 listvc.add(vcb);
             }
@@ -229,6 +231,7 @@ public class VendasCotacaoDAO {
                 vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setStatus(rs.getString("status"));
+                vcb.setSituacao(rs.getInt("situacao"));
 
                 listvc.add(vcb);
             }
@@ -264,6 +267,7 @@ public class VendasCotacaoDAO {
                 vcb.setCotacao(rs.getString("cotacao"));
                 vcb.setCliente(rs.getString("cliente"));
                 vcb.setStatus(rs.getString("status"));
+                vcb.setSituacao(rs.getInt("situacao"));
 
                 listvc.add(vcb);
             }
@@ -379,6 +383,7 @@ public class VendasCotacaoDAO {
                 vcb.setCondicao(rs.getString("condicao"));
                 vcb.setFrete(rs.getDouble("frete"));
                 vcb.setStatus(rs.getString("status"));
+                vcb.setAprovado(rs.getBoolean("aprovado"));
 
                 listvc.add(vcb);
             }
@@ -570,6 +575,52 @@ public class VendasCotacaoDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             String msg = "Erro ao atualizar status da Cotação de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void aprovarCotacao(String cotacao) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_cotacao SET aprovado = true WHERE cotacao = '" + cotacao + "'");
+            stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Cotação aprovada com sucesso!");
+        } catch (SQLException e) {
+            String msg = "Erro ao aprovar Cotação de Venda.";
+            JOptionPane.showMessageDialog(null, msg);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt);
+        }
+    }
+
+    public void alterarSituacao(String cotacao, int situacao) {
+        conStmt();
+
+        try {
+            stmt = con.prepareStatement("UPDATE vendas_cotacao SET situacao = " + situacao + " WHERE cotacao = '" + cotacao + "'");
+            stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Cotação aprovada com sucesso!");
+        } catch (SQLException e) {
+            String msg = "Erro ao aprovar Cotação de Venda.";
             JOptionPane.showMessageDialog(null, msg);
 
             new Thread() {

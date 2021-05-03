@@ -11,6 +11,7 @@ import View.compras.ComprasSolicitacao;
 import View.compras.ComprasCotacao;
 import View.compras.Insumos;
 import View.compras.TiposInsumo;
+import View.financeiro.AdicionarContasAPagar;
 import View.financeiro.AdicionarContasAReceber;
 import View.financeiro.ContaPagar;
 import View.financeiro.ContaReceber;
@@ -98,6 +99,9 @@ public class AdicionarObs extends javax.swing.JInternalFrame {
                     break;
                 case "VM1":
                     Obs.AdicionarObs(VM1.tableobs, obs);
+                    break;
+                case "AdicionarContasAPagar":
+                    Obs.AdicionarObs(AdicionarContasAPagar.tableobs, obs);
                     break;
             }
             dispose();

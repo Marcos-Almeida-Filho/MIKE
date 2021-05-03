@@ -18,4 +18,6 @@ public class Session {
     public static String db;
     public static String setor;
     public static String emailfabrica;
+    public static boolean aprovarCotacaoVenda;
+    public static boolean alterarMPOP;
 }

@@ -18,6 +18,7 @@ import Methods.Dates;
 import Methods.SendEmail;
 import Methods.Telas;
 import Methods.Valores;
+import View.Geral.AdicionarObs;
 import View.Geral.ProcurarCliente;
 import View.Geral.ProcurarDocumento;
 import View.Geral.ProcurarFornecedor;
@@ -342,12 +343,19 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Usuário", "Data", "Observação"
+                "ID", "", "Data", "Usuário", "Observação"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                false, true, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -355,15 +363,26 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         });
         jScrollPane3.setViewportView(tableobs);
         if (tableobs.getColumnModel().getColumnCount() > 0) {
-            tableobs.getColumnModel().getColumn(0).setMinWidth(200);
-            tableobs.getColumnModel().getColumn(0).setPreferredWidth(200);
-            tableobs.getColumnModel().getColumn(0).setMaxWidth(200);
-            tableobs.getColumnModel().getColumn(1).setMinWidth(110);
-            tableobs.getColumnModel().getColumn(1).setPreferredWidth(110);
-            tableobs.getColumnModel().getColumn(1).setMaxWidth(110);
+            tableobs.getColumnModel().getColumn(0).setMinWidth(0);
+            tableobs.getColumnModel().getColumn(0).setPreferredWidth(0);
+            tableobs.getColumnModel().getColumn(0).setMaxWidth(0);
+            tableobs.getColumnModel().getColumn(1).setMinWidth(35);
+            tableobs.getColumnModel().getColumn(1).setPreferredWidth(35);
+            tableobs.getColumnModel().getColumn(1).setMaxWidth(35);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(110);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(110);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(110);
+            tableobs.getColumnModel().getColumn(3).setMinWidth(200);
+            tableobs.getColumnModel().getColumn(3).setPreferredWidth(200);
+            tableobs.getColumnModel().getColumn(3).setMaxWidth(200);
         }
 
         jButton5.setText("Incluir Observação");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -533,7 +552,7 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
         //Total das parcelas
         BigDecimal parcelatotal = new BigDecimal("0");
         parcelatotal = parcelatotal.setScale(2, RoundingMode.HALF_EVEN);
-        
+
         boolean obs = false;
 
         //Verificar se os campos tem valores e então somar para comparar depois
@@ -652,10 +671,10 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
                 //Criar Obs para o ID
                 for (int j = 0; j < tableobs.getRowCount(); j++) {
                     cob.setIdcap(id);
-                    cob.setUsuario(tableobs.getValueAt(j, 0).toString());
-                    cob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(j, 1).toString()));
-                    cob.setObs(tableobs.getValueAt(j, 2).toString());
-                    
+                    cob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(j, 2).toString()));
+                    cob.setUsuario(tableobs.getValueAt(j, 3).toString());
+                    cob.setObs(tableobs.getValueAt(j, 4).toString());
+
                     //idcap, usuario, data, obs
                     cod.create(cob);
                 }
@@ -786,6 +805,11 @@ public class AdicionarContasAPagar extends javax.swing.JInternalFrame {
     private void radiooutrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radiooutrosActionPerformed
         radios();
     }//GEN-LAST:event_radiooutrosActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        AdicionarObs ao = new AdicionarObs(this.getClass().getSimpleName());
+        Telas.AparecerTela(ao);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

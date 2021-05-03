@@ -23,6 +23,8 @@ public class VendasCotacaoBean {
     private double total;
     private String status;
     private String motivo;
+    private boolean aprovado;
+    private int situacao;
 
     public int getId() {
         return id;
@@ -118,5 +120,21 @@ public class VendasCotacaoBean {
 
     public void setMotivo(String motivo) {
         this.motivo = motivo;
+    }
+    
+    public boolean isAprovado() {
+        return aprovado;
+    }
+    
+    public void setAprovado(boolean aprovado) {
+        this.aprovado = aprovado;
+    }
+
+    public int getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(int situacao) {
+        this.situacao = situacao;
     }
 }

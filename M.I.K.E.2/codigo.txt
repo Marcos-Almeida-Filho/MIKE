@@ -1,0 +1,3 @@
+SMTPTransport t = (SMTPTransport)session.getTransport("smtp");
+            t.connect("sistema@speedcut.com.br", "Sistema271113=");
+            t.sendMessage(message, message.getAllRecipients());

@@ -6,6 +6,7 @@
 package View.financeiro;
 
 import Bean.CAPBean;
+import Bean.CAPObsBean;
 import DAO.BancosDAO;
 import DAO.CAPDAO;
 import DAO.CAPDocumentosDAO;
@@ -28,6 +29,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ContaPagar extends javax.swing.JInternalFrame {
 
+    //DAOs para pesquisa
+    static CAPDAO capd = new CAPDAO();
+    static CAPDocumentosDAO cdd = new CAPDocumentosDAO();
+    static CAPObsDAO cod = new CAPObsDAO();
+
     /**
      * Creates new form AdicionarContasPagar
      */
@@ -44,11 +50,6 @@ public class ContaPagar extends javax.swing.JInternalFrame {
     }
 
     public static void readdados() {
-        //DAOs para pesquisa
-        CAPDAO capd = new CAPDAO();
-        CAPDocumentosDAO cdd = new CAPDocumentosDAO();
-        CAPObsDAO cod = new CAPObsDAO();
-
         txtid.setText(String.valueOf(id));
 
         capd.click(id).forEach(cb -> {
@@ -94,8 +95,8 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             modelobs.addRow(new Object[]{
                 cob.getId(),
                 false,
-                cob.getUsuario(),
                 Dates.TransformarDataCurtaDoDB(cob.getData()),
+                cob.getUsuario(),
                 cob.getObs()
             });
         });
@@ -492,14 +493,14 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "ID", "", "Usuário", "Data", "Observação"
+                "ID", "", "Data", "Usuário", "Observação"
             }
         ) {
             Class[] types = new Class [] {
                 java.lang.Object.class, java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, true, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -518,12 +519,12 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             tableobs.getColumnModel().getColumn(1).setMinWidth(35);
             tableobs.getColumnModel().getColumn(1).setPreferredWidth(35);
             tableobs.getColumnModel().getColumn(1).setMaxWidth(35);
-            tableobs.getColumnModel().getColumn(2).setMinWidth(250);
-            tableobs.getColumnModel().getColumn(2).setPreferredWidth(250);
-            tableobs.getColumnModel().getColumn(2).setMaxWidth(250);
-            tableobs.getColumnModel().getColumn(3).setMinWidth(100);
-            tableobs.getColumnModel().getColumn(3).setPreferredWidth(100);
-            tableobs.getColumnModel().getColumn(3).setMaxWidth(100);
+            tableobs.getColumnModel().getColumn(2).setMinWidth(100);
+            tableobs.getColumnModel().getColumn(2).setPreferredWidth(100);
+            tableobs.getColumnModel().getColumn(2).setMaxWidth(100);
+            tableobs.getColumnModel().getColumn(3).setMinWidth(250);
+            tableobs.getColumnModel().getColumn(3).setPreferredWidth(250);
+            tableobs.getColumnModel().getColumn(3).setMaxWidth(250);
         }
 
         jButton2.setText("Adicionar Observação");
@@ -694,7 +695,6 @@ public class ContaPagar extends javax.swing.JInternalFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         CAPBean capb = new CAPBean();
-        CAPDAO capd = new CAPDAO();
 
         if (txtfornecedor.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Selecione um fornecedor primeiro.");
@@ -772,7 +772,20 @@ public class ContaPagar extends javax.swing.JInternalFrame {
             //fornecedor = ?, notafiscal = ?, dataemissao = ?, total = ?, parcela = ?, valorparcela = ?, dataparcela = ?, datapagamento = ?, banco = ?, metodo = ?, cheque = ?, status = ? WHERE id = ?
             capd.update(capb);
 
-            readtablecap();
+            for (int i = 0; i < tableobs.getRowCount(); i++) {
+                if (tableobs.getValueAt(i, 0).equals("")) {
+                    CAPObsBean cob = new CAPObsBean();
+                    
+                    cob.setIdcap(Integer.parseInt(txtid.getText()));
+                    cob.setUsuario(tableobs.getValueAt(i, 3).toString());
+                    cob.setData(Dates.CriarDataCurtaDBComDataExistente(tableobs.getValueAt(i, 2).toString()));
+                    cob.setObs(tableobs.getValueAt(i, 4).toString());
+                    
+                    //idcap, usuario, data, obs
+                    cod.create(cob);
+                }
+            }
+                    readtablecap();
 
             JOptionPane.showMessageDialog(null, "Atualizado com sucesso!");
         }
@@ -854,7 +867,6 @@ public class ContaPagar extends javax.swing.JInternalFrame {
         } else {
             int resp = JOptionPane.showConfirmDialog(null, "Deseja excluir a(s) observação(ões) selecionada(s)?", "Excluir Observação", JOptionPane.YES_NO_OPTION);
             if (resp == 0) {
-                CAPObsDAO cod = new CAPObsDAO();
                 for (int i = 0; i < tableobs.getRowCount(); i++) {
                     if (tableobs.getValueAt(i, 1).equals(true)) {
                         cod.delete(Integer.parseInt(tableobs.getValueAt(i, 0).toString()));

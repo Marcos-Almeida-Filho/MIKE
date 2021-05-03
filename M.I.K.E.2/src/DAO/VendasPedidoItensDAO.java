@@ -5,6 +5,7 @@
  */
 package DAO;
 
+import Bean.PlanejamentoVendasBean;
 import Bean.RelatorioVendaDeProdutoBean;
 import Bean.RelatorioVendasPorClienteBean;
 import Bean.VendasPedidoItensBean;
@@ -36,6 +37,8 @@ public class VendasPedidoItensDAO {
 
     static List<RelatorioVendasPorClienteBean> listrvpcb;
     
+    static List<PlanejamentoVendasBean> listpv;
+    
     static VendasPedidoItensBean vpib;
 
     static RelatorioVendaDeProdutoBean rvdpb;
@@ -58,6 +61,8 @@ public class VendasPedidoItensDAO {
         listrvdpb = new ArrayList<>();
         
         listrvpcb = new ArrayList<>();
+        
+        listpv = new ArrayList<>();
     }
 
     /**
@@ -125,33 +130,32 @@ public class VendasPedidoItensDAO {
         return listvpi;
     }
 
-    public List<VendasPedidoItensBean> readItensSemNF(String ordem, String dataInicio, String dataFim) {
+    public List<PlanejamentoVendasBean> readItensSemNF(String ordem, String dataInicio, String dataFim) {
         rsList();
 
-        String order = "vendas_pedido_itens." + ordem;
+        String order = "itens." + ordem;
 
         try {
-            stmt = con.prepareStatement("SELECT vendas_pedido_itens.* FROM vendas_pedido_itens, vendas_pedido WHERE vendas_pedido_itens.nf = '' AND vendas_pedido.status <> 'Desativado' AND vendas_pedido.pedido = vendas_pedido_itens.dav AND vendas_pedido_itens.prazo BETWEEN '" + dataInicio + "' AND '" + dataFim + "' ORDER BY " + order);
+            stmt = con.prepareStatement("SELECT itens.*, vendas_pedido.cliente, f_up.processo, vendas_materiais.estoque FROM vendas_pedido_itens itens INNER JOIN vendas_pedido ON itens.dav = vendas_pedido.pedido LEFT JOIN f_up ON itens.op = f_up.op LEFT JOIN vendas_materiais ON itens.idmaterial = vendas_materiais.id WHERE itens.nf = '' AND vendas_pedido.status <> 'Desativado' AND itens.prazo BETWEEN '" + dataInicio + "' AND '" + dataFim + "' ORDER BY " + order);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                vpib = new VendasPedidoItensBean();
+                PlanejamentoVendasBean pvb = new PlanejamentoVendasBean();
 
-                vpib.setId(rs.getInt("id"));//
-                vpib.setIdMaterial(rs.getInt("idmaterial"));//
-                vpib.setDav(rs.getString("dav"));//
-                vpib.setCodigo(rs.getString("codigo"));//
-                vpib.setDescricao(rs.getString("descricao"));
-                vpib.setQtd(rs.getDouble("qtd"));//
-                vpib.setValorunitario(rs.getDouble("valorunitario"));//
-                vpib.setValortotal(rs.getDouble("valortotal"));//
-                vpib.setPrazo(rs.getString("prazo"));//
-                vpib.setPedido(rs.getString("pedido"));
-                vpib.setNf(rs.getString("nf"));
-                vpib.setOp(rs.getString("op"));//
-                vpib.setSeparado(rs.getBoolean("separado"));//
+                pvb.setId(rs.getInt("itens.id"));//
+                pvb.setIdMaterial(rs.getInt("itens.idmaterial"));//
+                pvb.setDav(rs.getString("itens.dav"));//
+                pvb.setCodigo(rs.getString("itens.codigo"));//
+                pvb.setQtdPedido(rs.getDouble("itens.qtd"));//
+                pvb.setValor(rs.getDouble("itens.valortotal"));//
+                pvb.setDataEntrega(rs.getString("itens.prazo"));//
+                pvb.setOp(rs.getString("itens.op"));//
+                pvb.setSeparado(rs.getBoolean("itens.separado"));//
+                pvb.setCliente(rs.getString("vendas_pedido.cliente"));
+                pvb.setQtdEstoque(rs.getDouble("vendas_materiais.estoque"));
+                pvb.setProcesso(rs.getString("f_up.processo"));
 
-                listvpi.add(vpib);
+                listpv.add(pvb);
             }
         } catch (SQLException e) {
             String msg = "Erro ao ler os itens do Pedido de Venda.";
@@ -167,7 +171,7 @@ public class VendasPedidoItensDAO {
             ConnectionFactory.closeConnection(con, stmt, rs);
         }
 
-        return listvpi;
+        return listpv;
     }
 
     public List<RelatorioVendaDeProdutoBean> readItensRelatorioDeVendas(int id, String dataInicio, String dataFim) {

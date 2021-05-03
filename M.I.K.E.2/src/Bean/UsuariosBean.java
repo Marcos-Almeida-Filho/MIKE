@@ -31,6 +31,8 @@ public class UsuariosBean {
     private String livrofolha;
     private String nivel;
     private double salario;
+    private boolean aprovarCotacaoVenda;
+    private boolean alterarMPOP;
 
     public int getId() {
         return id;
@@ -192,4 +194,19 @@ public class UsuariosBean {
         this.salario = salario;
     }
 
+    public boolean isAprovarCotacaoVenda() {
+        return aprovarCotacaoVenda;
+    }
+
+    public void setAprovarCotacaoVenda(boolean aprovarCotacaoVenda) {
+        this.aprovarCotacaoVenda = aprovarCotacaoVenda;
+    }
+
+    public boolean isAlterarMPOP() {
+        return alterarMPOP;
+    }
+
+    public void setAlterarMPOP(boolean alterarMP) {
+        this.alterarMPOP = alterarMP;
+    }
 }
