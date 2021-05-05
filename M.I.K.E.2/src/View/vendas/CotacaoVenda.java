@@ -203,7 +203,6 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             btnDelDoc.setEnabled(false);
             btnAddItem.setEnabled(false);
             btnDelItem.setEnabled(false);
-            btnAddPedido.setEnabled(false);
             btnSalvar.setEnabled(false);
             btnMarcarTodos.setEnabled(false);
             radioCadastrado.setEnabled(false);
@@ -225,7 +224,6 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             btnDelDoc.setEnabled(true);
             btnAddItem.setEnabled(true);
             btnDelItem.setEnabled(true);
-            btnAddPedido.setEnabled(true);
             btnSalvar.setEnabled(true);
             btnMarcarTodos.setEnabled(true);
             radioCadastrado.setEnabled(true);
@@ -325,12 +323,18 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
             txtCondPag.setText(vcb.getCondicao());
             txtFrete.setText(Valores.TransformarDoubleDBemString(vcb.getFrete()));
 
-            if (vcb.isAprovado()) {
-                btnSendCotacao.setEnabled(true);
-                btnAprovarCotacao.setEnabled(false);
+            if (vcb.getStatus().equals("Fechado") || vcb.getStatus().equals("Desativado") || vcb.getStatus().equals("Perdido")) {
+                btnAddPedido.setEnabled(false);
             } else {
-                btnSendCotacao.setEnabled(false);
-                btnAprovarCotacao.setEnabled(true);
+                if (vcb.isAprovado()) {
+                    btnSendCotacao.setEnabled(true);
+                    btnAprovarCotacao.setEnabled(false);
+                    btnAddPedido.setEnabled(true);
+                } else {
+                    btnSendCotacao.setEnabled(false);
+                    btnAprovarCotacao.setEnabled(true);
+                    btnAddPedido.setEnabled(false);
+                }
             }
         });
 
@@ -1800,9 +1804,9 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                         SendEmail.EnviarOrcamento(f, Session.emailfabrica);
                     } catch (Exception e) {
                         String msg = "Erro.";
-                        
+
                         JOptionPane.showMessageDialog(null, msg + "\n" + e);
-                        
+
                         new Thread() {
                             @Override
                             public void run() {
