@@ -129,6 +129,8 @@ public class Representantes extends javax.swing.JInternalFrame {
         cbuf = new javax.swing.JComboBox<>();
         txtcep = new javax.swing.JFormattedTextField();
         txtcnpj = new javax.swing.JFormattedTextField();
+        jLabel17 = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablecontrato = new javax.swing.JTable();
@@ -261,6 +263,8 @@ public class Representantes extends javax.swing.JInternalFrame {
             ex.printStackTrace();
         }
 
+        jLabel17.setText("E-mail");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -283,7 +287,11 @@ public class Representantes extends javax.swing.JInternalFrame {
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel17)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -320,7 +328,7 @@ public class Representantes extends javax.swing.JInternalFrame {
                         .addComponent(jLabel14)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtcep, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(229, Short.MAX_VALUE))
+                .addContainerGap(140, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -338,7 +346,9 @@ public class Representantes extends javax.swing.JInternalFrame {
                     .addComponent(jLabel6)
                     .addComponent(jLabel7)
                     .addComponent(txtnomeempresa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtcnpj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
@@ -575,10 +585,10 @@ public class Representantes extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (txtid.getText().equals("")) {
-            RepresentantesBean rb = new RepresentantesBean();
-            RepresentantesDAO rd = new RepresentantesDAO();
+        RepresentantesBean rb = new RepresentantesBean();
+        RepresentantesDAO rd = new RepresentantesDAO();
 
+        if (txtid.getText().equals("")) {
             rb.setStatus("Ativo");
             rb.setNome(txtnome.getText());
             rb.setCpf(txtcpf.getText());
@@ -593,16 +603,11 @@ public class Representantes extends javax.swing.JInternalFrame {
             rb.setUf(cbuf.getSelectedItem().toString());
             rb.setCep(txtcep.getText());
             rb.setRegiao(cbregiao.getSelectedItem().toString());
+            rb.setEmail(txtEmail.getText());
             //status, nome, cpf, rg, nomeempresa, cnpj, logradouro, numero, complemento, bairro, cidade, uf, cep, regiao
 
             rd.create(rb);
-            tabrepresentantes.setSelectedIndex(0);
-            readtablerepresentantes();
-            zeracampos();
         } else {
-            RepresentantesBean rb = new RepresentantesBean();
-            RepresentantesDAO rd = new RepresentantesDAO();
-
             rb.setStatus("Ativo");
             rb.setNome(txtnome.getText());
             rb.setCpf(txtcpf.getText());
@@ -618,13 +623,15 @@ public class Representantes extends javax.swing.JInternalFrame {
             rb.setCep(txtcep.getText());
             rb.setRegiao(cbregiao.getSelectedItem().toString());
             rb.setId(Integer.parseInt(txtid.getText()));
+            rb.setEmail(txtEmail.getText());
             //UPDATE representantes SET status = ?, nome = ?, cpf = ?, rg = ?, nomeempresa = ?, cnpj = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, regiao = ? WHERE id = ?
 
             rd.update(rb);
-            tabrepresentantes.setSelectedIndex(0);
-            readtablerepresentantes();
-            zeracampos();
         }
+
+        tabrepresentantes.setSelectedIndex(0);
+        readtablerepresentantes();
+        zeracampos();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void tablerepresentantesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablerepresentantesMouseClicked
@@ -685,6 +692,7 @@ public class Representantes extends javax.swing.JInternalFrame {
     public javax.swing.JLabel jLabel14;
     public javax.swing.JLabel jLabel15;
     public javax.swing.JLabel jLabel16;
+    public javax.swing.JLabel jLabel17;
     public javax.swing.JLabel jLabel2;
     public javax.swing.JLabel jLabel3;
     public javax.swing.JLabel jLabel4;
@@ -705,6 +713,7 @@ public class Representantes extends javax.swing.JInternalFrame {
     public javax.swing.JTable tablecontrato;
     public static javax.swing.JTable tablerepresentantes;
     public javax.swing.JTabbedPane tabrepresentantes;
+    public javax.swing.JTextField txtEmail;
     public javax.swing.JTextField txtbairro;
     public javax.swing.JFormattedTextField txtcep;
     public javax.swing.JTextField txtcidade;

@@ -11,6 +11,8 @@ import Connection.Session;
 import DAO.AltDAO;
 import DAO.ClientesContatosDAO;
 import DAO.ClientesDAO;
+import DAO.RepresentantesDAO;
+import DAO.UsuariosDAO;
 import DAO.VendasCotacaoDAO;
 import DAO.VendasCotacaoDocsDAO;
 import DAO.VendasCotacaoItensDAO;
@@ -76,6 +78,8 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
     static AltDAO ad = new AltDAO();
     ClientesContatosDAO ccd = new ClientesContatosDAO();
     ClientesDAO cd = new ClientesDAO();
+    UsuariosDAO ud = new UsuariosDAO();
+    RepresentantesDAO rd = new RepresentantesDAO();
 
     public static String clienteOriginal, condicaoOriginal, representanteOriginal, vendedorOriginal;
     public static int numDocsOriginal, numObsOriginal, numItensOriginal;
@@ -1815,6 +1819,14 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                         }.start();
                     }
 
+                    if (!txtVendedor.getText().equals(Session.nome)) {
+                        String emailVendedor = ud.getEmail(txtVendedor.getText());
+                        SendEmail.EnviarOrcamento(f, emailVendedor);
+                    }
+                    
+                    String emailRepresentante = rd.getEmailRepresentante(txtRep.getText());
+                    SendEmail.EnviarOrcamento(f, emailRepresentante);
+                    
                     if (destinatarios.size() > 0) {
                         destinatarios.forEach((destinatario) -> {
                             SendEmail.EnviarOrcamento(f, destinatario.getEmail());

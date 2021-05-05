@@ -26,6 +26,7 @@ public class RepresentantesBean {
     private String uf;
     private String cep;
     private String regiao;
+    private String email;
 
     public int getId() {
         return id;
@@ -147,4 +148,11 @@ public class RepresentantesBean {
         this.regiao = regiao;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

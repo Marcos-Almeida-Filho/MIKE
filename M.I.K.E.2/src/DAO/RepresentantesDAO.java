@@ -33,7 +33,7 @@ public class RepresentantesDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO representantes (status, nome, cpf, rg, nomeempresa, cnpj, logradouro, numero, complemento, bairro, cidade, uf, cep, regiao) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO representantes (status, nome, cpf, rg, nomeempresa, cnpj, logradouro, numero, complemento, bairro, cidade, uf, cep, regiao, email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             stmt.setString(1, rb.getStatus());
             stmt.setString(2, rb.getNome());
@@ -49,8 +49,11 @@ public class RepresentantesDAO {
             stmt.setString(12, rb.getUf());
             stmt.setString(13, rb.getCep());
             stmt.setString(14, rb.getRegiao());
+            stmt.setString(15, rb.getEmail());
 
             stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Representante criado com sucesso.");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao salvar!\n" + e);
             try {
@@ -81,9 +84,9 @@ public class RepresentantesDAO {
             }
         } catch (SQLException e) {
             String msg = "Erro.";
-            
+
             JOptionPane.showMessageDialog(null, msg + "\n" + e);
-            
+
             new Thread() {
                 @Override
                 public void run() {
@@ -95,7 +98,40 @@ public class RepresentantesDAO {
         }
         return id;
     }
-    
+
+    public String getEmailRepresentante(String nome) {
+        Connection con = ConnectionFactory.getConnection();
+
+        PreparedStatement stmt = null;
+
+        ResultSet rs = null;
+
+        String email = "";
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM representantes WHERE nome = '" + nome + "'");
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                email = rs.getString("email");
+            }
+        } catch (SQLException e) {
+            String msg = "Erro.";
+
+            JOptionPane.showMessageDialog(null, msg + "\n" + e);
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SendEmail.EnviarErro2(msg, e);
+                }
+            }.start();
+        } finally {
+            ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+        return email;
+    }
+
     public List<RepresentantesBean> read() {
 
         Connection con = ConnectionFactory.getConnection();
@@ -261,7 +297,7 @@ public class RepresentantesDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE representantes SET status = ?, nome = ?, cpf = ?, rg = ?, nomeempresa = ?, cnpj = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, regiao = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE representantes SET status = ?, nome = ?, cpf = ?, rg = ?, nomeempresa = ?, cnpj = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, regiao = ?, email = ? WHERE id = ?");
 
             stmt.setString(1, rb.getStatus());
             stmt.setString(2, rb.getNome());
@@ -277,9 +313,12 @@ public class RepresentantesDAO {
             stmt.setString(12, rb.getUf());
             stmt.setString(13, rb.getCep());
             stmt.setString(14, rb.getRegiao());
-            stmt.setInt(15, rb.getId());
+            stmt.setString(15, rb.getEmail());
+            stmt.setInt(16, rb.getId());
 
             stmt.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Representante atualizado com sucesso.");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar!\n" + e);
             try {
