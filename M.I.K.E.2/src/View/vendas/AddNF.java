@@ -291,25 +291,13 @@ public class AddNF extends javax.swing.JInternalFrame {
                     }.start();
                 }
 
-                PedidoVenda.lerItensPedido(PedidoVenda.txtPedido.getText());
-                int numNota = 0;
-                for (int i = 0; i < PedidoVenda.tableItens.getRowCount(); i++) {
-                    if (!PedidoVenda.tableItens.getValueAt(i, 10).equals("")) {
-                        numNota++;
-                    }
-                }
-
-                String pedido = PedidoVenda.txtPedido.getText();
-                if (numNota == PedidoVenda.tableItens.getRowCount()) {
-                    vpd.updateStatus(pedido, "Faturado");
-                } else {
-                    vpd.updateStatus(pedido, "Parcialmente Faturado");
-                }
+                PedidoVenda.setarStatusPedido();
 
                 if (tableItens.getRowCount() == 1) {
                     nfd.updateStatus(Integer.parseInt(nf));
                 }
 
+                String pedido = PedidoVenda.txtPedido.getText();
                 PedidoVenda.lerPedido(pedido);
                 PedidoVenda.lerPedidosAbertos();
                 dispose();

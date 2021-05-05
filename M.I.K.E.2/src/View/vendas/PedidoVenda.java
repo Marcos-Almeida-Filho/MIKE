@@ -95,6 +95,25 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
         idPedido = 0;
     }
 
+    public static void setarStatusPedido() {
+        lerItensPedido(txtPedido.getText());
+        int numNota = 0;
+        for (int i = 0; i < tableItens.getRowCount(); i++) {
+            if (!tableItens.getValueAt(i, 10).equals("")) {
+                numNota++;
+            }
+        }
+
+        String pedido = txtPedido.getText();
+        if (numNota == tableItens.getRowCount()) {
+            vpd.updateStatus(pedido, "Faturado");
+        } else {
+            vpd.updateStatus(pedido, "Parcialmente Faturado");
+        }
+
+        lerPedido(pedido);
+    }
+
     private static JTable getNewRenderedTable(final JTable table, int coluna) {
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
@@ -1376,7 +1395,7 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
 
             lancarNF.addActionListener((ActionEvent ae) -> {
                 int idMaterial = Integer.parseInt(tableItens.getValueAt(row, 11).toString());
-                
+
                 String codigoItem = tableItens.getValueAt(row, 2).toString();
                 String codigo = vmd.codigoProduto(idMaterial);
 
@@ -1681,6 +1700,8 @@ public class PedidoVenda extends javax.swing.JInternalFrame {
                 lerItensPedido(txtPedido.getText());
 
                 txtTotal();
+
+                setarStatusPedido();
             }
         }
     }//GEN-LAST:event_btnDelItemActionPerformed

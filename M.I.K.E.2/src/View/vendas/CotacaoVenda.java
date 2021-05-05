@@ -1816,7 +1816,6 @@ public class CotacaoVenda extends javax.swing.JInternalFrame {
                     }
 
                     if (destinatarios.size() > 0) {
-                        JOptionPane.showMessageDialog(null, 14);
                         destinatarios.forEach((destinatario) -> {
                             SendEmail.EnviarOrcamento(f, destinatario.getEmail());
                         });
